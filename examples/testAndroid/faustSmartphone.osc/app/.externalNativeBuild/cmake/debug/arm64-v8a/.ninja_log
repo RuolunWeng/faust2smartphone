@@ -1,0 +1,10 @@
+# ninja log v5
+0	58	0	CMakeFiles/dsp_faust.dir/src/main/cpp/java_interface_wrap.cpp.o	dfb01a29a95a8e82
+1	1449	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a9905f87cf34bdc8
+1449	1985	0	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libdsp_faust.so	1dcd950343eb88da
+0	1456	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a9905f87cf34bdc8
+1456	1748	0	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libdsp_faust.so	1dcd950343eb88da
+1	1422	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a9905f87cf34bdc8
+1422	1703	0	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libdsp_faust.so	1dcd950343eb88da
+1	1417	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a9905f87cf34bdc8
+1417	1703	0	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libdsp_faust.so	1dcd950343eb88da

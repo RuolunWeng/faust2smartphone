@@ -1,0 +1,10 @@
+# ninja log v5
+0	137	0	CMakeFiles/dsp_faust.dir/src/main/cpp/java_interface_wrap.cpp.o	9c76c3eaf4e5c200
+0	2863	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	f728d0ef0e141ac3
+2863	3082	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libdsp_faust.so	182db645f666e447
+0	2478	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	f728d0ef0e141ac3
+2478	2648	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libdsp_faust.so	182db645f666e447
+1	2507	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	f728d0ef0e141ac3
+2507	2671	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libdsp_faust.so	182db645f666e447
+0	2460	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	f728d0ef0e141ac3
+2460	2630	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libdsp_faust.so	182db645f666e447

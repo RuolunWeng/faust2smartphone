@@ -1,0 +1,10 @@
+# ninja log v5
+0	91	0	CMakeFiles/dsp_faust.dir/src/main/cpp/java_interface_wrap.cpp.o	8fa92409b38b29df
+0	2716	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a68b1a405a5a56b2
+2717	3210	0	../../../../build/intermediates/cmake/debug/obj/mips64/libdsp_faust.so	64e9ea211c6fc7c7
+1	2607	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a68b1a405a5a56b2
+2607	2992	0	../../../../build/intermediates/cmake/debug/obj/mips64/libdsp_faust.so	64e9ea211c6fc7c7
+0	2560	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a68b1a405a5a56b2
+2561	2943	0	../../../../build/intermediates/cmake/debug/obj/mips64/libdsp_faust.so	64e9ea211c6fc7c7
+1	2576	0	CMakeFiles/dsp_faust.dir/src/main/cpp/DspFaust.cpp.o	a68b1a405a5a56b2
+2576	2961	0	../../../../build/intermediates/cmake/debug/obj/mips64/libdsp_faust.so	64e9ea211c6fc7c7
