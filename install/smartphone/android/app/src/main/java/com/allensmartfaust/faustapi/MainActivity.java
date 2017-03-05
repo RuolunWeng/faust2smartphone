@@ -5,6 +5,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -85,8 +87,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    
+    	update.run();
+    
     }
+	
+	private Handler handler = new Handler();
+    private Runnable update = new Runnable() {
+        public void run() {
 
+            // TODO: GET VALUE from FAUST
+            float getParam1,getParam2;
+            getParam1 = dspFaust.getParamValue("/Oscillator/freq");
+            getParam2 = dspFaust.getParamValue("/Oscillator/volume");
+            param1.setProgress((int)(getParam1-220.0f));
+            param2.setProgress((int)(getParam2+96.0f));
+            paramOut1.setText("Freq:"+getParam1+"Hz");
+            paramOut2.setText("Volume:"+getParam2+"dB");
+
+            handler.postDelayed(this, 30);
+        }
+    };
+    
+    
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
@@ -96,17 +119,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         for (int i = 0 ;i<event.values.length;i++){
             dspFaust.propagateAcc(i, event.values[i]);
         }
-
-
-        // TODO: GET VALUE from FAUST
-        float getParam1,getParam2;
-        getParam1 = dspFaust.getParamValue("/Oscillator/freq");
-        getParam2 = dspFaust.getParamValue("/Oscillator/volume");
-
-        param1.setProgress((int)(getParam1-220.0f));
-        param2.setProgress((int)(getParam2+96.0f));
-        paramOut1.setText("Freq:"+getParam1+"Hz");
-        paramOut2.setText("Volume:"+getParam2+"dB");
 
     }
 
