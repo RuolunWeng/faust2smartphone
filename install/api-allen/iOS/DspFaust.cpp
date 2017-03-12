@@ -24,7 +24,11 @@
 #include "faust/gui/jsonfaustui.h"
 #include "faust/gui/JSONUI.h"
 #include "faust/gui/MapUI.h"
+#include "faust/gui/GUI.h"
 
+#if OSCCTRL
+#include "faust/gui/OSCUI.h"
+#endif
 
 #include <math.h>
 #include <cmath>
@@ -72,6 +76,28 @@ DspFaust::DspFaust(int sample_rate, int buffer_size){
 	fPolyEngine->buildUserInterface(fMidiUI);
 #endif
 
+//**************************************************************
+// OSC TEST ALLEN
+//**************************************************************
+
+// OSC
+#if OSCCTRL
+    const char* argv[9];
+    argv[0] = "0x00";//(char*)_name;
+    argv[1] = "-xmit";
+    argv[2] = "1";//transmit_value(transmit);
+    argv[3] = "-desthost";
+    argv[4] = "192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[5] = "-port";
+    argv[6] = "5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[7] = "-outport";
+    argv[8] = "5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    fOSCUI = new OSCUI("0x00", 9, (char**)argv);
+    fPolyEngine->buildUserInterface(fOSCUI);
+    
+#endif
+
+
 }
    
 
@@ -82,12 +108,20 @@ DspFaust::~DspFaust(){
     delete fMidiUI;
 #endif
 
+#if OSCCTRL
+    delete fOSCUI; 
+#endif
+
 
 }
 
 bool DspFaust::start(){
 #if IOS_MIDI_SUPPORT
     fMidiUI->run();
+#endif
+
+#if OSCCTRL
+    fOSCUI->run(); 
 #endif
 
 	return fPolyEngine->start();
@@ -98,7 +132,9 @@ void DspFaust::stop(){
     fMidiUI->stop();
 #endif
 
-
+#if OSCCTRL
+    fOSCUI->stop(); 
+#endif
 
 	fPolyEngine->stop();
 }

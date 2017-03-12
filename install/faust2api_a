@@ -128,7 +128,7 @@ elif [ $IOS -eq 1 ]; then
     echo "Your dsp-faust.zip API package for iOS is being created"
     cp -r /usr/local/share/faust/api-allen/iOS/DspFaust.h $APIFOLDER
     if [ "$OSCCTRL" = "1" ]; then
-    faust -i -a api-allen/iOS/DspFaustOSC.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+    faust -i -a api-allen/iOS/DspFaust.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     else
     faust -i -a api-allen/iOS/DspFaust.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit

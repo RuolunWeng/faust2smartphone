@@ -25,6 +25,7 @@
 
 class FaustPolyEngine;
 class MidiUI;
+class OSCUI;
 
 class DspFaust
 {
@@ -401,6 +402,7 @@ public:
 private:
     FaustPolyEngine *fPolyEngine;
     MidiUI *fMidiUI;
+    OSCUI *fOSCUI;
 };
 
 #endif
