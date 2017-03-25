@@ -749,7 +749,7 @@
 					"$(PROJECT_DIR)/osclib/oscpack",
 				);
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust.osc;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust;
 				PRODUCT_NAME = osc;
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -781,7 +781,7 @@
 					"$(PROJECT_DIR)/osclib/oscpack",
 				);
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust.osc;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust;
 				PRODUCT_NAME = osc;
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
