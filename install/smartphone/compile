@@ -77,7 +77,7 @@ for p in $FILES; do
 		cd $T
 		./gradlew assembleRelease > $LOG || exit
 		cd ..		
-		cp -r $T/app/build/outputs/apk/app-release.apk $P.apk > $LOG
+		cp -r $T/app/build/outputs/apk/app-release-unsigned.apk $P.apk > $LOG
 		echo "====================================" 
 		echo "An Android app \"$P.apk\" was created in the current folder"
 		echo "====================================" 

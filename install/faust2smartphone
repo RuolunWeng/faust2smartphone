@@ -18,6 +18,7 @@ set -e
 # global option variables
 ANDROID="0"
 IOS="0"
+IOSMOTION="0"
 NVOICES="12"
 POLY2="0"
 MIDI="0"
@@ -36,6 +37,7 @@ echoHelp ()
 	echo "Usage: faust2smartphone 'option' xxx.dsp"
 	echo "===================================="
 	echo "Option: -ios for Xcode project"
+	echo "Option: -iosmotion for Xcode project with motion support"
 	echo "Option: -android for Android Studio project"
 	echo "Option: -osc for OSC support"
 	echo "Option: -reuse for Uptade the project"
@@ -59,6 +61,8 @@ do
 		ANDROID=1
     elif [ $p = "-ios" ]; then
 		IOS="1"
+	elif [ $p = "-iosmotion" ]; then
+		IOSMOTION="1"
 	elif [ $p = "-reuse" ]; then
 		REUSE=1
 	elif [ $p = "-source" ]; then
@@ -109,8 +113,10 @@ if [ $ANDROID -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/app/src/main"
 elif [ $IOS -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/iOS"
+elif [ $IOSMOTION -eq 1 ]; then
+	APPFOLDER="$BUILDDIR/iOS"
 else
-	echo "Please, specify a platform: -android or -ios"
+	echo "Please, specify a platform: -android or -ios or -iosmotion"
 	echoHelp
 	exit 1
 fi
@@ -157,6 +163,13 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
 			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
+		elif [ $IOSMOTION -eq 1 ]; then
+			echo "Creating a new iOS project with motion support in $BUILDDIR" > $LOG
+			cp -r $FAUSTLIB/smartphone/iOS-motion/* "$BUILDDIR"
+			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
+			
+			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
+			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
 		fi
 	fi
 fi
@@ -190,6 +203,13 @@ elif [ $IOS -eq 1 ]; then
 	else
 		echo "Adding DSP with effect chain to the app" > $LOG
 		faust2api_a -ios -midi -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
+	fi
+elif [ $IOSMOTION -eq 1 ]; then
+	echo "Adding DSP with motion support to the app" > $LOG
+	if [ -z $OPTIONS ]; then
+		faust2api_a -iosmotion -nodoc "$FILE" > $LOG
+		else 
+		faust2api_a -iosmotion -nodoc "$OPTIONS" "$FILE" > $LOG
 	fi
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"

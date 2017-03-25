@@ -22,6 +22,13 @@ install:
 	rm -rf $(prefix)/share/faust/smartphone
 	cp -r smartphone $(prefix)/share/faust/
 	
+	##############################    
+	#### Install Motion Files ####
+	##############################
+	cp -r motion/audio2.h $(prefix)/include/faust/audio
+	cp -r motion/motion-audio.h $(prefix)/include/faust/audio
+	cp -r motion/faust-motion-engine.h $(prefix)/include/faust/dsp
+	
 	########################################
 	#### Install faustapi version Allen ####
 	########################################
