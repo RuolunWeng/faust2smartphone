@@ -750,7 +750,8 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust;
-				PRODUCT_NAME = osc;
+				PRODUCT_MODULE_NAME = FaustAPI;
+				PRODUCT_NAME = FaustAPI;
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -782,7 +783,8 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust;
-				PRODUCT_NAME = osc;
+				PRODUCT_MODULE_NAME = FaustAPI;
+				PRODUCT_NAME = FaustAPI;
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
