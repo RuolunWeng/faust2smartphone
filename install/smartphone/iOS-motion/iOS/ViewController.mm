@@ -61,12 +61,23 @@
     //Change the parameter address and value to initialize
     /////////////////////////////////////////////////////
     
-    dspFaust->setParamValue("/Oscillator/volume", -30);
-    dspFaust->setParamValue("/Oscillator/freq", 440);
-    dspFaustMotion->setParamValue("/Motion/tacc_up", 100);
-    dspFaustMotion->setParamValue("/Motion/tgyr_down", 300);
-    dspFaustMotion->setParamValue("/Motion/tacc_gain", 0.79);
-    dspFaustMotion->setParamValue("/Motion/tacc_thr", 0.3);
+    if (dspFaust->getOSCIsOn()) {
+        _ip.enabled=true;
+        _inPort.enabled=true;
+        _outPort.enabled=true;
+        _setOSC.enabled=true;
+        _ip.text=@"192.168.1.20";
+        _inPort.text=@"5510";
+        _outPort.text=@"5511";
+    } else {
+        _ip.enabled=false;
+        _inPort.enabled=false;
+        _outPort.enabled=false;
+        _setOSC.enabled=false;
+        _ip.text=@"NO";
+        _inPort.text=@"NO";
+        _outPort.text=@"NO";
+    }
     
     
     [self startMotion];
@@ -651,23 +662,20 @@ void updateMotionCallback(void* arg)
 - (IBAction)setParam:(id)sender {
     
     if (_setParam.isOn) {
-        //#if OSCCTRL
         _ip.hidden=false;
         _inPort.hidden=false;
         _outPort.hidden=false;
         _setOSC.hidden=false;
-       //#endif
         _init.hidden = false;
         _pikerView.hidden= false;
         _motionParam.hidden=false;
         _motionParamSend.hidden=false;
     } else {
-        //#if OSCCTRL
         _ip.hidden=true;
         _inPort.hidden=true;
         _outPort.hidden=true;
         _setOSC.hidden=true;
-        //#endif
+        
         _init.hidden=true;
         _pikerView.hidden= true;
         _motionParam.hidden=true;
@@ -688,12 +696,12 @@ void updateMotionCallback(void* arg)
     if (cueIsOn) {
         dspFaust->setParamValue(cueAddress, cueNum);
     }
-//#if OSCCTRL
-    _ip.text = @"192.168.1.20";
-    _inPort.text = @"5510";
-    _outPort.text = @"5511";
-    dspFaust->setOSCValue("192.168.1.20","5510","5511");
-//#endif
+    if (dspFaust->getOSCIsOn()) {
+        _ip.text = @"192.168.1.20";
+        _inPort.text = @"5510";
+        _outPort.text = @"5511";
+        dspFaust->setOSCValue("192.168.1.20","5510","5511");
+    }
     
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
         dspFaustMotion->setParamValue(i, dspFaustMotion->getParamInit(i));
