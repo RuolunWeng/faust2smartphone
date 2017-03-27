@@ -698,6 +698,8 @@ void updateMotionCallback(void* arg)
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
         dspFaustMotion->setParamValue(i, dspFaustMotion->getParamInit(i));
     }
+    
+    [self checkAddress];
 }
 
 
