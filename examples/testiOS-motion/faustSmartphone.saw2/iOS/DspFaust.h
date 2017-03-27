@@ -419,6 +419,8 @@ public:
 	
 	int getScreenColor();
 	
+	bool getOSCIsOn();
+	
 private:
     FaustPolyEngine *fPolyEngine;
     MidiUI *fMidiUI;

@@ -154,6 +154,8 @@
 @property (retain, nonatomic) IBOutlet UILabel *tips;
 - (IBAction)initCue:(id)sender;
 @property (retain, nonatomic) IBOutlet UIButton *init;
+@property (retain, nonatomic) IBOutlet UIButton *initParam;
+- (IBAction)defautParam:(id)sender;
 
 @property (retain, nonatomic) IBOutlet UILabel *titleApp;
 

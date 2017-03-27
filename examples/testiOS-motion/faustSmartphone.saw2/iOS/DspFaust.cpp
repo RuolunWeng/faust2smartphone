@@ -3004,13 +3004,13 @@ class mydsp : public dsp {
   public:
 	virtual void metadata(Meta* m) { 
 		m->declare("name", "saw2");
-		m->declare("oscillators.lib/name", "Faust Oscillator Library");
-		m->declare("oscillators.lib/version", "0.0");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.0");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
+		m->declare("oscillators.lib/name", "Faust Oscillator Library");
+		m->declare("oscillators.lib/version", "0.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
 		m->declare("signals.lib/version", "0.0");
 	}
@@ -12554,3 +12554,10 @@ int DspFaust::getScreenColor(){
 	return fPolyEngine->getScreenColor();
 }
 
+bool DspFaust::getOSCIsOn() {
+#if OSCCTRL
+    return true;
+#else
+    return false;
+#endif
+}
