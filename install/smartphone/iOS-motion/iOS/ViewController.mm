@@ -670,12 +670,13 @@ void updateMotionCallback(void* arg)
         _pikerView.hidden= false;
         _motionParam.hidden=false;
         _motionParamSend.hidden=false;
+        _initParam.hidden=false;
     } else {
         _ip.hidden=true;
         _inPort.hidden=true;
         _outPort.hidden=true;
         _setOSC.hidden=true;
-        
+        _initParam.hidden=true;
         _init.hidden=true;
         _pikerView.hidden= true;
         _motionParam.hidden=true;
@@ -686,16 +687,22 @@ void updateMotionCallback(void* arg)
 
 - (IBAction)initCue:(id)sender {
     
-    [_ip resignFirstResponder];
-    [_inPort resignFirstResponder];
-    [_outPort resignFirstResponder];
-    [_motionParam resignFirstResponder];
-    
     cueNum = 0;
     _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
     if (cueIsOn) {
         dspFaust->setParamValue(cueAddress, cueNum);
     }
+    
+}
+
+- (IBAction)defautParam:(id)sender {
+
+    
+    [_ip resignFirstResponder];
+    [_inPort resignFirstResponder];
+    [_outPort resignFirstResponder];
+    [_motionParam resignFirstResponder];
+
     if (dspFaust->getOSCIsOn()) {
         _ip.text = @"192.168.1.20";
         _inPort.text = @"5510";
@@ -708,8 +715,8 @@ void updateMotionCallback(void* arg)
     }
     
     [self checkAddress];
-}
 
+}
 
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
@@ -1010,6 +1017,7 @@ void updateMotionCallback(void* arg)
     [_pikerView release];
     [_motionParam release];
     [_motionParamSend release];
+    [_initParam release];
     [super dealloc];
 }
 - (void)viewDidUnload {
@@ -1065,6 +1073,7 @@ void updateMotionCallback(void* arg)
 -(BOOL)prefersStatusBarHidden{
     return YES;
 }
+
 
 
 @end

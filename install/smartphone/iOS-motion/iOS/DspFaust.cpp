@@ -12555,4 +12555,12 @@ float DspFaust::getCPULoad(){
 int DspFaust::getScreenColor(){
 	return fPolyEngine->getScreenColor();
 }
+      
+bool DspFaust::getOSCIsOn() {
+#if OSCCTRL
+    return true;
+#else
+    return false;
+#endif
+}
 
