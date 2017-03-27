@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "65E5ED8D14DB037D00136CFC"
-               BuildableName = "osc.app"
+               BuildableName = "saw2.app"
                BlueprintName = "FaustAPI"
                ReferencedContainer = "container:iOS.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "65E5EDB414DB037D00136CFC"
-               BuildableName = "osc.xctest"
+               BuildableName = "saw2.xctest"
                BlueprintName = "iOSTests"
                ReferencedContainer = "container:iOS.xcodeproj">
             </BuildableReference>
@@ -42,7 +42,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "65E5ED8D14DB037D00136CFC"
-            BuildableName = "osc.app"
+            BuildableName = "saw2.app"
             BlueprintName = "FaustAPI"
             ReferencedContainer = "container:iOS.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "65E5ED8D14DB037D00136CFC"
-            BuildableName = "osc.app"
+            BuildableName = "saw2.app"
             BlueprintName = "FaustAPI"
             ReferencedContainer = "container:iOS.xcodeproj">
          </BuildableReference>
@@ -84,7 +84,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "65E5ED8D14DB037D00136CFC"
-            BuildableName = "osc.app"
+            BuildableName = "saw2.app"
             BlueprintName = "FaustAPI"
             ReferencedContainer = "container:iOS.xcodeproj">
          </BuildableReference>

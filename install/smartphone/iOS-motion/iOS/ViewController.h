@@ -10,11 +10,12 @@
 
 #import "DspFaustMotion.h"
 #import "DspFaust.h"
+#import "faust/misc.h"
 
 #import <CoreMotion/CoreMotion.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface ViewController : UIViewController < CLLocationManagerDelegate > {
+@interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource > {
 
     DspFaust *dspFaust;
     DspFaustMotion *dspFaustMotion;
@@ -124,13 +125,45 @@
     
     int cueNum;
     
+    NSArray *_motionParamArray;
+    
+    BOOL hpIsOn;
+    BOOL shok_thrIsOn;
+    BOOL antirebonIsOn;
+    BOOL lpIsOn;
+    BOOL osfprojIsOn;
+    BOOL tacc_thrIsOn;
+    BOOL tacc_gainIsOn;
+    BOOL tacc_upIsOn;
+    BOOL tacc_downIsOn;
+    BOOL tgyr_thrIsOn;
+    BOOL tgyr_gainIsOn;
+    BOOL tgyr_upIsOn;
+    BOOL tgyr_downIsOn;
+    
+    
 }
+
+@property (retain, nonatomic) IBOutlet UIPickerView *pikerView;
+@property (retain, nonatomic) IBOutlet UITextField *motionParam;
+- (IBAction)motionParamSend:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *motionParamSend;
 
 @property (retain, nonatomic) IBOutlet UIImageView *touch;
 @property (retain, nonatomic) IBOutlet UILabel *cue;
 @property (retain, nonatomic) IBOutlet UILabel *tips;
 - (IBAction)initCue:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *init;
 
+@property (retain, nonatomic) IBOutlet UILabel *titleApp;
+
+@property (retain, nonatomic) IBOutlet UITextField *ip;
+@property (retain, nonatomic) IBOutlet UITextField *inPort;
+@property (retain, nonatomic) IBOutlet UITextField *outPort;
+- (IBAction)setOSC:(id)sender;
+- (IBAction)setParam:(id)sender;
+@property (retain, nonatomic) IBOutlet UISwitch *setParam;
+@property (retain, nonatomic) IBOutlet UIButton *setOSC;
 
 @end
 

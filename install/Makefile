@@ -28,6 +28,7 @@ install:
 	cp -r motion/audio2.h $(prefix)/include/faust/audio
 	cp -r motion/motion-audio.h $(prefix)/include/faust/audio
 	cp -r motion/faust-motion-engine.h $(prefix)/include/faust/dsp
+	cp -r motion/faust-poly-engine_a.h $(prefix)/include/faust/dsp
 	
 	########################################
 	#### Install faustapi version Allen ####

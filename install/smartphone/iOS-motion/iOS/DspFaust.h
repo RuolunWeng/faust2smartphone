@@ -141,6 +141,12 @@ public:
 	//--------------------------------------------------------
 	const char* getJSONMeta();
 	
+    //-----------------`const char* getMeta(const char*)`----------------
+    // Returns the JSON description of the metadata of the Faust object.
+    //--------------------------------------------------------
+    const char* getMeta(const char*);
+    
+    
 	//-----------------`int getParamsCount()`-----------------
 	// Returns the number of parameters of the Faust object. 
 	//--------------------------------------------------------
@@ -156,6 +162,18 @@ public:
 	// * `value`: value of the parameter
 	//--------------------------------------------------------
 	void setParamValue(const char*, float);
+    
+    //----`void setOSCValue(const char* address, const char* address, const char* address)`------
+    // Set the value of OSC of the Faust
+    //
+    //
+    // #### Arguments
+    //
+    // * `address`: address of ip
+    // * `address`: address of inport
+    // * `address`: address of outport
+    //--------------------------------------------------------
+    void setOSCValue(const char*, const char*, const char*);
 	
 	//----`void setParamValue(int id, float value)`---
 	// Set the value of one of the parameters of the Faust

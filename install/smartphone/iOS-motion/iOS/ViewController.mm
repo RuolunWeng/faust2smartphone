@@ -16,6 +16,8 @@
 
 @end
 
+
+
 @implementation ViewController
 
 
@@ -68,9 +70,13 @@
     
     
     [self startMotion];
-    //[self startUpdateGUI];
+
+    [self displayTitle];
     
     cueNum = 0;
+    _pikerView.delegate = self;
+    _pikerView.dataSource = self;
+    
 
 }
 
@@ -249,6 +255,7 @@
             cueAddress = dspFaust->getParamAddress(i);
         } else if ([data hasSuffix:@"/tip"]) {
             tipIsOn = true;
+            [self startUpdateGUI];
             tipAddress = dspFaust->getParamAddress(i);
         }
 
@@ -627,10 +634,372 @@ void updateMotionCallback(void* arg)
 }
 
 
+
+- (IBAction)setOSC:(id)sender {
+  
+    [_ip resignFirstResponder];
+    [_inPort resignFirstResponder];
+    [_outPort resignFirstResponder];
+ 
+   NSString* _oscIPOutputText = _ip.text;
+   NSString* _oscInputPortText = _inPort.text;
+   NSString* _oscOutputPortText = _outPort.text;
+    
+   dspFaust->setOSCValue([_oscIPOutputText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscInputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscOutputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+}
+
+- (IBAction)setParam:(id)sender {
+    
+    if (_setParam.isOn) {
+        //#if OSCCTRL
+        _ip.hidden=false;
+        _inPort.hidden=false;
+        _outPort.hidden=false;
+        _setOSC.hidden=false;
+       //#endif
+        _init.hidden = false;
+        _pikerView.hidden= false;
+        _motionParam.hidden=false;
+        _motionParamSend.hidden=false;
+    } else {
+        //#if OSCCTRL
+        _ip.hidden=true;
+        _inPort.hidden=true;
+        _outPort.hidden=true;
+        _setOSC.hidden=true;
+        //#endif
+        _init.hidden=true;
+        _pikerView.hidden= true;
+        _motionParam.hidden=true;
+        _motionParamSend.hidden=true;
+    }
+    
+}
+
+- (IBAction)initCue:(id)sender {
+    
+    [_ip resignFirstResponder];
+    [_inPort resignFirstResponder];
+    [_outPort resignFirstResponder];
+    [_motionParam resignFirstResponder];
+    
+    cueNum = 0;
+    _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
+    if (cueIsOn) {
+        dspFaust->setParamValue(cueAddress, cueNum);
+    }
+//#if OSCCTRL
+    _ip.text = @"192.168.1.20";
+    _inPort.text = @"5510";
+    _outPort.text = @"5511";
+    dspFaust->setOSCValue("192.168.1.20","5510","5511");
+//#endif
+    
+    for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
+        dspFaustMotion->setParamValue(i, dspFaustMotion->getParamInit(i));
+    }
+}
+
+
+
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
+{
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, pickerView.frame.size.width, 44)];
+    label.backgroundColor = [UIColor grayColor];
+    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18];
+    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
+                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
+                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    label.text = [_motionParamArray objectAtIndex:row];
+    return label;
+}
+
+
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    
+    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
+                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
+                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    NSString *seletedParam = [_motionParamArray objectAtIndex:row];
+
+    if ([seletedParam isEqualToString:@"lp"]) {
+        lpIsOn = true;
+         hpIsOn = false;
+         shok_thrIsOn= false;
+         antirebonIsOn= false;
+         osfprojIsOn= false;
+         tacc_thrIsOn= false;
+         tacc_gainIsOn= false;
+         tacc_upIsOn= false;
+         tacc_downIsOn= false;
+         tgyr_thrIsOn= false;
+         tgyr_gainIsOn= false;
+         tgyr_upIsOn= false;
+         tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/lp")];
+    } else if ([seletedParam isEqualToString:@"shok_thr"]) {
+        lpIsOn = false;
+        hpIsOn = false;
+        shok_thrIsOn= true;
+        antirebonIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shok_thr")];
+    } else if ([seletedParam isEqualToString:@"hp"]) {
+        hpIsOn = true;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        antirebonIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/hp")];
+    } else if ([seletedParam isEqualToString:@"antirebon"]) {
+        antirebonIsOn = true;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/antirebon")];
+    } else if ([seletedParam isEqualToString:@"tacc_thr"]) {
+        tacc_thrIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_thr")];
+    } else if ([seletedParam isEqualToString:@"tacc_gain"]) {
+        tacc_gainIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_gain")];
+    } else if ([seletedParam isEqualToString:@"tacc_up"]) {
+        tacc_upIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_up")];
+    } else if ([seletedParam isEqualToString:@"tacc_down"]) {
+        tacc_downIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_down")];
+    } else if ([seletedParam isEqualToString:@"tgyr_thr"]) {
+        tgyr_thrIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_thr")];
+    } else if ([seletedParam isEqualToString:@"tgyr_gain"]) {
+        tgyr_gainIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_gain")];
+    } else if ([seletedParam isEqualToString:@"tgyr_up"]) {
+        tgyr_upIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_up")];
+    } else if ([seletedParam isEqualToString:@"tgyr_down"]) {
+        tgyr_downIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        osfprojIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_down")];
+    } else if ([seletedParam isEqualToString:@"osfproj"]) {
+        osfprojIsOn = true;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/osfproj")];
+    }
+
+
+}
+
+// number Of Components
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+// number Of Rows In Component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:   (NSInteger)component
+{
+    
+    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
+                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
+                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    return _motionParamArray.count;
+}
+
+
+- (NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
+    
+    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
+                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
+                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    return _motionParamArray[row];
+
+}
+
+- (IBAction)motionParamSend:(id)sender {
+    
+    [_motionParam resignFirstResponder];
+    
+    if (lpIsOn) {
+        dspFaustMotion->setParamValue("/Motion/lp", [_motionParam.text floatValue]);
+    }else if (hpIsOn) {
+        dspFaustMotion->setParamValue("/Motion/hp", [_motionParam.text floatValue]);
+    }else if (shok_thrIsOn) {
+        dspFaustMotion->setParamValue("/Motion/shok_thr", [_motionParam.text floatValue]);
+    }else if (antirebonIsOn) {
+        dspFaustMotion->setParamValue("/Motion/antirebon", [_motionParam.text floatValue]);
+    }else if (tacc_thrIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tacc_thr", [_motionParam.text floatValue]);
+    }else if (tacc_gainIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tacc_gain", [_motionParam.text floatValue]);
+    }else if (tacc_upIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tacc_up", [_motionParam.text floatValue]);
+    }else if (tacc_downIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tacc_down", [_motionParam.text floatValue]);
+    }else if (tgyr_thrIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tgyr_thr", [_motionParam.text floatValue]);
+    }else if (tgyr_gainIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tgyr_gain", [_motionParam.text floatValue]);
+    }else if (tgyr_upIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tgyr_up", [_motionParam.text floatValue]);
+    }else if (tgyr_downIsOn) {
+        dspFaustMotion->setParamValue("/Motion/tgyr_down", [_motionParam.text floatValue]);
+    }else if (osfprojIsOn) {
+        dspFaustMotion->setParamValue("/Motion/osfproj", [_motionParam.text floatValue]);
+        
+    }
+    
+}
+
+
 - (void)dealloc {
     [_touch release];
     [_cue release];
     [_tips release];
+    [_ip release];
+    [_inPort release];
+    [_outPort release];
+    [_setParam release];
+    [_setOSC release];
+    [_titleApp release];
+    [_init release];
+    [_pikerView release];
+    [_motionParam release];
+    [_motionParamSend release];
     [super dealloc];
 }
 - (void)viewDidUnload {
@@ -640,13 +1009,41 @@ void updateMotionCallback(void* arg)
 }
 
 
-- (IBAction)initCue:(id)sender {
-    cueNum = 0;
-    _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
-    if (cueIsOn) {
-        dspFaust->setParamValue(cueAddress, cueNum);
+
+
+// Display the title
+- (void)displayTitle
+{
+    NSString* titleString = nil;
+    
+    
+    if (dspFaust->getMeta("name") != NULL)
+    {
+        const char* name = dspFaust->getMeta("name");
+        titleString = [[NSString alloc] initWithCString:name encoding:NSASCIIStringEncoding];
     }
+    
+    if (dspFaust->getMeta("author") != NULL)
+    {
+        const char* name = dspFaust->getMeta("author");
+        if (titleString)
+        {
+            titleString = [titleString stringByAppendingFormat:@" | %s", name];
+        }
+        else
+        {
+            titleString = [[NSString alloc] initWithCString:name encoding:NSASCIIStringEncoding];
+        }
+    }
+    
+    if (!titleString) titleString = @"Faust | Grame";
+    
+    _titleApp.text = titleString;
+    
 }
+
+
+
 
 - (NSUInteger) supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
@@ -658,4 +1055,6 @@ void updateMotionCallback(void* arg)
 -(BOOL)prefersStatusBarHidden{
     return YES;
 }
+
+
 @end

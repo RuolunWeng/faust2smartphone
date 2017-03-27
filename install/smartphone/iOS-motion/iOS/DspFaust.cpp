@@ -1,12 +1,8 @@
 #define OSCCTRL 1
 //----------------------------------------------------------
-// name: "osc"
-// version: "1.0"
-// author: "Grame"
-// license: "BSD"
-// copyright: "(c)GRAME 2009"
+// name: "saw2"
 //
-// Code generated with Faust 0.9.96 (http://faust.grame.fr)
+// Code generated with Faust 0.9.96ec (http://faust.grame.fr)
 //----------------------------------------------------------
 
 /* link with  */
@@ -2986,119 +2982,99 @@ class OSCUI : public GUI
 // Intrinsic
 //**************************************************************
 
-//----------------------------------------------------------
-// name: "osc"
-// version: "1.0"
-// author: "Grame"
-// license: "BSD"
-// copyright: "(c)GRAME 2009"
-//
-// Code generated with Faust 0.9.96ec (http://faust.grame.fr)
-//----------------------------------------------------------
 
-/* link with  */
-#include <math.h>
 #ifndef FAUSTFLOAT
 #define FAUSTFLOAT float
-#endif
+#endif  
 
 
-#ifndef FAUSTCLASS
+#ifndef FAUSTCLASS 
 #define FAUSTCLASS mydsp
 #endif
 
 class mydsp : public dsp {
-private:
-    FAUSTFLOAT 	fslider0;
-    FAUSTFLOAT 	fcheckbox0;
-    float 	fConst0;
-    FAUSTFLOAT 	fslider1;
-    int 	iVec0[2];
-    float 	fRec0[2];
-    float 	fRec1[2];
-    int fSamplingFreq;
-    
-public:
-    virtual void metadata(Meta* m) {
-        m->declare("name", "osc");
-        m->declare("version", "1.0");
-        m->declare("author", "Grame");
-        m->declare("license", "BSD");
-        m->declare("copyright", "(c)GRAME 2009");
-        m->declare("oscillators.lib/name", "Faust Oscillator Library");
-        m->declare("oscillators.lib/version", "0.0");
-        m->declare("maths.lib/name", "Faust Math Library");
-        m->declare("maths.lib/version", "2.0");
-        m->declare("maths.lib/author", "GRAME");
-        m->declare("maths.lib/copyright", "GRAME");
-        m->declare("maths.lib/license", "LGPL with exception");
-        m->declare("filters.lib/name", "Faust Filters Library");
-        m->declare("filters.lib/version", "0.0");
-    }
-    
-    virtual int getNumInputs() { return 0; }
-    virtual int getNumOutputs() { return 1; }
-    static void classInit(int samplingFreq) {
-    }
-    virtual void instanceConstants(int samplingFreq) {
-        fSamplingFreq = samplingFreq;
-        fConst0 = (6.2831855f / min(1.92e+05f, max(1.0f, (float)fSamplingFreq)));
-    }
-    virtual void instanceResetUserInterface() {
-        fslider0 = 0.0f;
-        fcheckbox0 = 0.0;
-        fslider1 = 0.0f;
-    }
-    virtual void instanceClear() {
-        for (int i=0; i<2; i++) iVec0[i] = 0;
-        for (int i=0; i<2; i++) fRec0[i] = 0;
-        for (int i=0; i<2; i++) fRec1[i] = 0;
-    }
-    virtual void init(int samplingFreq) {
-        classInit(samplingFreq);
-        instanceInit(samplingFreq);
-    }
-    virtual void instanceInit(int samplingFreq) {
-        instanceConstants(samplingFreq);
-        instanceResetUserInterface();
-        instanceClear();
-    }
-    virtual mydsp* clone() {
-        return new mydsp();
-    }
-    virtual int getSampleRate() {
-        return fSamplingFreq;
-    }
-    virtual void buildUserInterface(UI* ui_interface) {
-        ui_interface->openVerticalBox("Oscillator");
-        ui_interface->addHorizontalSlider("ixp", &fslider1, 0.0f, 0.0f, 1.0f, 0.001f);
-        ui_interface->addHorizontalSlider("iyp", &fslider0, 0.0f, 0.0f, 1.0f, 0.001f);
-        ui_interface->addCheckButton("touchgate", &fcheckbox0);
-        ui_interface->closeBox();
-    }
-    virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-        //zone1
-        //zone2
-        float 	fSlow0 = (float(fslider0) * float(fcheckbox0));
-        float 	fSlow1 = (fConst0 * ((400 * float(fslider1)) + 440));
-        float 	fSlow2 = sinf(fSlow1);
-        float 	fSlow3 = cosf(fSlow1);
-        float 	fSlow4 = (0 - fSlow2);
-        //zone2b
-        //zone3
-        FAUSTFLOAT* output0 = output[0];
-        //LoopGraphScalar
-        for (int i=0; i<count; i++) {
-            iVec0[0] = 1;
-            fRec0[0] = ((fSlow2 * fRec1[1]) + (fSlow3 * fRec0[1]));
-            fRec1[0] = (((fSlow3 * fRec1[1]) + (fSlow4 * fRec0[1])) + (1 - iVec0[1]));
-            output0[i] = (FAUSTFLOAT)(fSlow0 * fRec0[0]);
-            // post processing
-            fRec1[1] = fRec1[0];
-            fRec0[1] = fRec0[0];
-            iVec0[1] = iVec0[0];
-        }
-    }
+  private:
+	FAUSTFLOAT 	fslider0;
+	float 	fConst0;
+	FAUSTFLOAT 	fslider1;
+	float 	fRec0[2];
+	FAUSTFLOAT 	fcheckbox0;
+	float 	fRec1[2];
+	int fSamplingFreq;
+
+  public:
+	virtual void metadata(Meta* m) { 
+		m->declare("name", "saw2");
+        m->declare("author", "Allen");
+		m->declare("oscillators.lib/name", "Faust Oscillator Library");
+		m->declare("oscillators.lib/version", "0.0");
+		m->declare("maths.lib/name", "Faust Math Library");
+		m->declare("maths.lib/version", "2.0");
+		m->declare("maths.lib/author", "GRAME");
+		m->declare("maths.lib/copyright", "GRAME");
+		m->declare("maths.lib/license", "LGPL with exception");
+		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("signals.lib/version", "0.0");
+	}
+
+	virtual int getNumInputs() { return 0; }
+	virtual int getNumOutputs() { return 1; }
+	static void classInit(int samplingFreq) {
+	}
+	virtual void instanceConstants(int samplingFreq) {
+		fSamplingFreq = samplingFreq;
+		fConst0 = (1.0f / min(1.92e+05f, max(1.0f, (float)fSamplingFreq)));
+	}
+	virtual void instanceResetUserInterface() {
+		fslider0 = 0.0f;
+		fslider1 = 0.0f;
+		fcheckbox0 = 0.0;
+	}
+	virtual void instanceClear() {
+		for (int i=0; i<2; i++) fRec0[i] = 0;
+		for (int i=0; i<2; i++) fRec1[i] = 0;
+	}
+	virtual void init(int samplingFreq) {
+		classInit(samplingFreq);
+		instanceInit(samplingFreq);
+	}
+	virtual void instanceInit(int samplingFreq) {
+		instanceConstants(samplingFreq);
+		instanceResetUserInterface();
+		instanceClear();
+	}
+	virtual mydsp* clone() {
+		return new mydsp();
+	}
+	virtual int getSampleRate() {
+		return fSamplingFreq;
+	}
+	virtual void buildUserInterface(UI* ui_interface) {
+		ui_interface->openVerticalBox("saw");
+		ui_interface->addHorizontalSlider("ixp", &fslider1, 0.0f, 0.0f, 1.0f, 0.001f);
+		ui_interface->addHorizontalSlider("iyp", &fslider0, 0.0f, 0.0f, 1.0f, 0.001f);
+		ui_interface->addCheckButton("touchgate", &fcheckbox0);
+		ui_interface->closeBox();
+	}
+	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
+		//zone1
+		//zone2
+		float 	fSlow0 = float(fslider0);
+		float 	fSlow1 = (fConst0 * ((400 * float(fslider1)) + 440));
+		float 	fSlow2 = (0.001f * float(fcheckbox0));
+		//zone2b
+		//zone3
+		FAUSTFLOAT* output0 = output[0];
+		//LoopGraphScalar
+		for (int i=0; i<count; i++) {
+			fRec0[0] = (fSlow1 + (fRec0[1] - floorf((fSlow1 + fRec0[1]))));
+			fRec1[0] = (fSlow2 + (0.999f * fRec1[1]));
+			output0[i] = (FAUSTFLOAT)(fSlow0 * (((2.0f * fRec0[0]) + -1.0f) * fRec1[0]));
+			// post processing
+			fRec1[1] = fRec1[0];
+			fRec0[1] = fRec0[0];
+		}
+	}
 };
 
 
@@ -6842,12 +6818,15 @@ class FaustPolyEngine {
         midi_handler fMidiHandler;
         MidiUI fMidiUI;
     
+        MY_Meta metadata;
+    
     public:
 
         FaustPolyEngine(audio* driver = NULL):fMidiUI(&fMidiHandler)
         {
             bool midi_sync = false;
             int nvoices = 1;
+            
             
             mydsp* mono_dsp = new mydsp();
             MidiMeta::analyse(mono_dsp, midi_sync, nvoices);
@@ -6892,6 +6871,7 @@ class FaustPolyEngine {
             
             fFinalDSP->buildUserInterface(&fMidiUI);
             fFinalDSP->buildUserInterface(&fAPIUI);
+            fFinalDSP->metadata(&metadata);
 
 			fDriver->init("Dummy", fFinalDSP);
         }
@@ -7050,6 +7030,18 @@ class FaustPolyEngine {
             return fJSONMeta.c_str();
         }
     
+        const char* getMeta(const char* name)
+        {
+            
+            if ((*metadata.find(name)) != *metadata.end()) {
+                return (*metadata.find(name)).second;
+            } else {
+            
+                return NULL;
+            
+            }
+        }
+
         /*
          * buildUserInterface(ui)
          * Calls the polyphonic of monophonic buildUserInterface with the ui parameter.
@@ -12435,6 +12427,13 @@ const char* DspFaust::getJSONMeta(){
 	return fPolyEngine->getJSONMeta();
 }
 
+      
+      const char* DspFaust::getMeta(const char* name){
+          return fPolyEngine->getMeta(name);
+      }
+      
+      
+      
 int DspFaust::getParamsCount(){
 	return fPolyEngine->getParamsCount();
 }
@@ -12446,6 +12445,28 @@ void DspFaust::setParamValue(const char* address, float value){
 void DspFaust::setParamValue(int id, float value){
 	fPolyEngine->setParamValue(id, value);
 }
+
+void DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
+          
+#if OSCCTRL
+          delete fOSCUI;
+          const char* argv[9];
+          argv[0] = "0x00";//(char*)_name;
+          argv[1] = "-xmit";
+          argv[2] = "1";//transmit_value(transmit);
+          argv[3] = "-desthost";
+          argv[4] = address;//"192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+          argv[5] = "-port";
+          argv[6] = inPort;//"5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+          argv[7] = "-outport";
+          argv[8] = outPort;//"5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+          fOSCUI = new OSCUI("0x00", 9, (char**)argv);
+          fPolyEngine->buildUserInterface(fOSCUI);
+          fOSCUI->run(); 
+#endif
+          
+}
+
 
 float DspFaust::getParamValue(const char* address){
 	return fPolyEngine->getParamValue(address);

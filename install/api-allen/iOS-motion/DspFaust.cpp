@@ -45,7 +45,7 @@
 // Polyphony
 //**************************************************************
 
-#include "faust/dsp/faust-poly-engine.h"
+#include "faust/dsp/faust-poly-engine_a.h"
 
 //**************************************************************
 // IOS Coreaudio
@@ -171,6 +171,13 @@ const char* DspFaust::getJSONMeta(){
 	return fPolyEngine->getJSONMeta();
 }
 
+      
+      const char* DspFaust::getMeta(const char* name){
+          return fPolyEngine->getMeta(name);
+      }
+      
+      
+      
 int DspFaust::getParamsCount(){
 	return fPolyEngine->getParamsCount();
 }
@@ -182,6 +189,28 @@ void DspFaust::setParamValue(const char* address, float value){
 void DspFaust::setParamValue(int id, float value){
 	fPolyEngine->setParamValue(id, value);
 }
+
+void DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
+          
+#if OSCCTRL
+          delete fOSCUI;
+          const char* argv[9];
+          argv[0] = "0x00";//(char*)_name;
+          argv[1] = "-xmit";
+          argv[2] = "1";//transmit_value(transmit);
+          argv[3] = "-desthost";
+          argv[4] = address;//"192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+          argv[5] = "-port";
+          argv[6] = inPort;//"5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+          argv[7] = "-outport";
+          argv[8] = outPort;//"5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+          fOSCUI = new OSCUI("0x00", 9, (char**)argv);
+          fPolyEngine->buildUserInterface(fOSCUI);
+          fOSCUI->run(); 
+#endif
+          
+}
+
 
 float DspFaust::getParamValue(const char* address){
 	return fPolyEngine->getParamValue(address);
