@@ -7,7 +7,7 @@ INSTALLATION
 
 ============
 
-_Make sure you are already installed FAUST first.
+_Make sure you are already installed FAUST first. -> https://github.com/grame-cncm/faust
  
 _Open your terminal, cd to “install” folder, tap “sudo make install”.
 
