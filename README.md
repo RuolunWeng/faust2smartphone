@@ -29,15 +29,15 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     "-osc" for OSC support
     
-    "-iosmotion" to generate a project with Motion support. 
-    [Motion.lib created by Christophe Lebreton]
+    "-iosmotion" to generate a project with Motion support.
+    [Motion.lib created by Christophe Lebreton].
     _in your .dsp file, declare motion controller you need, like:
         touchGate = checkbox("touchgate");
         ixp = hslider("ixp",0,0,1,0.01);
     
 3) Compile Application
     
-    ./compile -ios/android ***
+    ./compile -ios/android *** .
     _after edit your project, compile your app for your device.
 
 
