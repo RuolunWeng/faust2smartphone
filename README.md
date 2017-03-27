@@ -8,6 +8,8 @@ INSTALLATION
 ============
 
 _Make sure you are already installed FAUST first. -> https://github.com/grame-cncm/faust
+
+_Get from GitHub, "git clone https://github.com/RuolunWeng/faust2smartphone.git".
  
 _Open your terminal, cd to “install” folder, tap “sudo make install”.
 
