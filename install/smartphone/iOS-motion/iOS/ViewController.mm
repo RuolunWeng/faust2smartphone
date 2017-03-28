@@ -636,12 +636,13 @@ void updateMotionCallback(void* arg)
 
 -(void) counter {
     
-    cueNum++;
+    
     _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
     if (cueIsOn) {
         dspFaust->setParamValue(cueAddress, cueNum);
     }
-
+    
+    cueNum++;
 }
 
 
@@ -671,6 +672,8 @@ void updateMotionCallback(void* arg)
         _motionParam.hidden=false;
         _motionParamSend.hidden=false;
         _initParam.hidden=false;
+        _nextCue.hidden=false;
+        _nextNum.hidden=false;
     } else {
         _ip.hidden=true;
         _inPort.hidden=true;
@@ -681,6 +684,8 @@ void updateMotionCallback(void* arg)
         _pikerView.hidden= true;
         _motionParam.hidden=true;
         _motionParamSend.hidden=true;
+        _nextNum.hidden=true;
+        _nextCue.hidden=true;
     }
     
 }
@@ -689,9 +694,17 @@ void updateMotionCallback(void* arg)
     
     cueNum = 0;
     _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
-    if (cueIsOn) {
-        dspFaust->setParamValue(cueAddress, cueNum);
-    }
+    
+}
+
+
+
+- (IBAction)nextCue:(id)sender {
+    
+    [_nextNum resignFirstResponder];
+    
+    cueNum = [_nextNum.text intValue];
+    _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
     
 }
 
@@ -1018,6 +1031,8 @@ void updateMotionCallback(void* arg)
     [_motionParam release];
     [_motionParamSend release];
     [_initParam release];
+    [_nextCue release];
+    [_nextNum release];
     [super dealloc];
 }
 - (void)viewDidUnload {

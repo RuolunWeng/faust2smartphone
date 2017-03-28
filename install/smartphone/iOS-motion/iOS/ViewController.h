@@ -155,6 +155,14 @@
 - (IBAction)initCue:(id)sender;
 @property (retain, nonatomic) IBOutlet UIButton *init;
 @property (retain, nonatomic) IBOutlet UIButton *initParam;
+
+
+@property (retain, nonatomic) IBOutlet UIButton *nextCue;
+- (IBAction)nextCue:(id)sender;
+
+@property (retain, nonatomic) IBOutlet UITextField *nextNum;
+
+
 - (IBAction)defautParam:(id)sender;
 
 @property (retain, nonatomic) IBOutlet UILabel *titleApp;
