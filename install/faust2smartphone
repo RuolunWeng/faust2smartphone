@@ -217,6 +217,11 @@ elif [ $IOS -eq 1 ]; then
 		echo "Adding DSP with effect chain to the app" > $LOG
 		faust2api_a -ios -midi -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
 	fi
+	unzip "dsp-faust.zip" > $LOG
+	mv "dsp-faust" "$BUILDDIR"
+	rm "dsp-faust.zip"
+	cp $BUILDDIR/dsp-faust/* "$APPFOLDER"
+	rm -r "$BUILDDIR/dsp-faust"
 elif [ $IOSMOTION -eq 1 ]; then
 	echo "Adding DSP with motion support to the app" > $LOG
 	if [ -z $OPTIONS ]; then
