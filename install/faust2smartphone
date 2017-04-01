@@ -180,7 +180,11 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			echo "Creating a new iOS project with motion support in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS-motion/* "$BUILDDIR"
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
-			
+			cp -r $FAUSTLIB/smartphone/updateCue "$CURRENTFOLDER"
+			if [ $REUSE -eq 0 ]; then
+			cp -r $FAUSTLIB/smartphone/cueNums.txt "$CURRENTFOLDER"
+			cp -r $FAUSTLIB/smartphone/cueTips.txt "$CURRENTFOLDER"
+			fi
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
 			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
 		fi
