@@ -758,8 +758,8 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust;
-				PRODUCT_MODULE_NAME = harp;
-				PRODUCT_NAME = $(TARGET_NAME);
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -791,8 +791,8 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust;
-				PRODUCT_MODULE_NAME = $(TARGET_NAME);
-				PRODUCT_NAME = $(TARGET_NAME);
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
@@ -810,7 +810,7 @@
 				GCC_PREFIX_HEADER = "iOS/iOS-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = NO;
 				INFOPLIST_FILE = "iOSTests/iOSTests-Info.plist";
-				PRODUCT_NAME = $(TARGET_NAME);
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Debug;
@@ -827,7 +827,7 @@
 				GCC_PREFIX_HEADER = "iOS/iOS-Prefix.pch";
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = NO;
 				INFOPLIST_FILE = "iOSTests/iOSTests-Info.plist";
-				PRODUCT_NAME = $(TARGET_NAME);
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Release;
