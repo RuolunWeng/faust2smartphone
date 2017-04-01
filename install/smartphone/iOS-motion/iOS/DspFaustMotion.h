@@ -24,7 +24,7 @@
 //==========================================
 
 class FaustMotionEngine;
-class OSCUI;
+
 
 class DspFaustMotion
 {
@@ -267,7 +267,7 @@ public:
 
 private:
     FaustMotionEngine *fMotionEngine;
-    OSCUI *fOSCUI;
+
 };
 
 #endif

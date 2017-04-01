@@ -27,7 +27,7 @@
     // no sleep mode
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    
+
     ////////////////////
     // init faust motor
     ////////////////////
@@ -84,17 +84,90 @@
 
     [self displayTitle];
     
-    cueNum = 0;
+    
     _pikerView.delegate = self;
     _pikerView.dataSource = self;
+    
+    _motionParamArray = [[NSMutableArray alloc] init];
+    
+    NSArray *ParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
+                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
+                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    
+    [_motionParamArray addObjectsFromArray:ParamArray];
+    
+    
+    
+    myCueNumArrary = [[NSMutableArray alloc] init];
+    
+    // load cues
+    NSString *pathCue = [NSString stringWithFormat:@"%@/cueNums.txt", [[NSBundle mainBundle] resourcePath]];
+    
+    NSString *myTextCues = [NSString stringWithContentsOfFile:pathCue encoding:NSUTF8StringEncoding error:nil];
+    
+    NSArray *myCues = [myTextCues componentsSeparatedByString:@";\n"];
+    
+    NSLog(@"Cue:%@",myCues);
+    [myCueNumArrary addObjectsFromArray:myCues];
+    
+    cueIndex = 0;
+    cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
+    cueIndexNext = 1;
+    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+    _cue.text = [NSString stringWithFormat:@"Cue:%ld",(long)cueNum];
+    _cueNext.text = [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    
+    
+    
+    
+    myCueTipsArrary = [[NSMutableArray alloc] init];
+    
+    // load cue Tips
+    NSString *pathTips = [NSString stringWithFormat:@"%@/cueTips.txt", [[NSBundle mainBundle] resourcePath]];
+    
+    NSString *myTextTips = [NSString stringWithContentsOfFile:pathTips encoding:NSUTF8StringEncoding error:nil];
+    
+    NSArray *myTips = [myTextTips componentsSeparatedByString:@";\n"];
+    
+    NSLog(@"Tips:%@",myTips);
+    [myCueTipsArrary addObjectsFromArray:myTips];
+    
+    if ([myCueTipsArrary count] != [myCueNumArrary count]) {
+        _tips.text = @"!Num of cue and tips must be same!";
+    } else {
+        _tips.text = [myCueTipsArrary objectAtIndex:0];
+    }
     
 
 }
 
 
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:.3];
+    [UIView setAnimationBeginsFromCurrentState:TRUE];
+    self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y -250., self.view.frame.size.width, self.view.frame.size.height);
+    
+    [UIView commitAnimations];
+    
+    
+}
+
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:.3];
+    [UIView setAnimationBeginsFromCurrentState:TRUE];
+    self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y +250., self.view.frame.size.width, self.view.frame.size.height);
+    
+    [UIView commitAnimations];
+    
+}
 
 - (void) checkAddress {
-
+    
     for(int i=0; i<dspFaust->getParamsCount(); i++){
         NSString *data = [NSString stringWithUTF8String:dspFaust->getParamAddress(i)];
         if ([data hasSuffix:@"/totalaccel"]) {
@@ -563,24 +636,28 @@ void updateMotionCallback(void* arg)
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
      
     CGFloat pointX = point.x/screenWidth;
-    CGFloat pointY = point.y/screenHeight;
+    CGFloat pointY = point.y/(screenHeight/2);
     
+    if (point.y < screenHeight/2) {
+        
     if (touchGateIsOn) {
+    
         dspFaust->setParamValue(touchGateAddress, 1);
         [self counter];
         _touch.alpha=1;
+    
         if (magneticHeadingIsOn) {
             offset = magnetic;
         }
     }
-    if (screenXIsOn) {
+        if (screenXIsOn) {
         dspFaust->setParamValue(screenXAddress, pointX);
-    }
-    if (screenYIsOn) {
+        }
+        if (screenYIsOn) {
         dspFaust->setParamValue(screenYAddress, pointY);
+        }
+    
     }
-    
-    
 }
 
 - (void) touchesMoved:(NSSet *)touches
@@ -594,15 +671,18 @@ void updateMotionCallback(void* arg)
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
      
     CGFloat pointX = point.x/screenWidth;
-    CGFloat pointY = point.y/screenHeight;
+    CGFloat pointY = point.y/(screenHeight/2.0f);
     
-    if (screenXIsOn) {
+    if (point.y < screenHeight/2) {
+        
+        if (screenXIsOn) {
         dspFaust->setParamValue(screenXAddress, (float)pointX);
-    }
-    if (screenYIsOn) {
+        }
+        if (screenYIsOn) {
         dspFaust->setParamValue(screenYAddress, pointY);
-    }
+        }
  
+    }
     
 }
 
@@ -617,32 +697,42 @@ void updateMotionCallback(void* arg)
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
      
     CGFloat pointX = point.x/screenWidth;
-    CGFloat pointY = point.y/screenHeight;
+    CGFloat pointY = point.y/(screenHeight/2);
     
+    if (point.y < screenHeight/2) {
+        if (touchGateIsOn) {
     
-    if (touchGateIsOn) {
         dspFaust->setParamValue(touchGateAddress, 0);
         _touch.alpha=0.1;
+        }
+        
+        if (point.y < screenHeight/2) {
+            if (screenXIsOn) {
+                dspFaust->setParamValue(screenXAddress, pointX);
+            }
+            if (screenYIsOn) {
+                dspFaust->setParamValue(screenYAddress, pointY);
+            }
+        }
     }
-    if (screenXIsOn) {
-        dspFaust->setParamValue(screenXAddress, pointX);
-    }
-    if (screenYIsOn) {
-        dspFaust->setParamValue(screenYAddress, pointY);
-    }
-    
 }
 
 
 -(void) counter {
     
     
-    _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
+    cueIndex = cueIndexNext;
+    cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
+    _cue.text= [NSString stringWithFormat:@"Cue:%ld",(long)cueNum];
+    _tips.text = [myCueTipsArrary objectAtIndex:cueIndex];
     if (cueIsOn) {
         dspFaust->setParamValue(cueAddress, cueNum);
     }
-    
-    cueNum++;
+    if (cueIndexNext < [myCueNumArrary count] -1) {
+    cueIndexNext++;
+    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+    _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    }
 }
 
 
@@ -667,33 +757,37 @@ void updateMotionCallback(void* arg)
         _inPort.hidden=false;
         _outPort.hidden=false;
         _setOSC.hidden=false;
-        _init.hidden = false;
         _pikerView.hidden= false;
         _motionParam.hidden=false;
         _motionParamSend.hidden=false;
         _initParam.hidden=false;
-        _nextCue.hidden=false;
-        _nextNum.hidden=false;
+        
     } else {
         _ip.hidden=true;
         _inPort.hidden=true;
         _outPort.hidden=true;
         _setOSC.hidden=true;
         _initParam.hidden=true;
-        _init.hidden=true;
         _pikerView.hidden= true;
         _motionParam.hidden=true;
         _motionParamSend.hidden=true;
-        _nextNum.hidden=true;
-        _nextCue.hidden=true;
+    
     }
     
 }
 
 - (IBAction)initCue:(id)sender {
     
-    cueNum = 0;
-    _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
+    cueIndex = 0;
+    cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
+    _cue.text= [NSString stringWithFormat:@"Cue:%ld",(long)cueNum];
+    cueIndexNext = 1;
+    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+    _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    if (cueIsOn) {
+        dspFaust->setParamValue(cueAddress, cueNum);
+    }
+    _tips.text = [myCueTipsArrary objectAtIndex:0];
     
 }
 
@@ -701,11 +795,23 @@ void updateMotionCallback(void* arg)
 
 - (IBAction)nextCue:(id)sender {
     
-    [_nextNum resignFirstResponder];
+    if (cueIndexNext < [myCueNumArrary count] -1) {
+        cueIndexNext++;
+        cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+        _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+        _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
+    }
     
-    cueNum = [_nextNum.text intValue];
-    _cue.text= [NSString stringWithFormat:@"Cue:%d",cueNum];
+}
+
+- (IBAction)prevCue:(id)sender {
     
+    if (cueIndexNext > 0) {
+    cueIndexNext--;
+    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+    _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
+    }
 }
 
 - (IBAction)defautParam:(id)sender {
@@ -738,9 +844,7 @@ void updateMotionCallback(void* arg)
     label.backgroundColor = [UIColor grayColor];
     label.textColor = [UIColor whiteColor];
     label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18];
-    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
-                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
-                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    
     label.text = [_motionParamArray objectAtIndex:row];
     return label;
 }
@@ -749,9 +853,7 @@ void updateMotionCallback(void* arg)
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     
-    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
-                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
-                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    
     NSString *seletedParam = [_motionParamArray objectAtIndex:row];
 
     if ([seletedParam isEqualToString:@"lp"]) {
@@ -964,18 +1066,14 @@ void updateMotionCallback(void* arg)
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:   (NSInteger)component
 {
     
-    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
-                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
-                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+   
     return _motionParamArray.count;
 }
 
 
 - (NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
     
-    _motionParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
-                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
-                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    
     return _motionParamArray[row];
 
 }
@@ -1032,7 +1130,8 @@ void updateMotionCallback(void* arg)
     [_motionParamSend release];
     [_initParam release];
     [_nextCue release];
-    [_nextNum release];
+    [_prevCue release];
+    [_cueNext release];
     [super dealloc];
 }
 - (void)viewDidUnload {

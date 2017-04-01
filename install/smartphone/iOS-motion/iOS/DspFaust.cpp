@@ -1,8 +1,9 @@
-#define OSCCTRL 1
+#define OSCCTRL 0
 //----------------------------------------------------------
-// name: "saw2"
+// name: "harp"
+// author: "Allen"
 //
-// Code generated with Faust 0.9.96ec (http://faust.grame.fr)
+// Code generated with Faust 0.9.96 (http://faust.grame.fr)
 //----------------------------------------------------------
 
 /* link with  */
@@ -2994,27 +2995,46 @@ class OSCUI : public GUI
 
 class mydsp : public dsp {
   private:
-	FAUSTFLOAT 	fslider0;
 	float 	fConst0;
+	FAUSTFLOAT 	fslider0;
+	float 	fConst1;
 	FAUSTFLOAT 	fslider1;
-	float 	fRec0[2];
+	int 	iRec2[2];
 	FAUSTFLOAT 	fcheckbox0;
+	float 	fVec0[2];
+	float 	fConst2;
+	float 	fRec3[2];
+	float 	fConst3;
+	int 	IOTA;
+	float 	fVec1[1024];
+	float 	fRec0[2];
 	float 	fRec1[2];
 	int fSamplingFreq;
 
   public:
 	virtual void metadata(Meta* m) { 
-		m->declare("name", "saw2");
-        m->declare("author", "Allen");
-		m->declare("oscillators.lib/name", "Faust Oscillator Library");
-		m->declare("oscillators.lib/version", "0.0");
+		m->declare("name", "harp");
+		m->declare("author", "Allen");
+		m->declare("synths.lib/name", "Faust Synthesizer Library");
+		m->declare("synths.lib/version", "0.0");
+		m->declare("noises.lib/name", "Faust Noise Generator Library");
+		m->declare("noises.lib/version", "0.0");
+		m->declare("envelopes.lib/name", "Faust Envelope Library");
+		m->declare("envelopes.lib/version", "0.0");
+		m->declare("envelopes.lib/author", "GRAME");
+		m->declare("envelopes.lib/copyright", "GRAME");
+		m->declare("envelopes.lib/license", "LGPL with exception");
+		m->declare("basics.lib/name", "Faust Basic Element Library");
+		m->declare("basics.lib/version", "0.0");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.0");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
-		m->declare("signals.lib/version", "0.0");
+		m->declare("filters.lib/name", "Faust Filters Library");
+		m->declare("filters.lib/version", "0.0");
+		m->declare("delays.lib/name", "Faust Delay Library");
+		m->declare("delays.lib/version", "0.0");
 	}
 
 	virtual int getNumInputs() { return 0; }
@@ -3023,7 +3043,10 @@ class mydsp : public dsp {
 	}
 	virtual void instanceConstants(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fConst0 = (1.0f / min(1.92e+05f, max(1.0f, (float)fSamplingFreq)));
+		fConst0 = min(1.92e+05f, max(1.0f, (float)fSamplingFreq));
+		fConst1 = (1e+03f / fConst0);
+		fConst2 = (0.002f * fConst0);
+		fConst3 = (0.001f * fConst0);
 	}
 	virtual void instanceResetUserInterface() {
 		fslider0 = 0.0f;
@@ -3031,6 +3054,11 @@ class mydsp : public dsp {
 		fcheckbox0 = 0.0;
 	}
 	virtual void instanceClear() {
+		for (int i=0; i<2; i++) iRec2[i] = 0;
+		for (int i=0; i<2; i++) fVec0[i] = 0;
+		for (int i=0; i<2; i++) fRec3[i] = 0;
+		IOTA = 0;
+		for (int i=0; i<1024; i++) fVec1[i] = 0;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
 		for (int i=0; i<2; i++) fRec1[i] = 0;
 	}
@@ -3050,29 +3078,41 @@ class mydsp : public dsp {
 		return fSamplingFreq;
 	}
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("saw");
-		ui_interface->addHorizontalSlider("ixp", &fslider1, 0.0f, 0.0f, 1.0f, 0.001f);
-		ui_interface->addHorizontalSlider("iyp", &fslider0, 0.0f, 0.0f, 1.0f, 0.001f);
+		ui_interface->openVerticalBox("0x00");
+		ui_interface->addHorizontalSlider("ixp", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
+		ui_interface->addHorizontalSlider("iyn", &fslider1, 0.0f, 0.0f, 1.0f, 0.01f);
 		ui_interface->addCheckButton("touchgate", &fcheckbox0);
 		ui_interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		//zone1
-		//zone2
-		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = (fConst0 * ((400 * float(fslider1)) + 440));
-		float 	fSlow2 = (0.001f * float(fcheckbox0));
-		//zone2b
-		//zone3
+		float 	fSlow0 = float((fConst0 / ((1000 * float(fslider0)) + 400)));
+		float 	fSlow1 = (fSlow0 + -1.0f);
+		float 	fSlow2 = floorf(fSlow1);
+		float 	fSlow3 = (fSlow2 + (2.0f - fSlow0));
+		float 	fSlow4 = expf((0 - (fConst1 / ((3.9f * float(fslider1)) + 0.1f))));
+		float 	fSlow5 = float(fcheckbox0);
+		int 	iSlow6 = int(fSlow1);
+		int 	iSlow7 = int((iSlow6 & 1023));
+		float 	fSlow8 = (fSlow0 + (-1.0f - fSlow2));
+		int 	iSlow9 = int((int((iSlow6 + 1)) & 1023));
 		FAUSTFLOAT* output0 = output[0];
-		//LoopGraphScalar
 		for (int i=0; i<count; i++) {
-			fRec0[0] = (fSlow1 + (fRec0[1] - floorf((fSlow1 + fRec0[1]))));
-			fRec1[0] = (fSlow2 + (0.999f * fRec1[1]));
-			output0[i] = (FAUSTFLOAT)(fSlow0 * (((2.0f * fRec0[0]) + -1.0f) * fRec1[0]));
+			iRec2[0] = ((1103515245 * iRec2[1]) + 12345);
+			fVec0[0] = fSlow5;
+			fRec3[0] = ((int((((fSlow5 - fVec0[1]) == 1) > 0)))?0:min(fConst2, (fRec3[1] + 1)));
+			int iTemp0 = int((fRec3[0] < fConst3));
+			float fTemp1 = ((fSlow4 * fRec0[1]) + (4.656613e-10f * (iRec2[0] * ((iTemp0)?((int((fRec3[0] < 0)))?0:((iTemp0)?(fConst1 * fRec3[0]):1)):((int((fRec3[0] < fConst2)))?((fConst1 * (fConst3 - fRec3[0])) + 1):0)))));
+			fVec1[IOTA&1023] = fTemp1;
+			fRec0[0] = ((fSlow3 * fVec1[(IOTA-iSlow7)&1023]) + (fSlow8 * fVec1[(IOTA-iSlow9)&1023]));
+			fRec1[0] = fVec1[IOTA&1023];
+			output0[i] = (FAUSTFLOAT)fRec1[1];
 			// post processing
 			fRec1[1] = fRec1[0];
 			fRec0[1] = fRec0[0];
+			IOTA = IOTA+1;
+			fRec3[1] = fRec3[0];
+			fVec0[1] = fVec0[0];
+			iRec2[1] = iRec2[0];
 		}
 	}
 };
@@ -4497,7 +4537,7 @@ struct MidiMeta : public Meta, public std::map<std::string, std::string>
     #else
         MidiMeta meta;
         tmp_dsp->metadata(&meta);
-        std::string numVoices = meta.get("nvoices", "0");
+        std::string numVoices = meta.get("nvoices", "1");
         nvoices = atoi(numVoices.c_str());
         if (nvoices < 0) nvoices = 0;
     #endif
@@ -12555,7 +12595,7 @@ float DspFaust::getCPULoad(){
 int DspFaust::getScreenColor(){
 	return fPolyEngine->getScreenColor();
 }
-      
+
 bool DspFaust::getOSCIsOn() {
 #if OSCCTRL
     return true;
@@ -12563,4 +12603,3 @@ bool DspFaust::getOSCIsOn() {
     return false;
 #endif
 }
-

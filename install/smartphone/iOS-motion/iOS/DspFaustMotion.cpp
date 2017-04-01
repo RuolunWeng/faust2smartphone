@@ -1,4 +1,4 @@
-#define OSCCTRL 0
+
 /************************************************************************
  ************************************************************************
  FAUST API Architecture File
@@ -27,9 +27,6 @@
 #include "faust/gui/MapUI.h"
 #include "faust/gui/GUI.h"
 
-#if OSCCTRL
-#include "faust/gui/OSCUI.h"
-#endif
 
 #include <math.h>
 #include <cmath>
@@ -1701,26 +1698,6 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
 	fMotionEngine = new FaustMotionEngine(new dummy_audio(sample_rate, buffer_size, 10));
 
 
-//**************************************************************
-// OSC TEST ALLEN
-//**************************************************************
-
-// OSC
-#if OSCCTRL
-    const char* argv[9];
-    argv[0] = "0x00";//(char*)_name;
-    argv[1] = "-xmit";
-    argv[2] = "1";//transmit_value(transmit);
-    argv[3] = "-desthost";
-    argv[4] = "192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    argv[5] = "-port";
-    argv[6] = "5512";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    argv[7] = "-outport";
-    argv[8] = "5513";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    fOSCUI = new OSCUI("0x00", 9, (char**)argv);
-    fMotionEngine->buildUserInterface(fOSCUI);
-
-#endif
 
 
 }
@@ -1730,27 +1707,18 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
 DspFaustMotion::~DspFaustMotion(){
 	delete fMotionEngine;
 
-#if OSCCTRL
-    delete fOSCUI;
-#endif
 
 
 }
 
 bool DspFaustMotion::start(){
 
-#if OSCCTRL
-    fOSCUI->run();
-#endif
 
 	return fMotionEngine->start();
 }
 
 void DspFaustMotion::stop(){
 
-#if OSCCTRL
-    fOSCUI->stop();
-#endif
 
 	fMotionEngine->stop();
 }

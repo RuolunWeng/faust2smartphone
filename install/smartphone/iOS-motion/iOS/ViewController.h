@@ -15,7 +15,7 @@
 #import <CoreMotion/CoreMotion.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource > {
+@interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate > {
 
     DspFaust *dspFaust;
     DspFaustMotion *dspFaustMotion;
@@ -123,9 +123,8 @@
     BOOL cueIsOn;
     BOOL tipIsOn;
     
-    int cueNum;
     
-    NSArray *_motionParamArray;
+    NSMutableArray *_motionParamArray;
     
     BOOL hpIsOn;
     BOOL shok_thrIsOn;
@@ -141,8 +140,18 @@
     BOOL tgyr_upIsOn;
     BOOL tgyr_downIsOn;
     
+    NSMutableArray *myCueNumArrary;
+    NSInteger cueNum;
+    NSInteger cueIndex;
+    NSInteger cueNumNext;
+    NSInteger cueIndexNext;
+    
+    
+    NSMutableArray *myCueTipsArrary;
     
 }
+
+
 
 @property (retain, nonatomic) IBOutlet UIPickerView *pikerView;
 @property (retain, nonatomic) IBOutlet UITextField *motionParam;
@@ -151,6 +160,7 @@
 
 @property (retain, nonatomic) IBOutlet UIImageView *touch;
 @property (retain, nonatomic) IBOutlet UILabel *cue;
+@property (retain, nonatomic) IBOutlet UILabel *cueNext;
 @property (retain, nonatomic) IBOutlet UILabel *tips;
 - (IBAction)initCue:(id)sender;
 @property (retain, nonatomic) IBOutlet UIButton *init;
@@ -159,8 +169,9 @@
 
 @property (retain, nonatomic) IBOutlet UIButton *nextCue;
 - (IBAction)nextCue:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *prevCue;
+- (IBAction)prevCue:(id)sender;
 
-@property (retain, nonatomic) IBOutlet UITextField *nextNum;
 
 
 - (IBAction)defautParam:(id)sender;
