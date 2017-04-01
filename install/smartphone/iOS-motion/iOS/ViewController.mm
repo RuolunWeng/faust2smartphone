@@ -114,8 +114,8 @@
     cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
     cueIndexNext = 1;
     cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cue.text = [NSString stringWithFormat:@"Cue:%ld",(long)cueNum];
-    _cueNext.text = [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    _cue.text = [NSString stringWithFormat:@"%ld",(long)cueNum];
+    _cueNext.text = [NSString stringWithFormat:@"%ld",(long)cueNumNext];
     
     
     
@@ -723,7 +723,7 @@ void updateMotionCallback(void* arg)
     
     cueIndex = cueIndexNext;
     cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
-    _cue.text= [NSString stringWithFormat:@"Cue:%ld",(long)cueNum];
+    _cue.text= [NSString stringWithFormat:@"%ld",(long)cueNum];
     _tips.text = [myCueTipsArrary objectAtIndex:cueIndex];
     if (cueIsOn) {
         dspFaust->setParamValue(cueAddress, cueNum);
@@ -731,7 +731,7 @@ void updateMotionCallback(void* arg)
     if (cueIndexNext < [myCueNumArrary count] -1) {
     cueIndexNext++;
     cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
     }
 }
 
@@ -780,10 +780,10 @@ void updateMotionCallback(void* arg)
     
     cueIndex = 0;
     cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
-    _cue.text= [NSString stringWithFormat:@"Cue:%ld",(long)cueNum];
+    _cue.text= [NSString stringWithFormat:@"%ld",(long)cueNum];
     cueIndexNext = 1;
     cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
     if (cueIsOn) {
         dspFaust->setParamValue(cueAddress, cueNum);
     }
@@ -798,7 +798,7 @@ void updateMotionCallback(void* arg)
     if (cueIndexNext < [myCueNumArrary count] -1) {
         cueIndexNext++;
         cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-        _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+        _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
         _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
     }
     
@@ -809,7 +809,7 @@ void updateMotionCallback(void* arg)
     if (cueIndexNext > 0) {
     cueIndexNext--;
     cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cueNext.text= [NSString stringWithFormat:@"Next:%ld",(long)cueNumNext];
+    _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
     _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
     }
 }
