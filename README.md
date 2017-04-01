@@ -43,17 +43,17 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     _in your .dsp file, declare motion controller you need, like:
         
-        1) Active Touch Screen
+        // Active Touch Screen
 
         touchGate = checkbox("touchgate");
 
-        2) Active Touch Pad X,Y
+        // Active Touch Pad X,Y
 
-        touchX = hslider("touchx");
+        touchX = hslider("touchx",0,0,1,0.01);
 
-        touchY = hslider("touchy");
+        touchY = hslider("touchy",0,0,1,0.01);
 
-        3) Active Motion controller
+        // Active Motion controller
 
         ixp = hslider("ixp",0,0,1,0.01);
 
