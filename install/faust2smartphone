@@ -179,9 +179,9 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 		elif [ $IOSMOTION -eq 1 ]; then
 			echo "Creating a new iOS project with motion support in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS-motion/* "$BUILDDIR"
+			if [ $REUSE -eq 0 ]; then
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
 			cp -r $FAUSTLIB/smartphone/updateCue "$CURRENTFOLDER"
-			if [ $REUSE -eq 0 ]; then
 			cp -r $FAUSTLIB/smartphone/cueNums.txt "$CURRENTFOLDER"
 			cp -r $FAUSTLIB/smartphone/cueTips.txt "$CURRENTFOLDER"
 			fi
