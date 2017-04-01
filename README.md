@@ -31,11 +31,11 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
    
    _in Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
-2) For iOS specific fuction
+2) For iOS specific function
 
     "-osc" for OSC support
     
-    "-iosmotion" to generate a project with Motion support.
+    "-iosmotion" to generate a project with Motion support and Cue interface.
 
     [Motion.lib created by Christophe Lebreton].
 
