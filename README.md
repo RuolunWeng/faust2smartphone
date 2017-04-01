@@ -42,12 +42,24 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
     --------------------------------------------------------------
 
     _in your .dsp file, declare motion controller you need, like:
+        
+        1) Active Touch Screen
 
         touchGate = checkbox("touchgate");
+
+        2) Active Touch Pad X,Y
+
+        touchX = hslider("touchx");
+
+        touchY = hslider("touchy");
+
+        3) Active Motion controller
 
         ixp = hslider("ixp",0,0,1,0.01);
 
     -------------------------------------------------------------
+
+    "./updatecue ***" to update your cue manager.
     
 3) Compile Application
     
