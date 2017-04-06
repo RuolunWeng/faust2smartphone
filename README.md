@@ -35,7 +35,7 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     "-osc" for OSC support
     
-    "-iosmotion" to generate a project with Motion support and Cue interface.
+    "-soloios" to generate a project with Motion support and Cue interface.
 
     [Motion.lib created by Christophe Lebreton].
 

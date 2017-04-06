@@ -39,7 +39,7 @@ echoHelp ()
 	echo "Usage: faust2smartphone 'option' xxx.dsp"
 	echo "===================================="
 	echo "Option: -ios for Xcode simple project(IOS)"
-	echo "Option: -iosmotion for Xcode project with motion support(IOS)"
+	echo "Option: -soloios for Xcode project for smartSOLO(IOS)"
 	echo "Option: -updatelib <.lib> for update motion library(IOS)"
 	echo "Option: -osc for OSC support(IOS)"
 	echo "Option: -android for Android Studio project"
@@ -64,7 +64,7 @@ do
 		ANDROID=1
     elif [ $p = "-ios" ]; then
 		IOS="1"
-	elif [ $p = "-iosmotion" ]; then
+	elif [ $p = "-soloios" ]; then
 		IOSMOTION="1"
 	elif [ $p = "-reuse" ]; then
 		REUSE=1
