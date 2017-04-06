@@ -11,6 +11,9 @@
 #define ONE_G 9.81
 #define kGUIUpdateRate 30
 
+#define SR 44100
+#define bufferSize 256
+
 
 @interface ViewController ()
 
@@ -32,10 +35,9 @@
     // init faust motor
     ////////////////////
     
-    const int SR = 44100;
-    const int bufferSize = 256;
+
     
-    dspFaust = new DspFaust(SR,bufferSize,updateMotionCallback, self);
+    dspFaust = new DspFaust(SR,bufferSize);
     
     dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
     
@@ -81,6 +83,8 @@
     
     
     [self startMotion];
+    
+    [self startUpdate];
 
     [self displayTitle];
     
@@ -348,14 +352,24 @@
 
 }
 
-
-
-// Audio control callback
-void updateMotionCallback(void* arg)
+- (void)startUpdate
 {
-    ViewController* interface = static_cast<ViewController*>(arg);
-    [interface updateMotion];
+    
+    _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1./(SR/bufferSize) target:self
+                                            selector:@selector(updateMotion) userInfo:nil repeats:YES];
+    
 }
+
+// Stop updating
+- (void)stopUpdate
+{
+    
+    [_sensorTimer invalidate];
+    
+    
+}
+
+
 
 - (void)startMotion
 {

@@ -150,11 +150,11 @@
 		4BDD6A9F1C4CE34000992D17 /* Icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76@2x.png"; sourceTree = "<group>"; };
 		4BDEB1231C203C4400849601 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		65D1BD1315668A8A00ADCA32 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		65E5ED8E14DB037D00136CFC /* saw2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = saw2.app; path = harp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65E5ED8E14DB037D00136CFC /* saw2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = saw2.app; path = FaustAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65E5ED9214DB037D00136CFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		65E5ED9414DB037D00136CFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		65E5ED9614DB037D00136CFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		65E5EDB514DB037D00136CFC /* saw2.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = saw2.xctest; path = harp.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		65E5EDB514DB037D00136CFC /* saw2.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = saw2.xctest; path = iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65E5EDBE14DB037D00136CFC /* iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOSTests-Info.plist"; sourceTree = "<group>"; };
 		65E5EDC014DB037D00136CFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		65E5EDC214DB037D00136CFC /* iOSTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSTests.h; sourceTree = "<group>"; };

@@ -20,7 +20,6 @@
 #ifndef __ios_api__
 #define __ios_api__
 
-typedef void (* ControlCallback) (void* data);
 
 //===============API Reference==============
 //==========================================
@@ -40,7 +39,7 @@ public:
 	// * `SR`: sampling rate
 	// * `BS`: block size
 	//--------------------------------------------------------
-	DspFaust(int,int,ControlCallback, void* arg);
+	DspFaust(int,int);
 	~DspFaust();
 	
 	//---------------------`bool start()`---------------------

@@ -23,6 +23,7 @@
     CLLocationManager* _locationManager;
     
     NSTimer* _guiTimer;
+    NSTimer *_sensorTimer;
     
     float magnetic;
     float magneticNormal;

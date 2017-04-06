@@ -68,8 +68,8 @@
 std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 
-DspFaust::DspFaust(int sample_rate, int buffer_size, ControlCallback cb, void* self){
-	fPolyEngine = new FaustPolyEngine(new iosaudio(sample_rate, buffer_size, cb, self));
+DspFaust::DspFaust(int sample_rate, int buffer_size){
+	fPolyEngine = new FaustPolyEngine(new iosaudio(sample_rate, buffer_size));
 
 #if IOS_MIDI_SUPPORT
     fMidiUI = new MidiUI(new rt_midi());
