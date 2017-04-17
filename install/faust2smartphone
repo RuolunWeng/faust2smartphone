@@ -19,6 +19,7 @@ set -e
 ANDROID="0"
 IOS="0"
 IOSMOTION="0"
+ANDROIDMOTION="0"
 NVOICES="12"
 POLY2="0"
 MIDI="0"
@@ -43,6 +44,7 @@ echoHelp ()
 	echo "Option: -updatelib <.lib> for update motion library(IOS)"
 	echo "Option: -osc for OSC support(IOS)"
 	echo "Option: -android for Android Studio project"
+	echo "Option: -soloandroid for Android Studio project for smartSOLO"
 	echo "Option: -reuse for Uptade the project"
 	echo "Option: -help for Help"
 	echo "===================================="
@@ -66,6 +68,8 @@ do
 		IOS="1"
 	elif [ $p = "-soloios" ]; then
 		IOSMOTION="1"
+	elif [ $p = "-soloandroid" ]; then
+		ANDROIDMOTION="1"
 	elif [ $p = "-reuse" ]; then
 		REUSE=1
 	elif [ $p = "-source" ]; then
@@ -124,12 +128,14 @@ BUILDDIR="faustSmartphone.$APPNAME"
 # making sure that platform is set and generate corresponding global vars
 if [ $ANDROID -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/app/src/main"
+elif [ $ANDROIDMOTION -eq 1 ]; then
+	APPFOLDER="$BUILDDIR/app/src/main"
 elif [ $IOS -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/iOS"
 elif [ $IOSMOTION -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/iOS"
 else
-	echo "Please, specify a platform: -android or -ios or -iosmotion"
+	echo "Please, specify a platform: -android -soloandroid -ios -soloios"
 	echoHelp
 	exit 1
 fi
@@ -169,6 +175,31 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 				sed -i 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
 			fi
 			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
+			
+		elif [ $ANDROIDMOTION -eq 1 ]; then
+			echo "Creating a new Android project for smartSOLO in $BUILDDIR" > $LOG
+			cp -r $FAUSTLIB/smartphone/android-motion/* "$BUILDDIR"
+			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
+			cp -r $FAUSTLIB/smartphone/cueAndroid/* "$CURRENTFOLDER"
+			
+			# change 'faust' with real *APPNAME
+			PLATFORM=$(uname)
+			
+			if [ $PLATFORM = "Darwin" ]; then
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i '' 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
+			else
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
+			fi
+			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
+			
 		elif [ $IOS -eq 1 ]; then
 			echo "Creating a new iOS project in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS/* "$BUILDDIR"
@@ -181,9 +212,7 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			cp -r $FAUSTLIB/smartphone/iOS-motion/* "$BUILDDIR"
 			if [ $REUSE -eq 0 ]; then
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
-			cp -r $FAUSTLIB/smartphone/updateCue "$CURRENTFOLDER"
-			cp -r $FAUSTLIB/smartphone/cueNums.txt "$CURRENTFOLDER"
-			cp -r $FAUSTLIB/smartphone/cueTips.txt "$CURRENTFOLDER"
+			cp -r $FAUSTLIB/smartphone/cueiOS/* "$CURRENTFOLDER"
 			fi
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
 			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
@@ -209,6 +238,21 @@ if [ $ANDROID -eq 1 ]; then
 	cp -r "$BUILDDIR/dsp-faust/cpp" "$APPFOLDER"
 	cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
 	rm -r "$BUILDDIR/dsp-faust"
+	
+elif [ $ANDROIDMOTION -eq 1 ]; then
+	echo "Adding DSP with motion support to the app" > $LOG
+	if [ -z $OPTIONS ]; then
+		faust2api_a -androidmotion -nodoc "$FILE" > $LOG
+		else 
+		faust2api_a -androidmotion -nodoc "$OPTIONS" "$FILE" > $LOG
+	fi
+	unzip "dsp-faust.zip" > $LOG
+	mv "dsp-faust" "$BUILDDIR"
+	rm "dsp-faust.zip"
+	cp -r "$BUILDDIR/dsp-faust/cpp" "$APPFOLDER"
+	cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
+	rm -r "$BUILDDIR/dsp-faust"
+	
 elif [ $IOS -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
 		echo "Adding DSP with no effect chain to the app" > $LOG

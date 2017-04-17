@@ -18,6 +18,7 @@ set -e
 ANDROID="0"
 IOS="0"
 IOSMOTION="0"
+ANDROIDMOTION="0"
 NVOICES="0"
 #PACKAGENAME="0"
 POLY2="0"
@@ -43,6 +44,7 @@ echoHelp ()
     echo ""
     echo "ANDROID-SPECIFIC OPTIONS:"
     echo "   -package : set the JAVA package name (e.g. '-package mypackage' will change the JAVA package name to 'mypackage.DspFaust'). The default package name is 'com.DspFaust.'"
+    echo "   -androidmotion : generate app with motion support."
     echo ""
     echo "IOS-SPECIFIC OPTIONS "
     echo "   -midi : add built-in RtMidi support to the API."
@@ -69,6 +71,8 @@ do
 		IOS="1"
 	elif [ $p = "-iosmotion" ]; then
 		IOSMOTION="1"
+	elif [ $p = "-androidmotion" ]; then
+		ANDROIDMOTION="1"
     elif [ "$p" = "-effect" ]; then
         POLY2="1"
 		shift
@@ -128,6 +132,22 @@ if [ $ANDROID -eq 1 ]; then
     if [ "$NVOICES" -gt "0" ]; then
 	echo "#define NVOICES $NVOICES" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     fi
+    
+elif [ $ANDROIDMOTION -eq 1 ]; then
+    echo "Your dsp-faust.zip API package for Android Motion support is being created"
+    CPPFOLDER="$APIFOLDER/cpp"
+    JAVAFOLDER="$APIFOLDER/java"
+    mkdir $CPPFOLDER
+    mkdir $JAVAFOLDER
+    cp -r /usr/local/share/faust/api-allen/android-motion/jni/*.java $JAVAFOLDER
+    if [ -n "$PACKAGENAME" ]; then
+	PACKAGENAME="$PACKAGENAME.DspFaust"
+	sed -i "s/com.DspFaust/$PACKAGENAME/g" $JAVAFOLDER/*.java
+    fi
+    cp -r /usr/local/share/faust/api-allen/android-motion/DspFaust.h $CPPFOLDER
+    cp -r /usr/local/share/faust/api-allen/android-motion/jni/java_interface_wrap.cpp $CPPFOLDER
+    faust -i -a api-allen/android-motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+   
 elif [ $IOS -eq 1 ]; then
     echo "Your dsp-faust.zip API package for iOS is being created"
     cp -r /usr/local/share/faust/api-allen/iOS/DspFaust.h $APIFOLDER
