@@ -41,12 +41,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
     DspFaustMotion dspFaustMotion;
 
     private SensorManager sensorManager;
-    private Sensor accelerometer;
 
     private TextView cue,cueNext,tips;
     private EditText paramsValue;
@@ -62,10 +61,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     int scrWidth = 0,scrHeight= 0;
 
-    //int[] cueList = {1,2,3,4,5,6,7,8,9,10};
-
-    //String[] tipsList = {"part1","part2","part3","part4","part5",
-    //                    "part6","part7","part8","part9","part10"};
 
     String[] ParamArray = {"hp","shok_thr","antirebon","lp","tacc_thr",
     "tacc_gain","tacc_up","tacc_down","tgyr_thr",
@@ -216,10 +211,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int SR = 44100;
         int blockSize = 512;
         dspFaust = new DspFaust(SR,blockSize);
-        dspFaust.start();
+
 
         dspFaustMotion = new DspFaustMotion(SR/blockSize,1);
-        dspFaustMotion.start();
+
+
+
         // PRINT ALL PARAMETRE ADDRESS
         for(int i=0; i < dspFaustMotion.getParamsCount(); i++){
             System.out.println(dspFaustMotion.getParamAddress(i));
@@ -243,8 +240,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         float dpWidth  = outMetrics.widthPixels / density;
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+
 
         nextCue = (Button) findViewById(R.id.nextCue);
         prevCue = (Button) findViewById(R.id.prevCue);
@@ -264,8 +260,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View v) {
                 if (cueIndexNext < cueList.size() -1) {
                     cueIndexNext++;
-                    //cueNumNext = cueList[cueIndexNext];
-                    //cueNext.setText(String.valueOf(cueNumNext));
                     cueNext.setText(cueList.get(cueIndexNext));
                     tips.setText(tipsList.get(cueIndexNext));
                 }
@@ -276,8 +270,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View v) {
                 if (cueIndexNext > 0) {
                     cueIndexNext--;
-                    //cueNumNext = cueList[cueIndexNext];
-                    //cueNext.setText(String.valueOf(cueNumNext));
                     cueNext.setText(cueList.get(cueIndexNext));
                     tips.setText(tipsList.get(cueIndexNext));
                 }
@@ -288,11 +280,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View v) {
                     cueIndex = 0;
                     cueIndexNext = 1;
-                    //cueNum = cueList[cueIndex];
-                    //cue.setText(String.valueOf(cueNum));
                     cue.setText(cueList.get(cueIndex));
-                    //cueNumNext = cueList[cueIndexNext];
-                    //cueNext.setText(String.valueOf(cueNumNext));
                     cueNext.setText(cueList.get(cueIndexNext));
                     tips.setText(tipsList.get(cueIndex));
 
@@ -898,150 +886,198 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
+    private final SensorEventListener mSensorListener = new SensorEventListener() {
+
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+
+
+        public void onSensorChanged(SensorEvent event) {
+
+
+            for (int i = 0 ;i<event.values.length;i++){
+                dspFaust.propagateAcc(i, event.values[i]*(-1));
+            }
+
+
+            for (int i = 0 ;i<event.values.length;i++){
+                dspFaustMotion.propagateAcc(i, event.values[i]*(-1));
+            }
+
+            dspFaustMotion.render();
+
+            if (totalAccelIsOn) {
+                dspFaust.setParamValue(totalAccelAddress, dspFaustMotion.getParamValue("/Motion/Mtotalaccel"));
+            }
+            if (totalGyroIsOn) {
+                dspFaust.setParamValue(totalGyroAddress, dspFaustMotion.getParamValue("/Motion/Mtotalgyro"));
+            }
+            if (sxpIsOn) {
+                dspFaust.setParamValue(sxpAddress, dspFaustMotion.getParamValue("/Motion/Msxp"));
+            }
+            if (sypIsOn) {
+                dspFaust.setParamValue(sypAddress, dspFaustMotion.getParamValue("/Motion/Msyp"));
+            }
+            if (szpIsOn) {
+                dspFaust.setParamValue(szpAddress, dspFaustMotion.getParamValue("/Motion/Mszp"));
+            }
+            if (sxnIsOn) {
+                dspFaust.setParamValue(sxnAddress, dspFaustMotion.getParamValue("/Motion/Msxn"));
+            }
+            if (synIsOn) {
+                dspFaust.setParamValue(synAddress, dspFaustMotion.getParamValue("/Motion/Msyn"));
+            }
+            if (sznIsOn) {
+                dspFaust.setParamValue(sznAddress, dspFaustMotion.getParamValue("/Motion/Mszn"));
+            }
+            if (ixpIsOn) {
+                dspFaust.setParamValue(ixpAddress, dspFaustMotion.getParamValue("/Motion/Mixp"));
+            }
+            if (iypIsOn) {
+                dspFaust.setParamValue(iypAddress, dspFaustMotion.getParamValue("/Motion/Miyp"));
+            }
+            if (izpIsOn) {
+                dspFaust.setParamValue(izpAddress, dspFaustMotion.getParamValue("/Motion/Mizp"));
+            }
+            if (ixnIsOn) {
+                dspFaust.setParamValue(ixnAddress, dspFaustMotion.getParamValue("/Motion/Mixn"));
+            }
+            if (iynIsOn) {
+                dspFaust.setParamValue(iynAddress, dspFaustMotion.getParamValue("/Motion/Miyn"));
+            }
+            if (iznIsOn) {
+                dspFaust.setParamValue(iznAddress, dspFaustMotion.getParamValue("/Motion/Mizn"));
+            }
+            if (pixpIsOn) {
+                dspFaust.setParamValue(pixpAddress, dspFaustMotion.getParamValue("/Motion/Mpixp"));
+            }
+            if (piypIsOn) {
+                dspFaust.setParamValue(piypAddress, dspFaustMotion.getParamValue("/Motion/Mpiyp"));
+            }
+            if (pizpIsOn) {
+                dspFaust.setParamValue(pizpAddress, dspFaustMotion.getParamValue("/Motion/Mpizp"));
+            }
+            if (pixnIsOn) {
+                dspFaust.setParamValue(pixnAddress, dspFaustMotion.getParamValue("/Motion/Mpixn"));
+            }
+            if (piynIsOn) {
+                dspFaust.setParamValue(piynAddress, dspFaustMotion.getParamValue("/Motion/Mpiyn"));
+            }
+            if (piznIsOn) {
+                dspFaust.setParamValue(piznAddress, dspFaustMotion.getParamValue("/Motion/Mpizn"));
+            }
+            if (axpnIsOn) {
+                dspFaust.setParamValue(axpnAddress, dspFaustMotion.getParamValue("/Motion/Maxpn"));
+            }
+            if (aypnIsOn) {
+                dspFaust.setParamValue(aypnAddress, dspFaustMotion.getParamValue("/Motion/Maypn"));
+            }
+            if (azpnIsOn) {
+                dspFaust.setParamValue(azpnAddress, dspFaustMotion.getParamValue("/Motion/Mazpn"));
+            }
+            if (axpIsOn) {
+                dspFaust.setParamValue(axpAddress, dspFaustMotion.getParamValue("/Motion/Maxp"));
+            }
+            if (aypIsOn) {
+                dspFaust.setParamValue(aypAddress, dspFaustMotion.getParamValue("/Motion/Mayp"));
+            }
+            if (azpIsOn) {
+                dspFaust.setParamValue(azpAddress, dspFaustMotion.getParamValue("/Motion/Mazp"));
+            }
+            if (axnIsOn) {
+                dspFaust.setParamValue(axnAddress, dspFaustMotion.getParamValue("/Motion/Maxn"));
+            }
+            if (aynIsOn) {
+                dspFaust.setParamValue(aynAddress, dspFaustMotion.getParamValue("/Motion/Mayn"));
+            }
+            if (aznIsOn) {
+                dspFaust.setParamValue(aznAddress, dspFaustMotion.getParamValue("/Motion/Mazn"));
+            }
+            if (gxpnIsOn) {
+                dspFaust.setParamValue(gxpnAddress, dspFaustMotion.getParamValue("/Motion/Mgxpn"));
+            }
+            if (gypnIsOn) {
+                dspFaust.setParamValue(gypnAddress, dspFaustMotion.getParamValue("/Motion/Mgypn"));
+            }
+            if (gzpnIsOn) {
+                dspFaust.setParamValue(gzpnAddress, dspFaustMotion.getParamValue("/Motion/Mgzpn"));
+            }
+            if (gxpIsOn) {
+                dspFaust.setParamValue(gxpAddress, dspFaustMotion.getParamValue("/Motion/Mgxp"));
+            }
+            if (gypIsOn) {
+                dspFaust.setParamValue(gypAddress, dspFaustMotion.getParamValue("/Motion/Mgyp"));
+            }
+            if (gzpIsOn) {
+                dspFaust.setParamValue(gzpAddress, dspFaustMotion.getParamValue("/Motion/Mgzp"));
+            }
+            if (gypIsOn) {
+                dspFaust.setParamValue(gypAddress, dspFaustMotion.getParamValue("/Motion/Mgyp"));
+            }
+            if (gxnIsOn) {
+                dspFaust.setParamValue(gxnAddress, dspFaustMotion.getParamValue("/Motion/Mgxn"));
+            }
+            if (gynIsOn) {
+                dspFaust.setParamValue(gynAddress, dspFaustMotion.getParamValue("/Motion/Mgyn"));
+            }
+            if (gznIsOn) {
+                dspFaust.setParamValue(gznAddress, dspFaustMotion.getParamValue("/Motion/Mgzn"));
+            }
+    }
+
+
+
+    };
+
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    protected void onPause() {
+        Log.d("Faust", "onPause");
+        sensorManager.unregisterListener(mSensorListener);
+        super.onPause();
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    protected void onResume() {
+        Log.d("Faust", "onResume");
+        super.onResume();
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+    }
 
+    @Override
+    protected void onStart() {
+        Log.d("Faust", "onStart");
+        super.onStart();
+        if (!isChangingConfigurations()) {
+            dspFaust.start();
+            dspFaustMotion.start();
+        }
+    }
 
-        for (int i = 0 ;i<event.values.length;i++){
-            dspFaust.propagateAcc(i, event.values[i]);
-        }
+    @Override
+    protected void onRestart() {
+        Log.d("Faust", "onRestart");
+        super.onRestart();
+    }
 
-
-        for (int i = 0 ;i<event.values.length;i++){
-            dspFaustMotion.propagateAcc(i, event.values[i]);
-        }
-
-        dspFaustMotion.render();
-
-        if (totalAccelIsOn) {
-            dspFaust.setParamValue(totalAccelAddress, dspFaustMotion.getParamValue("/Motion/Mtotalaccel"));
-        }
-        if (totalGyroIsOn) {
-            dspFaust.setParamValue(totalGyroAddress, dspFaustMotion.getParamValue("/Motion/Mtotalgyro"));
-        }
-        if (sxpIsOn) {
-            dspFaust.setParamValue(sxpAddress, dspFaustMotion.getParamValue("/Motion/Msxp"));
-        }
-        if (sypIsOn) {
-            dspFaust.setParamValue(sypAddress, dspFaustMotion.getParamValue("/Motion/Msyp"));
-        }
-        if (szpIsOn) {
-            dspFaust.setParamValue(szpAddress, dspFaustMotion.getParamValue("/Motion/Mszp"));
-        }
-        if (sxnIsOn) {
-            dspFaust.setParamValue(sxnAddress, dspFaustMotion.getParamValue("/Motion/Msxn"));
-        }
-        if (synIsOn) {
-            dspFaust.setParamValue(synAddress, dspFaustMotion.getParamValue("/Motion/Msyn"));
-        }
-        if (sznIsOn) {
-            dspFaust.setParamValue(sznAddress, dspFaustMotion.getParamValue("/Motion/Mszn"));
-        }
-        if (ixpIsOn) {
-            dspFaust.setParamValue(ixpAddress, dspFaustMotion.getParamValue("/Motion/Mixp"));
-        }
-        if (iypIsOn) {
-            dspFaust.setParamValue(iypAddress, dspFaustMotion.getParamValue("/Motion/Miyp"));
-        }
-        if (izpIsOn) {
-            dspFaust.setParamValue(izpAddress, dspFaustMotion.getParamValue("/Motion/Mizp"));
-        }
-        if (ixnIsOn) {
-            dspFaust.setParamValue(ixnAddress, dspFaustMotion.getParamValue("/Motion/Mixn"));
-        }
-        if (iynIsOn) {
-            dspFaust.setParamValue(iynAddress, dspFaustMotion.getParamValue("/Motion/Miyn"));
-        }
-        if (iznIsOn) {
-            dspFaust.setParamValue(iznAddress, dspFaustMotion.getParamValue("/Motion/Mizn"));
-        }
-        if (pixpIsOn) {
-            dspFaust.setParamValue(pixpAddress, dspFaustMotion.getParamValue("/Motion/Mpixp"));
-        }
-        if (piypIsOn) {
-            dspFaust.setParamValue(piypAddress, dspFaustMotion.getParamValue("/Motion/Mpiyp"));
-        }
-        if (pizpIsOn) {
-            dspFaust.setParamValue(pizpAddress, dspFaustMotion.getParamValue("/Motion/Mpizp"));
-        }
-        if (pixnIsOn) {
-            dspFaust.setParamValue(pixnAddress, dspFaustMotion.getParamValue("/Motion/Mpixn"));
-        }
-        if (piynIsOn) {
-            dspFaust.setParamValue(piynAddress, dspFaustMotion.getParamValue("/Motion/Mpiyn"));
-        }
-        if (piznIsOn) {
-            dspFaust.setParamValue(piznAddress, dspFaustMotion.getParamValue("/Motion/Mpizn"));
-        }
-        if (axpnIsOn) {
-            dspFaust.setParamValue(axpnAddress, dspFaustMotion.getParamValue("/Motion/Maxpn"));
-        }
-        if (aypnIsOn) {
-            dspFaust.setParamValue(aypnAddress, dspFaustMotion.getParamValue("/Motion/Maypn"));
-        }
-        if (azpnIsOn) {
-            dspFaust.setParamValue(azpnAddress, dspFaustMotion.getParamValue("/Motion/Mazpn"));
-        }
-        if (axpIsOn) {
-            dspFaust.setParamValue(axpAddress, dspFaustMotion.getParamValue("/Motion/Maxp"));
-        }
-        if (aypIsOn) {
-            dspFaust.setParamValue(aypAddress, dspFaustMotion.getParamValue("/Motion/Mayp"));
-        }
-        if (azpIsOn) {
-            dspFaust.setParamValue(azpAddress, dspFaustMotion.getParamValue("/Motion/Mazp"));
-        }
-        if (axnIsOn) {
-            dspFaust.setParamValue(axnAddress, dspFaustMotion.getParamValue("/Motion/Maxn"));
-        }
-        if (aynIsOn) {
-            dspFaust.setParamValue(aynAddress, dspFaustMotion.getParamValue("/Motion/Mayn"));
-        }
-        if (aznIsOn) {
-            dspFaust.setParamValue(aznAddress, dspFaustMotion.getParamValue("/Motion/Mazn"));
-        }
-        if (gxpnIsOn) {
-            dspFaust.setParamValue(gxpnAddress, dspFaustMotion.getParamValue("/Motion/Mgxpn"));
-        }
-        if (gypnIsOn) {
-            dspFaust.setParamValue(gypnAddress, dspFaustMotion.getParamValue("/Motion/Mgypn"));
-        }
-        if (gzpnIsOn) {
-            dspFaust.setParamValue(gzpnAddress, dspFaustMotion.getParamValue("/Motion/Mgzpn"));
-        }
-        if (gxpIsOn) {
-            dspFaust.setParamValue(gxpAddress, dspFaustMotion.getParamValue("/Motion/Mgxp"));
-        }
-        if (gypIsOn) {
-            dspFaust.setParamValue(gypAddress, dspFaustMotion.getParamValue("/Motion/Mgyp"));
-        }
-        if (gzpIsOn) {
-            dspFaust.setParamValue(gzpAddress, dspFaustMotion.getParamValue("/Motion/Mgzp"));
-        }
-        if (gypIsOn) {
-            dspFaust.setParamValue(gypAddress, dspFaustMotion.getParamValue("/Motion/Mgyp"));
-        }
-        if (gxnIsOn) {
-            dspFaust.setParamValue(gxnAddress, dspFaustMotion.getParamValue("/Motion/Mgxn"));
-        }
-        if (gynIsOn) {
-            dspFaust.setParamValue(gynAddress, dspFaustMotion.getParamValue("/Motion/Mgyn"));
-        }
-        if (gznIsOn) {
-            dspFaust.setParamValue(gznAddress, dspFaustMotion.getParamValue("/Motion/Mgzn"));
-        }
-
+    @Override
+    protected void onStop() {
+        Log.d("Faust", "onStop");
+        super.onStop();
 
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
+        Log.d("Faust", "onDestroy");
+        // only stops audio when the user press the return button (and not when the screen is rotated)
+        if (!isChangingConfigurations()) {
+            dspFaust.stop();
+            dspFaust.delete();
+            dspFaustMotion.stop();
+            dspFaustMotion.delete();
+        }
         super.onDestroy();
-        dspFaust.stop();
     }
 }
 
