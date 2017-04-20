@@ -1072,9 +1072,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Faust", "onDestroy");
         // only stops audio when the user press the return button (and not when the screen is rotated)
         if (!isChangingConfigurations()) {
-            dspFaust.stop();
+            //dspFaust.stop();
             dspFaust.delete();
-            dspFaustMotion.stop();
+            //dspFaustMotion.stop();
             dspFaustMotion.delete();
         }
         super.onDestroy();
