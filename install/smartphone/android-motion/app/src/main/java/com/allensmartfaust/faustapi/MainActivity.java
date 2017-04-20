@@ -895,14 +895,28 @@ public class MainActivity extends AppCompatActivity {
         public void onSensorChanged(SensorEvent event) {
 
 
-            for (int i = 0 ;i<event.values.length;i++){
-                dspFaust.propagateAcc(i, event.values[i]*(-1));
-            }
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                // Update mapping at sensor rate
+                dspFaust.propagateAcc(0, event.values[0]*(-1));
+                dspFaust.propagateAcc(1, event.values[1]*(-1));
+                dspFaust.propagateAcc(2, event.values[2]);
+    
+                dspFaustMotion.propagateAcc(0, event.values[0]*(-1));
+                dspFaustMotion.propagateAcc(1, event.values[1]*(-1));
+                dspFaustMotion.propagateAcc(2, event.values[2]);
+                }
 
+            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                // Update mapping at sensor rate
+                dspFaust.propagateGyr(0, event.values[0]*(-1));
+                dspFaust.propagateGyr(1, event.values[1]*(-1));
+                dspFaust.propagateGyr(2, event.values[2]);
 
-            for (int i = 0 ;i<event.values.length;i++){
-                dspFaustMotion.propagateAcc(i, event.values[i]*(-1));
-            }
+                dspFaustMotion.propagateGyr(0, event.values[0]*(-1));
+                dspFaustMotion.propagateGyr(1, event.values[1]*(-1));
+                dspFaustMotion.propagateGyr(2, event.values[2]);
+                }
+
 
             dspFaustMotion.render();
 
@@ -1042,6 +1056,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
                 Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
