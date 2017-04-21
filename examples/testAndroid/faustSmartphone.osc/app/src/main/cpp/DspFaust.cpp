@@ -5,7 +5,7 @@
 // license: "BSD"
 // copyright: "(c)GRAME 2009"
 //
-// Code generated with Faust 0.9.96 (http://faust.grame.fr)
+// Code generated with Faust 0.9.96ec (http://faust.grame.fr)
 //----------------------------------------------------------
 
 /* link with  */
@@ -503,10 +503,15 @@ class mydsp : public dsp {
 
   public:
 	virtual void metadata(Meta* m) { 
-		m->declare("oscillators.lib/name", "Faust Oscillator Library");
-		m->declare("oscillators.lib/version", "0.0");
+		m->declare("name", "osc");
+		m->declare("version", "1.0");
+		m->declare("author", "Grame");
+		m->declare("license", "BSD");
+		m->declare("copyright", "(c)GRAME 2009");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/version", "0.0");
+		m->declare("basics.lib/name", "Faust Basic Element Library");
+		m->declare("basics.lib/version", "0.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
 		m->declare("signals.lib/version", "0.0");
 		m->declare("maths.lib/name", "Faust Math Library");
@@ -514,13 +519,8 @@ class mydsp : public dsp {
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
-		m->declare("name", "osc");
-		m->declare("version", "1.0");
-		m->declare("author", "Grame");
-		m->declare("license", "BSD");
-		m->declare("copyright", "(c)GRAME 2009");
-		m->declare("basics.lib/name", "Faust Basic Element Library");
-		m->declare("basics.lib/version", "0.0");
+		m->declare("oscillators.lib/name", "Faust Oscillator Library");
+		m->declare("oscillators.lib/version", "0.0");
 	}
 
 	virtual int getNumInputs() { return 0; }
@@ -566,12 +566,17 @@ class mydsp : public dsp {
 		ui_interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
+		//zone1
+		//zone2
 		float 	fSlow0 = (fConst0 * float(fslider0));
 		float 	fSlow1 = sinf(fSlow0);
 		float 	fSlow2 = cosf(fSlow0);
 		float 	fSlow3 = (0 - fSlow1);
 		float 	fSlow4 = (0.001f * powf(10,(0.05f * float(fslider1))));
+		//zone2b
+		//zone3
 		FAUSTFLOAT* output0 = output[0];
+		//LoopGraphScalar
 		for (int i=0; i<count; i++) {
 			iVec0[0] = 1;
 			fRec0[0] = ((fSlow1 * fRec1[1]) + (fSlow2 * fRec0[1]));
@@ -1174,6 +1179,7 @@ ZoneReader(zone, valueConverter) : a zone with a data converter
 #include <algorithm>    // std::max
 #include <cmath>
 #include <vector>
+#include <assert.h>
 
 //--------------------------------------------------------------------------------------
 // Interpolator(lo,hi,v1,v2)
@@ -1196,7 +1202,7 @@ class Interpolator
             double fLo;
             double fHi;
 
-            Range(double x, double y) : fLo(std::min(x,y)), fHi(std::max(x,y)) {}
+            Range(double x, double y) : fLo(std::min<double>(x,y)), fHi(std::max<double>(x,y)) {}
             double operator()(double x) { return (x<fLo) ? fLo : (x>fHi) ? fHi : x; }
         };
 
@@ -1307,11 +1313,11 @@ class LogValueConverter : public LinearValueConverter
     public:
 
         LogValueConverter(double umin, double umax, double fmin, double fmax) :
-            LinearValueConverter(umin, umax, log(std::max(DBL_MIN,fmin)), log(std::max(DBL_MIN,fmax)))
+            LinearValueConverter(umin, umax, log(std::max<double>(DBL_MIN, fmin)), log(std::max<double>(DBL_MIN, fmax)))
         {}
 
         virtual double ui2faust(double x) 	{ return exp(LinearValueConverter::ui2faust(x)); }
-        virtual double faust2ui(double x)	{ return LinearValueConverter::faust2ui(log(std::max(x, DBL_MIN))); }
+        virtual double faust2ui(double x)	{ return LinearValueConverter::faust2ui(log(std::max<double>(x, DBL_MIN))); }
 
 };
 
@@ -1564,6 +1570,7 @@ class CurveZoneControl : public ZoneControl
 
         CurveZoneControl(FAUSTFLOAT* zone, int curve, double amin, double amid, double amax, double min, double init, double max) : ZoneControl(zone), fCurve(0)
         {
+            assert(curve >= 0 && curve <= 3);
             fValueConverters.push_back(new AccUpConverter(amin, amid, amax, min, init, max));
             fValueConverters.push_back(new AccDownConverter(amin, amid, amax, min, init, max));
             fValueConverters.push_back(new AccUpDownConverter(amin, amid, amax, min, init, max));
@@ -1632,26 +1639,26 @@ class ZoneReader
 #include <iostream>
 #include <map>
 
-enum { kLin = 0, kLog = 1, kExp = 2 };
-
 class APIUI : public PathBuilder, public Meta, public UI
 {
     protected:
-
+    
+        enum { kLin = 0, kLog = 1, kExp = 2 };
+    
         int fNumParameters;
-        std::vector<std::string>        fName;
-        std::map<std::string, int>      fPathMap;
-        std::map<std::string, int>      fLabelMap;
-        std::vector<ValueConverter*>    fConversion;
-        std::vector<FAUSTFLOAT*>        fZone;
-        std::vector<FAUSTFLOAT>         fInit;
-        std::vector<FAUSTFLOAT>         fMin;
-        std::vector<FAUSTFLOAT>         fMax;
-        std::vector<FAUSTFLOAT>         fStep;
-        std::vector<std::string>	fUnit;
-        std::vector<std::string>	fTooltip;
-        std::vector<ZoneControl*>	fAcc[3];
-        std::vector<ZoneControl*>	fGyr[3];
+        std::vector<std::string> fName;
+        std::map<std::string, int> fPathMap;
+        std::map<std::string, int> fLabelMap;
+        std::vector<ValueConverter*> fConversion;
+        std::vector<FAUSTFLOAT*> fZone;
+        std::vector<FAUSTFLOAT> fInit;
+        std::vector<FAUSTFLOAT> fMin;
+        std::vector<FAUSTFLOAT> fMax;
+        std::vector<FAUSTFLOAT> fStep;
+        std::vector<std::string> fUnit;
+        std::vector<std::string> fTooltip;
+        std::vector<ZoneControl*> fAcc[3];
+        std::vector<ZoneControl*> fGyr[3];
 
         // Screen color control
         // "...[screencolor:red]..." etc.
@@ -1695,11 +1702,15 @@ class APIUI : public PathBuilder, public Meta, public UI
 
             //handle scale metadata
             switch (fCurrentScale) {
-                case kLin : fConversion.push_back(new LinearValueConverter(0,1, min, max)); break;
-                case kLog : fConversion.push_back(new LogValueConverter(0,1, min, max)); break;
-                case kExp : fConversion.push_back(new ExpValueConverter(0,1, min, max)); break;
+                case kLin : fConversion.push_back(new LinearValueConverter(0, 1, min, max)); break;
+                case kLog : fConversion.push_back(new LogValueConverter(0, 1, min, max)); break;
+                case kExp : fConversion.push_back(new ExpValueConverter(0, 1, min, max)); break;
             }
             fCurrentScale = kLin;
+            
+            if (fCurrentAcc.size() > 0 && fCurrentGyr.size() > 0) {
+                std::cerr << "warning : 'acc' and 'gyr' metadata used for the same " << label << " parameter !!\n";
+            }
 
             // handle acc metadata "...[acc : <axe> <curve> <amin> <amid> <amax>]..."
             if (fCurrentAcc.size() > 0) {
@@ -1716,9 +1727,9 @@ class APIUI : public PathBuilder, public Meta, public UI
                 } else {
                     std::cerr << "incorrect acc metadata : " << fCurrentAcc << std::endl;
                 }
+                fCurrentAcc = "";
             }
-            fCurrentAcc = "";
-
+       
             // handle gyr metadata "...[gyr : <axe> <curve> <amin> <amid> <amax>]..."
             if (fCurrentGyr.size() > 0) {
                 std::istringstream iss(fCurrentGyr);
@@ -1734,9 +1745,9 @@ class APIUI : public PathBuilder, public Meta, public UI
                 } else {
                     std::cerr << "incorrect gyr metadata : " << fCurrentGyr << std::endl;
                 }
+                fCurrentGyr = "";
             }
-            fCurrentGyr = "";
-
+        
             // handle screencolor metadata "...[screencolor:red|green|blue]..."
             if (fCurrentColor.size() > 0) {
                 if ((fCurrentColor == "red") && (fRedReader == 0)) {
@@ -1804,15 +1815,15 @@ class APIUI : public PathBuilder, public Meta, public UI
             
             if (id1 != -1) {
                 val = 0;
-                curve = fAcc[val][id1]->getCurve();
+                curve = table[val][id1]->getCurve();
                 table[val][id1]->getMappingValues(amin, amid, amax);
             } else if (id2 != -1) {
                 val = 1;
-                curve = fAcc[val][id2]->getCurve();
+                curve = table[val][id2]->getCurve();
                 table[val][id2]->getMappingValues(amin, amid, amax);
             } else if (id3 != -1) {
                 val = 2;
-                curve = fAcc[val][id3]->getCurve();
+                curve = table[val][id3]->getCurve();
                 table[val][id3]->getMappingValues(amin, amid, amax);
             } else {
                 val = -1; // No mapping
@@ -1824,6 +1835,8 @@ class APIUI : public PathBuilder, public Meta, public UI
         }
 
      public:
+    
+        enum Type { kAcc = 0, kGyr = 1, kNoType };
 
         APIUI() : fNumParameters(0), fHasScreenControl(false), fRedReader(0), fGreenReader(0), fBlueReader(0)
         {}
@@ -1849,7 +1862,7 @@ class APIUI : public PathBuilder, public Meta, public UI
             delete fGreenReader;
             delete fBlueReader;
         }
-
+    
         // -- widget's layouts
 
         virtual void openTabBox(const char* label)          { fControlsLevel.push_back(label); }
@@ -1955,7 +1968,30 @@ class APIUI : public PathBuilder, public Meta, public UI
 
 		double value2ratio(int p, double r)	{ return fConversion[p]->faust2ui(r); }
 		double ratio2value(int p, double r)	{ return fConversion[p]->ui2faust(r); }
-
+    
+        /**
+         * Return the control type (kAcc, kGyr, or -1) for a given paramater
+         *
+         * @param p - the UI parameter index
+         *
+         * @return the type
+         */
+        Type getParamType(int p)
+        {
+            if (p >= 0) {
+                if (getZoneIndex(fAcc, p, 0) != -1
+                    || getZoneIndex(fAcc, p, 1) != -1
+                    || getZoneIndex(fAcc, p, 2) != -1) {
+                    return kAcc;
+                } else if (getZoneIndex(fGyr, p, 0) != -1
+                           || getZoneIndex(fGyr, p, 1) != -1
+                           || getZoneIndex(fGyr, p, 2) != -1) {
+                    return kGyr;
+                }
+            }
+            return kNoType;
+        }
+   
         /**
          * Set a new value coming from an accelerometer, propagate it to all relevant float* zones.
          *
@@ -2065,44 +2101,6 @@ class APIUI : public PathBuilder, public Meta, public UI
 };
 
 #endif
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- 
- ************************************************************************
- ************************************************************************/
-
-#ifndef __poly_dsp__
-#define __poly_dsp__
-
-#include <stdio.h>
-#include <string>
-#include <math.h>
-#include <float.h>
-#include <algorithm>
-#include <ostream>
-#include <sstream>
-#include <vector>
-#include <limits.h>
-
 /************************************************************************
     FAUST Architecture File
     Copyright (C) 2003-2016 GRAME, Centre National de Creation Musicale
@@ -2652,9 +2650,31 @@ class GUI : public UI
     
         virtual void stop() { fStopped = true; }
         bool stopped() { return fStopped; }
+    
+        // -- widget's layouts
+        
+        virtual void openTabBox(const char* label) {};
+        virtual void openHorizontalBox(const char* label) {}
+        virtual void openVerticalBox(const char* label) {}
+        virtual void closeBox() {}
+        
+        // -- active widgets
+        
+        virtual void addButton(const char* label, FAUSTFLOAT* zone) {}
+        virtual void addCheckButton(const char* label, FAUSTFLOAT* zone) {}
+        virtual void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step) {}
+        virtual void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step) {}
+        virtual void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step) {}
+    
+        // -- passive widgets
+        
+        virtual void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max) {}
+        virtual void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max) {}
+    
+        // -- metadata declarations
 
         virtual void declare(FAUSTFLOAT* , const char* , const char*) {}
-        
+    
         // Static global for timed zones, shared between all UI that will set timed values
         static ztimedmap gTimedZoneMap;
 
@@ -3039,10 +3059,59 @@ class midi_handler : public midi {
 
 #endif // __midi__
 
+#ifdef _MSC_VER
+#define gsscanf sscanf_s
+#else
+#define gsscanf sscanf
+#endif
+
+/*****************************************************************************
+* Helper code for MIDI meta and polyphonic 'nvoices' parsing
+******************************************************************************/
+
+struct MidiMeta : public Meta, public std::map<std::string, std::string>
+{
+    void declare(const char* key, const char* value)
+    {
+        (*this)[key] = value;
+    }
+    
+    const std::string get(const char* key, const char* def)
+    {
+        if (this->find(key) != this->end()) {
+            return (*this)[key];
+        } else {
+            return def;
+        }
+    }
+    
+    static void analyse(dsp* tmp_dsp, bool& midi_sync, int& nvoices)
+    {
+        JSONUI jsonui;
+        tmp_dsp->buildUserInterface(&jsonui);
+        std::string json = jsonui.JSON();
+        midi_sync = ((json.find("midi") != std::string::npos) &&
+                     ((json.find("start") != std::string::npos) ||
+                      (json.find("stop") != std::string::npos) ||
+                      (json.find("clock") != std::string::npos)));
+    
+    #if defined(NVOICES) && NVOICES!=NUM_VOICES
+        nvoices = NVOICES;
+    #else
+        MidiMeta meta;
+        tmp_dsp->metadata(&meta);
+        std::string numVoices = meta.get("nvoices", "0");
+        nvoices = atoi(numVoices.c_str());
+        if (nvoices < 0) nvoices = 0;
+    #endif
+    }
+};
+
 /*******************************************************************************
  * MidiUI : Faust User Interface
  * This class decodes MIDI meta data and maps incoming MIDI messages to them.
- * Currently "ctrl, keyon, keypress, pgm, chanpress, pitchwheel/pitchbend meta data is handled.
+ * Currently ctrl, keyon/keyoff, keypress, pgm, chanpress, pitchwheel/pitchbend 
+ * start/stop/clock meta data is handled.
  ******************************************************************************/
  
 class uiMidiItem : public uiItem {
@@ -3093,7 +3162,7 @@ class uiMidiTimedItem : public uiMidiItem
             size_t res;
             DatedControl dated_val(date, v);
             if ((res = ringbuffer_write(GUI::gTimedZoneMap[fZone], (const char*)&dated_val, sizeof(DatedControl))) != sizeof(DatedControl)) {
-                std::cout << "ringbuffer_write error DatedControl" << std::endl;
+                std::cerr << "ringbuffer_write error DatedControl" << std::endl;
             }
         }
         
@@ -3265,13 +3334,15 @@ class uiMidiPitchWheel : public uiMidiItem
     private:
     	
 		// currently, the range is of pitchwheel if fixed (-2/2 semitones)
-		FAUSTFLOAT wheel2bend(float v){
-			return pow(2.0,(v/16383.0*4-2)/12);
-		}
+        FAUSTFLOAT wheel2bend(float v)
+        {
+            return pow(2.0,(v/16383.0*4-2)/12);
+        }
 
-		int bend2wheel(float v){
-			return (int)((12*log(v)/log(2)+2)/4*16383);
-		}
+        int bend2wheel(float v)
+        {
+            return (int)((12*log(v)/log(2)+2)/4*16383);
+        }
  
     public:
     
@@ -3422,17 +3493,17 @@ class MidiUI : public GUI, public midi
                 for (size_t i = 0; i < fMetaAux.size(); i++) {
                     unsigned num;
                     if (fMetaAux[i].first == "midi") {
-                        if (sscanf(fMetaAux[i].second.c_str(), "ctrl %u", &num) == 1) {
+                        if (gsscanf(fMetaAux[i].second.c_str(), "ctrl %u", &num) == 1) {
                             fCtrlChangeTable[num].push_back(new uiMidiCtrlChange(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "keyon %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyon %u", &num) == 1) {
                             fKeyOnTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "keyoff %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyoff %u", &num) == 1) {
                             fKeyOffTable[num].push_back(new uiMidiKeyOff(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "keypress %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keypress %u", &num) == 1) {
                             fKeyPressTable[num].push_back(new uiMidiKeyPress(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "pgm %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "pgm %u", &num) == 1) {
                             fProgChangeTable[num].push_back(new uiMidiProgChange(fMidiHandler, num, this, zone, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "chanpress %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "chanpress %u", &num) == 1) {
                             fChanPressTable[num].push_back(new uiMidiChanPress(fMidiHandler, num, this, zone, input));
                         } else if (strcmp(fMetaAux[i].second.c_str(), "pitchwheel") == 0 
                             || strcmp(fMetaAux[i].second.c_str(), "pitchbend") == 0) {
@@ -3470,17 +3541,6 @@ class MidiUI : public GUI, public midi
         void addMidiIn(midi* midi_dsp) { fMidiHandler->addMidiIn(midi_dsp); }
         void removeMidiIn(midi* midi_dsp) { fMidiHandler->removeMidiIn(midi_dsp); }
       
-        // -- widget's layouts
-
-        virtual void openTabBox(const char* label)
-        {}
-        virtual void openHorizontalBox(const char* label)
-        {}
-        virtual void openVerticalBox(const char* label)
-        {}
-        virtual void closeBox()
-        {}
-
         // -- active widgets
         
         virtual void addButton(const char* label, FAUSTFLOAT* zone)
@@ -3614,6 +3674,44 @@ class MidiUI : public GUI, public midi
 };
 
 #endif // FAUST_MIDIUI_H
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ 
+ ************************************************************************
+ ************************************************************************/
+
+#ifndef __poly_dsp__
+#define __poly_dsp__
+
+#include <stdio.h>
+#include <string>
+#include <math.h>
+#include <float.h>
+#include <algorithm>
+#include <ostream>
+#include <sstream>
+#include <vector>
+#include <limits.h>
+
 /************************************************************************
     FAUST Architecture File
     Copyright (C) 2003-2011 GRAME, Centre National de Creation Musicale
@@ -4275,7 +4373,7 @@ inline bool parseJson(const char*& p, std::map<std::string, std::string>& metada
 #define snprintf _snprintf
 #endif
 
-inline FAUSTFLOAT STR2REAL(const std::string& s)  { return (strtod(s.c_str(), NULL)); }
+inline FAUSTFLOAT STR2REAL(const std::string& s) { return (strtod(s.c_str(), NULL)); }
 
 //-------------------------------------------------------------------
 //  Decode a dsp JSON description and implement 'buildUserInterface'
@@ -4514,8 +4612,9 @@ class proxy_dsp : public dsp {
 
 #define FLOAT_MAX(a, b) (((a) < (b)) ? (b) : (a))
 
-// ends_with(<str>,<end>) : returns true if <str> ends with <end>
-static inline bool ends_with(std::string const& str, std::string const& end)
+// endsWith(<str>,<end>) : returns true if <str> ends with <end>
+
+static inline bool endsWith(std::string const& str, std::string const& end)
 {
     size_t l1 = str.length();
     size_t l2 = end.length();
@@ -4532,6 +4631,10 @@ static inline unsigned int isPowerOfTwo(unsigned int n)
     return !(n & (n - 1));
 }
 
+/**
+ * Allows to control zones in a grouped manner.
+ */
+
 class GroupUI : public GUI, public PathBuilder
 {
     
@@ -4541,9 +4644,9 @@ class GroupUI : public GUI, public PathBuilder
         
         void insertMap(std::string label, FAUSTFLOAT* zone)
         {   
-            if (!ends_with(label, "/gate") 
-                && !ends_with(label, "/freq") 
-                && !ends_with(label, "/gain")) {
+            if (!endsWith(label, "/gate") 
+                && !endsWith(label, "/freq") 
+                && !endsWith(label, "/gain")) {
                 
                 // Groups all controller except 'freq', 'gate', and 'gain'
                 if (fLabelZoneMap.find(label) != fLabelZoneMap.end()) {
@@ -4616,10 +4719,6 @@ class GroupUI : public GUI, public PathBuilder
         {
             insertMap(buildPath(label), zone);
         }
-        
-        // -- metadata declarations
-        void declare(FAUSTFLOAT* zone, const char* key, const char* val)
-        {}
             
 };
 
@@ -4631,11 +4730,11 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     
     int fNote;              // Playing note actual pitch
     int fDate;              // KeyOn date
-    bool fTrigger;          // True if stolen note and need for envelop re-trigger
+    bool fTrigger;          // True if stolen note and need for envelop trigger
     FAUSTFLOAT fLevel;      // Last audio block level
-    std::string fGateLabel;
-    std::string fGainLabel;
-    std::string fFreqLabel;
+    std::string fGatePath;  // Path of 'gate' control
+    std::string fGainPath;  // Path of 'gain' control
+    std::string fFreqPath;  // Path of 'freq' control
 
     dsp_voice(dsp* dsp):decorator_dsp(dsp)
     {
@@ -4644,37 +4743,39 @@ struct dsp_voice : public MapUI, public decorator_dsp {
         fLevel = FAUSTFLOAT(0);
         fDate = 0;
         fTrigger = false;
-        extractLabels(fGateLabel, fFreqLabel, fGainLabel);
+        extractPaths(fGatePath, fFreqPath, fGainPath);
     }
     
-    void extractLabels(std::string& gate, std::string& freq, std::string& gain)
+    void extractPaths(std::string& gate, std::string& freq, std::string& gain)
     {
         // Keep gain, freq and gate labels
         std::map<std::string, FAUSTFLOAT*>::iterator it;
         for (it = getMap().begin(); it != getMap().end(); it++) {
-            std::string label = (*it).first;
-            if (ends_with(label, "/gate")) {
-                gate = label;
-            } else if (ends_with(label, "/freq")) {
-                freq = label;
-            } else if (ends_with(label, "/gain")) {
-                gain = label;
+            std::string path = (*it).first;
+            if (endsWith(path, "/gate")) {
+                gate = path;
+            } else if (endsWith(path, "/freq")) {
+                freq = path;
+            } else if (endsWith(path, "/gain")) {
+                gain = path;
             }
         }
     }
     
+    // MIDI velocity [0..127]
     void keyOn(int pitch, int velocity)
     {
-        setParamValue(fFreqLabel, midiToFreq(pitch));
-        setParamValue(fGainLabel, float(velocity)/127.f);
+        setParamValue(fFreqPath, midiToFreq(pitch));
+        setParamValue(fGainPath, float(velocity)/127.f);
         fNote = pitch;
         fTrigger = true; // so that envelop is always re-initialized
     }
     
+    // Normalized MIDI velocity [0..1]
     void keyOn(int pitch, float velocity)
     {
-        setParamValue(fFreqLabel, midiToFreq(pitch));
-        setParamValue(fGainLabel, velocity);
+        setParamValue(fFreqPath, midiToFreq(pitch));
+        setParamValue(fGainPath, velocity);
         fNote = pitch;
         fTrigger = true; // so that envelop is always re-initialized
     }
@@ -4682,9 +4783,9 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     void keyOff(bool hard = false)
     {
         // No use of velocity for now...
-        setParamValue(fGateLabel, FAUSTFLOAT(0));
+        setParamValue(fGatePath, FAUSTFLOAT(0));
         if (hard) {
-            // Stops immediately
+            // Stop immediately
             fNote = kFreeVoice;
             fTrigger = false;
         } else {
@@ -4696,7 +4797,7 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     void play(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
     {
         if (fTrigger) {
-            // New note, so re-trigger
+            // New note, so trigger it
             trigger(count, inputs, outputs);
         } else {
             // Compute the voice
@@ -4706,9 +4807,9 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     
     void trigger(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
     {
-        setParamValue(fGateLabel, FAUSTFLOAT(0));
+        setParamValue(fGatePath, FAUSTFLOAT(0));
         computeSlice(0, 1, inputs, outputs);
-        setParamValue(fGateLabel, FAUSTFLOAT(1));
+        setParamValue(fGatePath, FAUSTFLOAT(1));
         computeSlice(1, count - 1, inputs, outputs);
         fTrigger = false;
     }
@@ -5458,47 +5559,6 @@ class dsp_parallelizer : public dsp {
 
 using namespace std;
 
-struct MyMeta : public Meta, public std::map<std::string, std::string>
-{
-    void declare(const char* key, const char* value)
-    {
-        (*this)[key] = value;
-    }
-    const std::string get(const char* key, const char* def)
-    {
-        if (this->find(key) != this->end()) {
-            return (*this)[key];
-        } else {
-            return def;
-        }
-    }
-};
-
-static void analyseMeta(bool& midi_sync, int& nvoices)
-{
-    mydsp* tmp_dsp = new mydsp();
-    
-    JSONUI jsonui;
-    tmp_dsp->buildUserInterface(&jsonui);
-    std::string json = jsonui.JSON();
-    midi_sync = ((json.find("midi") != std::string::npos) &&
-                 ((json.find("start") != std::string::npos) ||
-                  (json.find("stop") != std::string::npos) ||
-                  (json.find("clock") != std::string::npos)));
-    
-#ifdef NVOICES
-    nvoices = NVOICES;
-#else
-    MyMeta meta;
-    tmp_dsp->metadata(&meta);
-    std::string numVoices = meta.get("nvoices", "0");
-    nvoices = atoi(numVoices.c_str());
-    if (nvoices < 0) nvoices = 0;
-#endif
-    
-    delete tmp_dsp;
-}
-
 class FaustPolyEngine {
         
     protected:
@@ -5523,11 +5583,11 @@ class FaustPolyEngine {
             bool midi_sync = false;
             int nvoices = 1;
             
+            mydsp* mono_dsp = new mydsp();
+            MidiMeta::analyse(mono_dsp, midi_sync, nvoices);
+            
             fDriver = driver;
             fRunning = false;
-            mydsp* mono_dsp = new mydsp();
-            
-            analyseMeta(midi_sync, nvoices);
          
             // Getting the UI JSON
             JSONUI jsonui1(mono_dsp->getNumInputs(), mono_dsp->getNumOutputs());

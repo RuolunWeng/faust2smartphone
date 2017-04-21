@@ -15,10 +15,10 @@ import android.widget.TextView;
 
 import com.DspFaust.DspFaust;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
     private SensorManager sensorManager;
-    private Sensor accelerometer;
+    
     private SeekBar param1,param2;
     private TextView paramOut1,paramOut2;
 
@@ -83,20 +83,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        
     }
 
-    @Override
+    private final SensorEventListener mSensorListener = new SensorEventListener() {
+    
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    @Override
+    
     public void onSensorChanged(SensorEvent event) {
-        for (int i = 0 ;i<event.values.length;i++){
-            dspFaust.propagateAcc(i, event.values[i]);
-        }
+    
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            // Update mapping at sensor rate
+            dspFaust.propagateAcc(0, event.values[0]*(-1));
+            dspFaust.propagateAcc(1, event.values[1]*(-1));
+            dspFaust.propagateAcc(2, event.values[2]);
+            }
 
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            // Update mapping at sensor rate
+            dspFaust.propagateGyr(0, event.values[0]*(-1));
+            dspFaust.propagateGyr(1, event.values[1]*(-1));
+            dspFaust.propagateGyr(2, event.values[2]);
+            }
 
         // TODO: GET VALUE from FAUST
         float getParam1,getParam2;
@@ -108,12 +118,62 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         paramOut1.setText("Freq:"+getParam1+"Hz");
         paramOut2.setText("Volume:"+getParam2+"dB");
 
+        }
+    };
+
+
+    @Override
+    protected void onPause() {
+        Log.d("Faust", "onPause");
+        sensorManager.unregisterListener(mSensorListener);
+        super.onPause();
     }
 
     @Override
-    public void onDestroy(){
-        super.onDestroy();
-        dspFaust.stop();
+    protected void onResume() {
+        Log.d("Faust", "onResume");
+        super.onResume();
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+        Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+        Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
     }
+
+    @Override
+    protected void onStart() {
+        Log.d("Faust", "onStart");
+        super.onStart();
+        if (!isChangingConfigurations()) {
+        dspFaust.start();
+
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d("Faust", "onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("Faust", "onStop");
+        super.onStop();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("Faust", "onDestroy");
+        // only stops audio when the user press the return button (and not when the screen is rotated)
+        if (!isChangingConfigurations()) {
+        //dspFaust.stop();
+        dspFaust.delete();
+
+        }
+        super.onDestroy();
+    }
+
 }
 

@@ -16,10 +16,20 @@ android {
             }
         }
     }
+    signingConfigs {
+        release {
+            storeFile file("tools/faust2smartphone.jks")
+            storePassword "faust2smartphone"
+            keyAlias "faust2smartphone"
+            keyPassword "faust2smartphone"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     externalNativeBuild {

@@ -1,4 +1,3 @@
-#define OSCCTRL 1
 //----------------------------------------------------------
 // name: "osc"
 // version: "1.0"
@@ -6,7 +5,7 @@
 // license: "BSD"
 // copyright: "(c)GRAME 2009"
 //
-// Code generated with Faust 0.9.96 (http://faust.grame.fr)
+// Code generated with Faust 0.9.96ec (http://faust.grame.fr)
 //----------------------------------------------------------
 
 /* link with  */
@@ -1089,6 +1088,715 @@ class MapUI : public UI, public PathBuilder
 };
 
 #endif // FAUST_MAPUI_H
+/************************************************************************
+    FAUST Architecture File
+    Copyright (C) 2003-2016 GRAME, Centre National de Creation Musicale
+    ---------------------------------------------------------------------
+    This Architecture section is free software; you can redistribute it
+    and/or modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 3 of
+    the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; If not, see <http://www.gnu.org/licenses/>.
+
+    EXCEPTION : As a special exception, you may create a larger work
+    that contains this FAUST architecture section and distribute
+    that work under terms of your choice, so long as this FAUST
+    architecture section is not modified.
+
+ ************************************************************************
+ ************************************************************************/
+ 
+#ifndef FAUST_GUI_H
+#define FAUST_GUI_H
+
+/*
+  Copyright (C) 2000 Paul Davis
+  Copyright (C) 2003 Rohan Drape
+  Copyright (C) 2016 GRAME (renaming for internal use)
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation; either version 2.1 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+  ISO/POSIX C version of Paul Davis's lock free ringbuffer C++ code.
+  This is safe for the case of one read thread and one write thread.
+*/
+
+#ifndef __ring_buffer__
+#define __ring_buffer__
+
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char *buf;
+    size_t len;
+}
+ringbuffer_data_t;
+
+typedef struct {
+    char *buf;
+    volatile size_t write_ptr;
+    volatile size_t read_ptr;
+    size_t	size;
+    size_t	size_mask;
+    int	mlocked;
+}
+ringbuffer_t;
+
+ringbuffer_t *ringbuffer_create(size_t sz);
+void ringbuffer_free(ringbuffer_t *rb);
+void ringbuffer_get_read_vector(const ringbuffer_t *rb,
+                                         ringbuffer_data_t *vec);
+void ringbuffer_get_write_vector(const ringbuffer_t *rb,
+                                          ringbuffer_data_t *vec);
+size_t ringbuffer_read(ringbuffer_t *rb, char *dest, size_t cnt);
+size_t ringbuffer_peek(ringbuffer_t *rb, char *dest, size_t cnt);
+void ringbuffer_read_advance(ringbuffer_t *rb, size_t cnt);
+size_t ringbuffer_read_space(const ringbuffer_t *rb);
+int ringbuffer_mlock(ringbuffer_t *rb);
+void ringbuffer_reset(ringbuffer_t *rb);
+void ringbuffer_reset_size (ringbuffer_t * rb, size_t sz);
+size_t ringbuffer_write(ringbuffer_t *rb, const char *src,
+                                 size_t cnt);
+void ringbuffer_write_advance(ringbuffer_t *rb, size_t cnt);
+size_t ringbuffer_write_space(const ringbuffer_t *rb);
+
+/* Create a new ringbuffer to hold at least `sz' bytes of data. The
+   actual buffer size is rounded up to the next power of two.  */
+
+inline ringbuffer_t *
+ringbuffer_create (size_t sz)
+{
+	size_t power_of_two;
+	ringbuffer_t *rb;
+
+	if ((rb = (ringbuffer_t *) malloc (sizeof (ringbuffer_t))) == NULL) {
+		return NULL;
+	}
+
+	for (power_of_two = 1u; 1u << power_of_two < sz; power_of_two++);
+
+	rb->size = 1u << power_of_two;
+	rb->size_mask = rb->size;
+	rb->size_mask -= 1;
+	rb->write_ptr = 0;
+	rb->read_ptr = 0;
+	if ((rb->buf = (char *) malloc (rb->size)) == NULL) {
+		free (rb);
+		return NULL;
+	}
+	rb->mlocked = 0;
+
+	return rb;
+}
+
+/* Free all data associated with the ringbuffer `rb'. */
+
+inline void
+ringbuffer_free (ringbuffer_t * rb)
+{
+#ifdef USE_MLOCK
+	if (rb->mlocked) {
+		munlock (rb->buf, rb->size);
+	}
+#endif /* USE_MLOCK */
+	free (rb->buf);
+	free (rb);
+}
+
+/* Lock the data block of `rb' using the system call 'mlock'.  */
+
+inline int
+ringbuffer_mlock (ringbuffer_t * rb)
+{
+#ifdef USE_MLOCK
+	if (mlock (rb->buf, rb->size)) {
+		return -1;
+	}
+#endif /* USE_MLOCK */
+	rb->mlocked = 1;
+	return 0;
+}
+
+/* Reset the read and write pointers to zero. This is not thread
+   safe. */
+
+inline void
+ringbuffer_reset (ringbuffer_t * rb)
+{
+	rb->read_ptr = 0;
+	rb->write_ptr = 0;
+    memset(rb->buf, 0, rb->size);
+}
+
+/* Reset the read and write pointers to zero. This is not thread
+   safe. */
+
+inline void
+ringbuffer_reset_size (ringbuffer_t * rb, size_t sz)
+{
+    rb->size = sz;
+    rb->size_mask = rb->size;
+    rb->size_mask -= 1;
+    rb->read_ptr = 0;
+    rb->write_ptr = 0;
+}
+
+/* Return the number of bytes available for reading.  This is the
+   number of bytes in front of the read pointer and behind the write
+   pointer.  */
+
+inline size_t
+ringbuffer_read_space (const ringbuffer_t * rb)
+{
+	size_t w, r;
+
+	w = rb->write_ptr;
+	r = rb->read_ptr;
+
+	if (w > r) {
+		return w - r;
+	} else {
+		return (w - r + rb->size) & rb->size_mask;
+	}
+}
+
+/* Return the number of bytes available for writing.  This is the
+   number of bytes in front of the write pointer and behind the read
+   pointer.  */
+
+inline size_t
+ringbuffer_write_space (const ringbuffer_t * rb)
+{
+	size_t w, r;
+
+	w = rb->write_ptr;
+	r = rb->read_ptr;
+
+	if (w > r) {
+		return ((r - w + rb->size) & rb->size_mask) - 1;
+	} else if (w < r) {
+		return (r - w) - 1;
+	} else {
+		return rb->size - 1;
+	}
+}
+
+/* The copying data reader.  Copy at most `cnt' bytes from `rb' to
+   `dest'.  Returns the actual number of bytes copied. */
+
+inline size_t
+ringbuffer_read (ringbuffer_t * rb, char *dest, size_t cnt)
+{
+	size_t free_cnt;
+	size_t cnt2;
+	size_t to_read;
+	size_t n1, n2;
+
+	if ((free_cnt = ringbuffer_read_space (rb)) == 0) {
+		return 0;
+	}
+
+	to_read = cnt > free_cnt ? free_cnt : cnt;
+
+	cnt2 = rb->read_ptr + to_read;
+
+	if (cnt2 > rb->size) {
+		n1 = rb->size - rb->read_ptr;
+		n2 = cnt2 & rb->size_mask;
+	} else {
+		n1 = to_read;
+		n2 = 0;
+	}
+
+	memcpy (dest, &(rb->buf[rb->read_ptr]), n1);
+	rb->read_ptr = (rb->read_ptr + n1) & rb->size_mask;
+
+	if (n2) {
+		memcpy (dest + n1, &(rb->buf[rb->read_ptr]), n2);
+		rb->read_ptr = (rb->read_ptr + n2) & rb->size_mask;
+	}
+
+	return to_read;
+}
+
+/* The copying data reader w/o read pointer advance.  Copy at most
+   `cnt' bytes from `rb' to `dest'.  Returns the actual number of bytes
+   copied. */
+
+inline size_t
+ringbuffer_peek (ringbuffer_t * rb, char *dest, size_t cnt)
+{
+	size_t free_cnt;
+	size_t cnt2;
+	size_t to_read;
+	size_t n1, n2;
+	size_t tmp_read_ptr;
+
+	tmp_read_ptr = rb->read_ptr;
+
+	if ((free_cnt = ringbuffer_read_space (rb)) == 0) {
+		return 0;
+	}
+
+	to_read = cnt > free_cnt ? free_cnt : cnt;
+
+	cnt2 = tmp_read_ptr + to_read;
+
+	if (cnt2 > rb->size) {
+		n1 = rb->size - tmp_read_ptr;
+		n2 = cnt2 & rb->size_mask;
+	} else {
+		n1 = to_read;
+		n2 = 0;
+	}
+
+	memcpy (dest, &(rb->buf[tmp_read_ptr]), n1);
+	tmp_read_ptr = (tmp_read_ptr + n1) & rb->size_mask;
+
+	if (n2) {
+		memcpy (dest + n1, &(rb->buf[tmp_read_ptr]), n2);
+	}
+
+	return to_read;
+}
+
+/* The copying data writer.  Copy at most `cnt' bytes to `rb' from
+   `src'.  Returns the actual number of bytes copied. */
+
+inline size_t
+ringbuffer_write (ringbuffer_t * rb, const char *src, size_t cnt)
+{
+	size_t free_cnt;
+	size_t cnt2;
+	size_t to_write;
+	size_t n1, n2;
+
+	if ((free_cnt = ringbuffer_write_space (rb)) == 0) {
+		return 0;
+	}
+
+	to_write = cnt > free_cnt ? free_cnt : cnt;
+
+	cnt2 = rb->write_ptr + to_write;
+
+	if (cnt2 > rb->size) {
+		n1 = rb->size - rb->write_ptr;
+		n2 = cnt2 & rb->size_mask;
+	} else {
+		n1 = to_write;
+		n2 = 0;
+	}
+
+	memcpy (&(rb->buf[rb->write_ptr]), src, n1);
+	rb->write_ptr = (rb->write_ptr + n1) & rb->size_mask;
+
+	if (n2) {
+		memcpy (&(rb->buf[rb->write_ptr]), src + n1, n2);
+		rb->write_ptr = (rb->write_ptr + n2) & rb->size_mask;
+	}
+
+	return to_write;
+}
+
+/* Advance the read pointer `cnt' places. */
+
+inline void
+ringbuffer_read_advance (ringbuffer_t * rb, size_t cnt)
+{
+	size_t tmp = (rb->read_ptr + cnt) & rb->size_mask;
+	rb->read_ptr = tmp;
+}
+
+/* Advance the write pointer `cnt' places. */
+
+inline void
+ringbuffer_write_advance (ringbuffer_t * rb, size_t cnt)
+{
+	size_t tmp = (rb->write_ptr + cnt) & rb->size_mask;
+	rb->write_ptr = tmp;
+}
+
+/* The non-copying data reader.  `vec' is an array of two places.  Set
+   the values at `vec' to hold the current readable data at `rb'.  If
+   the readable data is in one segment the second segment has zero
+   length.  */
+
+inline void
+ringbuffer_get_read_vector (const ringbuffer_t * rb,
+				 ringbuffer_data_t * vec)
+{
+	size_t free_cnt;
+	size_t cnt2;
+	size_t w, r;
+
+	w = rb->write_ptr;
+	r = rb->read_ptr;
+
+	if (w > r) {
+		free_cnt = w - r;
+	} else {
+		free_cnt = (w - r + rb->size) & rb->size_mask;
+	}
+
+	cnt2 = r + free_cnt;
+
+	if (cnt2 > rb->size) {
+
+		/* Two part vector: the rest of the buffer after the current write
+		   ptr, plus some from the start of the buffer. */
+
+		vec[0].buf = &(rb->buf[r]);
+		vec[0].len = rb->size - r;
+		vec[1].buf = rb->buf;
+		vec[1].len = cnt2 & rb->size_mask;
+
+	} else {
+
+		/* Single part vector: just the rest of the buffer */
+
+		vec[0].buf = &(rb->buf[r]);
+		vec[0].len = free_cnt;
+		vec[1].len = 0;
+	}
+}
+
+/* The non-copying data writer.  `vec' is an array of two places.  Set
+   the values at `vec' to hold the current writeable data at `rb'.  If
+   the writeable data is in one segment the second segment has zero
+   length.  */
+
+inline void
+ringbuffer_get_write_vector (const ringbuffer_t * rb,
+				  ringbuffer_data_t * vec)
+{
+	size_t free_cnt;
+	size_t cnt2;
+	size_t w, r;
+
+	w = rb->write_ptr;
+	r = rb->read_ptr;
+
+	if (w > r) {
+		free_cnt = ((r - w + rb->size) & rb->size_mask) - 1;
+	} else if (w < r) {
+		free_cnt = (r - w) - 1;
+	} else {
+		free_cnt = rb->size - 1;
+	}
+
+	cnt2 = w + free_cnt;
+
+	if (cnt2 > rb->size) {
+
+		/* Two part vector: the rest of the buffer after the current write
+		   ptr, plus some from the start of the buffer. */
+
+		vec[0].buf = &(rb->buf[w]);
+		vec[0].len = rb->size - w;
+		vec[1].buf = rb->buf;
+		vec[1].len = cnt2 & rb->size_mask;
+	} else {
+		vec[0].buf = &(rb->buf[w]);
+		vec[0].len = free_cnt;
+		vec[1].len = 0;
+	}
+}
+
+#endif // __ring_buffer__
+
+#include <list>
+#include <map>
+#include <vector>
+
+/*******************************************************************************
+ * GUI : Abstract Graphic User Interface
+ * Provides additional mechanisms to synchronize widgets and zones. Widgets
+ * should both reflect the value of a zone and allow to change this value.
+ ******************************************************************************/
+
+class uiItem;
+typedef void (*uiCallback)(FAUSTFLOAT val, void* data);
+
+class clist : public std::list<uiItem*>
+{
+    public:
+    
+        virtual ~clist();
+        
+};
+
+typedef std::map<FAUSTFLOAT*, clist*> zmap;
+
+typedef std::map<FAUSTFLOAT*, ringbuffer_t*> ztimedmap;
+
+class GUI : public UI
+{
+		
+    private:
+     
+        static std::list<GUI*>  fGuiList;
+        zmap                    fZoneMap;
+        bool                    fStopped;
+        
+     public:
+            
+        GUI() : fStopped(false) 
+        {	
+            fGuiList.push_back(this);
+        }
+        
+        virtual ~GUI() 
+        {   
+            // delete all 
+            zmap::iterator g;
+            for (g = fZoneMap.begin(); g != fZoneMap.end(); g++) {
+                delete (*g).second;
+            }
+            // suppress 'this' in static fGuiList
+            fGuiList.remove(this);
+        }
+
+        // -- registerZone(z,c) : zone management
+        
+        void registerZone(FAUSTFLOAT* z, uiItem* c)
+        {
+            if (fZoneMap.find(z) == fZoneMap.end()) fZoneMap[z] = new clist();
+            fZoneMap[z]->push_back(c);
+        }
+
+        void updateAllZones();
+        
+        void updateZone(FAUSTFLOAT* z);
+        
+        static void updateAllGuis()
+        {
+            std::list<GUI*>::iterator g;
+            for (g = fGuiList.begin(); g != fGuiList.end(); g++) {
+                (*g)->updateAllZones();
+            }
+        }
+        void addCallback(FAUSTFLOAT* zone, uiCallback foo, void* data);
+        virtual void show() {};	
+        virtual bool run() { return false; };
+    
+        virtual void stop() { fStopped = true; }
+        bool stopped() { return fStopped; }
+    
+        // -- widget's layouts
+        
+        virtual void openTabBox(const char* label) {};
+        virtual void openHorizontalBox(const char* label) {}
+        virtual void openVerticalBox(const char* label) {}
+        virtual void closeBox() {}
+        
+        // -- active widgets
+        
+        virtual void addButton(const char* label, FAUSTFLOAT* zone) {}
+        virtual void addCheckButton(const char* label, FAUSTFLOAT* zone) {}
+        virtual void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step) {}
+        virtual void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step) {}
+        virtual void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step) {}
+    
+        // -- passive widgets
+        
+        virtual void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max) {}
+        virtual void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max) {}
+    
+        // -- metadata declarations
+
+        virtual void declare(FAUSTFLOAT* , const char* , const char*) {}
+    
+        // Static global for timed zones, shared between all UI that will set timed values
+        static ztimedmap gTimedZoneMap;
+
+};
+
+/**
+ * User Interface Item: abstract definition
+ */
+
+class uiItem
+{
+    protected:
+          
+        GUI*            fGUI;
+        FAUSTFLOAT*     fZone;
+        FAUSTFLOAT      fCache;
+
+        uiItem(GUI* ui, FAUSTFLOAT* zone):fGUI(ui), fZone(zone), fCache(FAUSTFLOAT(-123456.654321))
+        { 
+            ui->registerZone(zone, this); 
+        }
+
+    public:
+
+        virtual ~uiItem() 
+        {}
+
+        void modifyZone(FAUSTFLOAT v) 	
+        { 
+            fCache = v;
+            if (*fZone != v) {
+                *fZone = v;
+                fGUI->updateZone(fZone);
+            }
+        }
+                
+        FAUSTFLOAT		cache()	{ return fCache; }
+        virtual void 	reflectZone() = 0;	
+};
+
+/**
+ * User Interface item owned (and so deleted) by external code
+ */
+
+class uiOwnedItem : public uiItem {
+    
+    protected:
+    
+        uiOwnedItem(GUI* ui, FAUSTFLOAT* zone):uiItem(ui, zone)
+        {}
+    
+     public:
+    
+        virtual ~uiOwnedItem()
+        {}
+    
+        virtual void reflectZone() {}
+};
+
+/**
+ * Callback Item
+ */
+
+struct uiCallbackItem : public uiItem
+{
+	uiCallback	fCallback;
+	void*		fData;
+	
+	uiCallbackItem(GUI* ui, FAUSTFLOAT* zone, uiCallback foo, void* data) 
+			: uiItem(ui, zone), fCallback(foo), fData(data) {}
+	
+	virtual void reflectZone() 
+    {		
+		FAUSTFLOAT 	v = *fZone;
+		fCache = v; 
+		fCallback(v, fData);	
+	}
+};
+
+/**
+ * Allows to group a set of zones.
+ */
+ 
+class uiGroupItem : public uiItem 
+{
+    protected:
+    
+        std::vector<FAUSTFLOAT*> fZoneMap;
+
+    public:
+    
+        uiGroupItem(GUI* ui, FAUSTFLOAT* zone):uiItem(ui, zone)
+        {}
+        virtual ~uiGroupItem() 
+        {}
+        
+        virtual void reflectZone() 
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            
+            // Update all zones of the same group
+            std::vector<FAUSTFLOAT*>::iterator it;
+            for (it = fZoneMap.begin(); it != fZoneMap.end(); it++) {
+                (*(*it)) = v;
+            }
+        }
+        
+        void addZone(FAUSTFLOAT* zone) { fZoneMap.push_back(zone); }
+
+};
+
+/**
+ * Update all user items reflecting zone z
+ */
+
+inline void GUI::updateZone(FAUSTFLOAT* z)
+{
+	FAUSTFLOAT v = *z;
+	clist* l = fZoneMap[z];
+	for (clist::iterator c = l->begin(); c != l->end(); c++) {
+		if ((*c)->cache() != v) (*c)->reflectZone();
+	}
+}
+
+/**
+ * Update all user items not up to date
+ */
+
+inline void GUI::updateAllZones()
+{
+	for (zmap::iterator m = fZoneMap.begin(); m != fZoneMap.end(); m++) {
+		FAUSTFLOAT* z = m->first;
+		clist*	l = m->second;
+        if (z) {
+            FAUSTFLOAT	v = *z;
+            for (clist::iterator c = l->begin(); c != l->end(); c++) {
+                if ((*c)->cache() != v) (*c)->reflectZone();
+            }
+        }
+	}
+}
+
+inline void GUI::addCallback(FAUSTFLOAT* zone, uiCallback foo, void* data) 
+{ 
+	new uiCallbackItem(this, zone, foo, data); 
+};
+
+inline clist::~clist() 
+{
+    std::list<uiItem*>::iterator it;
+    for (it = begin(); it != end(); it++) {
+        uiOwnedItem* owned = dynamic_cast<uiOwnedItem*>(*it);
+        // owned items are deleted by external code
+        if (!owned) {
+            delete (*it);
+        }
+    }
+}
+
+// For precise timestamped control
+struct DatedControl {
+
+    double fDate;
+    FAUSTFLOAT fValue;
+    
+    DatedControl(double d = 0., FAUSTFLOAT v = FAUSTFLOAT(0)):fDate(d), fValue(v) {}
+
+};
+  
+#endif
+
 #if OSCCTRL
 /************************************************************************
     FAUST Architecture File
@@ -1788,692 +2496,6 @@ class Message
 } // end namespoace
 
 #endif
-/************************************************************************
-    FAUST Architecture File
-    Copyright (C) 2003-2016 GRAME, Centre National de Creation Musicale
-    ---------------------------------------------------------------------
-    This Architecture section is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 3 of
-    the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; If not, see <http://www.gnu.org/licenses/>.
-
-    EXCEPTION : As a special exception, you may create a larger work
-    that contains this FAUST architecture section and distribute
-    that work under terms of your choice, so long as this FAUST
-    architecture section is not modified.
-
- ************************************************************************
- ************************************************************************/
- 
-#ifndef FAUST_GUI_H
-#define FAUST_GUI_H
-
-/*
-  Copyright (C) 2000 Paul Davis
-  Copyright (C) 2003 Rohan Drape
-  Copyright (C) 2016 GRAME (renaming for internal use)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU Lesser General Public License as published by
-  the Free Software Foundation; either version 2.1 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
-  ISO/POSIX C version of Paul Davis's lock free ringbuffer C++ code.
-  This is safe for the case of one read thread and one write thread.
-*/
-
-#ifndef __ring_buffer__
-#define __ring_buffer__
-
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct {
-    char *buf;
-    size_t len;
-}
-ringbuffer_data_t;
-
-typedef struct {
-    char *buf;
-    volatile size_t write_ptr;
-    volatile size_t read_ptr;
-    size_t	size;
-    size_t	size_mask;
-    int	mlocked;
-}
-ringbuffer_t;
-
-ringbuffer_t *ringbuffer_create(size_t sz);
-void ringbuffer_free(ringbuffer_t *rb);
-void ringbuffer_get_read_vector(const ringbuffer_t *rb,
-                                         ringbuffer_data_t *vec);
-void ringbuffer_get_write_vector(const ringbuffer_t *rb,
-                                          ringbuffer_data_t *vec);
-size_t ringbuffer_read(ringbuffer_t *rb, char *dest, size_t cnt);
-size_t ringbuffer_peek(ringbuffer_t *rb, char *dest, size_t cnt);
-void ringbuffer_read_advance(ringbuffer_t *rb, size_t cnt);
-size_t ringbuffer_read_space(const ringbuffer_t *rb);
-int ringbuffer_mlock(ringbuffer_t *rb);
-void ringbuffer_reset(ringbuffer_t *rb);
-void ringbuffer_reset_size (ringbuffer_t * rb, size_t sz);
-size_t ringbuffer_write(ringbuffer_t *rb, const char *src,
-                                 size_t cnt);
-void ringbuffer_write_advance(ringbuffer_t *rb, size_t cnt);
-size_t ringbuffer_write_space(const ringbuffer_t *rb);
-
-/* Create a new ringbuffer to hold at least `sz' bytes of data. The
-   actual buffer size is rounded up to the next power of two.  */
-
-inline ringbuffer_t *
-ringbuffer_create (size_t sz)
-{
-	size_t power_of_two;
-	ringbuffer_t *rb;
-
-	if ((rb = (ringbuffer_t *) malloc (sizeof (ringbuffer_t))) == NULL) {
-		return NULL;
-	}
-
-	for (power_of_two = 1u; 1u << power_of_two < sz; power_of_two++);
-
-	rb->size = 1u << power_of_two;
-	rb->size_mask = rb->size;
-	rb->size_mask -= 1;
-	rb->write_ptr = 0;
-	rb->read_ptr = 0;
-	if ((rb->buf = (char *) malloc (rb->size)) == NULL) {
-		free (rb);
-		return NULL;
-	}
-	rb->mlocked = 0;
-
-	return rb;
-}
-
-/* Free all data associated with the ringbuffer `rb'. */
-
-inline void
-ringbuffer_free (ringbuffer_t * rb)
-{
-#ifdef USE_MLOCK
-	if (rb->mlocked) {
-		munlock (rb->buf, rb->size);
-	}
-#endif /* USE_MLOCK */
-	free (rb->buf);
-	free (rb);
-}
-
-/* Lock the data block of `rb' using the system call 'mlock'.  */
-
-inline int
-ringbuffer_mlock (ringbuffer_t * rb)
-{
-#ifdef USE_MLOCK
-	if (mlock (rb->buf, rb->size)) {
-		return -1;
-	}
-#endif /* USE_MLOCK */
-	rb->mlocked = 1;
-	return 0;
-}
-
-/* Reset the read and write pointers to zero. This is not thread
-   safe. */
-
-inline void
-ringbuffer_reset (ringbuffer_t * rb)
-{
-	rb->read_ptr = 0;
-	rb->write_ptr = 0;
-    memset(rb->buf, 0, rb->size);
-}
-
-/* Reset the read and write pointers to zero. This is not thread
-   safe. */
-
-inline void
-ringbuffer_reset_size (ringbuffer_t * rb, size_t sz)
-{
-    rb->size = sz;
-    rb->size_mask = rb->size;
-    rb->size_mask -= 1;
-    rb->read_ptr = 0;
-    rb->write_ptr = 0;
-}
-
-/* Return the number of bytes available for reading.  This is the
-   number of bytes in front of the read pointer and behind the write
-   pointer.  */
-
-inline size_t
-ringbuffer_read_space (const ringbuffer_t * rb)
-{
-	size_t w, r;
-
-	w = rb->write_ptr;
-	r = rb->read_ptr;
-
-	if (w > r) {
-		return w - r;
-	} else {
-		return (w - r + rb->size) & rb->size_mask;
-	}
-}
-
-/* Return the number of bytes available for writing.  This is the
-   number of bytes in front of the write pointer and behind the read
-   pointer.  */
-
-inline size_t
-ringbuffer_write_space (const ringbuffer_t * rb)
-{
-	size_t w, r;
-
-	w = rb->write_ptr;
-	r = rb->read_ptr;
-
-	if (w > r) {
-		return ((r - w + rb->size) & rb->size_mask) - 1;
-	} else if (w < r) {
-		return (r - w) - 1;
-	} else {
-		return rb->size - 1;
-	}
-}
-
-/* The copying data reader.  Copy at most `cnt' bytes from `rb' to
-   `dest'.  Returns the actual number of bytes copied. */
-
-inline size_t
-ringbuffer_read (ringbuffer_t * rb, char *dest, size_t cnt)
-{
-	size_t free_cnt;
-	size_t cnt2;
-	size_t to_read;
-	size_t n1, n2;
-
-	if ((free_cnt = ringbuffer_read_space (rb)) == 0) {
-		return 0;
-	}
-
-	to_read = cnt > free_cnt ? free_cnt : cnt;
-
-	cnt2 = rb->read_ptr + to_read;
-
-	if (cnt2 > rb->size) {
-		n1 = rb->size - rb->read_ptr;
-		n2 = cnt2 & rb->size_mask;
-	} else {
-		n1 = to_read;
-		n2 = 0;
-	}
-
-	memcpy (dest, &(rb->buf[rb->read_ptr]), n1);
-	rb->read_ptr = (rb->read_ptr + n1) & rb->size_mask;
-
-	if (n2) {
-		memcpy (dest + n1, &(rb->buf[rb->read_ptr]), n2);
-		rb->read_ptr = (rb->read_ptr + n2) & rb->size_mask;
-	}
-
-	return to_read;
-}
-
-/* The copying data reader w/o read pointer advance.  Copy at most
-   `cnt' bytes from `rb' to `dest'.  Returns the actual number of bytes
-   copied. */
-
-inline size_t
-ringbuffer_peek (ringbuffer_t * rb, char *dest, size_t cnt)
-{
-	size_t free_cnt;
-	size_t cnt2;
-	size_t to_read;
-	size_t n1, n2;
-	size_t tmp_read_ptr;
-
-	tmp_read_ptr = rb->read_ptr;
-
-	if ((free_cnt = ringbuffer_read_space (rb)) == 0) {
-		return 0;
-	}
-
-	to_read = cnt > free_cnt ? free_cnt : cnt;
-
-	cnt2 = tmp_read_ptr + to_read;
-
-	if (cnt2 > rb->size) {
-		n1 = rb->size - tmp_read_ptr;
-		n2 = cnt2 & rb->size_mask;
-	} else {
-		n1 = to_read;
-		n2 = 0;
-	}
-
-	memcpy (dest, &(rb->buf[tmp_read_ptr]), n1);
-	tmp_read_ptr = (tmp_read_ptr + n1) & rb->size_mask;
-
-	if (n2) {
-		memcpy (dest + n1, &(rb->buf[tmp_read_ptr]), n2);
-	}
-
-	return to_read;
-}
-
-/* The copying data writer.  Copy at most `cnt' bytes to `rb' from
-   `src'.  Returns the actual number of bytes copied. */
-
-inline size_t
-ringbuffer_write (ringbuffer_t * rb, const char *src, size_t cnt)
-{
-	size_t free_cnt;
-	size_t cnt2;
-	size_t to_write;
-	size_t n1, n2;
-
-	if ((free_cnt = ringbuffer_write_space (rb)) == 0) {
-		return 0;
-	}
-
-	to_write = cnt > free_cnt ? free_cnt : cnt;
-
-	cnt2 = rb->write_ptr + to_write;
-
-	if (cnt2 > rb->size) {
-		n1 = rb->size - rb->write_ptr;
-		n2 = cnt2 & rb->size_mask;
-	} else {
-		n1 = to_write;
-		n2 = 0;
-	}
-
-	memcpy (&(rb->buf[rb->write_ptr]), src, n1);
-	rb->write_ptr = (rb->write_ptr + n1) & rb->size_mask;
-
-	if (n2) {
-		memcpy (&(rb->buf[rb->write_ptr]), src + n1, n2);
-		rb->write_ptr = (rb->write_ptr + n2) & rb->size_mask;
-	}
-
-	return to_write;
-}
-
-/* Advance the read pointer `cnt' places. */
-
-inline void
-ringbuffer_read_advance (ringbuffer_t * rb, size_t cnt)
-{
-	size_t tmp = (rb->read_ptr + cnt) & rb->size_mask;
-	rb->read_ptr = tmp;
-}
-
-/* Advance the write pointer `cnt' places. */
-
-inline void
-ringbuffer_write_advance (ringbuffer_t * rb, size_t cnt)
-{
-	size_t tmp = (rb->write_ptr + cnt) & rb->size_mask;
-	rb->write_ptr = tmp;
-}
-
-/* The non-copying data reader.  `vec' is an array of two places.  Set
-   the values at `vec' to hold the current readable data at `rb'.  If
-   the readable data is in one segment the second segment has zero
-   length.  */
-
-inline void
-ringbuffer_get_read_vector (const ringbuffer_t * rb,
-				 ringbuffer_data_t * vec)
-{
-	size_t free_cnt;
-	size_t cnt2;
-	size_t w, r;
-
-	w = rb->write_ptr;
-	r = rb->read_ptr;
-
-	if (w > r) {
-		free_cnt = w - r;
-	} else {
-		free_cnt = (w - r + rb->size) & rb->size_mask;
-	}
-
-	cnt2 = r + free_cnt;
-
-	if (cnt2 > rb->size) {
-
-		/* Two part vector: the rest of the buffer after the current write
-		   ptr, plus some from the start of the buffer. */
-
-		vec[0].buf = &(rb->buf[r]);
-		vec[0].len = rb->size - r;
-		vec[1].buf = rb->buf;
-		vec[1].len = cnt2 & rb->size_mask;
-
-	} else {
-
-		/* Single part vector: just the rest of the buffer */
-
-		vec[0].buf = &(rb->buf[r]);
-		vec[0].len = free_cnt;
-		vec[1].len = 0;
-	}
-}
-
-/* The non-copying data writer.  `vec' is an array of two places.  Set
-   the values at `vec' to hold the current writeable data at `rb'.  If
-   the writeable data is in one segment the second segment has zero
-   length.  */
-
-inline void
-ringbuffer_get_write_vector (const ringbuffer_t * rb,
-				  ringbuffer_data_t * vec)
-{
-	size_t free_cnt;
-	size_t cnt2;
-	size_t w, r;
-
-	w = rb->write_ptr;
-	r = rb->read_ptr;
-
-	if (w > r) {
-		free_cnt = ((r - w + rb->size) & rb->size_mask) - 1;
-	} else if (w < r) {
-		free_cnt = (r - w) - 1;
-	} else {
-		free_cnt = rb->size - 1;
-	}
-
-	cnt2 = w + free_cnt;
-
-	if (cnt2 > rb->size) {
-
-		/* Two part vector: the rest of the buffer after the current write
-		   ptr, plus some from the start of the buffer. */
-
-		vec[0].buf = &(rb->buf[w]);
-		vec[0].len = rb->size - w;
-		vec[1].buf = rb->buf;
-		vec[1].len = cnt2 & rb->size_mask;
-	} else {
-		vec[0].buf = &(rb->buf[w]);
-		vec[0].len = free_cnt;
-		vec[1].len = 0;
-	}
-}
-
-#endif // __ring_buffer__
-
-#include <list>
-#include <map>
-#include <vector>
-
-/*******************************************************************************
- * GUI : Abstract Graphic User Interface
- * Provides additional mechanisms to synchronize widgets and zones. Widgets
- * should both reflect the value of a zone and allow to change this value.
- ******************************************************************************/
-
-class uiItem;
-typedef void (*uiCallback)(FAUSTFLOAT val, void* data);
-
-class clist : public std::list<uiItem*>
-{
-    public:
-    
-        virtual ~clist();
-        
-};
-
-typedef std::map<FAUSTFLOAT*, clist*> zmap;
-
-typedef std::map<FAUSTFLOAT*, ringbuffer_t*> ztimedmap;
-
-class GUI : public UI
-{
-		
-    private:
-     
-        static std::list<GUI*>  fGuiList;
-        zmap                    fZoneMap;
-        bool                    fStopped;
-        
-     public:
-            
-        GUI() : fStopped(false) 
-        {	
-            fGuiList.push_back(this);
-        }
-        
-        virtual ~GUI() 
-        {   
-            // delete all 
-            zmap::iterator g;
-            for (g = fZoneMap.begin(); g != fZoneMap.end(); g++) {
-                delete (*g).second;
-            }
-            // suppress 'this' in static fGuiList
-            fGuiList.remove(this);
-        }
-
-        // -- registerZone(z,c) : zone management
-        
-        void registerZone(FAUSTFLOAT* z, uiItem* c)
-        {
-            if (fZoneMap.find(z) == fZoneMap.end()) fZoneMap[z] = new clist();
-            fZoneMap[z]->push_back(c);
-        }
-
-        void updateAllZones();
-        
-        void updateZone(FAUSTFLOAT* z);
-        
-        static void updateAllGuis()
-        {
-            std::list<GUI*>::iterator g;
-            for (g = fGuiList.begin(); g != fGuiList.end(); g++) {
-                (*g)->updateAllZones();
-            }
-        }
-        void addCallback(FAUSTFLOAT* zone, uiCallback foo, void* data);
-        virtual void show() {};	
-        virtual bool run() { return false; };
-    
-        virtual void stop() { fStopped = true; }
-        bool stopped() { return fStopped; }
-
-        virtual void declare(FAUSTFLOAT* , const char* , const char*) {}
-        
-        // Static global for timed zones, shared between all UI that will set timed values
-        static ztimedmap gTimedZoneMap;
-
-};
-
-/**
- * User Interface Item: abstract definition
- */
-
-class uiItem
-{
-    protected:
-          
-        GUI*            fGUI;
-        FAUSTFLOAT*     fZone;
-        FAUSTFLOAT      fCache;
-
-        uiItem(GUI* ui, FAUSTFLOAT* zone):fGUI(ui), fZone(zone), fCache(FAUSTFLOAT(-123456.654321))
-        { 
-            ui->registerZone(zone, this); 
-        }
-
-    public:
-
-        virtual ~uiItem() 
-        {}
-
-        void modifyZone(FAUSTFLOAT v) 	
-        { 
-            fCache = v;
-            if (*fZone != v) {
-                *fZone = v;
-                fGUI->updateZone(fZone);
-            }
-        }
-                
-        FAUSTFLOAT		cache()	{ return fCache; }
-        virtual void 	reflectZone() = 0;	
-};
-
-/**
- * User Interface item owned (and so deleted) by external code
- */
-
-class uiOwnedItem : public uiItem {
-    
-    protected:
-    
-        uiOwnedItem(GUI* ui, FAUSTFLOAT* zone):uiItem(ui, zone)
-        {}
-    
-     public:
-    
-        virtual ~uiOwnedItem()
-        {}
-    
-        virtual void reflectZone() {}
-};
-
-/**
- * Callback Item
- */
-
-struct uiCallbackItem : public uiItem
-{
-	uiCallback	fCallback;
-	void*		fData;
-	
-	uiCallbackItem(GUI* ui, FAUSTFLOAT* zone, uiCallback foo, void* data) 
-			: uiItem(ui, zone), fCallback(foo), fData(data) {}
-	
-	virtual void reflectZone() 
-    {		
-		FAUSTFLOAT 	v = *fZone;
-		fCache = v; 
-		fCallback(v, fData);	
-	}
-};
-
-/**
- * Allows to group a set of zones.
- */
- 
-class uiGroupItem : public uiItem 
-{
-    protected:
-    
-        std::vector<FAUSTFLOAT*> fZoneMap;
-
-    public:
-    
-        uiGroupItem(GUI* ui, FAUSTFLOAT* zone):uiItem(ui, zone)
-        {}
-        virtual ~uiGroupItem() 
-        {}
-        
-        virtual void reflectZone() 
-        {
-            FAUSTFLOAT v = *fZone;
-            fCache = v;
-            
-            // Update all zones of the same group
-            std::vector<FAUSTFLOAT*>::iterator it;
-            for (it = fZoneMap.begin(); it != fZoneMap.end(); it++) {
-                (*(*it)) = v;
-            }
-        }
-        
-        void addZone(FAUSTFLOAT* zone) { fZoneMap.push_back(zone); }
-
-};
-
-/**
- * Update all user items reflecting zone z
- */
-
-inline void GUI::updateZone(FAUSTFLOAT* z)
-{
-	FAUSTFLOAT v = *z;
-	clist* l = fZoneMap[z];
-	for (clist::iterator c = l->begin(); c != l->end(); c++) {
-		if ((*c)->cache() != v) (*c)->reflectZone();
-	}
-}
-
-/**
- * Update all user items not up to date
- */
-
-inline void GUI::updateAllZones()
-{
-	for (zmap::iterator m = fZoneMap.begin(); m != fZoneMap.end(); m++) {
-		FAUSTFLOAT* z = m->first;
-		clist*	l = m->second;
-        if (z) {
-            FAUSTFLOAT	v = *z;
-            for (clist::iterator c = l->begin(); c != l->end(); c++) {
-                if ((*c)->cache() != v) (*c)->reflectZone();
-            }
-        }
-	}
-}
-
-inline void GUI::addCallback(FAUSTFLOAT* zone, uiCallback foo, void* data) 
-{ 
-	new uiCallbackItem(this, zone, foo, data); 
-};
-
-inline clist::~clist() 
-{
-    std::list<uiItem*>::iterator it;
-    for (it = begin(); it != end(); it++) {
-        uiOwnedItem* owned = dynamic_cast<uiOwnedItem*>(*it);
-        // owned items are deleted by external code
-        if (!owned) {
-            delete (*it);
-        }
-    }
-}
-
-// For precise timestamped control
-struct DatedControl {
-
-    double fDate;
-    FAUSTFLOAT fValue;
-    
-    DatedControl(double d = 0., FAUSTFLOAT v = FAUSTFLOAT(0)):fDate(d), fValue(v) {}
-
-};
-  
-#endif
 /*
 
   Copyright (C) 2011 Grame
@@ -2986,8 +3008,6 @@ class mydsp : public dsp {
 
   public:
 	virtual void metadata(Meta* m) { 
-		m->declare("basics.lib/name", "Faust Basic Element Library");
-		m->declare("basics.lib/version", "0.0");
 		m->declare("name", "osc");
 		m->declare("version", "1.0");
 		m->declare("author", "Grame");
@@ -2997,6 +3017,8 @@ class mydsp : public dsp {
 		m->declare("oscillators.lib/version", "0.0");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/version", "0.0");
+		m->declare("basics.lib/name", "Faust Basic Element Library");
+		m->declare("basics.lib/version", "0.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
 		m->declare("signals.lib/version", "0.0");
 		m->declare("maths.lib/name", "Faust Math Library");
@@ -3049,12 +3071,17 @@ class mydsp : public dsp {
 		ui_interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
+		//zone1
+		//zone2
 		float 	fSlow0 = (fConst0 * float(fslider0));
 		float 	fSlow1 = sinf(fSlow0);
 		float 	fSlow2 = cosf(fSlow0);
 		float 	fSlow3 = (0 - fSlow1);
 		float 	fSlow4 = (0.001f * powf(10,(0.05f * float(fslider1))));
+		//zone2b
+		//zone3
 		FAUSTFLOAT* output0 = output[0];
+		//LoopGraphScalar
 		for (int i=0; i<count; i++) {
 			iVec0[0] = 1;
 			fRec0[0] = ((fSlow1 * fRec1[1]) + (fSlow2 * fRec0[1]));
@@ -3277,6 +3304,7 @@ ZoneReader(zone, valueConverter) : a zone with a data converter
 #include <algorithm>    // std::max
 #include <cmath>
 #include <vector>
+#include <assert.h>
 
 //--------------------------------------------------------------------------------------
 // Interpolator(lo,hi,v1,v2)
@@ -3299,7 +3327,7 @@ class Interpolator
             double fLo;
             double fHi;
 
-            Range(double x, double y) : fLo(std::min(x,y)), fHi(std::max(x,y)) {}
+            Range(double x, double y) : fLo(std::min<double>(x,y)), fHi(std::max<double>(x,y)) {}
             double operator()(double x) { return (x<fLo) ? fLo : (x>fHi) ? fHi : x; }
         };
 
@@ -3410,11 +3438,11 @@ class LogValueConverter : public LinearValueConverter
     public:
 
         LogValueConverter(double umin, double umax, double fmin, double fmax) :
-            LinearValueConverter(umin, umax, log(std::max(DBL_MIN,fmin)), log(std::max(DBL_MIN,fmax)))
+            LinearValueConverter(umin, umax, log(std::max<double>(DBL_MIN, fmin)), log(std::max<double>(DBL_MIN, fmax)))
         {}
 
         virtual double ui2faust(double x) 	{ return exp(LinearValueConverter::ui2faust(x)); }
-        virtual double faust2ui(double x)	{ return LinearValueConverter::faust2ui(log(std::max(x, DBL_MIN))); }
+        virtual double faust2ui(double x)	{ return LinearValueConverter::faust2ui(log(std::max<double>(x, DBL_MIN))); }
 
 };
 
@@ -3667,6 +3695,7 @@ class CurveZoneControl : public ZoneControl
 
         CurveZoneControl(FAUSTFLOAT* zone, int curve, double amin, double amid, double amax, double min, double init, double max) : ZoneControl(zone), fCurve(0)
         {
+            assert(curve >= 0 && curve <= 3);
             fValueConverters.push_back(new AccUpConverter(amin, amid, amax, min, init, max));
             fValueConverters.push_back(new AccDownConverter(amin, amid, amax, min, init, max));
             fValueConverters.push_back(new AccUpDownConverter(amin, amid, amax, min, init, max));
@@ -3735,26 +3764,26 @@ class ZoneReader
 #include <iostream>
 #include <map>
 
-enum { kLin = 0, kLog = 1, kExp = 2 };
-
 class APIUI : public PathBuilder, public Meta, public UI
 {
     protected:
-
+    
+        enum { kLin = 0, kLog = 1, kExp = 2 };
+    
         int fNumParameters;
-        std::vector<std::string>        fName;
-        std::map<std::string, int>      fPathMap;
-        std::map<std::string, int>      fLabelMap;
-        std::vector<ValueConverter*>    fConversion;
-        std::vector<FAUSTFLOAT*>        fZone;
-        std::vector<FAUSTFLOAT>         fInit;
-        std::vector<FAUSTFLOAT>         fMin;
-        std::vector<FAUSTFLOAT>         fMax;
-        std::vector<FAUSTFLOAT>         fStep;
-        std::vector<std::string>	fUnit;
-        std::vector<std::string>	fTooltip;
-        std::vector<ZoneControl*>	fAcc[3];
-        std::vector<ZoneControl*>	fGyr[3];
+        std::vector<std::string> fName;
+        std::map<std::string, int> fPathMap;
+        std::map<std::string, int> fLabelMap;
+        std::vector<ValueConverter*> fConversion;
+        std::vector<FAUSTFLOAT*> fZone;
+        std::vector<FAUSTFLOAT> fInit;
+        std::vector<FAUSTFLOAT> fMin;
+        std::vector<FAUSTFLOAT> fMax;
+        std::vector<FAUSTFLOAT> fStep;
+        std::vector<std::string> fUnit;
+        std::vector<std::string> fTooltip;
+        std::vector<ZoneControl*> fAcc[3];
+        std::vector<ZoneControl*> fGyr[3];
 
         // Screen color control
         // "...[screencolor:red]..." etc.
@@ -3798,11 +3827,15 @@ class APIUI : public PathBuilder, public Meta, public UI
 
             //handle scale metadata
             switch (fCurrentScale) {
-                case kLin : fConversion.push_back(new LinearValueConverter(0,1, min, max)); break;
-                case kLog : fConversion.push_back(new LogValueConverter(0,1, min, max)); break;
-                case kExp : fConversion.push_back(new ExpValueConverter(0,1, min, max)); break;
+                case kLin : fConversion.push_back(new LinearValueConverter(0, 1, min, max)); break;
+                case kLog : fConversion.push_back(new LogValueConverter(0, 1, min, max)); break;
+                case kExp : fConversion.push_back(new ExpValueConverter(0, 1, min, max)); break;
             }
             fCurrentScale = kLin;
+            
+            if (fCurrentAcc.size() > 0 && fCurrentGyr.size() > 0) {
+                std::cerr << "warning : 'acc' and 'gyr' metadata used for the same " << label << " parameter !!\n";
+            }
 
             // handle acc metadata "...[acc : <axe> <curve> <amin> <amid> <amax>]..."
             if (fCurrentAcc.size() > 0) {
@@ -3819,9 +3852,9 @@ class APIUI : public PathBuilder, public Meta, public UI
                 } else {
                     std::cerr << "incorrect acc metadata : " << fCurrentAcc << std::endl;
                 }
+                fCurrentAcc = "";
             }
-            fCurrentAcc = "";
-
+       
             // handle gyr metadata "...[gyr : <axe> <curve> <amin> <amid> <amax>]..."
             if (fCurrentGyr.size() > 0) {
                 std::istringstream iss(fCurrentGyr);
@@ -3837,9 +3870,9 @@ class APIUI : public PathBuilder, public Meta, public UI
                 } else {
                     std::cerr << "incorrect gyr metadata : " << fCurrentGyr << std::endl;
                 }
+                fCurrentGyr = "";
             }
-            fCurrentGyr = "";
-
+        
             // handle screencolor metadata "...[screencolor:red|green|blue]..."
             if (fCurrentColor.size() > 0) {
                 if ((fCurrentColor == "red") && (fRedReader == 0)) {
@@ -3907,15 +3940,15 @@ class APIUI : public PathBuilder, public Meta, public UI
             
             if (id1 != -1) {
                 val = 0;
-                curve = fAcc[val][id1]->getCurve();
+                curve = table[val][id1]->getCurve();
                 table[val][id1]->getMappingValues(amin, amid, amax);
             } else if (id2 != -1) {
                 val = 1;
-                curve = fAcc[val][id2]->getCurve();
+                curve = table[val][id2]->getCurve();
                 table[val][id2]->getMappingValues(amin, amid, amax);
             } else if (id3 != -1) {
                 val = 2;
-                curve = fAcc[val][id3]->getCurve();
+                curve = table[val][id3]->getCurve();
                 table[val][id3]->getMappingValues(amin, amid, amax);
             } else {
                 val = -1; // No mapping
@@ -3927,6 +3960,8 @@ class APIUI : public PathBuilder, public Meta, public UI
         }
 
      public:
+    
+        enum Type { kAcc = 0, kGyr = 1, kNoType };
 
         APIUI() : fNumParameters(0), fHasScreenControl(false), fRedReader(0), fGreenReader(0), fBlueReader(0)
         {}
@@ -3952,7 +3987,7 @@ class APIUI : public PathBuilder, public Meta, public UI
             delete fGreenReader;
             delete fBlueReader;
         }
-
+    
         // -- widget's layouts
 
         virtual void openTabBox(const char* label)          { fControlsLevel.push_back(label); }
@@ -4058,7 +4093,30 @@ class APIUI : public PathBuilder, public Meta, public UI
 
 		double value2ratio(int p, double r)	{ return fConversion[p]->faust2ui(r); }
 		double ratio2value(int p, double r)	{ return fConversion[p]->ui2faust(r); }
-
+    
+        /**
+         * Return the control type (kAcc, kGyr, or -1) for a given paramater
+         *
+         * @param p - the UI parameter index
+         *
+         * @return the type
+         */
+        Type getParamType(int p)
+        {
+            if (p >= 0) {
+                if (getZoneIndex(fAcc, p, 0) != -1
+                    || getZoneIndex(fAcc, p, 1) != -1
+                    || getZoneIndex(fAcc, p, 2) != -1) {
+                    return kAcc;
+                } else if (getZoneIndex(fGyr, p, 0) != -1
+                           || getZoneIndex(fGyr, p, 1) != -1
+                           || getZoneIndex(fGyr, p, 2) != -1) {
+                    return kGyr;
+                }
+            }
+            return kNoType;
+        }
+   
         /**
          * Set a new value coming from an accelerometer, propagate it to all relevant float* zones.
          *
@@ -4168,44 +4226,6 @@ class APIUI : public PathBuilder, public Meta, public UI
 };
 
 #endif
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- 
- ************************************************************************
- ************************************************************************/
-
-#ifndef __poly_dsp__
-#define __poly_dsp__
-
-#include <stdio.h>
-#include <string>
-#include <math.h>
-#include <float.h>
-#include <algorithm>
-#include <ostream>
-#include <sstream>
-#include <vector>
-#include <limits.h>
-
 /************************************************************************
     FAUST Architecture File
     Copyright (C) 2003-2016 GRAME, Centre National de Creation Musicale
@@ -4456,10 +4476,59 @@ class midi_handler : public midi {
 
 #endif // __midi__
 
+#ifdef _MSC_VER
+#define gsscanf sscanf_s
+#else
+#define gsscanf sscanf
+#endif
+
+/*****************************************************************************
+* Helper code for MIDI meta and polyphonic 'nvoices' parsing
+******************************************************************************/
+
+struct MidiMeta : public Meta, public std::map<std::string, std::string>
+{
+    void declare(const char* key, const char* value)
+    {
+        (*this)[key] = value;
+    }
+    
+    const std::string get(const char* key, const char* def)
+    {
+        if (this->find(key) != this->end()) {
+            return (*this)[key];
+        } else {
+            return def;
+        }
+    }
+    
+    static void analyse(dsp* tmp_dsp, bool& midi_sync, int& nvoices)
+    {
+        JSONUI jsonui;
+        tmp_dsp->buildUserInterface(&jsonui);
+        std::string json = jsonui.JSON();
+        midi_sync = ((json.find("midi") != std::string::npos) &&
+                     ((json.find("start") != std::string::npos) ||
+                      (json.find("stop") != std::string::npos) ||
+                      (json.find("clock") != std::string::npos)));
+    
+    #if defined(NVOICES) && NVOICES!=NUM_VOICES
+        nvoices = NVOICES;
+    #else
+        MidiMeta meta;
+        tmp_dsp->metadata(&meta);
+        std::string numVoices = meta.get("nvoices", "0");
+        nvoices = atoi(numVoices.c_str());
+        if (nvoices < 0) nvoices = 0;
+    #endif
+    }
+};
+
 /*******************************************************************************
  * MidiUI : Faust User Interface
  * This class decodes MIDI meta data and maps incoming MIDI messages to them.
- * Currently "ctrl, keyon, keypress, pgm, chanpress, pitchwheel/pitchbend meta data is handled.
+ * Currently ctrl, keyon/keyoff, keypress, pgm, chanpress, pitchwheel/pitchbend 
+ * start/stop/clock meta data is handled.
  ******************************************************************************/
  
 class uiMidiItem : public uiItem {
@@ -4510,7 +4579,7 @@ class uiMidiTimedItem : public uiMidiItem
             size_t res;
             DatedControl dated_val(date, v);
             if ((res = ringbuffer_write(GUI::gTimedZoneMap[fZone], (const char*)&dated_val, sizeof(DatedControl))) != sizeof(DatedControl)) {
-                std::cout << "ringbuffer_write error DatedControl" << std::endl;
+                std::cerr << "ringbuffer_write error DatedControl" << std::endl;
             }
         }
         
@@ -4682,13 +4751,15 @@ class uiMidiPitchWheel : public uiMidiItem
     private:
     	
 		// currently, the range is of pitchwheel if fixed (-2/2 semitones)
-		FAUSTFLOAT wheel2bend(float v){
-			return pow(2.0,(v/16383.0*4-2)/12);
-		}
+        FAUSTFLOAT wheel2bend(float v)
+        {
+            return pow(2.0,(v/16383.0*4-2)/12);
+        }
 
-		int bend2wheel(float v){
-			return (int)((12*log(v)/log(2)+2)/4*16383);
-		}
+        int bend2wheel(float v)
+        {
+            return (int)((12*log(v)/log(2)+2)/4*16383);
+        }
  
     public:
     
@@ -4839,17 +4910,17 @@ class MidiUI : public GUI, public midi
                 for (size_t i = 0; i < fMetaAux.size(); i++) {
                     unsigned num;
                     if (fMetaAux[i].first == "midi") {
-                        if (sscanf(fMetaAux[i].second.c_str(), "ctrl %u", &num) == 1) {
+                        if (gsscanf(fMetaAux[i].second.c_str(), "ctrl %u", &num) == 1) {
                             fCtrlChangeTable[num].push_back(new uiMidiCtrlChange(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "keyon %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyon %u", &num) == 1) {
                             fKeyOnTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "keyoff %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyoff %u", &num) == 1) {
                             fKeyOffTable[num].push_back(new uiMidiKeyOff(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "keypress %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keypress %u", &num) == 1) {
                             fKeyPressTable[num].push_back(new uiMidiKeyPress(fMidiHandler, num, this, zone, min, max, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "pgm %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "pgm %u", &num) == 1) {
                             fProgChangeTable[num].push_back(new uiMidiProgChange(fMidiHandler, num, this, zone, input));
-                        } else if (sscanf(fMetaAux[i].second.c_str(), "chanpress %u", &num) == 1) {
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "chanpress %u", &num) == 1) {
                             fChanPressTable[num].push_back(new uiMidiChanPress(fMidiHandler, num, this, zone, input));
                         } else if (strcmp(fMetaAux[i].second.c_str(), "pitchwheel") == 0 
                             || strcmp(fMetaAux[i].second.c_str(), "pitchbend") == 0) {
@@ -4887,17 +4958,6 @@ class MidiUI : public GUI, public midi
         void addMidiIn(midi* midi_dsp) { fMidiHandler->addMidiIn(midi_dsp); }
         void removeMidiIn(midi* midi_dsp) { fMidiHandler->removeMidiIn(midi_dsp); }
       
-        // -- widget's layouts
-
-        virtual void openTabBox(const char* label)
-        {}
-        virtual void openHorizontalBox(const char* label)
-        {}
-        virtual void openVerticalBox(const char* label)
-        {}
-        virtual void closeBox()
-        {}
-
         // -- active widgets
         
         virtual void addButton(const char* label, FAUSTFLOAT* zone)
@@ -5031,6 +5091,44 @@ class MidiUI : public GUI, public midi
 };
 
 #endif // FAUST_MIDIUI_H
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ 
+ ************************************************************************
+ ************************************************************************/
+
+#ifndef __poly_dsp__
+#define __poly_dsp__
+
+#include <stdio.h>
+#include <string>
+#include <math.h>
+#include <float.h>
+#include <algorithm>
+#include <ostream>
+#include <sstream>
+#include <vector>
+#include <limits.h>
+
 /************************************************************************
     IMPORTANT NOTE : this file contains two clearly delimited sections :
     the ARCHITECTURE section (in two parts) and the USER section. Each section
@@ -5537,7 +5635,7 @@ inline bool parseJson(const char*& p, std::map<std::string, std::string>& metada
 #define snprintf _snprintf
 #endif
 
-inline FAUSTFLOAT STR2REAL(const std::string& s)  { return (strtod(s.c_str(), NULL)); }
+inline FAUSTFLOAT STR2REAL(const std::string& s) { return (strtod(s.c_str(), NULL)); }
 
 //-------------------------------------------------------------------
 //  Decode a dsp JSON description and implement 'buildUserInterface'
@@ -5776,8 +5874,9 @@ class proxy_dsp : public dsp {
 
 #define FLOAT_MAX(a, b) (((a) < (b)) ? (b) : (a))
 
-// ends_with(<str>,<end>) : returns true if <str> ends with <end>
-static inline bool ends_with(std::string const& str, std::string const& end)
+// endsWith(<str>,<end>) : returns true if <str> ends with <end>
+
+static inline bool endsWith(std::string const& str, std::string const& end)
 {
     size_t l1 = str.length();
     size_t l2 = end.length();
@@ -5794,6 +5893,10 @@ static inline unsigned int isPowerOfTwo(unsigned int n)
     return !(n & (n - 1));
 }
 
+/**
+ * Allows to control zones in a grouped manner.
+ */
+
 class GroupUI : public GUI, public PathBuilder
 {
     
@@ -5803,9 +5906,9 @@ class GroupUI : public GUI, public PathBuilder
         
         void insertMap(std::string label, FAUSTFLOAT* zone)
         {   
-            if (!ends_with(label, "/gate") 
-                && !ends_with(label, "/freq") 
-                && !ends_with(label, "/gain")) {
+            if (!endsWith(label, "/gate") 
+                && !endsWith(label, "/freq") 
+                && !endsWith(label, "/gain")) {
                 
                 // Groups all controller except 'freq', 'gate', and 'gain'
                 if (fLabelZoneMap.find(label) != fLabelZoneMap.end()) {
@@ -5878,10 +5981,6 @@ class GroupUI : public GUI, public PathBuilder
         {
             insertMap(buildPath(label), zone);
         }
-        
-        // -- metadata declarations
-        void declare(FAUSTFLOAT* zone, const char* key, const char* val)
-        {}
             
 };
 
@@ -5893,11 +5992,11 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     
     int fNote;              // Playing note actual pitch
     int fDate;              // KeyOn date
-    bool fTrigger;          // True if stolen note and need for envelop re-trigger
+    bool fTrigger;          // True if stolen note and need for envelop trigger
     FAUSTFLOAT fLevel;      // Last audio block level
-    std::string fGateLabel;
-    std::string fGainLabel;
-    std::string fFreqLabel;
+    std::string fGatePath;  // Path of 'gate' control
+    std::string fGainPath;  // Path of 'gain' control
+    std::string fFreqPath;  // Path of 'freq' control
 
     dsp_voice(dsp* dsp):decorator_dsp(dsp)
     {
@@ -5906,37 +6005,39 @@ struct dsp_voice : public MapUI, public decorator_dsp {
         fLevel = FAUSTFLOAT(0);
         fDate = 0;
         fTrigger = false;
-        extractLabels(fGateLabel, fFreqLabel, fGainLabel);
+        extractPaths(fGatePath, fFreqPath, fGainPath);
     }
     
-    void extractLabels(std::string& gate, std::string& freq, std::string& gain)
+    void extractPaths(std::string& gate, std::string& freq, std::string& gain)
     {
         // Keep gain, freq and gate labels
         std::map<std::string, FAUSTFLOAT*>::iterator it;
         for (it = getMap().begin(); it != getMap().end(); it++) {
-            std::string label = (*it).first;
-            if (ends_with(label, "/gate")) {
-                gate = label;
-            } else if (ends_with(label, "/freq")) {
-                freq = label;
-            } else if (ends_with(label, "/gain")) {
-                gain = label;
+            std::string path = (*it).first;
+            if (endsWith(path, "/gate")) {
+                gate = path;
+            } else if (endsWith(path, "/freq")) {
+                freq = path;
+            } else if (endsWith(path, "/gain")) {
+                gain = path;
             }
         }
     }
     
+    // MIDI velocity [0..127]
     void keyOn(int pitch, int velocity)
     {
-        setParamValue(fFreqLabel, midiToFreq(pitch));
-        setParamValue(fGainLabel, float(velocity)/127.f);
+        setParamValue(fFreqPath, midiToFreq(pitch));
+        setParamValue(fGainPath, float(velocity)/127.f);
         fNote = pitch;
         fTrigger = true; // so that envelop is always re-initialized
     }
     
+    // Normalized MIDI velocity [0..1]
     void keyOn(int pitch, float velocity)
     {
-        setParamValue(fFreqLabel, midiToFreq(pitch));
-        setParamValue(fGainLabel, velocity);
+        setParamValue(fFreqPath, midiToFreq(pitch));
+        setParamValue(fGainPath, velocity);
         fNote = pitch;
         fTrigger = true; // so that envelop is always re-initialized
     }
@@ -5944,9 +6045,9 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     void keyOff(bool hard = false)
     {
         // No use of velocity for now...
-        setParamValue(fGateLabel, FAUSTFLOAT(0));
+        setParamValue(fGatePath, FAUSTFLOAT(0));
         if (hard) {
-            // Stops immediately
+            // Stop immediately
             fNote = kFreeVoice;
             fTrigger = false;
         } else {
@@ -5958,7 +6059,7 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     void play(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
     {
         if (fTrigger) {
-            // New note, so re-trigger
+            // New note, so trigger it
             trigger(count, inputs, outputs);
         } else {
             // Compute the voice
@@ -5968,9 +6069,9 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     
     void trigger(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
     {
-        setParamValue(fGateLabel, FAUSTFLOAT(0));
+        setParamValue(fGatePath, FAUSTFLOAT(0));
         computeSlice(0, 1, inputs, outputs);
-        setParamValue(fGateLabel, FAUSTFLOAT(1));
+        setParamValue(fGatePath, FAUSTFLOAT(1));
         computeSlice(1, count - 1, inputs, outputs);
         fTrigger = false;
     }
@@ -6720,47 +6821,6 @@ class dsp_parallelizer : public dsp {
 
 using namespace std;
 
-struct MyMeta : public Meta, public std::map<std::string, std::string>
-{
-    void declare(const char* key, const char* value)
-    {
-        (*this)[key] = value;
-    }
-    const std::string get(const char* key, const char* def)
-    {
-        if (this->find(key) != this->end()) {
-            return (*this)[key];
-        } else {
-            return def;
-        }
-    }
-};
-
-static void analyseMeta(bool& midi_sync, int& nvoices)
-{
-    mydsp* tmp_dsp = new mydsp();
-    
-    JSONUI jsonui;
-    tmp_dsp->buildUserInterface(&jsonui);
-    std::string json = jsonui.JSON();
-    midi_sync = ((json.find("midi") != std::string::npos) &&
-                 ((json.find("start") != std::string::npos) ||
-                  (json.find("stop") != std::string::npos) ||
-                  (json.find("clock") != std::string::npos)));
-    
-#ifdef NVOICES
-    nvoices = NVOICES;
-#else
-    MyMeta meta;
-    tmp_dsp->metadata(&meta);
-    std::string numVoices = meta.get("nvoices", "0");
-    nvoices = atoi(numVoices.c_str());
-    if (nvoices < 0) nvoices = 0;
-#endif
-    
-    delete tmp_dsp;
-}
-
 class FaustPolyEngine {
         
     protected:
@@ -6785,11 +6845,11 @@ class FaustPolyEngine {
             bool midi_sync = false;
             int nvoices = 1;
             
+            mydsp* mono_dsp = new mydsp();
+            MidiMeta::analyse(mono_dsp, midi_sync, nvoices);
+            
             fDriver = driver;
             fRunning = false;
-            mydsp* mono_dsp = new mydsp();
-            
-            analyseMeta(midi_sync, nvoices);
          
             // Getting the UI JSON
             JSONUI jsonui1(mono_dsp->getNumInputs(), mono_dsp->getNumOutputs());
@@ -7375,6 +7435,8 @@ using namespace std;
 #define OPEN_ERR -1
 #define NO_ERR 0
 
+typedef void (* ControlCallback) (void* data);
+
 class TiPhoneCoreAudioRenderer
 {
     
@@ -7387,7 +7449,10 @@ class TiPhoneCoreAudioRenderer
 
         int fHWNumInChans;
         int fHWNumOutChans;
-        
+    
+        ControlCallback fControlCb;
+        void* fControlCbArg;
+    
         dsp* fDSP;
 
         AudioBufferList* fCAInputData;
@@ -7477,6 +7542,9 @@ class TiPhoneCoreAudioRenderer
                     fOutChannel[chan] = (float*)ioData->mBuffers[chan].mData;
                 }
                 
+                if (fControlCb) {
+                    fControlCb(fControlCbArg);
+                }
                 fDSP->compute((int)inNumberFrames, fInChannel, fOutChannel);
             }
             return err;
@@ -7914,7 +7982,7 @@ class TiPhoneCoreAudioRenderer
         TiPhoneCoreAudioRenderer()
             :fAUHAL(0), fDevNumInChans(0), fDevNumOutChans(0),
             fHWNumInChans(0), fHWNumOutChans(0),
-            fDSP(0), fCAInputData(NULL)
+            fDSP(0), fCAInputData(NULL), fControlCb(NULL), fControlCbArg(NULL)
         {}
 
         virtual ~TiPhoneCoreAudioRenderer()
@@ -7927,11 +7995,13 @@ class TiPhoneCoreAudioRenderer
             }
         }
  
-        int Open(dsp* dsp, int inChan, int outChan, int buffersize, int samplerate)
+        int Open(dsp* dsp, int inChan, int outChan, int buffersize, int samplerate, ControlCallback cb, void* arg)
         {
             fDSP = dsp;
             fDevNumInChans = inChan;
             fDevNumOutChans = outChan;
+            fControlCb = cb;
+            fControlCbArg = arg;
             
             // Initialize and configure the audio session
             OSStatus err = AudioSessionInitialize(NULL, NULL, InterruptionListener, this);
@@ -7989,28 +8059,34 @@ class TiPhoneCoreAudioRenderer
  
  *******************************************************************************
  *******************************************************************************/
+
 class iosaudio : public audio {
 
     protected:
         
         TiPhoneCoreAudioRenderer fAudioDevice;
         int fSampleRate, fBufferSize;
-        
+        ControlCallback fControlCb;
+        void* fControlCbArg;
+    
     public:
     
-        iosaudio(int srate, int bsize) : fSampleRate(srate), fBufferSize(bsize) {}
+        iosaudio(int srate, int bsize, ControlCallback cb = NULL, void* arg = NULL)
+        :fSampleRate(srate), fBufferSize(bsize), fControlCb(cb), fControlCbArg(arg)
+        {}
+    
         virtual ~iosaudio() { fAudioDevice.Close(); }
         
         virtual bool init(const char* /*name*/, dsp* DSP) 
         {
             DSP->init(fSampleRate);
-            if (fAudioDevice.Open(DSP, DSP->getNumInputs(), DSP->getNumOutputs(), fBufferSize, fSampleRate) < 0) {
+            if (fAudioDevice.Open(DSP, DSP->getNumInputs(), DSP->getNumOutputs(), fBufferSize, fSampleRate, fControlCb, fControlCbArg) < 0) {
                 printf("Cannot open iOS audio device\n");
                 return false;
             }
             return true;
         }
-        
+    
         virtual bool start() 
         {
             if (fAudioDevice.Start() < 0) {
@@ -8041,9 +8117,4210 @@ class iosaudio : public audio {
 // Interface
 //**************************************************************
 
+#if IOS_MIDI_SUPPORT
+/************************************************************************
+    FAUST Architecture File
+    Copyright (C) 2003-2011 GRAME, Centre National de Creation Musicale
+    ---------------------------------------------------------------------
+    This Architecture section is free software; you can redistribute it
+    and/or modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 3 of
+    the License, or (at your option) any later version.
 
-#if OSCCTRL
-GUI* oscinterface = NULL;
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; If not, see <http://www.gnu.org/licenses/>.
+
+    EXCEPTION : As a special exception, you may create a larger work
+    that contains this FAUST architecture section and distribute
+    that work under terms of your choice, so long as this FAUST
+    architecture section is not modified.
+
+ ************************************************************************
+ ************************************************************************/
+ 
+#ifndef __rt_midi__
+#define __rt_midi__ 
+ 
+#include <iostream>
+#include <cstdlib>
+/*
+ File: CAHostTimeBase.h 
+ Abstract: Part of CoreAudio Utility Classes  
+ Version: 1.0.3 
+  
+ Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
+ Inc. ("Apple") in consideration of your agreement to the following 
+ terms, and your use, installation, modification or redistribution of 
+ this Apple software constitutes acceptance of these terms.  If you do 
+ not agree with these terms, please do not use, install, modify or 
+ redistribute this Apple software. 
+  
+ In consideration of your agreement to abide by the following terms, and 
+ subject to these terms, Apple grants you a personal, non-exclusive 
+ license, under Apple's copyrights in this original Apple software (the 
+ "Apple Software"), to use, reproduce, modify and redistribute the Apple 
+ Software, with or without modifications, in source and/or binary forms; 
+ provided that if you redistribute the Apple Software in its entirety and 
+ without modifications, you must retain this notice and the following 
+ text and disclaimers in all such redistributions of the Apple Software. 
+ Neither the name, trademarks, service marks or logos of Apple Inc. may 
+ be used to endorse or promote products derived from the Apple Software 
+ without specific prior written permission from Apple.  Except as 
+ expressly stated in this notice, no other rights or licenses, express or 
+ implied, are granted by Apple herein, including but not limited to any 
+ patent rights that may be infringed by your derivative works or by other 
+ works in which the Apple Software may be incorporated. 
+  
+ The Apple Software is provided by Apple on an "AS IS" basis.  APPLE 
+ MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION 
+ THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS 
+ FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND 
+ OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. 
+  
+ IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL 
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+ INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, 
+ MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED 
+ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), 
+ STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
+ POSSIBILITY OF SUCH DAMAGE. 
+  
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
+  
+*/
+#if !defined(__CAHostTimeBase_h__)
+#define __CAHostTimeBase_h__
+
+#ifdef __APPLE__
+
+//=============================================================================
+//	Includes
+//=============================================================================
+
+#if !defined(__COREAUDIO_USE_FLAT_INCLUDES__)
+	#include <CoreAudio/CoreAudioTypes.h>
+#else
+	#include <CoreAudioTypes.h>
+#endif
+
+#if TARGET_OS_MAC
+	#include <mach/mach_time.h>
+#elif TARGET_OS_WIN32
+	#include <windows.h>
+#else
+	#error	Unsupported operating system
+#endif
+
+//=============================================================================
+//	CAHostTimeBase
+//
+//	This class provides platform independent access to the host's time base.
+//=============================================================================
+
+class CAHostTimeBase
+{
+
+public:
+	static UInt64	ConvertToNanos(UInt64 inHostTime);
+	static UInt64	ConvertFromNanos(UInt64 inNanos);
+
+	static UInt64	GetTheCurrentTime();
+#if TARGET_OS_MAC
+	static UInt64	GetCurrentTime() { return GetTheCurrentTime(); }
+#endif
+	static UInt64	GetCurrentTimeInNanos();
+
+	static Float64	GetFrequency() { if(!sIsInited) { Initialize(); } return sFrequency; }
+	static Float64	GetInverseFrequency() { if(!sIsInited) { Initialize(); } return sInverseFrequency; }
+	static UInt32	GetMinimumDelta() { if(!sIsInited) { Initialize(); } return sMinDelta; }
+
+	static UInt64	AbsoluteHostDeltaToNanos(UInt64 inStartTime, UInt64 inEndTime);
+	static SInt64	HostDeltaToNanos(UInt64 inStartTime, UInt64 inEndTime);
+    
+    static void     Initialize();
+
+private:
+	
+	static bool sIsInited;
+	
+	static Float64 sFrequency;
+	static Float64 sInverseFrequency;
+	static UInt32 sMinDelta;
+	static UInt32 sToNanosNumerator;
+	static UInt32 sToNanosDenominator;
+	static UInt32 sFromNanosNumerator;
+	static UInt32 sFromNanosDenominator;
+	static bool sUseMicroseconds;
+#if Track_Host_TimeBase
+	static UInt64	sLastTime;
+#endif
+};
+
+inline UInt64 CAHostTimeBase::GetTheCurrentTime()
+{
+	UInt64 theTime = 0;
+
+	#if TARGET_OS_MAC
+		theTime = mach_absolute_time();
+          
+	#elif TARGET_OS_WIN32
+		LARGE_INTEGER theValue;
+		QueryPerformanceCounter(&theValue);
+		theTime = *((UInt64*)&theValue);
+	#endif
+	
+	#if	Track_Host_TimeBase
+		if(sLastTime != 0)
+		{
+			if(theTime <= sLastTime)
+			{
+				DebugMessageN2("CAHostTimeBase::GetTheCurrentTime: the current time is earlier than the last time, now: %qd, then: %qd", theTime, sLastTime);
+			}
+			sLastTime = theTime;
+		}
+		else
+		{
+			sLastTime = theTime;
+		}
+	#endif
+
+	return theTime;
+}
+
+inline UInt64 CAHostTimeBase::ConvertToNanos(UInt64 inHostTime)
+{
+	if(!sIsInited)
+	{
+		Initialize();
+	}
+	
+	Float64 theNumerator = static_cast<Float64>(sToNanosNumerator);
+	Float64 theDenominator = static_cast<Float64>(sToNanosDenominator);
+	Float64 theHostTime = static_cast<Float64>(inHostTime);
+
+	Float64 thePartialAnswer = theHostTime / theDenominator;
+	Float64 theFloatAnswer = thePartialAnswer * theNumerator;
+	UInt64 theAnswer = static_cast<UInt64>(theFloatAnswer);
+
+	return theAnswer;
+}
+
+inline UInt64 CAHostTimeBase::ConvertFromNanos(UInt64 inNanos)
+{
+	if(!sIsInited)
+	{
+		Initialize();
+	}
+
+	Float64 theNumerator = static_cast<Float64>(sToNanosNumerator);
+	Float64 theDenominator = static_cast<Float64>(sToNanosDenominator);
+	Float64 theNanos = static_cast<Float64>(inNanos);
+
+	Float64 thePartialAnswer = theNanos / theNumerator;
+	Float64 theFloatAnswer = thePartialAnswer * theDenominator;
+	UInt64 theAnswer = static_cast<UInt64>(theFloatAnswer);
+
+	return theAnswer;
+}
+
+inline UInt64 CAHostTimeBase::GetCurrentTimeInNanos()
+{
+	return ConvertToNanos(GetTheCurrentTime());
+}
+
+inline UInt64 CAHostTimeBase::AbsoluteHostDeltaToNanos(UInt64 inStartTime, UInt64 inEndTime)
+{
+	UInt64 theAnswer;
+	
+	if(inStartTime <= inEndTime)
+	{
+		theAnswer = inEndTime - inStartTime;
+	}
+	else
+	{
+		theAnswer = inStartTime - inEndTime;
+	}
+	
+	return ConvertToNanos(theAnswer);
+}
+
+inline SInt64 CAHostTimeBase::HostDeltaToNanos(UInt64 inStartTime, UInt64 inEndTime)
+{
+	SInt64 theAnswer;
+	SInt64 theSign = 1;
+	
+	if(inStartTime <= inEndTime)
+	{
+		theAnswer = inEndTime - inStartTime;
+	}
+	else
+	{
+		theAnswer = inStartTime - inEndTime;
+		theSign = -1;
+	}
+	
+	return theSign * ConvertToNanos(theAnswer);
+}
+
+#endif // __APPLE__
+
+#endif
+
+/**********************************************************************/
+/*! \class RtMidi
+    \brief An abstract base class for realtime MIDI input/output.
+
+    This class implements some common functionality for the realtime
+    MIDI input/output subclasses RtMidiIn and RtMidiOut.
+
+    RtMidi WWW site: http://music.mcgill.ca/~gary/rtmidi/
+
+    RtMidi: realtime MIDI i/o C++ classes
+    Copyright (c) 2003-2014 Gary P. Scavone
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    Any person wishing to distribute modifications to the Software is
+    asked to send the modifications to the original developer so that
+    they can be incorporated into the canonical version.  This is,
+    however, not a binding provision of this license.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+    ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+/**********************************************************************/
+
+/*!
+  \file RtMidi.h
+ */
+
+#ifndef RTMIDI_H
+#define RTMIDI_H
+
+#define RTMIDI_VERSION "2.1.0"
+
+#include <exception>
+#include <iostream>
+#include <string>
+#include <vector>
+
+#if __APPLE__
+#define __MACOSX_CORE__ 1
+//#define __UNIX_JACK__ 1
+#endif
+
+#if __linux__
+#define __LINUX_ALSA__ 1
+#endif
+
+#if _WIN32
+#define __WINDOWS_MM__ 1
+#endif
+
+/************************************************************************/
+/*! \class RtMidiError
+    \brief Exception handling class for RtMidi.
+
+    The RtMidiError class is quite simple but it does allow errors to be
+    "caught" by RtMidiError::Type. See the RtMidi documentation to know
+    which methods can throw an RtMidiError.
+*/
+/************************************************************************/
+
+class RtMidiError : public std::exception
+{
+ public:
+  //! Defined RtMidiError types.
+  enum Type {
+    WARNING,           /*!< A non-critical error. */
+    DEBUG_WARNING,     /*!< A non-critical error which might be useful for debugging. */
+    UNSPECIFIED,       /*!< The default, unspecified error type. */
+    NO_DEVICES_FOUND,  /*!< No devices found on system. */
+    INVALID_DEVICE,    /*!< An invalid device ID was specified. */
+    MEMORY_ERROR,      /*!< An error occured during memory allocation. */
+    INVALID_PARAMETER, /*!< An invalid parameter was specified to a function. */
+    INVALID_USE,       /*!< The function was called incorrectly. */
+    DRIVER_ERROR,      /*!< A system driver error occured. */
+    SYSTEM_ERROR,      /*!< A system error occured. */
+    THREAD_ERROR       /*!< A thread error occured. */
+  };
+
+  //! The constructor.
+  RtMidiError( const std::string& message, Type type = RtMidiError::UNSPECIFIED ) throw() : message_(message), type_(type) {}
+ 
+  //! The destructor.
+  virtual ~RtMidiError( void ) throw() {}
+
+  //! Prints thrown error message to stderr.
+  virtual void printMessage( void ) const throw() { std::cerr << '\n' << message_ << "\n\n"; }
+
+  //! Returns the thrown error message type.
+  virtual const Type& getType(void) const throw() { return type_; }
+
+  //! Returns the thrown error message string.
+  virtual const std::string& getMessage(void) const throw() { return message_; }
+
+  //! Returns the thrown error message as a c-style string.
+  virtual const char* what( void ) const throw() { return message_.c_str(); }
+
+ protected:
+  std::string message_;
+  Type type_;
+};
+
+//! RtMidi error callback function prototype.
+/*!
+    \param type Type of error.
+    \param errorText Error description.
+
+    Note that class behaviour is undefined after a critical error (not
+    a warning) is reported.
+ */
+typedef void (*RtMidiErrorCallback)( RtMidiError::Type type, const std::string &errorText );
+
+class MidiApi;
+
+class RtMidi
+{
+ public:
+
+  //! MIDI API specifier arguments.
+  enum Api {
+    UNSPECIFIED,    /*!< Search for a working compiled API. */
+    MACOSX_CORE,    /*!< Macintosh OS-X Core Midi API. */
+    LINUX_ALSA,     /*!< The Advanced Linux Sound Architecture API. */
+    UNIX_JACK,      /*!< The JACK Low-Latency MIDI Server API. */
+    WINDOWS_MM,     /*!< The Microsoft Multimedia MIDI API. */
+    RTMIDI_DUMMY    /*!< A compilable but non-functional API. */
+  };
+
+  //! A static function to determine the current RtMidi version.
+  static std::string getVersion( void ) throw();
+
+  //! A static function to determine the available compiled MIDI APIs.
+  /*!
+    The values returned in the std::vector can be compared against
+    the enumerated list values.  Note that there can be more than one
+    API compiled for certain operating systems.
+  */
+  static void getCompiledApi( std::vector<RtMidi::Api> &apis ) throw();
+
+  //! Pure virtual openPort() function.
+  virtual void openPort( unsigned int portNumber = 0, const std::string portName = std::string( "RtMidi" ) ) = 0;
+
+  //! Pure virtual openVirtualPort() function.
+  virtual void openVirtualPort( const std::string portName = std::string( "RtMidi" ) ) = 0;
+
+  //! Pure virtual getPortCount() function.
+  virtual unsigned int getPortCount() = 0;
+
+  //! Pure virtual getPortName() function.
+  virtual std::string getPortName( unsigned int portNumber = 0 ) = 0;
+
+  //! Pure virtual closePort() function.
+  virtual void closePort( void ) = 0;
+
+  //! Returns true if a port is open and false if not.
+  virtual bool isPortOpen( void ) const = 0;
+
+  //! Set an error callback function to be invoked when an error has occured.
+  /*!
+    The callback function will be called whenever an error has occured. It is best
+    to set the error callback function before opening a port.
+  */
+  virtual void setErrorCallback( RtMidiErrorCallback errorCallback = NULL ) = 0;
+
+ protected:
+
+  RtMidi();
+  virtual ~RtMidi();
+
+  MidiApi *rtapi_;
+};
+
+/**********************************************************************/
+/*! \class RtMidiIn
+    \brief A realtime MIDI input class.
+
+    This class provides a common, platform-independent API for
+    realtime MIDI input.  It allows access to a single MIDI input
+    port.  Incoming MIDI messages are either saved to a queue for
+    retrieval using the getMessage() function or immediately passed to
+    a user-specified callback function.  Create multiple instances of
+    this class to connect to more than one MIDI device at the same
+    time.  With the OS-X, Linux ALSA, and JACK MIDI APIs, it is also
+    possible to open a virtual input port to which other MIDI software
+    clients can connect.
+
+    by Gary P. Scavone, 2003-2014.
+*/
+/**********************************************************************/
+
+// **************************************************************** //
+//
+// RtMidiIn and RtMidiOut class declarations.
+//
+// RtMidiIn / RtMidiOut are "controllers" used to select an available
+// MIDI input or output interface.  They present common APIs for the
+// user to call but all functionality is implemented by the classes
+// MidiInApi, MidiOutApi and their subclasses.  RtMidiIn and RtMidiOut
+// each create an instance of a MidiInApi or MidiOutApi subclass based
+// on the user's API choice.  If no choice is made, they attempt to
+// make a "logical" API selection.
+//
+// **************************************************************** //
+
+class RtMidiIn : public RtMidi
+{
+ public:
+
+  //! User callback function type definition.
+  typedef void (*RtMidiCallback)( double timeStamp, std::vector<unsigned char> *message, void *userData);
+
+  //! Default constructor that allows an optional api, client name and queue size.
+  /*!
+    An exception will be thrown if a MIDI system initialization
+    error occurs.  The queue size defines the maximum number of
+    messages that can be held in the MIDI queue (when not using a
+    callback function).  If the queue size limit is reached,
+    incoming messages will be ignored.
+
+    If no API argument is specified and multiple API support has been
+    compiled, the default order of use is ALSA, JACK (Linux) and CORE,
+    JACK (OS-X).
+
+    \param api        An optional API id can be specified.
+    \param clientName An optional client name can be specified. This
+                      will be used to group the ports that are created
+                      by the application.
+    \param queueSizeLimit An optional size of the MIDI input queue can be specified.
+  */
+  RtMidiIn( RtMidi::Api api=UNSPECIFIED,
+            const std::string clientName = std::string( "RtMidi Input Client"),
+            unsigned int queueSizeLimit = 100 );
+
+  //! If a MIDI connection is still open, it will be closed by the destructor.
+  ~RtMidiIn ( void ) throw();
+
+  //! Returns the MIDI API specifier for the current instance of RtMidiIn.
+  RtMidi::Api getCurrentApi( void ) throw();
+
+  //! Open a MIDI input connection given by enumeration number.
+  /*!
+    \param portNumber An optional port number greater than 0 can be specified.
+                      Otherwise, the default or first port found is opened.
+    \param portName An optional name for the application port that is used to connect to portId can be specified.
+  */
+  void openPort( unsigned int portNumber = 0, const std::string portName = std::string( "RtMidi Input" ) );
+
+  //! Create a virtual input port, with optional name, to allow software connections (OS X, JACK and ALSA only).
+  /*!
+    This function creates a virtual MIDI input port to which other
+    software applications can connect.  This type of functionality
+    is currently only supported by the Macintosh OS-X, any JACK,
+    and Linux ALSA APIs (the function returns an error for the other APIs).
+
+    \param portName An optional name for the application port that is
+                    used to connect to portId can be specified.
+  */
+  void openVirtualPort( const std::string portName = std::string( "RtMidi Input" ) );
+
+  //! Set a callback function to be invoked for incoming MIDI messages.
+  /*!
+    The callback function will be called whenever an incoming MIDI
+    message is received.  While not absolutely necessary, it is best
+    to set the callback function before opening a MIDI port to avoid
+    leaving some messages in the queue.
+
+    \param callback A callback function must be given.
+    \param userData Optionally, a pointer to additional data can be
+                    passed to the callback function whenever it is called.
+  */
+  void setCallback( RtMidiCallback callback, void *userData = 0 );
+
+  //! Cancel use of the current callback function (if one exists).
+  /*!
+    Subsequent incoming MIDI messages will be written to the queue
+    and can be retrieved with the \e getMessage function.
+  */
+  void cancelCallback();
+
+  //! Close an open MIDI connection (if one exists).
+  void closePort( void );
+
+  //! Returns true if a port is open and false if not.
+  virtual bool isPortOpen() const;
+
+  //! Return the number of available MIDI input ports.
+  /*!
+    \return This function returns the number of MIDI ports of the selected API.
+  */
+  unsigned int getPortCount();
+
+  //! Return a string identifier for the specified MIDI input port number.
+  /*!
+    \return The name of the port with the given Id is returned.
+    \retval An empty string is returned if an invalid port specifier is provided.
+  */
+  std::string getPortName( unsigned int portNumber = 0 );
+
+  //! Specify whether certain MIDI message types should be queued or ignored during input.
+  /*!
+    By default, MIDI timing and active sensing messages are ignored
+    during message input because of their relative high data rates.
+    MIDI sysex messages are ignored by default as well.  Variable
+    values of "true" imply that the respective message type will be
+    ignored.
+  */
+  void ignoreTypes( bool midiSysex = true, bool midiTime = true, bool midiSense = true );
+
+  //! Fill the user-provided vector with the data bytes for the next available MIDI message in the input queue and return the event delta-time in seconds.
+  /*!
+    This function returns immediately whether a new message is
+    available or not.  A valid message is indicated by a non-zero
+    vector size.  An exception is thrown if an error occurs during
+    message retrieval or an input connection was not previously
+    established.
+  */
+  double getMessage( std::vector<unsigned char> *message );
+
+  //! Set an error callback function to be invoked when an error has occured.
+  /*!
+    The callback function will be called whenever an error has occured. It is best
+    to set the error callback function before opening a port.
+  */
+  virtual void setErrorCallback( RtMidiErrorCallback errorCallback = NULL );
+
+ protected:
+  void openMidiApi( RtMidi::Api api, const std::string clientName, unsigned int queueSizeLimit );
+
+};
+
+/**********************************************************************/
+/*! \class RtMidiOut
+    \brief A realtime MIDI output class.
+
+    This class provides a common, platform-independent API for MIDI
+    output.  It allows one to probe available MIDI output ports, to
+    connect to one such port, and to send MIDI bytes immediately over
+    the connection.  Create multiple instances of this class to
+    connect to more than one MIDI device at the same time.  With the
+    OS-X, Linux ALSA and JACK MIDI APIs, it is also possible to open a
+    virtual port to which other MIDI software clients can connect.
+
+    by Gary P. Scavone, 2003-2014.
+*/
+/**********************************************************************/
+
+class RtMidiOut : public RtMidi
+{
+ public:
+
+  //! Default constructor that allows an optional client name.
+  /*!
+    An exception will be thrown if a MIDI system initialization error occurs.
+
+    If no API argument is specified and multiple API support has been
+    compiled, the default order of use is ALSA, JACK (Linux) and CORE,
+    JACK (OS-X).
+  */
+  RtMidiOut( RtMidi::Api api=UNSPECIFIED,
+             const std::string clientName = std::string( "RtMidi Output Client") );
+
+  //! The destructor closes any open MIDI connections.
+  ~RtMidiOut( void ) throw();
+
+  //! Returns the MIDI API specifier for the current instance of RtMidiOut.
+  RtMidi::Api getCurrentApi( void ) throw();
+
+  //! Open a MIDI output connection.
+  /*!
+      An optional port number greater than 0 can be specified.
+      Otherwise, the default or first port found is opened.  An
+      exception is thrown if an error occurs while attempting to make
+      the port connection.
+  */
+  void openPort( unsigned int portNumber = 0, const std::string portName = std::string( "RtMidi Output" ) );
+
+  //! Close an open MIDI connection (if one exists).
+  void closePort( void );
+
+  //! Returns true if a port is open and false if not.
+  virtual bool isPortOpen() const;
+
+  //! Create a virtual output port, with optional name, to allow software connections (OS X, JACK and ALSA only).
+  /*!
+      This function creates a virtual MIDI output port to which other
+      software applications can connect.  This type of functionality
+      is currently only supported by the Macintosh OS-X, Linux ALSA
+      and JACK APIs (the function does nothing with the other APIs).
+      An exception is thrown if an error occurs while attempting to
+      create the virtual port.
+  */
+  void openVirtualPort( const std::string portName = std::string( "RtMidi Output" ) );
+
+  //! Return the number of available MIDI output ports.
+  unsigned int getPortCount( void );
+
+  //! Return a string identifier for the specified MIDI port type and number.
+  /*!
+      An empty string is returned if an invalid port specifier is provided.
+  */
+  std::string getPortName( unsigned int portNumber = 0 );
+
+  //! Immediately send a single message out an open MIDI output port.
+  /*!
+      An exception is thrown if an error occurs during output or an
+      output connection was not previously established.
+  */
+  void sendMessage( std::vector<unsigned char> *message );
+
+  //! Set an error callback function to be invoked when an error has occured.
+  /*!
+    The callback function will be called whenever an error has occured. It is best
+    to set the error callback function before opening a port.
+  */
+  virtual void setErrorCallback( RtMidiErrorCallback errorCallback = NULL );
+
+ protected:
+  void openMidiApi( RtMidi::Api api, const std::string clientName );
+};
+
+
+// **************************************************************** //
+//
+// MidiInApi / MidiOutApi class declarations.
+//
+// Subclasses of MidiInApi and MidiOutApi contain all API- and
+// OS-specific code necessary to fully implement the RtMidi API.
+//
+// Note that MidiInApi and MidiOutApi are abstract base classes and
+// cannot be explicitly instantiated.  RtMidiIn and RtMidiOut will
+// create instances of a MidiInApi or MidiOutApi subclass.
+//
+// **************************************************************** //
+
+class MidiApi
+{
+ public:
+
+  MidiApi();
+  virtual ~MidiApi();
+  virtual RtMidi::Api getCurrentApi( void ) = 0;
+  virtual void openPort( unsigned int portNumber, const std::string portName ) = 0;
+  virtual void openVirtualPort( const std::string portName ) = 0;
+  virtual void closePort( void ) = 0;
+
+  virtual unsigned int getPortCount( void ) = 0;
+  virtual std::string getPortName( unsigned int portNumber ) = 0;
+
+  inline bool isPortOpen() const { return connected_; }
+  void setErrorCallback( RtMidiErrorCallback errorCallback );
+
+  //! A basic error reporting function for RtMidi classes.
+  void error( RtMidiError::Type type, std::string errorString );
+
+protected:
+  virtual void initialize( const std::string& clientName ) = 0;
+
+  void *apiData_;
+  bool connected_;
+  std::string errorString_;
+  RtMidiErrorCallback errorCallback_;
+};
+
+class MidiInApi : public MidiApi
+{
+ public:
+
+  MidiInApi( unsigned int queueSizeLimit );
+  virtual ~MidiInApi( void );
+  void setCallback( RtMidiIn::RtMidiCallback callback, void *userData );
+  void cancelCallback( void );
+  virtual void ignoreTypes( bool midiSysex, bool midiTime, bool midiSense );
+  double getMessage( std::vector<unsigned char> *message );
+
+  // A MIDI structure used internally by the class to store incoming
+  // messages.  Each message represents one and only one MIDI message.
+  struct MidiMessage { 
+    std::vector<unsigned char> bytes; 
+    double timeStamp;
+
+    // Default constructor.
+  MidiMessage()
+  :bytes(0), timeStamp(0.0) {}
+  };
+
+  struct MidiQueue {
+    unsigned int front;
+    unsigned int back;
+    unsigned int size;
+    unsigned int ringSize;
+    MidiMessage *ring;
+
+    // Default constructor.
+  MidiQueue()
+  :front(0), back(0), size(0), ringSize(0) {}
+  };
+
+  // The RtMidiInData structure is used to pass private class data to
+  // the MIDI input handling function or thread.
+  struct RtMidiInData {
+    MidiQueue queue;
+    MidiMessage message;
+    unsigned char ignoreFlags;
+    bool doInput;
+    bool firstMessage;
+    void *apiData;
+    bool usingCallback;
+    RtMidiIn::RtMidiCallback userCallback;
+    void *userData;
+    bool continueSysex;
+
+    // Default constructor.
+  RtMidiInData()
+  : ignoreFlags(7), doInput(false), firstMessage(true),
+      apiData(0), usingCallback(false), userCallback(0), userData(0),
+      continueSysex(false) {}
+  };
+
+ protected:
+  RtMidiInData inputData_;
+};
+
+class MidiOutApi : public MidiApi
+{
+ public:
+
+  MidiOutApi( void );
+  virtual ~MidiOutApi( void );
+  virtual void sendMessage( std::vector<unsigned char> *message ) = 0;
+};
+
+// **************************************************************** //
+//
+// Inline RtMidiIn and RtMidiOut definitions.
+//
+// **************************************************************** //
+
+inline RtMidi::Api RtMidiIn :: getCurrentApi( void ) throw() { return rtapi_->getCurrentApi(); }
+inline void RtMidiIn :: openPort( unsigned int portNumber, const std::string portName ) { rtapi_->openPort( portNumber, portName ); }
+inline void RtMidiIn :: openVirtualPort( const std::string portName ) { rtapi_->openVirtualPort( portName ); }
+inline void RtMidiIn :: closePort( void ) { rtapi_->closePort(); }
+inline bool RtMidiIn :: isPortOpen() const { return rtapi_->isPortOpen(); }
+inline void RtMidiIn :: setCallback( RtMidiCallback callback, void *userData ) { ((MidiInApi *)rtapi_)->setCallback( callback, userData ); }
+inline void RtMidiIn :: cancelCallback( void ) { ((MidiInApi *)rtapi_)->cancelCallback(); }
+inline unsigned int RtMidiIn :: getPortCount( void ) { return rtapi_->getPortCount(); }
+inline std::string RtMidiIn :: getPortName( unsigned int portNumber ) { return rtapi_->getPortName( portNumber ); }
+inline void RtMidiIn :: ignoreTypes( bool midiSysex, bool midiTime, bool midiSense ) { ((MidiInApi *)rtapi_)->ignoreTypes( midiSysex, midiTime, midiSense ); }
+inline double RtMidiIn :: getMessage( std::vector<unsigned char> *message ) { return ((MidiInApi *)rtapi_)->getMessage( message ); }
+inline void RtMidiIn :: setErrorCallback( RtMidiErrorCallback errorCallback ) { rtapi_->setErrorCallback(errorCallback); }
+
+inline RtMidi::Api RtMidiOut :: getCurrentApi( void ) throw() { return rtapi_->getCurrentApi(); }
+inline void RtMidiOut :: openPort( unsigned int portNumber, const std::string portName ) { rtapi_->openPort( portNumber, portName ); }
+inline void RtMidiOut :: openVirtualPort( const std::string portName ) { rtapi_->openVirtualPort( portName ); }
+inline void RtMidiOut :: closePort( void ) { rtapi_->closePort(); }
+inline bool RtMidiOut :: isPortOpen() const { return rtapi_->isPortOpen(); }
+inline unsigned int RtMidiOut :: getPortCount( void ) { return rtapi_->getPortCount(); }
+inline std::string RtMidiOut :: getPortName( unsigned int portNumber ) { return rtapi_->getPortName( portNumber ); }
+inline void RtMidiOut :: sendMessage( std::vector<unsigned char> *message ) { ((MidiOutApi *)rtapi_)->sendMessage( message ); }
+inline void RtMidiOut :: setErrorCallback( RtMidiErrorCallback errorCallback ) { rtapi_->setErrorCallback(errorCallback); }
+
+// **************************************************************** //
+//
+// MidiInApi and MidiOutApi subclass prototypes.
+//
+// **************************************************************** //
+
+#if !defined(__LINUX_ALSA__) && !defined(__UNIX_JACK__) && !defined(__MACOSX_CORE__) && !defined(__WINDOWS_MM__)
+  #define __RTMIDI_DUMMY__
+#endif
+
+#if defined(__MACOSX_CORE__)
+
+class MidiInCore: public MidiInApi
+{
+ public:
+  MidiInCore( const std::string clientName, unsigned int queueSizeLimit );
+  ~MidiInCore( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::MACOSX_CORE; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+
+ protected:
+  void initialize( const std::string& clientName );
+};
+
+class MidiOutCore: public MidiOutApi
+{
+ public:
+  MidiOutCore( const std::string clientName );
+  ~MidiOutCore( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::MACOSX_CORE; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+  void sendMessage( std::vector<unsigned char> *message );
+
+ protected:
+  void initialize( const std::string& clientName );
+};
+
+#endif
+
+#if defined(__UNIX_JACK__)
+
+class MidiInJack: public MidiInApi
+{
+ public:
+  MidiInJack( const std::string clientName, unsigned int queueSizeLimit );
+  ~MidiInJack( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::UNIX_JACK; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+
+ protected:
+  std::string clientName;
+
+  void connect( void );
+  void initialize( const std::string& clientName );
+};
+
+class MidiOutJack: public MidiOutApi
+{
+ public:
+  MidiOutJack( const std::string clientName );
+  ~MidiOutJack( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::UNIX_JACK; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+  void sendMessage( std::vector<unsigned char> *message );
+
+ protected:
+  std::string clientName;
+
+  void connect( void );
+  void initialize( const std::string& clientName );
+};
+
+#endif
+
+#if defined(__LINUX_ALSA__)
+
+class MidiInAlsa: public MidiInApi
+{
+ public:
+  MidiInAlsa( const std::string clientName, unsigned int queueSizeLimit );
+  ~MidiInAlsa( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::LINUX_ALSA; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+
+ protected:
+  void initialize( const std::string& clientName );
+};
+
+class MidiOutAlsa: public MidiOutApi
+{
+ public:
+  MidiOutAlsa( const std::string clientName );
+  ~MidiOutAlsa( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::LINUX_ALSA; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+  void sendMessage( std::vector<unsigned char> *message );
+
+ protected:
+  void initialize( const std::string& clientName );
+};
+
+#endif
+
+#if defined(__WINDOWS_MM__)
+
+class MidiInWinMM: public MidiInApi
+{
+ public:
+  MidiInWinMM( const std::string clientName, unsigned int queueSizeLimit );
+  ~MidiInWinMM( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::WINDOWS_MM; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+
+ protected:
+  void initialize( const std::string& clientName );
+};
+
+class MidiOutWinMM: public MidiOutApi
+{
+ public:
+  MidiOutWinMM( const std::string clientName );
+  ~MidiOutWinMM( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::WINDOWS_MM; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+  void sendMessage( std::vector<unsigned char> *message );
+
+ protected:
+  void initialize( const std::string& clientName );
+};
+
+#endif
+
+#if defined(__RTMIDI_DUMMY__)
+
+class MidiInDummy: public MidiInApi
+{
+ public:
+ MidiInDummy( const std::string /*clientName*/, unsigned int queueSizeLimit ) : MidiInApi( queueSizeLimit ) { errorString_ = "MidiInDummy: This class provides no functionality."; error( RtMidiError::WARNING, errorString_ ); }
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::RTMIDI_DUMMY; }
+  void openPort( unsigned int /*portNumber*/, const std::string /*portName*/ ) {}
+  void openVirtualPort( const std::string /*portName*/ ) {}
+  void closePort( void ) {}
+  unsigned int getPortCount( void ) { return 0; }
+  std::string getPortName( unsigned int portNumber ) { return ""; }
+
+ protected:
+  void initialize( const std::string& /*clientName*/ ) {}
+};
+
+class MidiOutDummy: public MidiOutApi
+{
+ public:
+  MidiOutDummy( const std::string /*clientName*/ ) { errorString_ = "MidiOutDummy: This class provides no functionality."; error( RtMidiError::WARNING, errorString_ ); }
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::RTMIDI_DUMMY; }
+  void openPort( unsigned int /*portNumber*/, const std::string /*portName*/ ) {}
+  void openVirtualPort( const std::string /*portName*/ ) {}
+  void closePort( void ) {}
+  unsigned int getPortCount( void ) { return 0; }
+  std::string getPortName( unsigned int /*portNumber*/ ) { return ""; }
+  void sendMessage( std::vector<unsigned char> * /*message*/ ) {}
+
+ protected:
+  void initialize( const std::string& /*clientName*/ ) {}
+};
+
+#endif
+
+#endif
+
+class MapUI;
+
+class rt_midi : public midi_handler {
+
+    private:
+    
+        std::vector<RtMidiIn*> fInput;
+        std::vector<RtMidiOut*> fOutput;
+        
+        static void midiCallback(double time, std::vector<unsigned char>* message, void* arg)
+        {
+            rt_midi* midi = static_cast<rt_midi*>(arg);
+            unsigned int nBytes = message->size();
+            int type = (int)message->at(0) & 0xf0;
+            int channel = (int)message->at(0) & 0x0f;
+            
+            // MIDI sync
+            if (nBytes == 1) {
+                midi->handleSync(time, (int)message->at(0));
+            } else if (nBytes == 2) {
+                midi->handleData1(time, type, channel, (int)message->at(1));
+            } else if (nBytes == 3) {
+                midi->handleData2(time, type, channel, (int)message->at(1), (int)message->at(2));
+            } 
+        }
+        
+        bool openMidiInputPorts()
+        {
+            // Get number of input ports
+            RtMidiIn midi_in;
+            unsigned nInPorts = midi_in.getPortCount();
+            if (nInPorts == 0) {
+                std::cout << "No input ports available!" << std::endl;
+                return false;
+            }
+    
+            // Then open all of them
+            for (unsigned int i = 0; i < nInPorts; i++) {
+                RtMidiIn* midi_in = new RtMidiIn();
+                midi_in->ignoreTypes(true, false, true);
+                fInput.push_back(midi_in);
+                midi_in->openPort(i);
+                midi_in->setCallback(&midiCallback, this);
+                std::string portName = midi_in->getPortName(i);
+                std::cout << "Input port #" << i << ": " << portName << '\n';
+            }
+            return true;
+        }
+        
+        bool openMidiOutputPorts()
+        {
+            // Get number of output ports
+            RtMidiOut midi_out;
+            unsigned nOutPorts = midi_out.getPortCount();
+            if (nOutPorts == 0) {
+                std::cout << "No output ports available!" << std::endl;
+                return false;
+            }
+    
+            // Then open all of them
+            for (unsigned int i = 0; i < nOutPorts; i++) {
+                RtMidiOut* midi_out = new RtMidiOut();
+                fOutput.push_back(midi_out);
+                midi_out->openPort(i);
+                std::string portName = midi_out->getPortName(i);
+                std::cout << "Output port #" << i << ": " << portName << '\n';
+            }
+            return true;
+        }
+        
+        void chooseMidiInputPort(const std::string& name)
+        {
+            RtMidiIn* midi_in = new RtMidiIn();
+            midi_in->ignoreTypes(true, false, true);
+            fInput.push_back(midi_in);
+            midi_in->setCallback(&midiCallback, this);
+            midi_in->openVirtualPort(name);
+        }
+        
+        void chooseMidiOutPort(const std::string& name)
+        {
+            RtMidiOut* midi_out = new RtMidiOut();
+            fOutput.push_back(midi_out);
+            midi_out->openVirtualPort(name);
+        }
+        
+        void sendMessage(std::vector<unsigned char>& message)
+        {
+            std::vector<RtMidiOut*>::iterator it;
+            for (it = fOutput.begin(); it != fOutput.end(); it++) {
+                (*it)->sendMessage(&message);
+            }
+        }
+    
+    public:
+    
+        rt_midi(const std::string& name = "RtMidi"):midi_handler(name)
+        {}
+        
+        virtual ~rt_midi()
+        {
+            stop_midi();
+        }
+        
+        bool start_midi()
+        {
+            try {
+            
+            #if TARGET_OS_IPHONE
+                if (!openMidiInputPorts())  { stop_midi(); return false; }
+                if (!openMidiOutputPorts()) { stop_midi(); return false; }
+            #else
+                chooseMidiInputPort(fName);
+                chooseMidiOutPort(fName);
+            #endif
+                return true;
+                
+            } catch (RtMidiError &error) {
+                error.printMessage();
+                stop_midi();
+                return false;
+            }
+        }
+        
+        void stop_midi()
+        {
+            std::vector<RtMidiIn*>::iterator it1;
+            for (it1 = fInput.begin(); it1 != fInput.end(); it1++) {
+                delete (*it1);
+            }
+            fInput.clear();
+            
+            std::vector<RtMidiOut*>::iterator it2;
+            for (it2 = fOutput.begin(); it2 != fOutput.end(); it2++) {
+                delete (*it2);
+            }
+            fOutput.clear();
+        }
+        
+        MapUI* keyOn(int channel, int pitch, int velocity)
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_NOTE_ON + channel);
+            message.push_back(pitch);
+            message.push_back(velocity);
+            sendMessage(message);
+            return 0;
+        }
+        
+        void keyOff(int channel, int pitch, int velocity) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_NOTE_OFF + channel);
+            message.push_back(pitch);
+            message.push_back(velocity);
+            sendMessage(message);
+        }
+        
+        void ctrlChange(int channel, int ctrl, int val) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_CONTROL_CHANGE + channel);
+            message.push_back(ctrl);
+            message.push_back(val);
+            sendMessage(message);
+        }
+        
+        void chanPress(int channel, int press) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_AFTERTOUCH + channel);
+            message.push_back(press);
+            sendMessage(message);
+        }
+        
+        void progChange(int channel, int pgm) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_PROGRAM_CHANGE + channel);
+            message.push_back(pgm);
+            sendMessage(message);
+        }
+          
+        void keyPress(int channel, int pitch, int press) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_POLY_AFTERTOUCH + channel);
+            message.push_back(pitch);
+            message.push_back(press);
+            sendMessage(message);
+        }
+   
+        void pitchWheel(int channel, int wheel) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_PITCH_BEND + channel);
+            message.push_back(wheel & 0x7F);		// lsb 7bit
+            message.push_back((wheel >> 7) & 0x7F);	// msb 7bit
+            sendMessage(message);
+        }
+        
+        void ctrlChange14bits(int channel, int ctrl, int value) {}
+         
+        void start_sync(double date) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_START);
+            sendMessage(message);
+        }
+       
+        void stop_sync(double date) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_STOP);
+            sendMessage(message);
+        }
+        
+        void clock(double date) 
+        {
+            std::vector<unsigned char> message;
+            message.push_back(MIDI_CLOCK);
+            sendMessage(message);
+        }
+        
+};
+
+#endif // __rt_midi__
+/**********************************************************************/
+/*! \class RtMidi
+    \brief An abstract base class for realtime MIDI input/output.
+
+    This class implements some common functionality for the realtime
+    MIDI input/output subclasses RtMidiIn and RtMidiOut.
+
+    RtMidi WWW site: http://music.mcgill.ca/~gary/rtmidi/
+
+    RtMidi: realtime MIDI i/o C++ classes
+    Copyright (c) 2003-2014 Gary P. Scavone
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    Any person wishing to distribute modifications to the Software is
+    asked to send the modifications to the original developer so that
+    they can be incorporated into the canonical version.  This is,
+    however, not a binding provision of this license.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+    ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+/**********************************************************************/
+
+#include <sstream>
+
+#ifdef __APPLE__
+
+Float64 CAHostTimeBase::sFrequency = 0;
+Float64 CAHostTimeBase::sInverseFrequency = 0;
+UInt32 CAHostTimeBase::sMinDelta = 0;
+UInt32 CAHostTimeBase::sToNanosNumerator = 0;
+UInt32 CAHostTimeBase::sToNanosDenominator = 0;
+UInt32 CAHostTimeBase::sFromNanosNumerator = 0;
+UInt32 CAHostTimeBase::sFromNanosDenominator = 0;
+bool CAHostTimeBase::sUseMicroseconds = false;
+bool CAHostTimeBase::sIsInited = false;
+#if Track_Host_TimeBase
+UInt64 CAHostTimeBase::sLastTime = 0;
+#endif
+
+//=============================================================================
+//	CAHostTimeBase
+//
+//	This class provides platform independent access to the host's time base.
+//=============================================================================
+
+void CAHostTimeBase::Initialize()
+{
+    if (!sIsInited) {
+       
+        //	get the info about Absolute time
+        #if TARGET_OS_MAC
+            struct mach_timebase_info	theTimeBaseInfo;
+            mach_timebase_info(&theTimeBaseInfo);
+            sMinDelta = 1;
+            sToNanosNumerator = theTimeBaseInfo.numer;
+            sToNanosDenominator = theTimeBaseInfo.denom;
+            sFromNanosNumerator = sToNanosDenominator;
+            sFromNanosDenominator = sToNanosNumerator;
+
+            //	the frequency of that clock is: (sToNanosDenominator / sToNanosNumerator) * 10^9
+            sFrequency = static_cast<Float64>(sToNanosDenominator) / static_cast<Float64>(sToNanosNumerator);
+            sFrequency *= 1000000000.0;
+        #elif TARGET_OS_WIN32
+            LARGE_INTEGER theFrequency;
+            QueryPerformanceFrequency(&theFrequency);
+            sMinDelta = 1;
+            sToNanosNumerator = 1000000000ULL;
+            sToNanosDenominator = *((UInt64*)&theFrequency);
+            sFromNanosNumerator = sToNanosDenominator;
+            sFromNanosDenominator = sToNanosNumerator;
+            sFrequency = static_cast<Float64>(*((UInt64*)&theFrequency));
+        #endif
+        sInverseFrequency = 1.0 / sFrequency;
+        
+        #if	Log_Host_Time_Base_Parameters
+            DebugMessage(  "Host Time Base Parameters");
+            DebugMessageN1(" Minimum Delta:          %lu", sMinDelta);
+            DebugMessageN1(" Frequency:              %f", sFrequency);
+            DebugMessageN1(" To Nanos Numerator:     %lu", sToNanosNumerator);
+            DebugMessageN1(" To Nanos Denominator:   %lu", sToNanosDenominator);
+            DebugMessageN1(" From Nanos Numerator:   %lu", sFromNanosNumerator);
+            DebugMessageN1(" From Nanos Denominator: %lu", sFromNanosDenominator);
+        #endif
+
+        sIsInited = true;
+    }
+}
+
+#endif
+
+#if defined(__MACOSX_CORE__)
+    #if TARGET_OS_IPHONE
+        #define AudioGetCurrentHostTime CAHostTimeBase::GetCurrentTime
+        #define AudioConvertHostTimeToNanos CAHostTimeBase::ConvertToNanos
+    #endif
+#endif
+
+//*********************************************************************//
+//  RtMidi Definitions
+//*********************************************************************//
+
+RtMidi :: RtMidi()
+  : rtapi_(0)
+{
+#if defined(__MACOSX_CORE__)
+    #if TARGET_OS_IPHONE
+        CAHostTimeBase::Initialize();
+    #endif
+#endif
+}
+
+RtMidi :: ~RtMidi()
+{
+  if ( rtapi_ )
+    delete rtapi_;
+  rtapi_ = 0;
+}
+
+std::string RtMidi :: getVersion( void ) throw()
+{
+  return std::string( RTMIDI_VERSION );
+}
+
+void RtMidi :: getCompiledApi( std::vector<RtMidi::Api> &apis ) throw()
+{
+  apis.clear();
+
+  // The order here will control the order of RtMidi's API search in
+  // the constructor.
+#if defined(__MACOSX_CORE__)
+  apis.push_back( MACOSX_CORE );
+#endif
+#if defined(__LINUX_ALSA__)
+  apis.push_back( LINUX_ALSA );
+#endif
+#if defined(__UNIX_JACK__)
+  apis.push_back( UNIX_JACK );
+#endif
+#if defined(__WINDOWS_MM__)
+  apis.push_back( WINDOWS_MM );
+#endif
+#if defined(__RTMIDI_DUMMY__)
+  apis.push_back( RTMIDI_DUMMY );
+#endif
+}
+
+//*********************************************************************//
+//  RtMidiIn Definitions
+//*********************************************************************//
+
+void RtMidiIn :: openMidiApi( RtMidi::Api api, const std::string clientName, unsigned int queueSizeLimit )
+{
+  if ( rtapi_ )
+    delete rtapi_;
+  rtapi_ = 0;
+
+#if defined(__UNIX_JACK__)
+  if ( api == UNIX_JACK )
+    rtapi_ = new MidiInJack( clientName, queueSizeLimit );
+#endif
+#if defined(__LINUX_ALSA__)
+  if ( api == LINUX_ALSA )
+    rtapi_ = new MidiInAlsa( clientName, queueSizeLimit );
+#endif
+#if defined(__WINDOWS_MM__)
+  if ( api == WINDOWS_MM )
+    rtapi_ = new MidiInWinMM( clientName, queueSizeLimit );
+#endif
+#if defined(__MACOSX_CORE__)
+  if ( api == MACOSX_CORE )
+    rtapi_ = new MidiInCore( clientName, queueSizeLimit );
+#endif
+#if defined(__RTMIDI_DUMMY__)
+  if ( api == RTMIDI_DUMMY )
+    rtapi_ = new MidiInDummy( clientName, queueSizeLimit );
+#endif
+}
+
+RtMidiIn :: RtMidiIn( RtMidi::Api api, const std::string clientName, unsigned int queueSizeLimit )
+  : RtMidi()
+{
+  if ( api != UNSPECIFIED ) {
+    // Attempt to open the specified API.
+    openMidiApi( api, clientName, queueSizeLimit );
+    if ( rtapi_ ) return;
+
+    // No compiled support for specified API value.  Issue a warning
+    // and continue as if no API was specified.
+    std::cerr << "\nRtMidiIn: no compiled support for specified API argument!\n\n" << std::endl;
+  }
+
+  // Iterate through the compiled APIs and return as soon as we find
+  // one with at least one port or we reach the end of the list.
+  std::vector< RtMidi::Api > apis;
+  getCompiledApi( apis );
+  for ( unsigned int i=0; i<apis.size(); i++ ) {
+    openMidiApi( apis[i], clientName, queueSizeLimit );
+    if ( rtapi_->getPortCount() ) break;
+  }
+
+  if ( rtapi_ ) return;
+
+  // It should not be possible to get here because the preprocessor
+  // definition __RTMIDI_DUMMY__ is automatically defined if no
+  // API-specific definitions are passed to the compiler. But just in
+  // case something weird happens, we'll throw an error.
+  std::string errorText = "RtMidiIn: no compiled API support found ... critical error!!";
+  throw( RtMidiError( errorText, RtMidiError::UNSPECIFIED ) );
+}
+
+RtMidiIn :: ~RtMidiIn() throw()
+{
+}
+
+
+//*********************************************************************//
+//  RtMidiOut Definitions
+//*********************************************************************//
+
+void RtMidiOut :: openMidiApi( RtMidi::Api api, const std::string clientName )
+{
+  if ( rtapi_ )
+    delete rtapi_;
+  rtapi_ = 0;
+
+#if defined(__UNIX_JACK__)
+  if ( api == UNIX_JACK )
+    rtapi_ = new MidiOutJack( clientName );
+#endif
+#if defined(__LINUX_ALSA__)
+  if ( api == LINUX_ALSA )
+    rtapi_ = new MidiOutAlsa( clientName );
+#endif
+#if defined(__WINDOWS_MM__)
+  if ( api == WINDOWS_MM )
+    rtapi_ = new MidiOutWinMM( clientName );
+#endif
+#if defined(__MACOSX_CORE__)
+  if ( api == MACOSX_CORE )
+    rtapi_ = new MidiOutCore( clientName );
+#endif
+#if defined(__RTMIDI_DUMMY__)
+  if ( api == RTMIDI_DUMMY )
+    rtapi_ = new MidiOutDummy( clientName );
+#endif
+}
+
+RtMidiOut :: RtMidiOut( RtMidi::Api api, const std::string clientName )
+{
+  if ( api != UNSPECIFIED ) {
+    // Attempt to open the specified API.
+    openMidiApi( api, clientName );
+    if ( rtapi_ ) return;
+
+    // No compiled support for specified API value.  Issue a warning
+    // and continue as if no API was specified.
+    std::cerr << "\nRtMidiOut: no compiled support for specified API argument!\n\n" << std::endl;
+  }
+
+  // Iterate through the compiled APIs and return as soon as we find
+  // one with at least one port or we reach the end of the list.
+  std::vector< RtMidi::Api > apis;
+  getCompiledApi( apis );
+  for ( unsigned int i=0; i<apis.size(); i++ ) {
+    openMidiApi( apis[i], clientName );
+    if ( rtapi_->getPortCount() ) break;
+  }
+
+  if ( rtapi_ ) return;
+
+  // It should not be possible to get here because the preprocessor
+  // definition __RTMIDI_DUMMY__ is automatically defined if no
+  // API-specific definitions are passed to the compiler. But just in
+  // case something weird happens, we'll thrown an error.
+  std::string errorText = "RtMidiOut: no compiled API support found ... critical error!!";
+  throw( RtMidiError( errorText, RtMidiError::UNSPECIFIED ) );
+}
+
+RtMidiOut :: ~RtMidiOut() throw()
+{
+}
+
+//*********************************************************************//
+//  Common MidiApi Definitions
+//*********************************************************************//
+
+MidiApi :: MidiApi( void )
+  : apiData_( 0 ), connected_( false ), errorCallback_(0)
+{
+}
+
+MidiApi :: ~MidiApi( void )
+{
+}
+
+void MidiApi :: setErrorCallback( RtMidiErrorCallback errorCallback )
+{
+    errorCallback_ = errorCallback;
+}
+
+void MidiApi :: error( RtMidiError::Type type, std::string errorString )
+{
+  if ( errorCallback_ ) {
+    static bool firstErrorOccured = false;
+
+    if ( firstErrorOccured )
+      return;
+
+    firstErrorOccured = true;
+    const std::string errorMessage = errorString;
+
+    errorCallback_( type, errorMessage );
+    firstErrorOccured = false;
+    return;
+  }
+
+  if ( type == RtMidiError::WARNING ) {
+    std::cerr << '\n' << errorString << "\n\n";
+  }
+  else if ( type == RtMidiError::DEBUG_WARNING ) {
+#if defined(__RTMIDI_DEBUG__)
+    std::cerr << '\n' << errorString << "\n\n";
+#endif
+  }
+  else {
+    std::cerr << '\n' << errorString << "\n\n";
+    throw RtMidiError( errorString, type );
+  }
+}
+
+//*********************************************************************//
+//  Common MidiInApi Definitions
+//*********************************************************************//
+
+MidiInApi :: MidiInApi( unsigned int queueSizeLimit )
+  : MidiApi()
+{
+  // Allocate the MIDI queue.
+  inputData_.queue.ringSize = queueSizeLimit;
+  if ( inputData_.queue.ringSize > 0 )
+    inputData_.queue.ring = new MidiMessage[ inputData_.queue.ringSize ];
+}
+
+MidiInApi :: ~MidiInApi( void )
+{
+  // Delete the MIDI queue.
+  if ( inputData_.queue.ringSize > 0 ) delete [] inputData_.queue.ring;
+}
+
+void MidiInApi :: setCallback( RtMidiIn::RtMidiCallback callback, void *userData )
+{
+  if ( inputData_.usingCallback ) {
+    errorString_ = "MidiInApi::setCallback: a callback function is already set!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  if ( !callback ) {
+    errorString_ = "RtMidiIn::setCallback: callback function value is invalid!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  inputData_.userCallback = callback;
+  inputData_.userData = userData;
+  inputData_.usingCallback = true;
+}
+
+void MidiInApi :: cancelCallback()
+{
+  if ( !inputData_.usingCallback ) {
+    errorString_ = "RtMidiIn::cancelCallback: no callback function was set!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  inputData_.userCallback = 0;
+  inputData_.userData = 0;
+  inputData_.usingCallback = false;
+}
+
+void MidiInApi :: ignoreTypes( bool midiSysex, bool midiTime, bool midiSense )
+{
+  inputData_.ignoreFlags = 0;
+  if ( midiSysex ) inputData_.ignoreFlags = 0x01;
+  if ( midiTime ) inputData_.ignoreFlags |= 0x02;
+  if ( midiSense ) inputData_.ignoreFlags |= 0x04;
+}
+
+double MidiInApi :: getMessage( std::vector<unsigned char> *message )
+{
+  message->clear();
+
+  if ( inputData_.usingCallback ) {
+    errorString_ = "RtMidiIn::getNextMessage: a user callback is currently set for this port.";
+    error( RtMidiError::WARNING, errorString_ );
+    return 0.0;
+  }
+
+  if ( inputData_.queue.size == 0 ) return 0.0;
+
+  // Copy queued message to the vector pointer argument and then "pop" it.
+  std::vector<unsigned char> *bytes = &(inputData_.queue.ring[inputData_.queue.front].bytes);
+  message->assign( bytes->begin(), bytes->end() );
+  double deltaTime = inputData_.queue.ring[inputData_.queue.front].timeStamp;
+  inputData_.queue.size--;
+  inputData_.queue.front++;
+  if ( inputData_.queue.front == inputData_.queue.ringSize )
+    inputData_.queue.front = 0;
+
+  return deltaTime;
+}
+
+//*********************************************************************//
+//  Common MidiOutApi Definitions
+//*********************************************************************//
+
+MidiOutApi :: MidiOutApi( void )
+  : MidiApi()
+{
+}
+
+MidiOutApi :: ~MidiOutApi( void )
+{
+}
+
+// *************************************************** //
+//
+// OS/API-specific methods.
+//
+// *************************************************** //
+
+#if defined(__MACOSX_CORE__)
+
+// The CoreMIDI API is based on the use of a callback function for
+// MIDI input.  We convert the system specific time stamps to delta
+// time values.
+
+// OS-X CoreMIDI header files.
+#include <CoreMIDI/CoreMIDI.h>
+
+#if defined(__MACOSX_CORE__)
+    #if TARGET_OS_IPHONE
+        static inline UInt32 EndianS32_BtoN(UInt32 x)
+        {
+            return ((x << 24) & 0xFF000000) | ((x << 8) & 0x00FF0000)
+            | ((x >> 8) & 0x0000FF00) | ((x >> 24) & 0x000000FF);
+        }
+    #else
+        #include <CoreAudio/HostTime.h>
+        #include <CoreServices/CoreServices.h>
+    #endif
+#endif
+
+
+// A structure to hold variables related to the CoreMIDI API
+// implementation.
+struct CoreMidiData {
+  MIDIClientRef client;
+  MIDIPortRef port;
+  MIDIEndpointRef endpoint;
+  MIDIEndpointRef destinationId;
+  unsigned long long lastTime;
+  MIDISysexSendRequest sysexreq;
+};
+
+//*********************************************************************//
+//  API: OS-X
+//  Class Definitions: MidiInCore
+//*********************************************************************//
+
+static void midiInputCallback( const MIDIPacketList *list, void *procRef, void */*srcRef*/ )
+{
+  MidiInApi::RtMidiInData *data = static_cast<MidiInApi::RtMidiInData *> (procRef);
+  CoreMidiData *apiData = static_cast<CoreMidiData *> (data->apiData);
+
+  unsigned char status;
+  unsigned short nBytes, iByte, size;
+  unsigned long long time;
+  
+  bool& continueSysex = data->continueSysex;
+  MidiInApi::MidiMessage& message = data->message;
+  
+  const MIDIPacket *packet = &list->packet[0];
+  for ( unsigned int i=0; i<list->numPackets; ++i ) {
+
+    // My interpretation of the CoreMIDI documentation: all message
+    // types, except sysex, are complete within a packet and there may
+    // be several of them in a single packet.  Sysex messages can be
+    // broken across multiple packets and PacketLists but are bundled
+    // alone within each packet (these packets do not contain other
+    // message types).  If sysex messages are split across multiple
+    // MIDIPacketLists, they must be handled by multiple calls to this
+    // function.
+
+    nBytes = packet->length;
+    if ( nBytes == 0 ) continue;
+
+    // Calculate time stamp.
+
+    /*
+    if ( data->firstMessage ) {
+      message.timeStamp = 0.0;
+      data->firstMessage = false;
+    }
+    else {
+      time = packet->timeStamp;
+      if ( time == 0 ) { // this happens when receiving asynchronous sysex messages
+        time = AudioGetCurrentHostTime();
+      }
+      time -= apiData->lastTime;
+      time = AudioConvertHostTimeToNanos( time );
+      if ( !continueSysex )
+        message.timeStamp = time * 0.000000001;
+    }
+    apiData->lastTime = packet->timeStamp;
+    if ( apiData->lastTime == 0 ) { // this happens when receiving asynchronous sysex messages
+      apiData->lastTime = AudioGetCurrentHostTime();
+    }
+    */
+    
+    // Absolute usec based time stamp
+    message.timeStamp = AudioConvertHostTimeToNanos(packet->timeStamp) / 1000;
+  
+    iByte = 0;
+    if ( continueSysex ) {
+      // We have a continuing, segmented sysex message.
+      if ( !( data->ignoreFlags & 0x01 ) ) {
+        // If we're not ignoring sysex messages, copy the entire packet.
+        for ( unsigned int j=0; j<nBytes; ++j )
+          message.bytes.push_back( packet->data[j] );
+      }
+      continueSysex = packet->data[nBytes-1] != 0xF7;
+
+      if ( !( data->ignoreFlags & 0x01 ) && !continueSysex ) {
+        // If not a continuing sysex message, invoke the user callback function or queue the message.
+        if ( data->usingCallback ) {
+          RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
+          callback( message.timeStamp, &message.bytes, data->userData );
+        }
+        else {
+          // As long as we haven't reached our queue size limit, push the message.
+          if ( data->queue.size < data->queue.ringSize ) {
+            data->queue.ring[data->queue.back++] = message;
+            if ( data->queue.back == data->queue.ringSize )
+              data->queue.back = 0;
+            data->queue.size++;
+          }
+          else
+            std::cerr << "\nMidiInCore: message queue limit reached!!\n\n";
+        }
+        message.bytes.clear();
+      }
+    }
+    else {
+      while ( iByte < nBytes ) {
+        size = 0;
+        // We are expecting that the next byte in the packet is a status byte.
+        status = packet->data[iByte];
+        if ( !(status & 0x80) ) break;
+        // Determine the number of bytes in the MIDI message.
+        if ( status < 0xC0 ) size = 3;
+        else if ( status < 0xE0 ) size = 2;
+        else if ( status < 0xF0 ) size = 3;
+        else if ( status == 0xF0 ) {
+          // A MIDI sysex
+          if ( data->ignoreFlags & 0x01 ) {
+            size = 0;
+            iByte = nBytes;
+          }
+          else size = nBytes - iByte;
+          continueSysex = packet->data[nBytes-1] != 0xF7;
+        }
+        else if ( status == 0xF1 ) {
+            // A MIDI time code message
+           if ( data->ignoreFlags & 0x02 ) {
+            size = 0;
+            iByte += 2;
+           }
+           else size = 2;
+        }
+        else if ( status == 0xF2 ) size = 3;
+        else if ( status == 0xF3 ) size = 2;
+        else if ( status == 0xF8 && ( data->ignoreFlags & 0x02 ) ) {
+          // A MIDI timing tick message and we're ignoring it.
+          size = 0;
+          iByte += 1;
+        }
+        else if ( status == 0xFE && ( data->ignoreFlags & 0x04 ) ) {
+          // A MIDI active sensing message and we're ignoring it.
+          size = 0;
+          iByte += 1;
+        }
+        else size = 1;
+
+        // Copy the MIDI data to our vector.
+        if ( size ) {
+          message.bytes.assign( &packet->data[iByte], &packet->data[iByte+size] );
+          if ( !continueSysex ) {
+            // If not a continuing sysex message, invoke the user callback function or queue the message.
+            if ( data->usingCallback ) {
+              RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
+              callback( message.timeStamp, &message.bytes, data->userData );
+            }
+            else {
+              // As long as we haven't reached our queue size limit, push the message.
+              if ( data->queue.size < data->queue.ringSize ) {
+                data->queue.ring[data->queue.back++] = message;
+                if ( data->queue.back == data->queue.ringSize )
+                  data->queue.back = 0;
+                data->queue.size++;
+              }
+              else
+                std::cerr << "\nMidiInCore: message queue limit reached!!\n\n";
+            }
+            message.bytes.clear();
+          }
+          iByte += size;
+        }
+      }
+    }
+    packet = MIDIPacketNext(packet);
+  }
+}
+
+MidiInCore :: MidiInCore( const std::string clientName, unsigned int queueSizeLimit ) : MidiInApi( queueSizeLimit )
+{
+  initialize( clientName );
+}
+
+MidiInCore :: ~MidiInCore( void )
+{
+  // Close a connection if it exists.
+  closePort();
+
+  // Cleanup.
+  CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+  MIDIClientDispose( data->client );
+  if ( data->endpoint ) MIDIEndpointDispose( data->endpoint );
+  delete data;
+}
+
+void MidiInCore :: initialize( const std::string& clientName )
+{
+  // Set up our client.
+  MIDIClientRef client;
+  OSStatus result = MIDIClientCreate( CFStringCreateWithCString( NULL, clientName.c_str(), kCFStringEncodingASCII ), NULL, NULL, &client );
+  if ( result != noErr ) {
+    errorString_ = "MidiInCore::initialize: error creating OS-X MIDI client object.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Save our api-specific connection information.
+  CoreMidiData *data = (CoreMidiData *) new CoreMidiData;
+  data->client = client;
+  data->endpoint = 0;
+  apiData_ = (void *) data;
+  inputData_.apiData = (void *) data;
+}
+
+void MidiInCore :: openPort( unsigned int portNumber, const std::string portName )
+{
+  if ( connected_ ) {
+    errorString_ = "MidiInCore::openPort: a valid connection already exists!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
+  unsigned int nSrc = MIDIGetNumberOfSources();
+  if (nSrc < 1) {
+    errorString_ = "MidiInCore::openPort: no MIDI input sources found!";
+    error( RtMidiError::NO_DEVICES_FOUND, errorString_ );
+    return;
+  }
+
+  if ( portNumber >= nSrc ) {
+    std::ostringstream ost;
+    ost << "MidiInCore::openPort: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::INVALID_PARAMETER, errorString_ );
+    return;
+  }
+
+  MIDIPortRef port;
+  CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+  OSStatus result = MIDIInputPortCreate( data->client, 
+                                         CFStringCreateWithCString( NULL, portName.c_str(), kCFStringEncodingASCII ),
+                                         midiInputCallback, (void *)&inputData_, &port );
+  if ( result != noErr ) {
+    MIDIClientDispose( data->client );
+    errorString_ = "MidiInCore::openPort: error creating OS-X MIDI input port.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Get the desired input source identifier.
+  MIDIEndpointRef endpoint = MIDIGetSource( portNumber );
+  if ( endpoint == 0 ) {
+    MIDIPortDispose( port );
+    MIDIClientDispose( data->client );
+    errorString_ = "MidiInCore::openPort: error getting MIDI input source reference.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Make the connection.
+  result = MIDIPortConnectSource( port, endpoint, NULL );
+  if ( result != noErr ) {
+    MIDIPortDispose( port );
+    MIDIClientDispose( data->client );
+    errorString_ = "MidiInCore::openPort: error connecting OS-X MIDI input port.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Save our api-specific port information.
+  data->port = port;
+
+  connected_ = true;
+}
+
+void MidiInCore :: openVirtualPort( const std::string portName )
+{
+  CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+
+  // Create a virtual MIDI input destination.
+  MIDIEndpointRef endpoint;
+  OSStatus result = MIDIDestinationCreate( data->client,
+                                           CFStringCreateWithCString( NULL, portName.c_str(), kCFStringEncodingASCII ),
+                                           midiInputCallback, (void *)&inputData_, &endpoint );
+  if ( result != noErr ) {
+    errorString_ = "MidiInCore::openVirtualPort: error creating virtual OS-X MIDI destination.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Save our api-specific connection information.
+  data->endpoint = endpoint;
+}
+
+void MidiInCore :: closePort( void )
+{
+  if ( connected_ ) {
+    CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+    MIDIPortDispose( data->port );
+    connected_ = false;
+  }
+}
+
+unsigned int MidiInCore :: getPortCount()
+{
+  CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
+  return MIDIGetNumberOfSources();
+}
+
+// This function was submitted by Douglas Casey Tucker and apparently
+// derived largely from PortMidi.
+CFStringRef EndpointName( MIDIEndpointRef endpoint, bool isExternal )
+{
+  CFMutableStringRef result = CFStringCreateMutable( NULL, 0 );
+  CFStringRef str;
+
+  // Begin with the endpoint's name.
+  str = NULL;
+  MIDIObjectGetStringProperty( endpoint, kMIDIPropertyName, &str );
+  if ( str != NULL ) {
+    CFStringAppend( result, str );
+    CFRelease( str );
+  }
+
+  MIDIEntityRef entity = 0;
+  MIDIEndpointGetEntity( endpoint, &entity );
+  if ( entity == 0 )
+    // probably virtual
+    return result;
+
+  if ( CFStringGetLength( result ) == 0 ) {
+    // endpoint name has zero length -- try the entity
+    str = NULL;
+    MIDIObjectGetStringProperty( entity, kMIDIPropertyName, &str );
+    if ( str != NULL ) {
+      CFStringAppend( result, str );
+      CFRelease( str );
+    }
+  }
+  // now consider the device's name
+  MIDIDeviceRef device = 0;
+  MIDIEntityGetDevice( entity, &device );
+  if ( device == 0 )
+    return result;
+
+  str = NULL;
+  MIDIObjectGetStringProperty( device, kMIDIPropertyName, &str );
+  if ( CFStringGetLength( result ) == 0 ) {
+      CFRelease( result );
+      return str;
+  }
+  if ( str != NULL ) {
+    // if an external device has only one entity, throw away
+    // the endpoint name and just use the device name
+    if ( isExternal && MIDIDeviceGetNumberOfEntities( device ) < 2 ) {
+      CFRelease( result );
+      return str;
+    } else {
+      if ( CFStringGetLength( str ) == 0 ) {
+        CFRelease( str );
+        return result;
+      }
+      // does the entity name already start with the device name?
+      // (some drivers do this though they shouldn't)
+      // if so, do not prepend
+        if ( CFStringCompareWithOptions( result, /* endpoint name */
+             str /* device name */,
+             CFRangeMake(0, CFStringGetLength( str ) ), 0 ) != kCFCompareEqualTo ) {
+        // prepend the device name to the entity name
+        if ( CFStringGetLength( result ) > 0 )
+          CFStringInsert( result, 0, CFSTR(" ") );
+        CFStringInsert( result, 0, str );
+      }
+      CFRelease( str );
+    }
+  }
+  return result;
+}
+
+// This function was submitted by Douglas Casey Tucker and apparently
+// derived largely from PortMidi.
+static CFStringRef ConnectedEndpointName( MIDIEndpointRef endpoint )
+{
+  CFMutableStringRef result = CFStringCreateMutable( NULL, 0 );
+  CFStringRef str;
+  OSStatus err;
+  int i;
+
+  // Does the endpoint have connections?
+  CFDataRef connections = NULL;
+  int nConnected = 0;
+  bool anyStrings = false;
+  err = MIDIObjectGetDataProperty( endpoint, kMIDIPropertyConnectionUniqueID, &connections );
+  if ( connections != NULL ) {
+    // It has connections, follow them
+    // Concatenate the names of all connected devices
+    nConnected = CFDataGetLength( connections ) / sizeof(MIDIUniqueID);
+    if ( nConnected ) {
+      const SInt32 *pid = (const SInt32 *)(CFDataGetBytePtr(connections));
+      for ( i=0; i<nConnected; ++i, ++pid ) {
+        MIDIUniqueID id = EndianS32_BtoN( *pid );
+        MIDIObjectRef connObject;
+        MIDIObjectType connObjectType;
+        err = MIDIObjectFindByUniqueID( id, &connObject, &connObjectType );
+        if ( err == noErr ) {
+          if ( connObjectType == kMIDIObjectType_ExternalSource  ||
+              connObjectType == kMIDIObjectType_ExternalDestination ) {
+            // Connected to an external device's endpoint (10.3 and later).
+            str = EndpointName( (MIDIEndpointRef)(connObject), true );
+          } else {
+            // Connected to an external device (10.2) (or something else, catch-
+            str = NULL;
+            MIDIObjectGetStringProperty( connObject, kMIDIPropertyName, &str );
+          }
+          if ( str != NULL ) {
+            if ( anyStrings )
+              CFStringAppend( result, CFSTR(", ") );
+            else anyStrings = true;
+            CFStringAppend( result, str );
+            CFRelease( str );
+          }
+        }
+      }
+    }
+    CFRelease( connections );
+  }
+  if ( anyStrings )
+    return result;
+
+  // Here, either the endpoint had no connections, or we failed to obtain names 
+  return EndpointName( endpoint, false );
+}
+
+std::string MidiInCore :: getPortName( unsigned int portNumber )
+{
+  CFStringRef nameRef;
+  MIDIEndpointRef portRef;
+  char name[128];
+
+  std::string stringName;
+  CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
+  if ( portNumber >= MIDIGetNumberOfSources() ) {
+    std::ostringstream ost;
+    ost << "MidiInCore::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::WARNING, errorString_ );
+    return stringName;
+  }
+
+  portRef = MIDIGetSource( portNumber );
+  nameRef = ConnectedEndpointName(portRef);
+  CFStringGetCString( nameRef, name, sizeof(name), CFStringGetSystemEncoding());
+  CFRelease( nameRef );
+
+  return stringName = name;
+}
+
+//*********************************************************************//
+//  API: OS-X
+//  Class Definitions: MidiOutCore
+//*********************************************************************//
+
+MidiOutCore :: MidiOutCore( const std::string clientName ) : MidiOutApi()
+{
+  initialize( clientName );
+}
+
+MidiOutCore :: ~MidiOutCore( void )
+{
+  // Close a connection if it exists.
+  closePort();
+
+  // Cleanup.
+  CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+  MIDIClientDispose( data->client );
+  if ( data->endpoint ) MIDIEndpointDispose( data->endpoint );
+  delete data;
+}
+
+void MidiOutCore :: initialize( const std::string& clientName )
+{
+  // Set up our client.
+  MIDIClientRef client;
+  OSStatus result = MIDIClientCreate( CFStringCreateWithCString( NULL, clientName.c_str(), kCFStringEncodingASCII ), NULL, NULL, &client );
+  if ( result != noErr ) {
+    errorString_ = "MidiOutCore::initialize: error creating OS-X MIDI client object.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Save our api-specific connection information.
+  CoreMidiData *data = (CoreMidiData *) new CoreMidiData;
+  data->client = client;
+  data->endpoint = 0;
+  apiData_ = (void *) data;
+}
+
+unsigned int MidiOutCore :: getPortCount()
+{
+  CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
+  return MIDIGetNumberOfDestinations();
+}
+
+std::string MidiOutCore :: getPortName( unsigned int portNumber )
+{
+  CFStringRef nameRef;
+  MIDIEndpointRef portRef;
+  char name[128];
+
+  std::string stringName;
+  CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
+  if ( portNumber >= MIDIGetNumberOfDestinations() ) {
+    std::ostringstream ost;
+    ost << "MidiOutCore::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::WARNING, errorString_ );
+    return stringName;
+  }
+
+  portRef = MIDIGetDestination( portNumber );
+  nameRef = ConnectedEndpointName(portRef);
+  CFStringGetCString( nameRef, name, sizeof(name), CFStringGetSystemEncoding());
+  CFRelease( nameRef );
+  
+  return stringName = name;
+}
+
+void MidiOutCore :: openPort( unsigned int portNumber, const std::string portName )
+{
+  if ( connected_ ) {
+    errorString_ = "MidiOutCore::openPort: a valid connection already exists!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  CFRunLoopRunInMode( kCFRunLoopDefaultMode, 0, false );
+  unsigned int nDest = MIDIGetNumberOfDestinations();
+  if (nDest < 1) {
+    errorString_ = "MidiOutCore::openPort: no MIDI output destinations found!";
+    error( RtMidiError::NO_DEVICES_FOUND, errorString_ );
+    return;
+  }
+
+  if ( portNumber >= nDest ) {
+    std::ostringstream ost;
+    ost << "MidiOutCore::openPort: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::INVALID_PARAMETER, errorString_ );
+    return;
+  }
+
+  MIDIPortRef port;
+  CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+  OSStatus result = MIDIOutputPortCreate( data->client, 
+                                          CFStringCreateWithCString( NULL, portName.c_str(), kCFStringEncodingASCII ),
+                                          &port );
+  if ( result != noErr ) {
+    MIDIClientDispose( data->client );
+    errorString_ = "MidiOutCore::openPort: error creating OS-X MIDI output port.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Get the desired output port identifier.
+  MIDIEndpointRef destination = MIDIGetDestination( portNumber );
+  if ( destination == 0 ) {
+    MIDIPortDispose( port );
+    MIDIClientDispose( data->client );
+    errorString_ = "MidiOutCore::openPort: error getting MIDI output destination reference.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Save our api-specific connection information.
+  data->port = port;
+  data->destinationId = destination;
+  connected_ = true;
+}
+
+void MidiOutCore :: closePort( void )
+{
+  if ( connected_ ) {
+    CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+    MIDIPortDispose( data->port );
+    connected_ = false;
+  }
+}
+
+void MidiOutCore :: openVirtualPort( std::string portName )
+{
+  CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+
+  if ( data->endpoint ) {
+    errorString_ = "MidiOutCore::openVirtualPort: a virtual output port already exists!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  // Create a virtual MIDI output source.
+  MIDIEndpointRef endpoint;
+  OSStatus result = MIDISourceCreate( data->client,
+                                      CFStringCreateWithCString( NULL, portName.c_str(), kCFStringEncodingASCII ),
+                                      &endpoint );
+  if ( result != noErr ) {
+    errorString_ = "MidiOutCore::initialize: error creating OS-X virtual MIDI source.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Save our api-specific connection information.
+  data->endpoint = endpoint;
+}
+
+// Not necessary if we don't treat sysex messages any differently than
+// normal messages ... see below.
+//static void sysexCompletionProc( MIDISysexSendRequest *sreq )
+//{
+//  free( sreq );
+//}
+
+void MidiOutCore :: sendMessage( std::vector<unsigned char> *message )
+{
+  // We use the MIDISendSysex() function to asynchronously send sysex
+  // messages.  Otherwise, we use a single CoreMidi MIDIPacket.
+  unsigned int nBytes = message->size();
+  if ( nBytes == 0 ) {
+    errorString_ = "MidiOutCore::sendMessage: no data in message argument!";      
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  //  unsigned int packetBytes, bytesLeft = nBytes;
+  //  unsigned int messageIndex = 0;
+  MIDITimeStamp timeStamp = AudioGetCurrentHostTime();
+  CoreMidiData *data = static_cast<CoreMidiData *> (apiData_);
+  OSStatus result;
+
+  /*
+    // I don't think this code is necessary.  We can send sysex
+    // messages through the normal mechanism.  In addition, this avoids
+    // the problem of virtual ports not receiving sysex messages.
+
+  if ( message->at(0) == 0xF0 ) {
+
+    // Apple's fantastic API requires us to free the allocated data in
+    // the completion callback but trashes the pointer and size before
+    // we get a chance to free it!!  This is a somewhat ugly hack
+    // submitted by ptarabbia that puts the sysex buffer data right at
+    // the end of the MIDISysexSendRequest structure.  This solution
+    // does not require that we wait for a previous sysex buffer to be
+    // sent before sending a new one, which was the old way we did it.
+    MIDISysexSendRequest *newRequest = (MIDISysexSendRequest *) malloc(sizeof(struct MIDISysexSendRequest) + nBytes);
+    char * sysexBuffer = ((char *) newRequest) + sizeof(struct MIDISysexSendRequest);
+
+    // Copy data to buffer.
+    for ( unsigned int i=0; i<nBytes; ++i ) sysexBuffer[i] = message->at(i);
+
+    newRequest->destination = data->destinationId;
+    newRequest->data = (Byte *)sysexBuffer;
+    newRequest->bytesToSend = nBytes;
+    newRequest->complete = 0;
+    newRequest->completionProc = sysexCompletionProc;
+    newRequest->completionRefCon = newRequest;
+
+    result = MIDISendSysex(newRequest);
+    if ( result != noErr ) {
+      free( newRequest );
+      errorString_ = "MidiOutCore::sendMessage: error sending MIDI to virtual destinations.";
+      error( RtMidiError::WARNING, errorString_ );
+      return;
+    }
+    return;
+  }
+  else if ( nBytes > 3 ) {
+    errorString_ = "MidiOutCore::sendMessage: message format problem ... not sysex but > 3 bytes?";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+  */
+
+  MIDIPacketList packetList;
+  MIDIPacket *packet = MIDIPacketListInit( &packetList );
+  packet = MIDIPacketListAdd( &packetList, sizeof(packetList), packet, timeStamp, nBytes, (const Byte *) &message->at( 0 ) );
+  if ( !packet ) {
+    errorString_ = "MidiOutCore::sendMessage: could not allocate packet list";      
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Send to any destinations that may have connected to us.
+  if ( data->endpoint ) {
+    result = MIDIReceived( data->endpoint, &packetList );
+    if ( result != noErr ) {
+      errorString_ = "MidiOutCore::sendMessage: error sending MIDI to virtual destinations.";
+      error( RtMidiError::WARNING, errorString_ );
+    }
+  }
+
+  // And send to an explicit destination port if we're connected.
+  if ( connected_ ) {
+    result = MIDISend( data->port, data->destinationId, &packetList );
+    if ( result != noErr ) {
+      errorString_ = "MidiOutCore::sendMessage: error sending MIDI message to port.";
+      error( RtMidiError::WARNING, errorString_ );
+    }
+  }
+}
+
+#endif  // __MACOSX_CORE__
+
+
+//*********************************************************************//
+//  API: LINUX ALSA SEQUENCER
+//*********************************************************************//
+
+// API information found at:
+//   - http://www.alsa-project.org/documentation.php#Library
+
+#if defined(__LINUX_ALSA__)
+
+// The ALSA Sequencer API is based on the use of a callback function for
+// MIDI input.
+//
+// Thanks to Pedro Lopez-Cabanillas for help with the ALSA sequencer
+// time stamps and other assorted fixes!!!
+
+// If you don't need timestamping for incoming MIDI events, define the
+// preprocessor definition AVOID_TIMESTAMPING to save resources
+// associated with the ALSA sequencer queues.
+
+#include <pthread.h>
+#include <sys/time.h>
+
+// ALSA header file.
+#include <alsa/asoundlib.h>
+
+// A structure to hold variables related to the ALSA API
+// implementation.
+struct AlsaMidiData {
+  snd_seq_t *seq;
+  unsigned int portNum;
+  int vport;
+  snd_seq_port_subscribe_t *subscription;
+  snd_midi_event_t *coder;
+  unsigned int bufferSize;
+  unsigned char *buffer;
+  pthread_t thread;
+  pthread_t dummy_thread_id;
+  unsigned long long lastTime;
+  int queue_id; // an input queue is needed to get timestamped events
+  int trigger_fds[2];
+};
+
+#define PORT_TYPE( pinfo, bits ) ((snd_seq_port_info_get_capability(pinfo) & (bits)) == (bits))
+
+//*********************************************************************//
+//  API: LINUX ALSA
+//  Class Definitions: MidiInAlsa
+//*********************************************************************//
+
+static void *alsaMidiHandler( void *ptr )
+{
+  MidiInApi::RtMidiInData *data = static_cast<MidiInApi::RtMidiInData *> (ptr);
+  AlsaMidiData *apiData = static_cast<AlsaMidiData *> (data->apiData);
+
+  long nBytes;
+  unsigned long long time, lastTime;
+  bool continueSysex = false;
+  bool doDecode = false;
+  MidiInApi::MidiMessage message;
+  int poll_fd_count;
+  struct pollfd *poll_fds;
+
+  snd_seq_event_t *ev;
+  int result;
+  apiData->bufferSize = 32;
+  result = snd_midi_event_new( 0, &apiData->coder );
+  if ( result < 0 ) {
+    data->doInput = false;
+    std::cerr << "\nMidiInAlsa::alsaMidiHandler: error initializing MIDI event parser!\n\n";
+    return 0;
+  }
+  unsigned char *buffer = (unsigned char *) malloc( apiData->bufferSize );
+  if ( buffer == NULL ) {
+    data->doInput = false;
+    snd_midi_event_free( apiData->coder );
+    apiData->coder = 0;
+    std::cerr << "\nMidiInAlsa::alsaMidiHandler: error initializing buffer memory!\n\n";
+    return 0;
+  }
+  snd_midi_event_init( apiData->coder );
+  snd_midi_event_no_status( apiData->coder, 1 ); // suppress running status messages
+
+  poll_fd_count = snd_seq_poll_descriptors_count( apiData->seq, POLLIN ) + 1;
+  poll_fds = (struct pollfd*)alloca( poll_fd_count * sizeof( struct pollfd ));
+  snd_seq_poll_descriptors( apiData->seq, poll_fds + 1, poll_fd_count - 1, POLLIN );
+  poll_fds[0].fd = apiData->trigger_fds[0];
+  poll_fds[0].events = POLLIN;
+
+  while ( data->doInput ) {
+
+    if ( snd_seq_event_input_pending( apiData->seq, 1 ) == 0 ) {
+      // No data pending
+      if ( poll( poll_fds, poll_fd_count, -1) >= 0 ) {
+        if ( poll_fds[0].revents & POLLIN ) {
+          bool dummy;
+          int res = read( poll_fds[0].fd, &dummy, sizeof(dummy) );
+          (void) res;
+        }
+      }
+      continue;
+    }
+
+    // If here, there should be data.
+    result = snd_seq_event_input( apiData->seq, &ev );
+    if ( result == -ENOSPC ) {
+      std::cerr << "\nMidiInAlsa::alsaMidiHandler: MIDI input buffer overrun!\n\n";
+      continue;
+    }
+    else if ( result <= 0 ) {
+      std::cerr << "\nMidiInAlsa::alsaMidiHandler: unknown MIDI input error!\n";
+      perror("System reports");
+      continue;
+    }
+
+    // This is a bit weird, but we now have to decode an ALSA MIDI
+    // event (back) into MIDI bytes.  We'll ignore non-MIDI types.
+    if ( !continueSysex ) message.bytes.clear();
+
+    doDecode = false;
+    switch ( ev->type ) {
+
+    case SND_SEQ_EVENT_PORT_SUBSCRIBED:
+#if defined(__RTMIDI_DEBUG__)
+      std::cout << "MidiInAlsa::alsaMidiHandler: port connection made!\n";
+#endif
+      break;
+
+    case SND_SEQ_EVENT_PORT_UNSUBSCRIBED:
+#if defined(__RTMIDI_DEBUG__)
+      std::cerr << "MidiInAlsa::alsaMidiHandler: port connection has closed!\n";
+      std::cout << "sender = " << (int) ev->data.connect.sender.client << ":"
+                << (int) ev->data.connect.sender.port
+                << ", dest = " << (int) ev->data.connect.dest.client << ":"
+                << (int) ev->data.connect.dest.port
+                << std::endl;
+#endif
+      break;
+
+    case SND_SEQ_EVENT_QFRAME: // MIDI time code
+      if ( !( data->ignoreFlags & 0x02 ) ) doDecode = true;
+      break;
+
+    case SND_SEQ_EVENT_TICK: // 0xF9 ... MIDI timing tick
+      if ( !( data->ignoreFlags & 0x02 ) ) doDecode = true;
+      break;
+
+    case SND_SEQ_EVENT_CLOCK: // 0xF8 ... MIDI timing (clock) tick
+      if ( !( data->ignoreFlags & 0x02 ) ) doDecode = true;
+      break;
+
+    case SND_SEQ_EVENT_SENSING: // Active sensing
+      if ( !( data->ignoreFlags & 0x04 ) ) doDecode = true;
+      break;
+
+		case SND_SEQ_EVENT_SYSEX:
+      if ( (data->ignoreFlags & 0x01) ) break;
+      if ( ev->data.ext.len > apiData->bufferSize ) {
+        apiData->bufferSize = ev->data.ext.len;
+        free( buffer );
+        buffer = (unsigned char *) malloc( apiData->bufferSize );
+        if ( buffer == NULL ) {
+          data->doInput = false;
+          std::cerr << "\nMidiInAlsa::alsaMidiHandler: error resizing buffer memory!\n\n";
+          break;
+        }
+      }
+
+    default:
+      doDecode = true;
+    }
+
+    if ( doDecode ) {
+
+      nBytes = snd_midi_event_decode( apiData->coder, buffer, apiData->bufferSize, ev );
+      if ( nBytes > 0 ) {
+        // The ALSA sequencer has a maximum buffer size for MIDI sysex
+        // events of 256 bytes.  If a device sends sysex messages larger
+        // than this, they are segmented into 256 byte chunks.  So,
+        // we'll watch for this and concatenate sysex chunks into a
+        // single sysex message if necessary.
+        if ( !continueSysex )
+          message.bytes.assign( buffer, &buffer[nBytes] );
+        else
+          message.bytes.insert( message.bytes.end(), buffer, &buffer[nBytes] );
+
+        continueSysex = ( ( ev->type == SND_SEQ_EVENT_SYSEX ) && ( message.bytes.back() != 0xF7 ) );
+        if ( !continueSysex ) {
+
+          // Calculate the time stamp:
+          message.timeStamp = 0.0;
+
+          // Method 1: Use the system time.
+          //(void)gettimeofday(&tv, (struct timezone *)NULL);
+          //time = (tv.tv_sec * 1000000) + tv.tv_usec;
+
+          // Method 2: Use the ALSA sequencer event time data.
+          // (thanks to Pedro Lopez-Cabanillas!).
+          time = ( ev->time.time.tv_sec * 1000000 ) + ( ev->time.time.tv_nsec/1000 );
+          
+          /*
+          lastTime = time;
+          time -= apiData->lastTime;
+          apiData->lastTime = lastTime;
+          if ( data->firstMessage == true )
+            data->firstMessage = false;
+          else
+            message.timeStamp = time * 0.000001;
+          */
+          
+          // Absolute usec based time stamp
+          message.timeStamp = time;
+        }
+        else {
+#if defined(__RTMIDI_DEBUG__)
+          std::cerr << "\nMidiInAlsa::alsaMidiHandler: event parsing error or not a MIDI event!\n\n";
+#endif
+        }
+      }
+    }
+
+    snd_seq_free_event( ev );
+    if ( message.bytes.size() == 0 || continueSysex ) continue;
+
+    if ( data->usingCallback ) {
+      RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
+      callback( message.timeStamp, &message.bytes, data->userData );
+    }
+    else {
+      // As long as we haven't reached our queue size limit, push the message.
+      if ( data->queue.size < data->queue.ringSize ) {
+        data->queue.ring[data->queue.back++] = message;
+        if ( data->queue.back == data->queue.ringSize )
+          data->queue.back = 0;
+        data->queue.size++;
+      }
+      else
+        std::cerr << "\nMidiInAlsa: message queue limit reached!!\n\n";
+    }
+  }
+
+  if ( buffer ) free( buffer );
+  snd_midi_event_free( apiData->coder );
+  apiData->coder = 0;
+  apiData->thread = apiData->dummy_thread_id;
+  return 0;
+}
+
+MidiInAlsa :: MidiInAlsa( const std::string clientName, unsigned int queueSizeLimit ) : MidiInApi( queueSizeLimit )
+{
+  initialize( clientName );
+}
+
+MidiInAlsa :: ~MidiInAlsa()
+{
+  // Close a connection if it exists.
+  closePort();
+
+  // Shutdown the input thread.
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( inputData_.doInput ) {
+    inputData_.doInput = false;
+    int res = write( data->trigger_fds[1], &inputData_.doInput, sizeof(inputData_.doInput) );
+    (void) res;
+    if ( !pthread_equal(data->thread, data->dummy_thread_id) )
+      pthread_join( data->thread, NULL );
+  }
+
+  // Cleanup.
+  close ( data->trigger_fds[0] );
+  close ( data->trigger_fds[1] );
+  if ( data->vport >= 0 ) snd_seq_delete_port( data->seq, data->vport );
+#ifndef AVOID_TIMESTAMPING
+  snd_seq_free_queue( data->seq, data->queue_id );
+#endif
+  snd_seq_close( data->seq );
+  delete data;
+}
+
+void MidiInAlsa :: initialize( const std::string& clientName )
+{
+  // Set up the ALSA sequencer client.
+  snd_seq_t *seq;
+  int result = snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, SND_SEQ_NONBLOCK);
+  if ( result < 0 ) {
+    errorString_ = "MidiInAlsa::initialize: error creating ALSA sequencer client object.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Set client name.
+  snd_seq_set_client_name( seq, clientName.c_str() );
+
+  // Save our api-specific connection information.
+  AlsaMidiData *data = (AlsaMidiData *) new AlsaMidiData;
+  data->seq = seq;
+  data->portNum = -1;
+  data->vport = -1;
+  data->subscription = 0;
+  data->dummy_thread_id = pthread_self();
+  data->thread = data->dummy_thread_id;
+  data->trigger_fds[0] = -1;
+  data->trigger_fds[1] = -1;
+  apiData_ = (void *) data;
+  inputData_.apiData = (void *) data;
+
+   if ( pipe(data->trigger_fds) == -1 ) {
+    errorString_ = "MidiInAlsa::initialize: error creating pipe objects.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Create the input queue
+#ifndef AVOID_TIMESTAMPING
+  data->queue_id = snd_seq_alloc_named_queue(seq, "RtMidi Queue");
+  // Set arbitrary tempo (mm=100) and resolution (240)
+  snd_seq_queue_tempo_t *qtempo;
+  snd_seq_queue_tempo_alloca(&qtempo);
+  snd_seq_queue_tempo_set_tempo(qtempo, 600000);
+  snd_seq_queue_tempo_set_ppq(qtempo, 240);
+  snd_seq_set_queue_tempo(data->seq, data->queue_id, qtempo);
+  snd_seq_drain_output(data->seq);
+#endif
+}
+
+// This function is used to count or get the pinfo structure for a given port number.
+unsigned int portInfo( snd_seq_t *seq, snd_seq_port_info_t *pinfo, unsigned int type, int portNumber )
+{
+  snd_seq_client_info_t *cinfo;
+  int client;
+  int count = 0;
+  snd_seq_client_info_alloca( &cinfo );
+
+  snd_seq_client_info_set_client( cinfo, -1 );
+  while ( snd_seq_query_next_client( seq, cinfo ) >= 0 ) {
+    client = snd_seq_client_info_get_client( cinfo );
+    if ( client == 0 ) continue;
+    // Reset query info
+    snd_seq_port_info_set_client( pinfo, client );
+    snd_seq_port_info_set_port( pinfo, -1 );
+    while ( snd_seq_query_next_port( seq, pinfo ) >= 0 ) {
+      unsigned int atyp = snd_seq_port_info_get_type( pinfo );
+      if ( ( atyp & SND_SEQ_PORT_TYPE_MIDI_GENERIC ) == 0 ) continue;
+      unsigned int caps = snd_seq_port_info_get_capability( pinfo );
+      if ( ( caps & type ) != type ) continue;
+      if ( count == portNumber ) return 1;
+      ++count;
+    }
+  }
+
+  // If a negative portNumber was used, return the port count.
+  if ( portNumber < 0 ) return count;
+  return 0;
+}
+
+unsigned int MidiInAlsa :: getPortCount()
+{
+  snd_seq_port_info_t *pinfo;
+  snd_seq_port_info_alloca( &pinfo );
+
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  return portInfo( data->seq, pinfo, SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ, -1 );
+}
+
+std::string MidiInAlsa :: getPortName( unsigned int portNumber )
+{
+  snd_seq_client_info_t *cinfo;
+  snd_seq_port_info_t *pinfo;
+  snd_seq_client_info_alloca( &cinfo );
+  snd_seq_port_info_alloca( &pinfo );
+
+  std::string stringName;
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( portInfo( data->seq, pinfo, SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ, (int) portNumber ) ) {
+    int cnum = snd_seq_port_info_get_client( pinfo );
+    snd_seq_get_any_client_info( data->seq, cnum, cinfo );
+    std::ostringstream os;
+    os << snd_seq_client_info_get_name( cinfo );
+    os << " ";                                    // These lines added to make sure devices are listed
+    os << snd_seq_port_info_get_client( pinfo );  // with full portnames added to ensure individual device names
+    os << ":";
+    os << snd_seq_port_info_get_port( pinfo );
+    stringName = os.str();
+    return stringName;
+  }
+
+  // If we get here, we didn't find a match.
+  errorString_ = "MidiInAlsa::getPortName: error looking for port name!";
+  error( RtMidiError::WARNING, errorString_ );
+  return stringName;
+}
+
+void MidiInAlsa :: openPort( unsigned int portNumber, const std::string portName )
+{
+  if ( connected_ ) {
+    errorString_ = "MidiInAlsa::openPort: a valid connection already exists!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  unsigned int nSrc = this->getPortCount();
+  if ( nSrc < 1 ) {
+    errorString_ = "MidiInAlsa::openPort: no MIDI input sources found!";
+    error( RtMidiError::NO_DEVICES_FOUND, errorString_ );
+    return;
+  }
+
+  snd_seq_port_info_t *src_pinfo;
+  snd_seq_port_info_alloca( &src_pinfo );
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( portInfo( data->seq, src_pinfo, SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ, (int) portNumber ) == 0 ) {
+    std::ostringstream ost;
+    ost << "MidiInAlsa::openPort: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::INVALID_PARAMETER, errorString_ );
+    return;
+  }
+
+  snd_seq_addr_t sender, receiver;
+  sender.client = snd_seq_port_info_get_client( src_pinfo );
+  sender.port = snd_seq_port_info_get_port( src_pinfo );
+
+  snd_seq_port_info_t *pinfo;
+  snd_seq_port_info_alloca( &pinfo );
+  if ( data->vport < 0 ) {
+    snd_seq_port_info_set_client( pinfo, 0 );
+    snd_seq_port_info_set_port( pinfo, 0 );
+    snd_seq_port_info_set_capability( pinfo,
+                                      SND_SEQ_PORT_CAP_WRITE |
+                                      SND_SEQ_PORT_CAP_SUBS_WRITE );
+    snd_seq_port_info_set_type( pinfo,
+                                SND_SEQ_PORT_TYPE_MIDI_GENERIC |
+                                SND_SEQ_PORT_TYPE_APPLICATION );
+    snd_seq_port_info_set_midi_channels(pinfo, 16);
+#ifndef AVOID_TIMESTAMPING
+    snd_seq_port_info_set_timestamping(pinfo, 1);
+    snd_seq_port_info_set_timestamp_real(pinfo, 1);    
+    snd_seq_port_info_set_timestamp_queue(pinfo, data->queue_id);
+#endif
+    snd_seq_port_info_set_name(pinfo,  portName.c_str() );
+    data->vport = snd_seq_create_port(data->seq, pinfo);
+  
+    if ( data->vport < 0 ) {
+      errorString_ = "MidiInAlsa::openPort: ALSA error creating input port.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+    data->vport = snd_seq_port_info_get_port(pinfo);
+  }
+
+  receiver.client = snd_seq_port_info_get_client( pinfo );
+  receiver.port = data->vport;
+
+  if ( !data->subscription ) {
+    // Make subscription
+    if (snd_seq_port_subscribe_malloc( &data->subscription ) < 0) {
+      errorString_ = "MidiInAlsa::openPort: ALSA error allocation port subscription.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+    snd_seq_port_subscribe_set_sender(data->subscription, &sender);
+    snd_seq_port_subscribe_set_dest(data->subscription, &receiver);
+    if ( snd_seq_subscribe_port(data->seq, data->subscription) ) {
+      snd_seq_port_subscribe_free( data->subscription );
+      data->subscription = 0;
+      errorString_ = "MidiInAlsa::openPort: ALSA error making port connection.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+  }
+
+  if ( inputData_.doInput == false ) {
+    // Start the input queue
+#ifndef AVOID_TIMESTAMPING
+    snd_seq_start_queue( data->seq, data->queue_id, NULL );
+    snd_seq_drain_output( data->seq );
+#endif
+    // Start our MIDI input thread.
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_attr_setschedpolicy(&attr, SCHED_OTHER);
+
+    inputData_.doInput = true;
+    int err = pthread_create(&data->thread, &attr, alsaMidiHandler, &inputData_);
+    pthread_attr_destroy(&attr);
+    if ( err ) {
+      snd_seq_unsubscribe_port( data->seq, data->subscription );
+      snd_seq_port_subscribe_free( data->subscription );
+      data->subscription = 0;
+      inputData_.doInput = false;
+      errorString_ = "MidiInAlsa::openPort: error starting MIDI input thread!";
+      error( RtMidiError::THREAD_ERROR, errorString_ );
+      return;
+    }
+  }
+
+  connected_ = true;
+}
+
+void MidiInAlsa :: openVirtualPort( std::string portName )
+{
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( data->vport < 0 ) {
+    snd_seq_port_info_t *pinfo;
+    snd_seq_port_info_alloca( &pinfo );
+    snd_seq_port_info_set_capability( pinfo,
+				      SND_SEQ_PORT_CAP_WRITE |
+				      SND_SEQ_PORT_CAP_SUBS_WRITE );
+    snd_seq_port_info_set_type( pinfo,
+				SND_SEQ_PORT_TYPE_MIDI_GENERIC |
+				SND_SEQ_PORT_TYPE_APPLICATION );
+    snd_seq_port_info_set_midi_channels(pinfo, 16);
+#ifndef AVOID_TIMESTAMPING
+    snd_seq_port_info_set_timestamping(pinfo, 1);
+    snd_seq_port_info_set_timestamp_real(pinfo, 1);    
+    snd_seq_port_info_set_timestamp_queue(pinfo, data->queue_id);
+#endif
+    snd_seq_port_info_set_name(pinfo, portName.c_str());
+    data->vport = snd_seq_create_port(data->seq, pinfo);
+
+    if ( data->vport < 0 ) {
+      errorString_ = "MidiInAlsa::openVirtualPort: ALSA error creating virtual port.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+    data->vport = snd_seq_port_info_get_port(pinfo);
+  }
+
+  if ( inputData_.doInput == false ) {
+    // Wait for old thread to stop, if still running
+    if ( !pthread_equal(data->thread, data->dummy_thread_id) )
+      pthread_join( data->thread, NULL );
+
+    // Start the input queue
+#ifndef AVOID_TIMESTAMPING
+    snd_seq_start_queue( data->seq, data->queue_id, NULL );
+    snd_seq_drain_output( data->seq );
+#endif
+    // Start our MIDI input thread.
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_attr_setschedpolicy(&attr, SCHED_OTHER);
+
+    inputData_.doInput = true;
+    int err = pthread_create(&data->thread, &attr, alsaMidiHandler, &inputData_);
+    pthread_attr_destroy(&attr);
+    if ( err ) {
+      if ( data->subscription ) {
+        snd_seq_unsubscribe_port( data->seq, data->subscription );
+        snd_seq_port_subscribe_free( data->subscription );
+        data->subscription = 0;
+      }
+      inputData_.doInput = false;
+      errorString_ = "MidiInAlsa::openPort: error starting MIDI input thread!";
+      error( RtMidiError::THREAD_ERROR, errorString_ );
+      return;
+    }
+  }
+}
+
+void MidiInAlsa :: closePort( void )
+{
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+
+  if ( connected_ ) {
+    if ( data->subscription ) {
+      snd_seq_unsubscribe_port( data->seq, data->subscription );
+      snd_seq_port_subscribe_free( data->subscription );
+      data->subscription = 0;
+    }
+    // Stop the input queue
+#ifndef AVOID_TIMESTAMPING
+    snd_seq_stop_queue( data->seq, data->queue_id, NULL );
+    snd_seq_drain_output( data->seq );
+#endif
+    connected_ = false;
+  }
+
+  // Stop thread to avoid triggering the callback, while the port is intended to be closed
+  if ( inputData_.doInput ) {
+    inputData_.doInput = false;
+    int res = write( data->trigger_fds[1], &inputData_.doInput, sizeof(inputData_.doInput) );
+    (void) res;
+    if ( !pthread_equal(data->thread, data->dummy_thread_id) )
+      pthread_join( data->thread, NULL );
+  }
+}
+
+//*********************************************************************//
+//  API: LINUX ALSA
+//  Class Definitions: MidiOutAlsa
+//*********************************************************************//
+
+MidiOutAlsa :: MidiOutAlsa( const std::string clientName ) : MidiOutApi()
+{
+  initialize( clientName );
+}
+
+MidiOutAlsa :: ~MidiOutAlsa()
+{
+  // Close a connection if it exists.
+  closePort();
+
+  // Cleanup.
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( data->vport >= 0 ) snd_seq_delete_port( data->seq, data->vport );
+  if ( data->coder ) snd_midi_event_free( data->coder );
+  if ( data->buffer ) free( data->buffer );
+  snd_seq_close( data->seq );
+  delete data;
+}
+
+void MidiOutAlsa :: initialize( const std::string& clientName )
+{
+  // Set up the ALSA sequencer client.
+  snd_seq_t *seq;
+  int result1 = snd_seq_open( &seq, "default", SND_SEQ_OPEN_OUTPUT, SND_SEQ_NONBLOCK );
+  if ( result1 < 0 ) {
+    errorString_ = "MidiOutAlsa::initialize: error creating ALSA sequencer client object.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+	}
+
+  // Set client name.
+  snd_seq_set_client_name( seq, clientName.c_str() );
+
+  // Save our api-specific connection information.
+  AlsaMidiData *data = (AlsaMidiData *) new AlsaMidiData;
+  data->seq = seq;
+  data->portNum = -1;
+  data->vport = -1;
+  data->bufferSize = 32;
+  data->coder = 0;
+  data->buffer = 0;
+  int result = snd_midi_event_new( data->bufferSize, &data->coder );
+  if ( result < 0 ) {
+    delete data;
+    errorString_ = "MidiOutAlsa::initialize: error initializing MIDI event parser!\n\n";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+  data->buffer = (unsigned char *) malloc( data->bufferSize );
+  if ( data->buffer == NULL ) {
+    delete data;
+    errorString_ = "MidiOutAlsa::initialize: error allocating buffer memory!\n\n";
+    error( RtMidiError::MEMORY_ERROR, errorString_ );
+    return;
+  }
+  snd_midi_event_init( data->coder );
+  apiData_ = (void *) data;
+}
+
+unsigned int MidiOutAlsa :: getPortCount()
+{
+	snd_seq_port_info_t *pinfo;
+	snd_seq_port_info_alloca( &pinfo );
+
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  return portInfo( data->seq, pinfo, SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE, -1 );
+}
+
+std::string MidiOutAlsa :: getPortName( unsigned int portNumber )
+{
+  snd_seq_client_info_t *cinfo;
+  snd_seq_port_info_t *pinfo;
+  snd_seq_client_info_alloca( &cinfo );
+  snd_seq_port_info_alloca( &pinfo );
+
+  std::string stringName;
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( portInfo( data->seq, pinfo, SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE, (int) portNumber ) ) {
+    int cnum = snd_seq_port_info_get_client(pinfo);
+    snd_seq_get_any_client_info( data->seq, cnum, cinfo );
+    std::ostringstream os;
+    os << snd_seq_client_info_get_name(cinfo);
+    os << " ";                                    // These lines added to make sure devices are listed
+    os << snd_seq_port_info_get_client( pinfo );  // with full portnames added to ensure individual device names
+    os << ":";
+    os << snd_seq_port_info_get_port(pinfo);
+    stringName = os.str();
+    return stringName;
+  }
+
+  // If we get here, we didn't find a match.
+  errorString_ = "MidiOutAlsa::getPortName: error looking for port name!";
+  error( RtMidiError::WARNING, errorString_ );
+  return stringName;
+}
+
+void MidiOutAlsa :: openPort( unsigned int portNumber, const std::string portName )
+{
+  if ( connected_ ) {
+    errorString_ = "MidiOutAlsa::openPort: a valid connection already exists!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  unsigned int nSrc = this->getPortCount();
+  if (nSrc < 1) {
+    errorString_ = "MidiOutAlsa::openPort: no MIDI output sources found!";
+    error( RtMidiError::NO_DEVICES_FOUND, errorString_ );
+    return;
+  }
+
+	snd_seq_port_info_t *pinfo;
+	snd_seq_port_info_alloca( &pinfo );
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( portInfo( data->seq, pinfo, SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE, (int) portNumber ) == 0 ) {
+    std::ostringstream ost;
+    ost << "MidiOutAlsa::openPort: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::INVALID_PARAMETER, errorString_ );
+    return;
+  }
+
+  snd_seq_addr_t sender, receiver;
+  receiver.client = snd_seq_port_info_get_client( pinfo );
+  receiver.port = snd_seq_port_info_get_port( pinfo );
+  sender.client = snd_seq_client_id( data->seq );
+
+  if ( data->vport < 0 ) {
+    data->vport = snd_seq_create_simple_port( data->seq, portName.c_str(),
+                                              SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ,
+                                              SND_SEQ_PORT_TYPE_MIDI_GENERIC|SND_SEQ_PORT_TYPE_APPLICATION );
+    if ( data->vport < 0 ) {
+      errorString_ = "MidiOutAlsa::openPort: ALSA error creating output port.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+  }
+
+  sender.port = data->vport;
+
+  // Make subscription
+  if (snd_seq_port_subscribe_malloc( &data->subscription ) < 0) {
+    snd_seq_port_subscribe_free( data->subscription );
+    errorString_ = "MidiOutAlsa::openPort: error allocating port subscription.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+  snd_seq_port_subscribe_set_sender(data->subscription, &sender);
+  snd_seq_port_subscribe_set_dest(data->subscription, &receiver);
+  snd_seq_port_subscribe_set_time_update(data->subscription, 1);
+  snd_seq_port_subscribe_set_time_real(data->subscription, 1);
+  if ( snd_seq_subscribe_port(data->seq, data->subscription) ) {
+    snd_seq_port_subscribe_free( data->subscription );
+    errorString_ = "MidiOutAlsa::openPort: ALSA error making port connection.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  connected_ = true;
+}
+
+void MidiOutAlsa :: closePort( void )
+{
+  if ( connected_ ) {
+    AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+    snd_seq_unsubscribe_port( data->seq, data->subscription );
+    snd_seq_port_subscribe_free( data->subscription );
+    connected_ = false;
+  }
+}
+
+void MidiOutAlsa :: openVirtualPort( std::string portName )
+{
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  if ( data->vport < 0 ) {
+    data->vport = snd_seq_create_simple_port( data->seq, portName.c_str(),
+                                              SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ,
+                                              SND_SEQ_PORT_TYPE_MIDI_GENERIC|SND_SEQ_PORT_TYPE_APPLICATION );
+
+    if ( data->vport < 0 ) {
+      errorString_ = "MidiOutAlsa::openVirtualPort: ALSA error creating virtual port.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+    }
+  }
+}
+
+void MidiOutAlsa :: sendMessage( std::vector<unsigned char> *message )
+{
+  int result;
+  AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
+  unsigned int nBytes = message->size();
+  if ( nBytes > data->bufferSize ) {
+    data->bufferSize = nBytes;
+    result = snd_midi_event_resize_buffer ( data->coder, nBytes);
+    if ( result != 0 ) {
+      errorString_ = "MidiOutAlsa::sendMessage: ALSA error resizing MIDI event buffer.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+    free (data->buffer);
+    data->buffer = (unsigned char *) malloc( data->bufferSize );
+    if ( data->buffer == NULL ) {
+    errorString_ = "MidiOutAlsa::initialize: error allocating buffer memory!\n\n";
+    error( RtMidiError::MEMORY_ERROR, errorString_ );
+    return;
+    }
+  }
+
+  snd_seq_event_t ev;
+  snd_seq_ev_clear(&ev);
+  snd_seq_ev_set_source(&ev, data->vport);
+  snd_seq_ev_set_subs(&ev);
+  snd_seq_ev_set_direct(&ev);
+  for ( unsigned int i=0; i<nBytes; ++i ) data->buffer[i] = message->at(i);
+  result = snd_midi_event_encode( data->coder, data->buffer, (long)nBytes, &ev );
+  if ( result < (int)nBytes ) {
+    errorString_ = "MidiOutAlsa::sendMessage: event parsing error!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  // Send the event.
+  result = snd_seq_event_output(data->seq, &ev);
+  if ( result < 0 ) {
+    errorString_ = "MidiOutAlsa::sendMessage: error sending MIDI message to port.";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+  snd_seq_drain_output(data->seq);
+}
+
+#endif // __LINUX_ALSA__
+
+
+//*********************************************************************//
+//  API: Windows Multimedia Library (MM)
+//*********************************************************************//
+
+// API information deciphered from:
+//  - http://msdn.microsoft.com/library/default.asp?url=/library/en-us/multimed/htm/_win32_midi_reference.asp
+
+// Thanks to Jean-Baptiste Berruchon for the sysex code.
+
+#if defined(__WINDOWS_MM__)
+
+// The Windows MM API is based on the use of a callback function for
+// MIDI input.  We convert the system specific time stamps to delta
+// time values.
+
+// Windows MM MIDI header files.
+#include <windows.h>
+#include <mmsystem.h>
+
+#define  RT_SYSEX_BUFFER_SIZE 1024
+#define  RT_SYSEX_BUFFER_COUNT 4
+
+// A structure to hold variables related to the CoreMIDI API
+// implementation.
+struct WinMidiData {
+  HMIDIIN inHandle;    // Handle to Midi Input Device
+  HMIDIOUT outHandle;  // Handle to Midi Output Device
+  DWORD lastTime;
+  MidiInApi::MidiMessage message;
+  LPMIDIHDR sysexBuffer[RT_SYSEX_BUFFER_COUNT];
+  CRITICAL_SECTION _mutex; // [Patrice] see https://groups.google.com/forum/#!topic/mididev/6OUjHutMpEo
+};
+
+//*********************************************************************//
+//  API: Windows MM
+//  Class Definitions: MidiInWinMM
+//*********************************************************************//
+
+static void CALLBACK midiInputCallback( HMIDIIN /*hmin*/,
+                                        UINT inputStatus, 
+                                        DWORD_PTR instancePtr,
+                                        DWORD_PTR midiMessage,
+                                        DWORD timestamp )
+{
+  if ( inputStatus != MIM_DATA && inputStatus != MIM_LONGDATA && inputStatus != MIM_LONGERROR ) return;
+
+  //MidiInApi::RtMidiInData *data = static_cast<MidiInApi::RtMidiInData *> (instancePtr);
+  MidiInApi::RtMidiInData *data = (MidiInApi::RtMidiInData *)instancePtr;
+  WinMidiData *apiData = static_cast<WinMidiData *> (data->apiData);
+
+  // Calculate time stamp.
+  /*
+  if ( data->firstMessage == true ) {
+    apiData->message.timeStamp = 0.0;
+    data->firstMessage = false;
+  }
+  else apiData->message.timeStamp = (double) ( timestamp - apiData->lastTime ) * 0.001;
+  apiData->lastTime = timestamp;
+  
+  */
+  
+  // Absolute usec based time stamp
+  apiData->message.timeStamp = double(timestamp - apiData->lastTime) * 1000;
+
+  if ( inputStatus == MIM_DATA ) { // Channel or system message
+
+    // Make sure the first byte is a status byte.
+    unsigned char status = (unsigned char) (midiMessage & 0x000000FF);
+    if ( !(status & 0x80) ) return;
+
+    // Determine the number of bytes in the MIDI message.
+    unsigned short nBytes = 1;
+    if ( status < 0xC0 ) nBytes = 3;
+    else if ( status < 0xE0 ) nBytes = 2;
+    else if ( status < 0xF0 ) nBytes = 3;
+    else if ( status == 0xF1 ) {
+      if ( data->ignoreFlags & 0x02 ) return;
+      else nBytes = 2;
+    }
+    else if ( status == 0xF2 ) nBytes = 3;
+    else if ( status == 0xF3 ) nBytes = 2;
+    else if ( status == 0xF8 && (data->ignoreFlags & 0x02) ) {
+      // A MIDI timing tick message and we're ignoring it.
+      return;
+    }
+    else if ( status == 0xFE && (data->ignoreFlags & 0x04) ) {
+      // A MIDI active sensing message and we're ignoring it.
+      return;
+    }
+
+    // Copy bytes to our MIDI message.
+    unsigned char *ptr = (unsigned char *) &midiMessage;
+    for ( int i=0; i<nBytes; ++i ) apiData->message.bytes.push_back( *ptr++ );
+  }
+  else { // Sysex message ( MIM_LONGDATA or MIM_LONGERROR )
+    MIDIHDR *sysex = ( MIDIHDR *) midiMessage; 
+    if ( !( data->ignoreFlags & 0x01 ) && inputStatus != MIM_LONGERROR ) {  
+      // Sysex message and we're not ignoring it
+      for ( int i=0; i<(int)sysex->dwBytesRecorded; ++i )
+        apiData->message.bytes.push_back( sysex->lpData[i] );
+    }
+
+    // The WinMM API requires that the sysex buffer be requeued after
+    // input of each sysex message.  Even if we are ignoring sysex
+    // messages, we still need to requeue the buffer in case the user
+    // decides to not ignore sysex messages in the future.  However,
+    // it seems that WinMM calls this function with an empty sysex
+    // buffer when an application closes and in this case, we should
+    // avoid requeueing it, else the computer suddenly reboots after
+    // one or two minutes.
+    if ( apiData->sysexBuffer[sysex->dwUser]->dwBytesRecorded > 0 ) {
+      //if ( sysex->dwBytesRecorded > 0 ) {
+      EnterCriticalSection( &(apiData->_mutex) );
+      MMRESULT result = midiInAddBuffer( apiData->inHandle, apiData->sysexBuffer[sysex->dwUser], sizeof(MIDIHDR) );
+      LeaveCriticalSection( &(apiData->_mutex) );
+      if ( result != MMSYSERR_NOERROR )
+        std::cerr << "\nRtMidiIn::midiInputCallback: error sending sysex to Midi device!!\n\n";
+
+      if ( data->ignoreFlags & 0x01 ) return;
+    }
+    else return;
+  }
+
+  if ( data->usingCallback ) {
+    RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) data->userCallback;
+    callback( apiData->message.timeStamp, &apiData->message.bytes, data->userData );
+  }
+  else {
+    // As long as we haven't reached our queue size limit, push the message.
+    if ( data->queue.size < data->queue.ringSize ) {
+      data->queue.ring[data->queue.back++] = apiData->message;
+      if ( data->queue.back == data->queue.ringSize )
+        data->queue.back = 0;
+      data->queue.size++;
+    }
+    else
+      std::cerr << "\nRtMidiIn: message queue limit reached!!\n\n";
+  }
+
+  // Clear the vector for the next input message.
+  apiData->message.bytes.clear();
+}
+
+MidiInWinMM :: MidiInWinMM( const std::string clientName, unsigned int queueSizeLimit ) : MidiInApi( queueSizeLimit )
+{
+  initialize( clientName );
+}
+
+MidiInWinMM :: ~MidiInWinMM()
+{
+  // Close a connection if it exists.
+  closePort();
+
+  WinMidiData *data = static_cast<WinMidiData *> (apiData_);
+  DeleteCriticalSection( &(data->_mutex) );
+
+  // Cleanup.
+  delete data;
+}
+
+void MidiInWinMM :: initialize( const std::string& /*clientName*/ )
+{
+  // We'll issue a warning here if no devices are available but not
+  // throw an error since the user can plugin something later.
+  unsigned int nDevices = midiInGetNumDevs();
+  if ( nDevices == 0 ) {
+    errorString_ = "MidiInWinMM::initialize: no MIDI input devices currently available.";
+    error( RtMidiError::WARNING, errorString_ );
+  }
+
+  // Save our api-specific connection information.
+  WinMidiData *data = (WinMidiData *) new WinMidiData;
+  apiData_ = (void *) data;
+  inputData_.apiData = (void *) data;
+  data->message.bytes.clear();  // needs to be empty for first input message
+
+  if ( !InitializeCriticalSectionAndSpinCount(&(data->_mutex), 0x00000400) ) {
+    errorString_ = "MidiInWinMM::initialize: InitializeCriticalSectionAndSpinCount failed.";
+    error( RtMidiError::WARNING, errorString_ );
+  }
+}
+
+void MidiInWinMM :: openPort( unsigned int portNumber, const std::string /*portName*/ )
+{
+  if ( connected_ ) {
+    errorString_ = "MidiInWinMM::openPort: a valid connection already exists!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  unsigned int nDevices = midiInGetNumDevs();
+  if (nDevices == 0) {
+    errorString_ = "MidiInWinMM::openPort: no MIDI input sources found!";
+    error( RtMidiError::NO_DEVICES_FOUND, errorString_ );
+    return;
+  }
+
+  if ( portNumber >= nDevices ) {
+    std::ostringstream ost;
+    ost << "MidiInWinMM::openPort: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::INVALID_PARAMETER, errorString_ );
+    return;
+  }
+
+  WinMidiData *data = static_cast<WinMidiData *> (apiData_);
+  MMRESULT result = midiInOpen( &data->inHandle,
+                                portNumber,
+                                (DWORD_PTR)&midiInputCallback,
+                                (DWORD_PTR)&inputData_,
+                                CALLBACK_FUNCTION );
+  if ( result != MMSYSERR_NOERROR ) {
+    errorString_ = "MidiInWinMM::openPort: error creating Windows MM MIDI input port.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Allocate and init the sysex buffers.
+  for ( int i=0; i<RT_SYSEX_BUFFER_COUNT; ++i ) {
+    data->sysexBuffer[i] = (MIDIHDR*) new char[ sizeof(MIDIHDR) ];
+    data->sysexBuffer[i]->lpData = new char[ RT_SYSEX_BUFFER_SIZE ];
+    data->sysexBuffer[i]->dwBufferLength = RT_SYSEX_BUFFER_SIZE;
+    data->sysexBuffer[i]->dwUser = i; // We use the dwUser parameter as buffer indicator
+    data->sysexBuffer[i]->dwFlags = 0;
+
+    result = midiInPrepareHeader( data->inHandle, data->sysexBuffer[i], sizeof(MIDIHDR) );
+    if ( result != MMSYSERR_NOERROR ) {
+      midiInClose( data->inHandle );
+      errorString_ = "MidiInWinMM::openPort: error starting Windows MM MIDI input port (PrepareHeader).";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+
+    // Register the buffer.
+    result = midiInAddBuffer( data->inHandle, data->sysexBuffer[i], sizeof(MIDIHDR) );
+    if ( result != MMSYSERR_NOERROR ) {
+      midiInClose( data->inHandle );
+      errorString_ = "MidiInWinMM::openPort: error starting Windows MM MIDI input port (AddBuffer).";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+  }
+
+  result = midiInStart( data->inHandle );
+  if ( result != MMSYSERR_NOERROR ) {
+    midiInClose( data->inHandle );
+    errorString_ = "MidiInWinMM::openPort: error starting Windows MM MIDI input port.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  connected_ = true;
+}
+
+void MidiInWinMM :: openVirtualPort( std::string /*portName*/ )
+{
+  // This function cannot be implemented for the Windows MM MIDI API.
+  errorString_ = "MidiInWinMM::openVirtualPort: cannot be implemented in Windows MM MIDI API!";
+  error( RtMidiError::WARNING, errorString_ );
+}
+
+void MidiInWinMM :: closePort( void )
+{
+  if ( connected_ ) {
+    WinMidiData *data = static_cast<WinMidiData *> (apiData_);
+    EnterCriticalSection( &(data->_mutex) );
+    midiInReset( data->inHandle );
+    midiInStop( data->inHandle );
+
+    for ( int i=0; i<RT_SYSEX_BUFFER_COUNT; ++i ) {
+      int result = midiInUnprepareHeader(data->inHandle, data->sysexBuffer[i], sizeof(MIDIHDR));
+      delete [] data->sysexBuffer[i]->lpData;
+      delete [] data->sysexBuffer[i];
+      if ( result != MMSYSERR_NOERROR ) {
+        midiInClose( data->inHandle );
+        errorString_ = "MidiInWinMM::openPort: error closing Windows MM MIDI input port (midiInUnprepareHeader).";
+        error( RtMidiError::DRIVER_ERROR, errorString_ );
+        return;
+      }
+    }
+
+    midiInClose( data->inHandle );
+    connected_ = false;
+    LeaveCriticalSection( &(data->_mutex) );
+  }
+}
+
+unsigned int MidiInWinMM :: getPortCount()
+{
+  return midiInGetNumDevs();
+}
+
+std::string MidiInWinMM :: getPortName( unsigned int portNumber )
+{
+  std::string stringName;
+  unsigned int nDevices = midiInGetNumDevs();
+  if ( portNumber >= nDevices ) {
+    std::ostringstream ost;
+    ost << "MidiInWinMM::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::WARNING, errorString_ );
+    return stringName;
+  }
+
+  MIDIINCAPS deviceCaps;
+  midiInGetDevCaps( portNumber, &deviceCaps, sizeof(MIDIINCAPS));
+
+#if defined( UNICODE ) || defined( _UNICODE )
+  int length = WideCharToMultiByte(CP_UTF8, 0, deviceCaps.szPname, -1, NULL, 0, NULL, NULL) - 1;
+  stringName.assign( length, 0 );
+  length = WideCharToMultiByte(CP_UTF8, 0, deviceCaps.szPname, static_cast<int>(wcslen(deviceCaps.szPname)), &stringName[0], length, NULL, NULL);
+#else
+  stringName = std::string( deviceCaps.szPname );
+#endif
+
+  // Next lines added to add the portNumber to the name so that 
+  // the device's names are sure to be listed with individual names
+  // even when they have the same brand name
+  std::ostringstream os;
+  os << " ";
+  os << portNumber;
+  stringName += os.str();
+
+  return stringName;
+}
+
+//*********************************************************************//
+//  API: Windows MM
+//  Class Definitions: MidiOutWinMM
+//*********************************************************************//
+
+MidiOutWinMM :: MidiOutWinMM( const std::string clientName ) : MidiOutApi()
+{
+  initialize( clientName );
+}
+
+MidiOutWinMM :: ~MidiOutWinMM()
+{
+  // Close a connection if it exists.
+  closePort();
+
+  // Cleanup.
+  WinMidiData *data = static_cast<WinMidiData *> (apiData_);
+  delete data;
+}
+
+void MidiOutWinMM :: initialize( const std::string& /*clientName*/ )
+{
+  // We'll issue a warning here if no devices are available but not
+  // throw an error since the user can plug something in later.
+  unsigned int nDevices = midiOutGetNumDevs();
+  if ( nDevices == 0 ) {
+    errorString_ = "MidiOutWinMM::initialize: no MIDI output devices currently available.";
+    error( RtMidiError::WARNING, errorString_ );
+  }
+
+  // Save our api-specific connection information.
+  WinMidiData *data = (WinMidiData *) new WinMidiData;
+  apiData_ = (void *) data;
+}
+
+unsigned int MidiOutWinMM :: getPortCount()
+{
+  return midiOutGetNumDevs();
+}
+
+std::string MidiOutWinMM :: getPortName( unsigned int portNumber )
+{
+  std::string stringName;
+  unsigned int nDevices = midiOutGetNumDevs();
+  if ( portNumber >= nDevices ) {
+    std::ostringstream ost;
+    ost << "MidiOutWinMM::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::WARNING, errorString_ );
+    return stringName;
+  }
+
+  MIDIOUTCAPS deviceCaps;
+  midiOutGetDevCaps( portNumber, &deviceCaps, sizeof(MIDIOUTCAPS));
+
+#if defined( UNICODE ) || defined( _UNICODE )
+  int length = WideCharToMultiByte(CP_UTF8, 0, deviceCaps.szPname, -1, NULL, 0, NULL, NULL) - 1;
+  stringName.assign( length, 0 );
+  length = WideCharToMultiByte(CP_UTF8, 0, deviceCaps.szPname, static_cast<int>(wcslen(deviceCaps.szPname)), &stringName[0], length, NULL, NULL);
+#else
+  stringName = std::string( deviceCaps.szPname );
+#endif
+
+  return stringName;
+}
+
+void MidiOutWinMM :: openPort( unsigned int portNumber, const std::string /*portName*/ )
+{
+  if ( connected_ ) {
+    errorString_ = "MidiOutWinMM::openPort: a valid connection already exists!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  unsigned int nDevices = midiOutGetNumDevs();
+  if (nDevices < 1) {
+    errorString_ = "MidiOutWinMM::openPort: no MIDI output destinations found!";
+    error( RtMidiError::NO_DEVICES_FOUND, errorString_ );
+    return;
+  }
+
+  if ( portNumber >= nDevices ) {
+    std::ostringstream ost;
+    ost << "MidiOutWinMM::openPort: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::INVALID_PARAMETER, errorString_ );
+    return;
+  }
+
+  WinMidiData *data = static_cast<WinMidiData *> (apiData_);
+  MMRESULT result = midiOutOpen( &data->outHandle,
+                                 portNumber,
+                                 (DWORD)NULL,
+                                 (DWORD)NULL,
+                                 CALLBACK_NULL );
+  if ( result != MMSYSERR_NOERROR ) {
+    errorString_ = "MidiOutWinMM::openPort: error creating Windows MM MIDI output port.";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  connected_ = true;
+}
+
+void MidiOutWinMM :: closePort( void )
+{
+  if ( connected_ ) {
+    WinMidiData *data = static_cast<WinMidiData *> (apiData_);
+    midiOutReset( data->outHandle );
+    midiOutClose( data->outHandle );
+    connected_ = false;
+  }
+}
+
+void MidiOutWinMM :: openVirtualPort( std::string /*portName*/ )
+{
+  // This function cannot be implemented for the Windows MM MIDI API.
+  errorString_ = "MidiOutWinMM::openVirtualPort: cannot be implemented in Windows MM MIDI API!";
+  error( RtMidiError::WARNING, errorString_ );
+}
+
+void MidiOutWinMM :: sendMessage( std::vector<unsigned char> *message )
+{
+  if ( !connected_ ) return;
+
+  unsigned int nBytes = static_cast<unsigned int>(message->size());
+  if ( nBytes == 0 ) {
+    errorString_ = "MidiOutWinMM::sendMessage: message argument is empty!";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  MMRESULT result;
+  WinMidiData *data = static_cast<WinMidiData *> (apiData_);
+  if ( message->at(0) == 0xF0 ) { // Sysex message
+
+    // Allocate buffer for sysex data.
+    char *buffer = (char *) malloc( nBytes );
+    if ( buffer == NULL ) {
+      errorString_ = "MidiOutWinMM::sendMessage: error allocating sysex message memory!";
+      error( RtMidiError::MEMORY_ERROR, errorString_ );
+      return;
+    }
+
+    // Copy data to buffer.
+    for ( unsigned int i=0; i<nBytes; ++i ) buffer[i] = message->at(i);
+
+    // Create and prepare MIDIHDR structure.
+    MIDIHDR sysex;
+    sysex.lpData = (LPSTR) buffer;
+    sysex.dwBufferLength = nBytes;
+    sysex.dwFlags = 0;
+    result = midiOutPrepareHeader( data->outHandle,  &sysex, sizeof(MIDIHDR) ); 
+    if ( result != MMSYSERR_NOERROR ) {
+      free( buffer );
+      errorString_ = "MidiOutWinMM::sendMessage: error preparing sysex header.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+
+    // Send the message.
+    result = midiOutLongMsg( data->outHandle, &sysex, sizeof(MIDIHDR) );
+    if ( result != MMSYSERR_NOERROR ) {
+      free( buffer );
+      errorString_ = "MidiOutWinMM::sendMessage: error sending sysex message.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+      return;
+    }
+
+    // Unprepare the buffer and MIDIHDR.
+    while ( MIDIERR_STILLPLAYING == midiOutUnprepareHeader( data->outHandle, &sysex, sizeof (MIDIHDR) ) ) Sleep( 1 );
+    free( buffer );
+  }
+  else { // Channel or system message.
+
+    // Make sure the message size isn't too big.
+    if ( nBytes > 3 ) {
+      errorString_ = "MidiOutWinMM::sendMessage: message size is greater than 3 bytes (and not sysex)!";
+      error( RtMidiError::WARNING, errorString_ );
+      return;
+    }
+
+    // Pack MIDI bytes into double word.
+    DWORD packet;
+    unsigned char *ptr = (unsigned char *) &packet;
+    for ( unsigned int i=0; i<nBytes; ++i ) {
+      *ptr = message->at(i);
+      ++ptr;
+    }
+
+    // Send the message immediately.
+    result = midiOutShortMsg( data->outHandle, packet );
+    if ( result != MMSYSERR_NOERROR ) {
+      errorString_ = "MidiOutWinMM::sendMessage: error sending MIDI message.";
+      error( RtMidiError::DRIVER_ERROR, errorString_ );
+    }
+  }
+}
+
+#endif  // __WINDOWS_MM__
+
+
+//*********************************************************************//
+//  API: UNIX JACK
+//
+//  Written primarily by Alexander Svetalkin, with updates for delta
+//  time by Gary Scavone, April 2011.
+//
+//  *********************************************************************//
+
+#if defined(__UNIX_JACK__)
+
+// JACK header files
+#include <jack/jack.h>
+#include <jack/midiport.h>
+#include <jack/ringbuffer.h>
+
+#define JACK_RINGBUFFER_SIZE 16384 // Default size for ringbuffer
+
+struct JackMidiData {
+  jack_client_t *client;
+  jack_port_t *port;
+  jack_ringbuffer_t *buffSize;
+  jack_ringbuffer_t *buffMessage;
+  jack_time_t lastTime;
+  MidiInApi :: RtMidiInData *rtMidiIn;
+  };
+
+//*********************************************************************//
+//  API: JACK
+//  Class Definitions: MidiInJack
+//*********************************************************************//
+
+static int jackProcessIn( jack_nframes_t nframes, void *arg )
+{
+  JackMidiData *jData = (JackMidiData *) arg;
+  MidiInApi :: RtMidiInData *rtData = jData->rtMidiIn;
+  jack_midi_event_t event;
+  jack_time_t time;
+
+  // Is port created?
+  if ( jData->port == NULL ) return 0;
+  void *buff = jack_port_get_buffer( jData->port, nframes );
+
+  // We have midi events in buffer
+  int evCount = jack_midi_get_event_count( buff );
+  for (int j = 0; j < evCount; j++) {
+    MidiInApi::MidiMessage message;
+    message.bytes.clear();
+
+    jack_midi_event_get( &event, buff, j );
+
+    for ( unsigned int i = 0; i < event.size; i++ )
+      message.bytes.push_back( event.buffer[i] );
+
+    // TODO: incorrect time stamps...
+    
+    // Compute the delta time.
+    time = jack_get_time();
+    
+    if ( rtData->firstMessage == true )
+      rtData->firstMessage = false;
+    else
+      message.timeStamp = ( time - jData->lastTime ) * 0.000001;
+
+    jData->lastTime = time;
+   
+    if ( !rtData->continueSysex ) {
+      if ( rtData->usingCallback ) {
+        RtMidiIn::RtMidiCallback callback = (RtMidiIn::RtMidiCallback) rtData->userCallback;
+        callback( message.timeStamp, &message.bytes, rtData->userData );
+      }
+      else {
+        // As long as we haven't reached our queue size limit, push the message.
+        if ( rtData->queue.size < rtData->queue.ringSize ) {
+          rtData->queue.ring[rtData->queue.back++] = message;
+          if ( rtData->queue.back == rtData->queue.ringSize )
+            rtData->queue.back = 0;
+          rtData->queue.size++;
+        }
+        else
+          std::cerr << "\nMidiInJack: message queue limit reached!!\n\n";
+      }
+    }
+  }
+
+  return 0;
+}
+
+MidiInJack :: MidiInJack( const std::string clientName, unsigned int queueSizeLimit ) : MidiInApi( queueSizeLimit )
+{
+  initialize( clientName );
+}
+
+void MidiInJack :: initialize( const std::string& clientName )
+{
+  JackMidiData *data = new JackMidiData;
+  apiData_ = (void *) data;
+
+  data->rtMidiIn = &inputData_;
+  data->port = NULL;
+  data->client = NULL;
+  this->clientName = clientName;
+
+  connect();
+}
+
+void MidiInJack :: connect()
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  if ( data->client )
+    return;
+
+  // Initialize JACK client
+  if ((data->client = jack_client_open( clientName.c_str(), JackNoStartServer, NULL )) == 0) {
+    errorString_ = "MidiInJack::initialize: JACK server not running?";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  jack_set_process_callback( data->client, jackProcessIn, data );
+  jack_activate( data->client );
+}
+
+MidiInJack :: ~MidiInJack()
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  closePort();
+
+  if ( data->client )
+    jack_client_close( data->client );
+  delete data;
+}
+
+void MidiInJack :: openPort( unsigned int portNumber, const std::string portName )
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+
+  connect();
+
+  // Creating new port
+  if ( data->port == NULL)
+    data->port = jack_port_register( data->client, portName.c_str(),
+                                     JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0 );
+
+  if ( data->port == NULL) {
+    errorString_ = "MidiInJack::openPort: JACK error creating port";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Connecting to the output
+  std::string name = getPortName( portNumber );
+  jack_connect( data->client, name.c_str(), jack_port_name( data->port ) );
+}
+
+void MidiInJack :: openVirtualPort( const std::string portName )
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+
+  connect();
+  if ( data->port == NULL )
+    data->port = jack_port_register( data->client, portName.c_str(),
+                                     JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0 );
+
+  if ( data->port == NULL ) {
+    errorString_ = "MidiInJack::openVirtualPort: JACK error creating virtual port";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+  }
+}
+
+unsigned int MidiInJack :: getPortCount()
+{
+  int count = 0;
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  connect();
+  if ( !data->client )
+    return 0;
+
+  // List of available ports
+  const char **ports = jack_get_ports( data->client, NULL, JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput );
+
+  if ( ports == NULL ) return 0;
+  while ( ports[count] != NULL )
+    count++;
+
+  free( ports );
+
+  return count;
+}
+
+std::string MidiInJack :: getPortName( unsigned int portNumber )
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  std::string retStr("");
+
+  connect();
+
+  // List of available ports
+  const char **ports = jack_get_ports( data->client, NULL,
+                                       JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput );
+
+  // Check port validity
+  if ( ports == NULL ) {
+    errorString_ = "MidiInJack::getPortName: no ports available!";
+    error( RtMidiError::WARNING, errorString_ );
+    return retStr;
+  }
+
+  if ( ports[portNumber] == NULL ) {
+    std::ostringstream ost;
+    ost << "MidiInJack::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::WARNING, errorString_ );
+  }
+  else retStr.assign( ports[portNumber] );
+
+  free( ports );
+  return retStr;
+}
+
+void MidiInJack :: closePort()
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+
+  if ( data->port == NULL ) return;
+  jack_port_unregister( data->client, data->port );
+  data->port = NULL;
+}
+
+//*********************************************************************//
+//  API: JACK
+//  Class Definitions: MidiOutJack
+//*********************************************************************//
+
+// Jack process callback
+static int jackProcessOut( jack_nframes_t nframes, void *arg )
+{
+  JackMidiData *data = (JackMidiData *) arg;
+  jack_midi_data_t *midiData;
+  int space;
+
+  // Is port created?
+  if ( data->port == NULL ) return 0;
+
+  void *buff = jack_port_get_buffer( data->port, nframes );
+  jack_midi_clear_buffer( buff );
+
+  while ( jack_ringbuffer_read_space( data->buffSize ) > 0 ) {
+    jack_ringbuffer_read( data->buffSize, (char *) &space, (size_t) sizeof(space) );
+    midiData = jack_midi_event_reserve( buff, 0, space );
+
+    jack_ringbuffer_read( data->buffMessage, (char *) midiData, (size_t) space );
+  }
+
+  return 0;
+}
+
+MidiOutJack :: MidiOutJack( const std::string clientName ) : MidiOutApi()
+{
+  initialize( clientName );
+}
+
+void MidiOutJack :: initialize( const std::string& clientName )
+{
+  JackMidiData *data = new JackMidiData;
+  apiData_ = (void *) data;
+
+  data->port = NULL;
+  data->client = NULL;
+  this->clientName = clientName;
+
+  connect();
+}
+
+void MidiOutJack :: connect()
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  if ( data->client )
+    return;
+
+  // Initialize JACK client
+  if (( data->client = jack_client_open( clientName.c_str(), JackNoStartServer, NULL )) == 0) {
+    errorString_ = "MidiOutJack::initialize: JACK server not running?";
+    error( RtMidiError::WARNING, errorString_ );
+    return;
+  }
+
+  jack_set_process_callback( data->client, jackProcessOut, data );
+  data->buffSize = jack_ringbuffer_create( JACK_RINGBUFFER_SIZE );
+  data->buffMessage = jack_ringbuffer_create( JACK_RINGBUFFER_SIZE );
+  jack_activate( data->client );
+}
+
+MidiOutJack :: ~MidiOutJack()
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  closePort();
+
+  if ( data->client ) {
+    // Cleanup
+    jack_client_close( data->client );
+    jack_ringbuffer_free( data->buffSize );
+    jack_ringbuffer_free( data->buffMessage );
+  }
+
+  delete data;
+}
+
+void MidiOutJack :: openPort( unsigned int portNumber, const std::string portName )
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+
+  connect();
+
+  // Creating new port
+  if ( data->port == NULL )
+    data->port = jack_port_register( data->client, portName.c_str(),
+      JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput, 0 );
+
+  if ( data->port == NULL ) {
+    errorString_ = "MidiOutJack::openPort: JACK error creating port";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // Connecting to the output
+  std::string name = getPortName( portNumber );
+  jack_connect( data->client, jack_port_name( data->port ), name.c_str() );
+}
+
+void MidiOutJack :: openVirtualPort( const std::string portName )
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+
+  connect();
+  if ( data->port == NULL )
+    data->port = jack_port_register( data->client, portName.c_str(),
+      JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput, 0 );
+
+  if ( data->port == NULL ) {
+    errorString_ = "MidiOutJack::openVirtualPort: JACK error creating virtual port";
+    error( RtMidiError::DRIVER_ERROR, errorString_ );
+  }
+}
+
+unsigned int MidiOutJack :: getPortCount()
+{
+  int count = 0;
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  connect();
+  if ( !data->client )
+    return 0;
+
+  // List of available ports
+  const char **ports = jack_get_ports( data->client, NULL,
+    JACK_DEFAULT_MIDI_TYPE, JackPortIsInput );
+
+  if ( ports == NULL ) return 0;
+  while ( ports[count] != NULL )
+    count++;
+
+  free( ports );
+
+  return count;
+}
+
+std::string MidiOutJack :: getPortName( unsigned int portNumber )
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+  std::string retStr("");
+
+  connect();
+
+  // List of available ports
+  const char **ports = jack_get_ports( data->client, NULL,
+    JACK_DEFAULT_MIDI_TYPE, JackPortIsInput );
+
+  // Check port validity
+  if ( ports == NULL) {
+    errorString_ = "MidiOutJack::getPortName: no ports available!";
+    error( RtMidiError::WARNING, errorString_ );
+    return retStr;
+  }
+
+  if ( ports[portNumber] == NULL) {
+    std::ostringstream ost;
+    ost << "MidiOutJack::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    error( RtMidiError::WARNING, errorString_ );
+  }
+  else retStr.assign( ports[portNumber] );
+
+  free( ports );
+  return retStr;
+}
+
+void MidiOutJack :: closePort()
+{
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+
+  if ( data->port == NULL ) return;
+  jack_port_unregister( data->client, data->port );
+  data->port = NULL;
+}
+
+void MidiOutJack :: sendMessage( std::vector<unsigned char> *message )
+{
+  int nBytes = message->size();
+  JackMidiData *data = static_cast<JackMidiData *> (apiData_);
+
+  // Write full message to buffer
+  jack_ringbuffer_write( data->buffMessage, ( const char * ) &( *message )[0],
+                         message->size() );
+  jack_ringbuffer_write( data->buffSize, ( char * ) &nBytes, sizeof( nBytes ) );
+}
+
+#endif  // __UNIX_JACK__
 #endif
 
 #include "DspFaust.h"
@@ -8054,6 +12331,10 @@ ztimedmap GUI::gTimedZoneMap;
 DspFaust::DspFaust(int sample_rate, int buffer_size){
 	fPolyEngine = new FaustPolyEngine(new iosaudio(sample_rate, buffer_size));
 
+#if IOS_MIDI_SUPPORT
+    fMidiUI = new MidiUI(new rt_midi());
+	fPolyEngine->buildUserInterface(fMidiUI);
+#endif
 
 //**************************************************************
 // OSC TEST ALLEN
@@ -8071,34 +12352,48 @@ DspFaust::DspFaust(int sample_rate, int buffer_size){
     argv[6] = "5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
     argv[7] = "-outport";
     argv[8] = "5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    oscinterface = new OSCUI("0x00", 9, (char**)argv);
-    fPolyEngine->buildUserInterface(oscinterface);
+    fOSCUI = new OSCUI("0x00", 9, (char**)argv);
+    fPolyEngine->buildUserInterface(fOSCUI);
     
 #endif
+
+
 }
    
 
 
 DspFaust::~DspFaust(){
 	delete fPolyEngine;
+#if IOS_MIDI_SUPPORT
+    delete fMidiUI;
+#endif
 
 #if OSCCTRL
-    delete oscinterface; 
+    delete fOSCUI; 
 #endif
+
+
 }
 
 bool DspFaust::start(){
-	
-#if OSCCTRL
-    oscinterface->run(); 
+#if IOS_MIDI_SUPPORT
+    fMidiUI->run();
 #endif
+
+#if OSCCTRL
+    fOSCUI->run(); 
+#endif
+
 	return fPolyEngine->start();
 }
 
 void DspFaust::stop(){
+#if IOS_MIDI_SUPPORT
+    fMidiUI->stop();
+#endif
 
 #if OSCCTRL
-    oscinterface->stop(); 
+    fOSCUI->stop(); 
 #endif
 
 	fPolyEngine->stop();
