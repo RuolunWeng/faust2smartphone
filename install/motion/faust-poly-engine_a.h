@@ -527,7 +527,7 @@ class FaustPolyEngine {
          * getCPULoad()
          * Return DSP CPU load.
          */
-        float getCPULoad() { return fDriver->get_cpu_load(); }
+        float getCPULoad() { return fDriver->getCPULoad(); }
 
         /*
          * getScreenColor() -> c:int
