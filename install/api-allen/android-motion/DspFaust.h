@@ -436,6 +436,8 @@ public:
 	float getCPULoad();
 	
 	int getScreenColor();
+    
+    bool getOSCIsOn();
 
 private:
 	FaustPolyEngine *fPolyEngine;

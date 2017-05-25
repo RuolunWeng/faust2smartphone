@@ -191,4 +191,8 @@ public class DspFaust {
     return dsp_faustJNI.DspFaust_getScreenColor(swigCPtr, this);
   }
 
+  public boolean getOSCIsOn() {
+    return dsp_faustJNI.DspFaust_getOSCIsOn(swigCPtr, this);
+  }
+
 }

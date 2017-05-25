@@ -963,6 +963,21 @@ SWIGEXPORT jint JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getScreenColor
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getOSCIsOn(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  DspFaust *arg1 = (DspFaust *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaust **)&jarg1; 
+  result = (bool)(arg1)->getOSCIsOn();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 #ifdef __cplusplus
 }
 #endif

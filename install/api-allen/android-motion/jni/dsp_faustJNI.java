@@ -59,4 +59,5 @@ public class dsp_faustJNI {
   public final static native void DspFaust_setGyrConverter(long jarg1, DspFaust jarg1_, int jarg2, int jarg3, int jarg4, float jarg5, float jarg6, float jarg7);
   public final static native float DspFaust_getCPULoad(long jarg1, DspFaust jarg1_);
   public final static native int DspFaust_getScreenColor(long jarg1, DspFaust jarg1_);
+  public final static native boolean DspFaust_getOSCIsOn(long jarg1, DspFaust jarg1_);
 }
