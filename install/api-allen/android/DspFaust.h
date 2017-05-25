@@ -21,6 +21,7 @@
 //==========================================
 
 class FaustPolyEngine;
+class OSCUI;
 
 class DspFaust
 {
@@ -417,4 +418,5 @@ public:
 
 private:
 	FaustPolyEngine *fPolyEngine;
+    OSCUI *fOSCUI;
 };

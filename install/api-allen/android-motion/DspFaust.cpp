@@ -21,6 +21,15 @@
 #include "faust/dsp/dsp.h"
 #include "faust/gui/meta.h"
 #include "faust/gui/UI.h"
+#include "faust/gui/jsonfaustui.h"
+#include "faust/gui/JSONUI.h"
+#include "faust/gui/MapUI.h"
+#include "faust/gui/GUI.h"
+
+#if OSCCTRL
+#include "faust/gui/OSCUI.h"
+#endif
+
 #include <math.h>
 #include <cmath>
 
@@ -56,17 +65,55 @@ ztimedmap GUI::gTimedZoneMap;
 
 DspFaust::DspFaust(int sample_rate, int buffer_size){
 	fPolyEngine = new FaustPolyEngine(new androidaudio(sample_rate, buffer_size));
+
+    //**************************************************************
+    // OSC TEST ALLEN
+    //**************************************************************
+    
+    // OSC
+#if OSCCTRL
+    const char* argv[9];
+    argv[0] = "0x00";//(char*)_name;
+    argv[1] = "-xmit";
+    argv[2] = "1";//transmit_value(transmit);
+    argv[3] = "-desthost";
+    argv[4] = "192.168.1.5";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[5] = "-port";
+    argv[6] = "5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[7] = "-outport";
+    argv[8] = "5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    fOSCUI = new OSCUI("0x00", 9, (char**)argv);
+    fPolyEngine->buildUserInterface(fOSCUI);
+    
+#endif
+
+    
 }
 
 DspFaust::~DspFaust(){
 	delete fPolyEngine;
+    
+#if OSCCTRL
+    delete fOSCUI;
+#endif
+    
 }
 
 bool DspFaust::start(){
+    
+#if OSCCTRL
+    fOSCUI->run();
+#endif
+    
 	return fPolyEngine->start();
 }
 
 void DspFaust::stop(){
+    
+#if OSCCTRL
+    fOSCUI->stop();
+#endif
+    
 	fPolyEngine->stop();
 }
 
@@ -121,6 +168,37 @@ void DspFaust::setParamValue(const char* address, float value){
 void DspFaust::setParamValue(int id, float value){
 	fPolyEngine->setParamValue(id, value);
 }
+
+
+bool DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
+    
+#if OSCCTRL
+    
+    delete fOSCUI;
+    const char* argv[9];
+    argv[0] = "0x00";//(char*)_name;
+    argv[1] = "-xmit";
+    argv[2] = "1";//transmit_value(transmit);
+    argv[3] = "-desthost";
+    argv[4] = address;//"192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[5] = "-port";
+    argv[6] = inPort;//"5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[7] = "-outport";
+    argv[8] = outPort;//"5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    fOSCUI = new OSCUI("0x00", 9, (char**)argv);
+    fPolyEngine->buildUserInterface(fOSCUI);
+    fOSCUI->run();
+        
+    return true;
+
+#else
+    return false;
+#endif
+    
+
+    
+}
+
 
 float DspFaust::getParamValue(const char* address){
 	return fPolyEngine->getParamValue(address);

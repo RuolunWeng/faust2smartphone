@@ -32,6 +32,12 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    sourceSets {
+        main {
+            // let gradle pack the shared library into apk
+            jniLibs.srcDirs = ['/usr/local/share/faust/osclib/android/libs']
+        }
+    }
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"

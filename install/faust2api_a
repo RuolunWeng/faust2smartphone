@@ -124,7 +124,12 @@ if [ $ANDROID -eq 1 ]; then
     fi
     cp -r /usr/local/share/faust/api-allen/android/DspFaust.h $CPPFOLDER
     cp -r /usr/local/share/faust/api-allen/android/jni/java_interface_wrap.cpp $CPPFOLDER
+    if [ "$OSCCTRL" = "1" ]; then
     faust -i -a api-allen/android/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+    echo "#define OSCCTRL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+    else
+    faust -i -a api-allen/android/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+    fi
     if [ "$POLY2" = "1" ]; then
 	faust -i -cn effect -a minimal-effect.cpp $EFFECT | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp" || exit
 	echo "#define POLY2 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
@@ -146,7 +151,12 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
     fi
     cp -r /usr/local/share/faust/api-allen/android-motion/DspFaust.h $CPPFOLDER
     cp -r /usr/local/share/faust/api-allen/android-motion/jni/java_interface_wrap.cpp $CPPFOLDER
+    if [ "$OSCCTRL" = "1" ]; then
     faust -i -a api-allen/android-motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+    echo "#define OSCCTRL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+    else
+    faust -i -a api-allen/android-motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+    fi
    
 elif [ $IOS -eq 1 ]; then
     echo "Your dsp-faust.zip API package for iOS is being created"

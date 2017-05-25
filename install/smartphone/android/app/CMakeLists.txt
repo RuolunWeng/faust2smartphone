@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.4.1)
 add_library( dsp_faust SHARED src/main/cpp/java_interface_wrap.cpp src/main/cpp/DspFaust.cpp )
+add_library( libOSCFaust SHARED IMPORTED )
+set_target_properties( libOSCFaust PROPERTIES IMPORTED_LOCATION /usr/local/share/faust/osclib/android/libs/${ANDROID_ABI}/libOSCFaust.so )
 find_library( log-lib log )
-target_link_libraries( dsp_faust ${log-lib} )
+target_link_libraries( dsp_faust libOSCFaust ${log-lib} )

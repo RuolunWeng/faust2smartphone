@@ -21,6 +21,7 @@
 //==========================================
 
 class FaustPolyEngine;
+class OSCUI;
 
 class DspFaust
 {
@@ -189,6 +190,20 @@ public:
 	//--------------------------------------------------------
 	void setParamValue(int, float);
 	
+    
+    //----`bool setOSCValue(const char* address, const char* address, const char* address)`------
+    // Set the value of OSC of the Faust
+    //
+    //
+    // #### Arguments
+    //
+    // * `address`: address of ip
+    // * `address`: address of inport
+    // * `address`: address of outport
+    //--------------------------------------------------------
+    bool setOSCValue(const char*, const char*, const char*);
+    
+    
 	//----`float getParamValue(const char* address)`----------
 	// Returns the value of a parameter in function of its
 	// address (path).
@@ -424,4 +439,5 @@ public:
 
 private:
 	FaustPolyEngine *fPolyEngine;
+    OSCUI *fOSCUI;
 };

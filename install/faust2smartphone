@@ -227,7 +227,11 @@ fi
 if [ $ANDROID -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
 		echo "Adding DSP with no effect chain to the app" > $LOG
+		if [ -z $OPTIONS ]; then
 		faust2api_a -android -nodoc "$FILE" > $LOG
+		else 
+		faust2api_a -android -nodoc "$OPTIONS" "$FILE" > $LOG
+		fi
 	else
 		echo "Adding DSP with effect chain to the app" > $LOG
 		faust2api_a -android -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG

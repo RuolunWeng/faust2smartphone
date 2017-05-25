@@ -36,6 +36,7 @@ public class dsp_faustJNI {
   public final static native int DspFaust_getParamsCount(long jarg1, DspFaust jarg1_);
   public final static native void DspFaust_setParamValue__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2, float jarg3);
   public final static native void DspFaust_setParamValue__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2, float jarg3);
+  public final static native boolean DspFaust_setOSCValue(long jarg1, DspFaust jarg1_, String jarg2, String jarg3, String jarg4);
   public final static native float DspFaust_getParamValue__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2);
   public final static native float DspFaust_getParamValue__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2);
   public final static native void DspFaust_setVoiceParamValue__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2, long jarg3, float jarg4);

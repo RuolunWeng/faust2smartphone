@@ -1,4 +1,4 @@
-package com.allensmartfaust.faustapi;
+package com.allensmartfaust.soloDemo;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -48,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private SensorManager sensorManager;
 
     private TextView cue,cueNext,tips;
-    private EditText paramsValue;
+    private EditText paramsValue, ipAddress, inputPort, outputPort;
 
     private ImageView touche;
-    private Button prevCue, nextCue, initCue, setMotion , defaultParams;
+    private Button prevCue, nextCue, initCue, setMotion , defaultParams, setOSC;
 
 
     private CheckBox setParams;
@@ -287,6 +287,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        setOSC = (Button) findViewById(R.id.setOSC);
+        ipAddress = (EditText) findViewById(R.id.ipAddress);
+        inputPort = (EditText) findViewById(R.id.inputPort);
+        outputPort = (EditText) findViewById(R.id.outputPort);
 
         setParams = (CheckBox) findViewById(R.id.SetParams);
         radioGroup=(RadioGroup)findViewById(R.id.radioGroup);
@@ -305,6 +309,10 @@ public class MainActivity extends AppCompatActivity {
                         paramsValue.setVisibility(View.VISIBLE);
                         setMotion.setVisibility(View.VISIBLE);
                         defaultParams.setVisibility(View.VISIBLE);
+                        ipAddress.setVisibility(View.VISIBLE);
+                        inputPort.setVisibility(View.VISIBLE);
+                        outputPort.setVisibility(View.VISIBLE);
+                        setOSC.setVisibility(View.VISIBLE);
 
                     } else {
 
@@ -312,6 +320,10 @@ public class MainActivity extends AppCompatActivity {
                         paramsValue.setVisibility(View.INVISIBLE);
                         setMotion.setVisibility(View.INVISIBLE);
                         defaultParams.setVisibility(View.INVISIBLE);
+                        ipAddress.setVisibility(View.INVISIBLE);
+                        inputPort.setVisibility(View.INVISIBLE);
+                        outputPort.setVisibility(View.INVISIBLE);
+                        setOSC.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -579,6 +591,15 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 checkAddress();
+
+            }
+        });
+
+
+        setOSC.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                dspFaust.setOSCValue(ipAddress.getText().toString(),inputPort.getText().toString(),outputPort.getText().toString());
 
             }
         });
