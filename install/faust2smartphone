@@ -38,13 +38,13 @@ echoHelp ()
 	echo "faust2smartphone - Musical Mobile App Project Generator"
 	echo "It converts Faust to a ready-to-edit app project for Android or iOS."
 	echo "===================================="
-	echo "Usage: faust2smartphone 'option' xxx.dsp"
+	echo "Usage: faust2smartphone '-option' xxx.dsp"
 	echo "===================================="
-	echo "Option: -ios for Xcode simple project(IOS)"
-	echo "Option: -soloios for Xcode project for smartSOLO(IOS)"
-	echo "Option: -updatelib <.lib> for update motion library(IOS)"
-	echo "Option: -osc for OSC support(IOS)"
-	echo "Option: -android for Android Studio project"
+	echo "Option: -ios for Xcode simple project"
+	echo "Option: -soloios for Xcode project for smartSOLO"
+	echo "Option: -updatelib <.lib> for update motion library"
+	echo "Option: -osc for OSC support"
+	echo "Option: -android for Android Studio simple project"
 	echo "Option: -soloandroid for Android Studio project for smartSOLO"
 	echo "Option: -reuse for Uptade the project"
 	echo "Option: -help for Help"
@@ -286,6 +286,11 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	cp -r "$BUILDDIR/dsp-faust/cpp" "$APPFOLDER"
 	cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
 	rm -r "$BUILDDIR/dsp-faust"
+	if [ $CHANGELIB -eq 1 ]; then
+	echo "Updating motion lib for the app" > $LOG
+	faust -i -a $FAUSTLIB/smartphone/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
+	echo "std::list<GUI*> GUI::fGuiList; ztimedmap GUI::gTimedZoneMap;" >>  "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
+	fi
 	
 elif [ $IOS -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
@@ -318,7 +323,7 @@ elif [ $IOSMOTION -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
-	faust -i -a $FAUSTLIB/smartphone/DspFaustMotion.cpp "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	faust -i -a $FAUSTLIB/smartphone/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	fi
 fi
 
