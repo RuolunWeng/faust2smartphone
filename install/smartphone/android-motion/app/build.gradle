@@ -1,10 +1,12 @@
+def OSCCTRL=false
+
 apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.allensmartfaust.faustapi"
+        applicationId "com.allensmartfaust.osc"
         minSdkVersion 19
         targetSdkVersion 20
         versionCode 1
@@ -32,10 +34,12 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    sourceSets {
-        main {
-            // let gradle pack the shared library into apk
-            jniLibs.srcDirs = ['/usr/local/share/faust/osclib/android/libs']
+    if(OSCCTRL) {
+        sourceSets {
+            main {
+                // let gradle pack the shared library into apk
+                jniLibs.srcDirs = ['/usr/local/share/faust/osclib/android/libs']
+            }
         }
     }
     externalNativeBuild {
