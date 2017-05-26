@@ -33,7 +33,7 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
 2) For specific function
 
-    "-osc" for OSC support (only iOS)
+    "-osc" for OSC support
     
     "-soloios" to generate a project with Motion support and Cue interface for iOS.
 
