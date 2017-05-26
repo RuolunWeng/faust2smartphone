@@ -1,12 +1,15 @@
 package com.allensmartfaust.soloDemo;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Path;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -40,6 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+
+import static android.Manifest.permission.ACCESS_NETWORK_STATE;
+import static android.Manifest.permission.INTERNET;
+import static android.Manifest.permission.RECORD_AUDIO;
 
 public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
@@ -148,6 +155,57 @@ public class MainActivity extends AppCompatActivity {
     boolean tgyr_downIsOn;
 
 
+    public static final int RequestPermissionCode = 1;
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]
+                {
+                        RECORD_AUDIO,
+                        INTERNET,
+                        ACCESS_NETWORK_STATE
+                }, RequestPermissionCode);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+
+            case RequestPermissionCode:
+
+                if (grantResults.length > 0) {
+
+                    boolean AudioPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean InternetPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean NetworkPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+
+                    if (AudioPermission && InternetPermission && NetworkPermission) {
+
+                        Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
+
+                    }
+                }
+
+                break;
+        }
+    }
+
+    public boolean checkPermission() {
+
+        int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
+        int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), INTERNET);
+        int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_NETWORK_STATE);
+
+        return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
+                SecondPermissionResult == PackageManager.PERMISSION_GRANTED &&
+                ThirdPermissionResult == PackageManager.PERMISSION_GRANTED;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,26 +264,6 @@ public class MainActivity extends AppCompatActivity {
         //list.add(tContents);
         System.out.println(cueList);
         System.out.println(tipsList);
-
-
-        int SR = 44100;
-        int blockSize = 512;
-        dspFaust = new DspFaust(SR,blockSize);
-
-
-        dspFaustMotion = new DspFaustMotion(SR/blockSize,1);
-
-
-
-        // PRINT ALL PARAMETRE ADDRESS
-        for(int i=0; i < dspFaustMotion.getParamsCount(); i++){
-            System.out.println(dspFaustMotion.getParamAddress(i));
-        }
-
-
-        checkAddress();
-
-        //System.out.println(dspFaust.getMeta("name"));
 
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -309,11 +347,12 @@ public class MainActivity extends AppCompatActivity {
                         paramsValue.setVisibility(View.VISIBLE);
                         setMotion.setVisibility(View.VISIBLE);
                         defaultParams.setVisibility(View.VISIBLE);
-                        ipAddress.setVisibility(View.VISIBLE);
-                        inputPort.setVisibility(View.VISIBLE);
-                        outputPort.setVisibility(View.VISIBLE);
-                        setOSC.setVisibility(View.VISIBLE);
-
+                        if (dspFaust.getOSCIsOn()) {
+                            ipAddress.setVisibility(View.VISIBLE);
+                            inputPort.setVisibility(View.VISIBLE);
+                            outputPort.setVisibility(View.VISIBLE);
+                            setOSC.setVisibility(View.VISIBLE);
+                        }
                     } else {
 
                         radioGroup.setVisibility(View.INVISIBLE);
@@ -1067,7 +1106,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.d("Faust", "onPause");
+        dspFaust.stop();
+        dspFaustMotion.stop();
         sensorManager.unregisterListener(mSensorListener);
+        dspFaust.delete();
+        dspFaustMotion.delete();
         super.onPause();
     }
 
@@ -1087,8 +1130,34 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Faust", "onStart");
         super.onStart();
         if (!isChangingConfigurations()) {
-            dspFaust.start();
-            dspFaustMotion.start();
+            if(checkPermission()){
+
+                Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
+                int SR = 44100;
+                int blockSize = 256;
+                dspFaust = new DspFaust(SR,blockSize);
+                // PRINT ALL PARAMETRE ADDRESS
+                for(int i=0; i < dspFaust.getParamsCount(); i++){
+                    System.out.println(dspFaust.getParamAddress(i));
+                }
+                dspFaust.start();
+
+                dspFaustMotion = new DspFaustMotion(SR/blockSize,1);
+
+                // PRINT ALL PARAMETRE ADDRESS
+                for(int i=0; i < dspFaustMotion.getParamsCount(); i++){
+                    System.out.println(dspFaustMotion.getParamAddress(i));
+                }
+
+                dspFaustMotion.start();
+
+                checkAddress();
+
+            }
+            else {
+
+                requestPermission();
+            }
         }
     }
 
@@ -1108,13 +1177,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         Log.d("Faust", "onDestroy");
-        // only stops audio when the user press the return button (and not when the screen is rotated)
-        if (!isChangingConfigurations()) {
-            //dspFaust.stop();
-            dspFaust.delete();
-            //dspFaustMotion.stop();
-            dspFaustMotion.delete();
-        }
+
         super.onDestroy();
     }
 }

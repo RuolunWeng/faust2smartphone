@@ -1,19 +1,32 @@
-package com.allensmartfaust.faustapi;
+package com.allensmartfaust.osc;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.DspFaust.DspFaust;
+
+import static android.Manifest.permission.ACCESS_NETWORK_STATE;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.INTERNET;
+import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.RECORD_AUDIO;
 
 public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
@@ -21,6 +34,57 @@ public class MainActivity extends AppCompatActivity {
     
     private SeekBar param1,param2;
     private TextView paramOut1,paramOut2;
+
+    public static final int RequestPermissionCode = 1;
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]
+                {
+                        RECORD_AUDIO,
+                        INTERNET,
+                        ACCESS_NETWORK_STATE
+                }, RequestPermissionCode);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+
+            case RequestPermissionCode:
+
+                if (grantResults.length > 0) {
+
+                    boolean AudioPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean InternetPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean NetworkPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+
+                    if (AudioPermission && InternetPermission && NetworkPermission) {
+
+                        Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
+
+                    }
+                }
+
+                break;
+        }
+    }
+
+    public boolean checkPermission() {
+
+        int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
+        int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), INTERNET);
+        int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_NETWORK_STATE);
+
+        return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
+                SecondPermissionResult == PackageManager.PERMISSION_GRANTED &&
+                ThirdPermissionResult == PackageManager.PERMISSION_GRANTED;
+    }
+
 
 
     @Override
@@ -31,17 +95,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        int SR = 44100;
-        int blockSize = 256;
-        dspFaust = new DspFaust(SR,blockSize);
-        dspFaust.start();
-        dspFaust.setParamValue("/Oscillator/volume", -20);
-        dspFaust.setParamValue("/Oscillator/freq", 220);
 
-        // PRINT ALL PARAMETRE ADDRESS
-        for(int i=0; i < dspFaust.getParamsCount(); i++){
-            System.out.println(dspFaust.getParamAddress(i));
-        }
 
         // TODO: SET PARAMETRE ADDRESS & VALUE
         // TODO: Change interface in .xml
@@ -125,7 +179,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.d("Faust", "onPause");
+        dspFaust.stop();
         sensorManager.unregisterListener(mSensorListener);
+        dspFaust.delete();
         super.onPause();
     }
 
@@ -133,11 +189,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         Log.d("Faust", "onResume");
         super.onResume();
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-        Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
 
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-        Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+                Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+
+
     }
 
     @Override
@@ -145,8 +204,23 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Faust", "onStart");
         super.onStart();
         if (!isChangingConfigurations()) {
-        dspFaust.start();
+            if(checkPermission()){
 
+                Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
+                int SR = 44100;
+                int blockSize = 256;
+                dspFaust = new DspFaust(SR,blockSize);
+                // PRINT ALL PARAMETRE ADDRESS
+                for(int i=0; i < dspFaust.getParamsCount(); i++){
+                    System.out.println(dspFaust.getParamAddress(i));
+                }
+                dspFaust.start();
+
+            }
+            else {
+
+                requestPermission();
+            }
         }
     }
 
@@ -166,12 +240,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         Log.d("Faust", "onDestroy");
-        // only stops audio when the user press the return button (and not when the screen is rotated)
-        if (!isChangingConfigurations()) {
-        //dspFaust.stop();
-        dspFaust.delete();
 
-        }
         super.onDestroy();
     }
 
