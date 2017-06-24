@@ -199,15 +199,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void createFaust() {
-        if (dspFaust == null) {
-            int SR = 44100;
-            int blockSize = 256;
-            dspFaust = new DspFaust(SR, blockSize);
-            // PRINT ALL PARAMETRE ADDRESS
-            for (int i = 0; i < dspFaust.getParamsCount(); i++) {
-                System.out.println(dspFaust.getParamAddress(i));
-            }
 
+        int SR = 44100;
+        int blockSize = 256;
+
+        if (dspFaustMotion == null) {
             dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
 
             // PRINT ALL PARAMETRE ADDRESS
@@ -215,6 +211,18 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(dspFaustMotion.getParamAddress(i));
             }
         }
+
+        if (dspFaust == null) {
+
+            dspFaust = new DspFaust(SR, blockSize);
+            // PRINT ALL PARAMETRE ADDRESS
+            for (int i = 0; i < dspFaust.getParamsCount(); i++) {
+                System.out.println(dspFaust.getParamAddress(i));
+            }
+        }
+
+
+
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1122,12 +1130,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.d("Faust", "onPause");
+        super.onPause();
         if(permissionToRecordAccepted) {
             dspFaust.stop();
             dspFaustMotion.stop();
-            sensorManager.unregisterListener(mSensorListener);
+            if (sensorManager!=null) {
+                sensorManager.unregisterListener(mSensorListener);
+            }
         }
-        super.onPause();
+
     }
 
     @Override
@@ -1137,8 +1148,8 @@ public class MainActivity extends AppCompatActivity {
         if(permissionToRecordAccepted) {
 
             if (!dspFaust.isRunning()) {
-            dspFaust.start();
-            dspFaustMotion.start();
+
+                dspFaust.start();
 
                 checkAddress();
 
@@ -1147,6 +1158,11 @@ public class MainActivity extends AppCompatActivity {
 
                 sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
                         Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+            }
+
+            if (!dspFaustMotion.isRunning()) {
+
+                dspFaustMotion.start();
             }
 
 
@@ -1159,6 +1175,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
 
+        if (sensorManager!=null){sensorManager.unregisterListener(mSensorListener);}
         dspFaust = null;
         dspFaustMotion = null;
     }
