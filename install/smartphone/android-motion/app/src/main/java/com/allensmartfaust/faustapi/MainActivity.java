@@ -1,5 +1,6 @@
 package com.allensmartfaust.soloDemo;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -8,6 +9,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -157,14 +159,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int RequestPermissionCode = 1;
 
+    private boolean permissionToRecordAccepted = false;
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO,Manifest.permission.INTERNET,Manifest.permission.ACCESS_NETWORK_STATE};
+
     private void requestPermission() {
 
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]
-                {
-                        RECORD_AUDIO,
-                        INTERNET,
-                        ACCESS_NETWORK_STATE
-                }, RequestPermissionCode);
+        ActivityCompat.requestPermissions(this, permissions,RequestPermissionCode);
 
     }
 
@@ -180,13 +180,16 @@ public class MainActivity extends AppCompatActivity {
                     boolean InternetPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean NetworkPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
-                    if (AudioPermission && InternetPermission && NetworkPermission) {
+                    permissionToRecordAccepted = AudioPermission && InternetPermission && NetworkPermission;
+                    if (permissionToRecordAccepted) {
 
                         Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
+
+                        createFaust();
                     }
                     else {
                         Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
-
+                        finish();
                     }
                 }
 
@@ -194,18 +197,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean checkPermission() {
 
-        int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
-        int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), INTERNET);
-        int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_NETWORK_STATE);
+    private void createFaust() {
+        if (dspFaust == null) {
+            int SR = 44100;
+            int blockSize = 256;
+            dspFaust = new DspFaust(SR, blockSize);
+            // PRINT ALL PARAMETRE ADDRESS
+            for (int i = 0; i < dspFaust.getParamsCount(); i++) {
+                System.out.println(dspFaust.getParamAddress(i));
+            }
 
-        return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
-                SecondPermissionResult == PackageManager.PERMISSION_GRANTED &&
-                ThirdPermissionResult == PackageManager.PERMISSION_GRANTED;
+            dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
+
+            // PRINT ALL PARAMETRE ADDRESS
+            for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
+                System.out.println(dspFaustMotion.getParamAddress(i));
+            }
+        }
     }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -216,6 +226,12 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            requestPermission();
+        } else {
+            permissionToRecordAccepted = true;
+            createFaust();
+        }
 
         try {
             InputStream stream = getAssets().open("cuenums.txt");
@@ -1106,11 +1122,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.d("Faust", "onPause");
-        dspFaust.stop();
-        dspFaustMotion.stop();
-        sensorManager.unregisterListener(mSensorListener);
-        dspFaust.delete();
-        dspFaustMotion.delete();
+        if(permissionToRecordAccepted) {
+            dspFaust.stop();
+            dspFaustMotion.stop();
+            sensorManager.unregisterListener(mSensorListener);
+        }
         super.onPause();
     }
 
@@ -1118,60 +1134,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         Log.d("Faust", "onResume");
         super.onResume();
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-                Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+        if(permissionToRecordAccepted) {
 
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-                Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-    }
-
-    @Override
-    protected void onStart() {
-        Log.d("Faust", "onStart");
-        super.onStart();
-        if (!isChangingConfigurations()) {
-            if(checkPermission()){
-
-                Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
-                int SR = 44100;
-                int blockSize = 256;
-                dspFaust = new DspFaust(SR,blockSize);
-                // PRINT ALL PARAMETRE ADDRESS
-                for(int i=0; i < dspFaust.getParamsCount(); i++){
-                    System.out.println(dspFaust.getParamAddress(i));
-                }
-                dspFaust.start();
-
-                dspFaustMotion = new DspFaustMotion(SR/blockSize,1);
-
-                // PRINT ALL PARAMETRE ADDRESS
-                for(int i=0; i < dspFaustMotion.getParamsCount(); i++){
-                    System.out.println(dspFaustMotion.getParamAddress(i));
-                }
-
-                dspFaustMotion.start();
+            if (!dspFaust.isRunning()) {
+            dspFaust.start();
+            dspFaustMotion.start();
 
                 checkAddress();
 
-            }
-            else {
+                sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                        Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
 
-                requestPermission();
+                sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                        Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
             }
+
+
         }
-    }
-
-    @Override
-    protected void onRestart() {
-        Log.d("Faust", "onRestart");
-        super.onRestart();
-    }
-
-    @Override
-    protected void onStop() {
-        Log.d("Faust", "onStop");
-        super.onStop();
-
     }
 
     @Override
@@ -1179,6 +1158,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Faust", "onDestroy");
 
         super.onDestroy();
+
+        dspFaust = null;
+        dspFaustMotion = null;
     }
 }
 
