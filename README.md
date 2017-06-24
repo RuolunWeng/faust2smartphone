@@ -46,7 +46,7 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
     _in your .dsp file, declare motion controller you need, like:
         
            ***************************
-        1) ** simple motion support **
+           ** simple motion support **
            ***************************
 
         // Active Motion controller
@@ -58,7 +58,7 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
         vendre_front = hslider("vendre_front",0,0,1,0.01);
         
            **********************************
-        1) ** motion support + cue manager **
+           ** motion support + cue manager **
            **********************************
         
         // Active Cue
