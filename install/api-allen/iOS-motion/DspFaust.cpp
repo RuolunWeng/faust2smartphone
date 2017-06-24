@@ -307,3 +307,4 @@ bool DspFaust::getOSCIsOn() {
     return false;
 #endif
 }
+

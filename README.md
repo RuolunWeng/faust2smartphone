@@ -35,9 +35,9 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     "-osc" for OSC support
     
-    "-soloios" to generate a project with Motion support and Cue interface for iOS.
+    "-soloios" to generate a project with Motion support for iOS.
 
-    "-soloandroid" to generate a project with Motion support and Cue interface for Android.
+    "-soloandroid" to generate a project with Motion support for Android.
 
     [Motion.lib created by Christophe Lebreton].
 
@@ -45,6 +45,26 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     _in your .dsp file, declare motion controller you need, like:
         
+           ***************************
+        1) ** simple motion support **
+           ***************************
+
+        // Active Motion controller
+
+        ixp = hslider("ixp",0,0,1,0.01);
+
+        brasG_cours = hslider("brasG_cours",0,0,1,0.01);
+
+        vendre_front = hslider("vendre_front",0,0,1,0.01);
+        
+           **********************************
+        1) ** motion support + cue manager **
+           **********************************
+        
+        // Active Cue
+        
+        cue = nentry("cue",0,0,3,1);
+
         // Active Touch Screen
 
         touchGate = checkbox("touchgate");
@@ -55,9 +75,6 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
         touchY = hslider("touchy",0,0,1,0.01);
 
-        // Active Motion controller
-
-        ixp = hslider("ixp",0,0,1,0.01);
 
     -------------------------------------------------------------
 

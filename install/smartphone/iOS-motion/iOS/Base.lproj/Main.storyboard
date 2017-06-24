@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -221,6 +221,19 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BtM-Ly-GdL">
+                                <rect key="frame" x="163" y="884" width="50" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="Vk8-QR-58g"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <state key="normal" title="setRef">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="setRef:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rGU-O1-f1D"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -231,6 +244,7 @@
                             <constraint firstItem="C8r-PO-wDE" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="5KR-WU-X16"/>
                             <constraint firstItem="lOb-oV-Xfc" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="5OO-fF-6Sr"/>
                             <constraint firstItem="F6g-Du-fLq" firstAttribute="top" secondItem="sTd-uk-Wcr" secondAttribute="bottom" id="79O-0I-llF"/>
+                            <constraint firstItem="BtM-Ly-GdL" firstAttribute="leading" secondItem="9qp-Bs-nsp" secondAttribute="trailing" constant="10" id="7QR-ef-NFO"/>
                             <constraint firstAttribute="trailing" secondItem="C8r-PO-wDE" secondAttribute="trailing" constant="-20" id="8jr-4k-DDu"/>
                             <constraint firstItem="Blb-la-lPr" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="AnQ-vt-IIi"/>
                             <constraint firstItem="lOb-oV-Xfc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="BdM-HY-TRD"/>
@@ -256,6 +270,7 @@
                             <constraint firstItem="9sT-Ek-za7" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="YFM-9s-a5j"/>
                             <constraint firstItem="sTd-uk-Wcr" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="24" id="ZEF-K1-Vur"/>
                             <constraint firstAttribute="bottomMargin" secondItem="Blb-la-lPr" secondAttribute="bottom" constant="50" id="cqO-0Y-Dim"/>
+                            <constraint firstItem="BtM-Ly-GdL" firstAttribute="top" secondItem="72C-eP-Rfo" secondAttribute="bottom" constant="20" id="eLy-61-gQ3"/>
                             <constraint firstItem="huL-2P-ni1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="eNU-wZ-KPb"/>
                             <constraint firstItem="9qp-Bs-nsp" firstAttribute="leading" secondItem="FWd-9g-CPP" secondAttribute="trailing" constant="3" id="f5e-wL-dj1"/>
                             <constraint firstAttribute="bottomMargin" secondItem="FNc-vA-8tG" secondAttribute="bottom" constant="200" id="fCe-EZ-cgw"/>
@@ -279,6 +294,7 @@
                     <connections>
                         <outlet property="cue" destination="F6g-Du-fLq" id="MUH-Cb-JHs"/>
                         <outlet property="cueNext" destination="9sT-Ek-za7" id="09A-Ze-BwV"/>
+                        <outlet property="cueText" destination="sTd-uk-Wcr" id="5Zc-8i-mxP"/>
                         <outlet property="inPort" destination="uXE-wo-FMB" id="las-B7-UUt"/>
                         <outlet property="init" destination="Blb-la-lPr" id="1lb-FO-Shu"/>
                         <outlet property="initParam" destination="9qp-Bs-nsp" id="Qdn-Nd-l0H"/>
@@ -286,11 +302,13 @@
                         <outlet property="motionParam" destination="yQ4-ZF-l59" id="OIi-8W-7j0"/>
                         <outlet property="motionParamSend" destination="tCE-4T-LDu" id="nYK-Kd-CtD"/>
                         <outlet property="nextCue" destination="jC9-k8-olK" id="VrX-pO-Czc"/>
+                        <outlet property="nextCueText" destination="hmA-L6-Skf" id="I63-74-Oy6"/>
                         <outlet property="outPort" destination="72C-eP-Rfo" id="JU4-sI-5Ns"/>
                         <outlet property="pikerView" destination="FWd-9g-CPP" id="tXb-qz-I0Y"/>
                         <outlet property="prevCue" destination="FNc-vA-8tG" id="wYr-m9-nQM"/>
                         <outlet property="setOSC" destination="tSN-Jh-ed7" id="igB-Re-YlU"/>
                         <outlet property="setParam" destination="tSk-qQ-9Ir" id="08z-1h-Ji9"/>
+                        <outlet property="setRefrence" destination="BtM-Ly-GdL" id="uNd-qy-5H1"/>
                         <outlet property="tips" destination="lOb-oV-Xfc" id="puG-vu-vtr"/>
                         <outlet property="titleApp" destination="huL-2P-ni1" id="4T9-Dq-IvL"/>
                         <outlet property="touch" destination="L8g-4s-ES1" id="YoX-uD-rmK"/>

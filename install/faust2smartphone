@@ -58,7 +58,7 @@ echoHelp ()
 while [ $1 ]
 do
 	p=$1
-	
+
     if [ $p = "-help" ]; then
 		echoHelp
     elif [[ -f "$p" ]]; then
@@ -159,10 +159,10 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			echo "option==$OPTIONS" > $LOG
 			cp -r $FAUSTLIB/smartphone/android/* "$BUILDDIR"
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
-			
+
 			# change 'faust' with real *APPNAME
 			PLATFORM=$(uname)
-			
+
 			if [ $PLATFORM = "Darwin" ]; then
 				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
 				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
@@ -173,7 +173,7 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "osc" > $LOG
 					sed -i '' 's,OSCCTRL=false,OSCCTRL=true,g' $BUILDDIR/app/build.gradle
 					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
-				else 
+				else
 					echo "noosc" > $LOG
 				fi
 			else
@@ -186,21 +186,21 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "osc" > $LOG
 					sed -i 's,OSCCTRL=false,OSCCTRL=true,g' $BUILDDIR/app/build.gradle
 					sed -i 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
-				else 
+				else
 					echo "noosc" > $LOG
 				fi
 			fi
 			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
-			
+
 		elif [ $ANDROIDMOTION -eq 1 ]; then
 			echo "Creating a new Android project for smartSOLO in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/android-motion/* "$BUILDDIR"
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
 			cp -r $FAUSTLIB/smartphone/cueAndroid/* "$CURRENTFOLDER"
-			
+
 			# change 'faust' with real *APPNAME
 			PLATFORM=$(uname)
-			
+
 			if [ $PLATFORM = "Darwin" ]; then
 				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
 				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
@@ -211,7 +211,7 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "osc" > $LOG
 					sed -i '' 's,OSCCTRL=false,OSCCTRL=true,g' $BUILDDIR/app/build.gradle
 					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
-				else 
+				else
 					echo "noosc" > $LOG
 				fi
 			else
@@ -224,17 +224,17 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "osc" > $LOG
 					sed -i '' 's,OSCCTRL=false,OSCCTRL=true,g' $BUILDDIR/app/build.gradle
 					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
-				else 
+				else
 					echo "noosc" > $LOG
 				fi
 			fi
 			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
-			
+
 		elif [ $IOS -eq 1 ]; then
 			echo "Creating a new iOS project in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS/* "$BUILDDIR"
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
-			
+
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
 			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
 		elif [ $IOSMOTION -eq 1 ]; then
@@ -259,7 +259,7 @@ if [ $ANDROID -eq 1 ]; then
 		echo "Adding DSP with no effect chain to the app" > $LOG
 		if [ -z $OPTIONS ]; then
 		faust2api_a -android -nodoc "$FILE" > $LOG
-		else 
+		else
 		faust2api_a -android -nodoc "$OPTIONS" "$FILE" > $LOG
 		fi
 	else
@@ -272,12 +272,12 @@ if [ $ANDROID -eq 1 ]; then
 	cp -r "$BUILDDIR/dsp-faust/cpp" "$APPFOLDER"
 	cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
 	rm -r "$BUILDDIR/dsp-faust"
-	
+
 elif [ $ANDROIDMOTION -eq 1 ]; then
 	echo "Adding DSP with motion support to the app" > $LOG
 	if [ -z $OPTIONS ]; then
 		faust2api_a -androidmotion -nodoc "$FILE" > $LOG
-		else 
+		else
 		faust2api_a -androidmotion -nodoc "$OPTIONS" "$FILE" > $LOG
 	fi
 	unzip "dsp-faust.zip" > $LOG
@@ -291,13 +291,13 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	faust -i -a $FAUSTLIB/smartphone/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	echo "std::list<GUI*> GUI::fGuiList; ztimedmap GUI::gTimedZoneMap;" >>  "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	fi
-	
+
 elif [ $IOS -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
 		echo "Adding DSP with no effect chain to the app" > $LOG
 		if [ -z $OPTIONS ]; then
 		faust2api_a -ios -nodoc "$FILE" > $LOG
-		else 
+		else
 		faust2api_a -ios -nodoc "$OPTIONS" "$FILE" > $LOG
 		fi
 	else
@@ -313,7 +313,7 @@ elif [ $IOSMOTION -eq 1 ]; then
 	echo "Adding DSP with motion support to the app" > $LOG
 	if [ -z $OPTIONS ]; then
 		faust2api_a -iosmotion -nodoc "$FILE" > $LOG
-		else 
+		else
 		faust2api_a -iosmotion -nodoc "$OPTIONS" "$FILE" > $LOG
 	fi
 	unzip "dsp-faust.zip" > $LOG

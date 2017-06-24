@@ -14,6 +14,7 @@
 
 #import <CoreMotion/CoreMotion.h>
 #import <CoreLocation/CoreLocation.h>
+#import "Accelerate/Accelerate.h"
 
 @interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate > {
 
@@ -21,6 +22,14 @@
     DspFaustMotion *dspFaustMotion;
     CMMotionManager* _motionManager;
     CLLocationManager* _locationManager;
+    
+    CMAttitude *referenceAttitude;
+    
+    CMRotationMatrix referenceMatrix;
+    
+    float matrixA[3][3];
+    float matrixB[3][3];
+    float matrixC[3][3];
     
     NSTimer* _guiTimer;
     NSTimer *_sensorTimer;
@@ -69,6 +78,48 @@
     const char* gynAddress;
     const char* gznAddress;
     
+    const char* brasGcoursAddress;
+    const char* brasGrearAddress;
+    const char* brasGjardinAddress;
+    const char* brasGfrontAddress;
+    const char* brasGdownAddress;
+    const char* brasGupAddress;
+    
+    const char* piedscoursAddress;
+    const char* piedsrearAddress;
+    const char* piedsjardinAddress;
+    const char* piedsfrontAddress;
+    const char* piedsdownAddress;
+    const char* piedsupAddress;
+    
+    const char* doscoursAddress;
+    const char* dosrearAddress;
+    const char* dosjardinAddress;
+    const char* dosfrontAddress;
+    const char* dosdownAddress;
+    const char* dosupAddress;
+    
+    const char* brasDcoursAddress;
+    const char* brasDrearAddress;
+    const char* brasDjardinAddress;
+    const char* brasDfrontAddress;
+    const char* brasDdownAddress;
+    const char* brasDupAddress;
+    
+    const char* tetecoursAddress;
+    const char* teterearAddress;
+    const char* tetejardinAddress;
+    const char* tetefrontAddress;
+    const char* tetedownAddress;
+    const char* teteupAddress;
+    
+    const char* ventrecoursAddress;
+    const char* ventrerearAddress;
+    const char* ventrejardinAddress;
+    const char* ventrefrontAddress;
+    const char* ventredownAddress;
+    const char* ventreupAddress;
+    
     const char* touchGateAddress;
     const char* screenXAddress;
     const char* screenYAddress;
@@ -115,6 +166,48 @@
     BOOL gxnIsOn;
     BOOL gynIsOn;
     BOOL gznIsOn;
+    
+    BOOL brasGcoursIsOn;
+    BOOL brasGrearIsOn;
+    BOOL brasGjardinIsOn;
+    BOOL brasGfrontIsOn;
+    BOOL brasGdownIsOn;
+    BOOL brasGupIsOn;
+    
+    BOOL piedscoursIsOn;
+    BOOL piedsrearIsOn;
+    BOOL piedsjardinIsOn;
+    BOOL piedsfrontIsOn;
+    BOOL piedsdownIsOn;
+    BOOL piedsupIsOn;
+    
+    BOOL doscoursIsOn;
+    BOOL dosrearIsOn;
+    BOOL dosjardinIsOn;
+    BOOL dosfrontIsOn;
+    BOOL dosdownIsOn;
+    BOOL dosupIsOn;
+    
+    BOOL brasDcoursIsOn;
+    BOOL brasDrearIsOn;
+    BOOL brasDjardinIsOn;
+    BOOL brasDfrontIsOn;
+    BOOL brasDdownIsOn;
+    BOOL brasDupIsOn;
+    
+    BOOL tetecoursIsOn;
+    BOOL teterearIsOn;
+    BOOL tetejardinIsOn;
+    BOOL tetefrontIsOn;
+    BOOL tetedownIsOn;
+    BOOL teteupIsOn;
+    
+    BOOL ventrecoursIsOn;
+    BOOL ventrerearIsOn;
+    BOOL ventrejardinIsOn;
+    BOOL ventrefrontIsOn;
+    BOOL ventredownIsOn;
+    BOOL ventreupIsOn;
     
     BOOL touchGateIsOn;
     BOOL screenXIsOn;
@@ -173,7 +266,12 @@
 @property (retain, nonatomic) IBOutlet UIButton *prevCue;
 - (IBAction)prevCue:(id)sender;
 
+@property (retain, nonatomic) IBOutlet UILabel *nextCueText;
+@property (retain, nonatomic) IBOutlet UILabel *cueText;
 
+@property (retain, nonatomic) IBOutlet UIButton *setRefrence;
+
+- (IBAction)setRef:(id)sender;
 
 - (IBAction)defautParam:(id)sender;
 
