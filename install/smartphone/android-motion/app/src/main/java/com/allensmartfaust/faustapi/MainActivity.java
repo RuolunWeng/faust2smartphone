@@ -652,7 +652,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        
+        setRef.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                initFrame();
+            }
+        });
+        
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
