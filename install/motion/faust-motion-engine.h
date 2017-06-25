@@ -61,7 +61,7 @@ class FaustMotionEngine {
 
             fDriver = driver;
             fRunning = false;
-            mydsp2* motion_dsp = new mydsp2();
+            mydsp* motion_dsp = new mydsp();
             
             fFinalDSP = motion_dsp;
             

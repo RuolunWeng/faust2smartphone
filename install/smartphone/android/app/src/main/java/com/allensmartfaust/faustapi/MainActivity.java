@@ -1,4 +1,4 @@
-package com.allensmartfaust.osc;
+package com.allensmartfaust.faustapi;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

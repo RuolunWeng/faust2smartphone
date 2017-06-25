@@ -31,6 +31,7 @@ INSTALL=0
 OPTIONS=""
 LIBMOTION=""
 CHANGELIB=0
+CUEMANAGER=0
 
 echoHelp ()
 {
@@ -42,10 +43,11 @@ echoHelp ()
 	echo "===================================="
 	echo "Option: -ios for Xcode simple project"
 	echo "Option: -soloios for Xcode project for smartSOLO"
-	echo "Option: -updatelib <.lib> for update motion library"
-	echo "Option: -osc for OSC support"
 	echo "Option: -android for Android Studio simple project"
 	echo "Option: -soloandroid for Android Studio project for smartSOLO"
+	echo "Option: -updatelib <.lib> for update motion library"
+	echo "Option: -osc for OSC support"
+	echo "Option: -cuemanager for using Cue Maneger system"
 	echo "Option: -reuse for Uptade the project"
 	echo "Option: -help for Help"
 	echo "===================================="
@@ -79,6 +81,8 @@ do
 		LOG="/dev/stdout"
 	elif [ $p = "-install" ]; then
 		INSTALL=1
+	elif [ $p = "-cuemanager" ]; then
+		CUEMANAGER=1
     elif [ "$p" = "-effect" ]; then
         POLY2="1"
 		shift
@@ -196,8 +200,9 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			echo "Creating a new Android project for smartSOLO in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/android-motion/* "$BUILDDIR"
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
+			if [ $CUEMANAGER -eq 1 ]; then
 			cp -r $FAUSTLIB/smartphone/cueAndroid/* "$CURRENTFOLDER"
-
+		  fi
 			# change 'faust' with real *APPNAME
 			PLATFORM=$(uname)
 
@@ -240,8 +245,8 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 		elif [ $IOSMOTION -eq 1 ]; then
 			echo "Creating a new iOS project with motion support in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS-motion/* "$BUILDDIR"
-			if [ $REUSE -eq 0 ]; then
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
+			if [ $CUEMANAGER -eq 1 ]; then
 			cp -r $FAUSTLIB/smartphone/cueiOS/* "$CURRENTFOLDER"
 			fi
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj

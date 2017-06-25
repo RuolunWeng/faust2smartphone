@@ -51,7 +51,8 @@
         android:layout_alignBottom="@+id/prevCue"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="17dp"
-        android:textSize="45sp" />
+        android:textSize="45sp"
+        android:visibility="invisible" />
 
     <Button
         android:text="init"
@@ -61,7 +62,8 @@
         android:layout_alignEnd="@+id/nextCue"
         android:layout_marginTop="32dp"
         android:id="@+id/initCue"
-        android:textSize="45sp" />
+        android:textSize="45sp"
+        android:visibility="invisible" />
 
     <TextView
         android:text="Tips:"
@@ -73,7 +75,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:textColor="@android:color/background_light"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:visibility="invisible" />
 
     <TextView
         android:text="1"
@@ -86,7 +89,8 @@
         android:textColor="@android:color/background_light"
         android:textSize="30sp"
         android:layout_alignEnd="@+id/prevCue"
-        android:layout_alignStart="@+id/prevCue" />
+        android:layout_alignStart="@+id/prevCue"
+        android:visibility="invisible" />
 
     <TextView
         android:text="2"
@@ -99,19 +103,21 @@
         android:textSize="30sp"
         android:textColor="@android:color/background_light"
         android:textAlignment="center"
-        android:textStyle="normal|bold" />
+        android:textStyle="normal|bold"
+        android:visibility="invisible" />
 
     <TextView
         android:text="Cue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/cue"
-        android:id="@+id/textView7"
+        android:id="@+id/cueText"
         android:textAlignment="center"
         android:textSize="25sp"
         android:textColor="@android:color/background_light"
         android:layout_alignStart="@+id/cue"
-        android:layout_alignEnd="@+id/cue" />
+        android:layout_alignEnd="@+id/cue"
+        android:visibility="invisible" />
 
     <TextView
         android:text="Next"
@@ -119,11 +125,12 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/cueNext"
         android:layout_alignStart="@+id/cueNext"
-        android:id="@+id/textView9"
+        android:id="@+id/cueNextText"
         android:layout_alignEnd="@+id/cueNext"
         android:textSize="25sp"
         android:textAlignment="center"
-        android:textColor="@android:color/background_light" />
+        android:textColor="@android:color/background_light"
+        android:visibility="invisible" />
 
     <Button
         android:text="prev"
@@ -135,7 +142,8 @@
         android:elevation="10dp"
         android:textSize="45sp"
         android:layout_below="@+id/textView2"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:visibility="invisible" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -375,6 +383,21 @@
         android:layout_toEndOf="@+id/outputPort"
         android:text="set"
         android:textSize="14sp"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/setRef"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_above="@+id/paramValue"
+        android:layout_below="@+id/nextCue"
+        android:layout_toEndOf="@+id/prevCue"
+        android:paddingBottom="1dp"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
+        android:paddingTop="1dp"
+        android:text="setRef"
+        android:textSize="12sp"
         android:visibility="invisible" />
 
 
