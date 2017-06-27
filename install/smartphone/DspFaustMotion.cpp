@@ -26,10 +26,6 @@
 #include "faust/gui/MapUI.h"
 #include "faust/gui/GUI.h"
 
-#if OSCCTRL
-#include "faust/gui/OSCUI.h"
-#endif
-
 #include <math.h>
 #include <cmath>
 
@@ -93,29 +89,18 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
 
 
 DspFaustMotion::~DspFaustMotion(){
+    
 	delete fMotionEngine;
-
-#if OSCCTRL
-    delete fOSCUI;
-#endif
 
 
 }
 
 bool DspFaustMotion::start(){
 
-#if OSCCTRL
-    fOSCUI->run();
-#endif
-
 	return fMotionEngine->start();
 }
 
 void DspFaustMotion::stop(){
-
-#if OSCCTRL
-    fOSCUI->stop();
-#endif
 
 	fMotionEngine->stop();
 }

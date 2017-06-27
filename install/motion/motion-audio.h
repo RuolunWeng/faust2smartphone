@@ -109,14 +109,14 @@ class dummy_audio : public audio2 {
             printf("Render Motion\n");
             //printf("...\n");
             
-            render();
+            //render();
     
             return true;
         }
         virtual void stop()
         {
             
-            delete fDSP2;
+            //delete fDSP2;
             printf("stop buffer\n");
         }
 

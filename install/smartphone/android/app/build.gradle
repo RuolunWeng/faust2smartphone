@@ -6,7 +6,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.allensmartfaust.osc"
+        applicationId "com.allensmartfaust.faustapi"
         minSdkVersion 19
         targetSdkVersion 20
         versionCode 1
