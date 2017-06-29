@@ -880,9 +880,9 @@
             
             vDSP_mmul(&matrixA[0][0], 1, &matrixB[0][0], 1, &matrixC[0][0], 1, 3, 3, 3);
             
-            dspFaustMotion->setParamValue("/Motion/brasG_x", (-1)*matrixC[0][0]);
-            dspFaustMotion->setParamValue("/Motion/brasG_y", (-1)*matrixC[0][1]);
-            dspFaustMotion->setParamValue("/Motion/brasG_z", (-1)*matrixC[0][2]);
+            dspFaustMotion->setParamValue("/Motion/brasD_x", (-1)*matrixC[0][0]);
+            dspFaustMotion->setParamValue("/Motion/brasD_y", (-1)*matrixC[0][1]);
+            dspFaustMotion->setParamValue("/Motion/brasD_z", (-1)*matrixC[0][2]);
             
             dspFaustMotion->setParamValue("/Motion/pieds_x", (-1)*matrixC[1][0]);
             dspFaustMotion->setParamValue("/Motion/pieds_y", (-1)*matrixC[1][1]);
@@ -892,9 +892,9 @@
             dspFaustMotion->setParamValue("/Motion/dos_y", (-1)*matrixC[2][1]);
             dspFaustMotion->setParamValue("/Motion/dos_z", (-1)*matrixC[2][2]);
             
-            dspFaustMotion->setParamValue("/Motion/brasD_x", matrixC[0][0]);
-            dspFaustMotion->setParamValue("/Motion/brasD_y", matrixC[0][1]);
-            dspFaustMotion->setParamValue("/Motion/brasD_z", matrixC[0][2]);
+            dspFaustMotion->setParamValue("/Motion/brasG_x", matrixC[0][0]);
+            dspFaustMotion->setParamValue("/Motion/brasG_y", matrixC[0][1]);
+            dspFaustMotion->setParamValue("/Motion/brasG_z", matrixC[0][2]);
             
             dspFaustMotion->setParamValue("/Motion/tete_x", matrixC[1][0]);
             dspFaustMotion->setParamValue("/Motion/tete_y", matrixC[1][1]);
