@@ -1,7 +1,9 @@
 package com.allensmartfaust.faustapi;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Path;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     DspFaustMotion dspFaustMotion;
     
     private SensorManager sensorManager;
+
+    private SharedPreferences mSharedPref;
     
     private TextView cue,cueNext,cueText, cueNextText,tips;
     private EditText paramsValue, ipAddress, inputPort, outputPort;
@@ -70,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
     String[] ParamArray = {"hp","shok_thr","antirebon","lp","tacc_thr",
     "tacc_gain","tacc_up","tacc_down","tgyr_thr",
     "tgyr_gain","tgyr_up","tgyr_down","osfproj"};
+
+    float hpValue, shok_thrValue, antirebonValue, lpValue, osfprojValue, tacc_thrValue, tacc_gainValue,
+     tacc_upValue, tacc_downValue, tgyr_thrValue, tgyr_gainValue, tgyr_upValue, tgyr_downValue;
     
     ArrayList<String> cueList = new ArrayList<String>();
     ArrayList<String> tipsList = new ArrayList<String>();
@@ -92,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
     dosfrontAddress, dosdownAddress, dosupAddress, brasDcourAddress, brasDrearAddress, brasDjardinAddress, brasDfrontAddress,
     brasDdownAddress, brasDupAddress, tetecourAddress, teterearAddress, tetejardinAddress, tetefrontAddress, tetedownAddress,
     teteupAddress, ventrecourAddress, ventrerearAddress, ventrejardinAddress, ventrefrontAddress, ventredownAddress, ventreupAddress;
+
+    String oscAddress;
+    int oscInPort;
+    int oscOutPort;
     
     String touchGateAddress;
     String screenXAddress;
@@ -187,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
                 System.out.println(dspFaustMotion.getParamAddress(i));
             }
+
         }
         
         if (dspFaust == null) {
@@ -196,11 +208,11 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < dspFaust.getParamsCount(); i++) {
                 System.out.println(dspFaust.getParamAddress(i));
             }
+
+
             
         }
-        
-        
-        
+
         
     }
     
@@ -343,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
         defaultParams =(Button) findViewById(R.id.defaultParams);
         
         setRef =(Button) findViewById(R.id.setRef);
+
         
         setParams.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             
@@ -358,8 +371,11 @@ public class MainActivity extends AppCompatActivity {
                     setRef.setVisibility(View.VISIBLE);
                     if (dspFaust.getOSCIsOn()) {
                         ipAddress.setVisibility(View.VISIBLE);
+                        ipAddress.setText(SharedPrefRead("oscAddress",null));
                         inputPort.setVisibility(View.VISIBLE);
+                        inputPort.setText(SharedPrefRead("oscInPort",null));
                         outputPort.setVisibility(View.VISIBLE);
+                        outputPort.setText(SharedPrefRead("oscOutPort",null));
                         setOSC.setVisibility(View.VISIBLE);
                     }
                 } else {
@@ -599,30 +615,43 @@ public class MainActivity extends AppCompatActivity {
                 
                 if (lpIsOn) {
                     dspFaustMotion.setParamValue("/Motion/lp", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/lp",Float.valueOf(paramsValue.getText().toString()));
                 }else if (hpIsOn) {
                     dspFaustMotion.setParamValue("/Motion/hp", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/hp",Float.valueOf(paramsValue.getText().toString()));
                 }else if (shok_thrIsOn) {
                     dspFaustMotion.setParamValue("/Motion/shok_thr", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/shok_thr",Float.valueOf(paramsValue.getText().toString()));
                 }else if (antirebonIsOn) {
                     dspFaustMotion.setParamValue("/Motion/antirebon", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/antirebon",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tacc_thrIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tacc_thr", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tacc_thr",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tacc_gainIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tacc_gain", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tacc_gain",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tacc_upIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tacc_up", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tacc_up",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tacc_downIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tacc_down", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tacc_down",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tgyr_thrIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tgyr_thr", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tgyr_thr",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tgyr_gainIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tgyr_gain", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tgyr_gain",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tgyr_upIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tgyr_up", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tgyr_up",Float.valueOf(paramsValue.getText().toString()));
                 }else if (tgyr_downIsOn) {
                     dspFaustMotion.setParamValue("/Motion/tgyr_down", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/tgyr_down",Float.valueOf(paramsValue.getText().toString()));
                 }else if (osfprojIsOn) {
                     dspFaustMotion.setParamValue("/Motion/osfproj", Float.valueOf(paramsValue.getText().toString()));
+                    SharedPreWriteFloat("/Motion/osfproj",Float.valueOf(paramsValue.getText().toString()));
                     
                 }
                 
@@ -638,8 +667,11 @@ public class MainActivity extends AppCompatActivity {
                 for (int i=0; i<dspFaustMotion.getParamsCount(); i++) {
                     dspFaustMotion.setParamValue(i, dspFaustMotion.getParamInit(i));
                 }
-                
+
+                paramsValue.setText("Done");
                 checkAddress();
+
+                resetParams();
                 
             }
         });
@@ -647,9 +679,14 @@ public class MainActivity extends AppCompatActivity {
         
         setOSC.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                
-                dspFaust.setOSCValue(ipAddress.getText().toString(),inputPort.getText().toString(),outputPort.getText().toString());
-                
+
+                dspFaust.setOSCValue(ipAddress.getText().toString(),
+                        Integer.parseInt(inputPort.getText().toString()),
+                        Integer.parseInt(outputPort.getText().toString()));
+                SharedPrefWriteString("oscAddress",ipAddress.getText().toString());
+                SharedPrefWriteString("oscInPort",inputPort.getText().toString());
+                SharedPrefWriteString("oscOutPort",outputPort.getText().toString());
+
             }
         });
         
@@ -1507,6 +1544,119 @@ matrixB[2][2] =(1/detA)*(a11*a22-a12*a21);
 
 }
 
+private void SharedPrefInit(Context name) {
+    if(mSharedPref == null)
+        mSharedPref = getSharedPreferences(name.getPackageName(), 0);
+}
+
+private  String SharedPrefRead(String key, String defValue) {
+        return mSharedPref.getString(key, defValue);
+}
+private  void SharedPrefWriteString(String key, String value) {
+        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+        prefsEditor.putString(key, value);
+        prefsEditor.commit();
+}
+private  Float SharedPrefRead(String key, float defValue) {
+        return mSharedPref.getFloat(key, defValue);
+}
+private void SharedPreWriteFloat(String key, Float value) {
+        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+        prefsEditor.putFloat(key, value).commit();
+}
+
+
+private void SharedPreClear() {
+        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+        prefsEditor.clear().commit();
+}
+
+
+private void loadDefaultParams() {
+
+
+    SharedPrefInit(getApplicationContext());
+
+    hpValue = SharedPrefRead("/Motion/hp",0.0f);
+    shok_thrValue = SharedPrefRead("/Motion/shok_thr",0.0f);
+    antirebonValue = SharedPrefRead("/Motion/antirebon",0.0f);
+    lpValue = SharedPrefRead("/Motion/lp",0.0f);
+    tacc_thrValue = SharedPrefRead("/Motion/tacc_thr",0.0f);
+    tacc_gainValue = SharedPrefRead("/Motion/tacc_gain",0.0f);
+    tacc_upValue = SharedPrefRead("/Motion/tacc_up",0.0f);
+    tacc_downValue = SharedPrefRead("/Motion/tacc_down",0.0f);
+    tgyr_thrValue = SharedPrefRead("/Motion/tgyr_thr",0.0f);
+    tgyr_gainValue = SharedPrefRead("/Motion/tgyr_gain",0.0f);
+    tgyr_upValue = SharedPrefRead("/Motion/tgyr_up",0.0f);
+    tgyr_downValue = SharedPrefRead("/Motion/tgyr_down",0.0f);
+    osfprojValue = SharedPrefRead("/Motion/osfproj",0.0f);
+
+    dspFaustMotion.setParamValue("/Motion/hp", hpValue);
+    dspFaustMotion.setParamValue("/Motion/shok_thr", shok_thrValue);
+    dspFaustMotion.setParamValue("/Motion/antirebon", antirebonValue);
+    dspFaustMotion.setParamValue("/Motion/tacc_thr", tacc_thrValue);
+    dspFaustMotion.setParamValue("/Motion/tacc_gain", tacc_gainValue);
+    dspFaustMotion.setParamValue("/Motion/tacc_up", tacc_upValue);
+    dspFaustMotion.setParamValue("/Motion/tacc_down", tacc_downValue);
+    dspFaustMotion.setParamValue("/Motion/tgyr_thr", tgyr_thrValue);
+    dspFaustMotion.setParamValue("/Motion/tgyr_gain", tgyr_gainValue);
+    dspFaustMotion.setParamValue("/Motion/tgyr_up", tgyr_upValue);
+    dspFaustMotion.setParamValue("/Motion/tgyr_down", tgyr_downValue);
+    dspFaustMotion.setParamValue("/Motion/lp", lpValue);
+    dspFaustMotion.setParamValue("/Motion/osfproj", osfprojValue);
+
+    if (dspFaust.getOSCIsOn()) {
+        oscAddress = SharedPrefRead("oscAddress",null);
+        oscInPort = Integer.parseInt(SharedPrefRead("oscInPort",null));
+        oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort",null));
+
+        dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
+
+
+    }
+
+
+}
+
+
+    private void resetParams() {
+
+        SharedPreClear();
+
+        SharedPreWriteFloat("/Motion/hp", dspFaustMotion.getParamInit("/Motion/hp"));
+        SharedPreWriteFloat("/Motion/shok_thr", dspFaustMotion.getParamInit("/Motion/shok_thr"));
+        SharedPreWriteFloat("/Motion/antirebon", dspFaustMotion.getParamInit("/Motion/antirebon"));
+        SharedPreWriteFloat("/Motion/tacc_thr", dspFaustMotion.getParamInit("/Motion/tacc_thr"));
+        SharedPreWriteFloat("/Motion/tacc_gain", dspFaustMotion.getParamInit("/Motion/tacc_gain"));
+        SharedPreWriteFloat("/Motion/tacc_up", dspFaustMotion.getParamInit("/Motion/tacc_up"));
+        SharedPreWriteFloat("/Motion/tacc_down", dspFaustMotion.getParamInit("/Motion/tacc_down"));
+        SharedPreWriteFloat("/Motion/tgyr_thr", dspFaustMotion.getParamInit("/Motion/tgyr_thr"));
+        SharedPreWriteFloat("/Motion/tgyr_gain", dspFaustMotion.getParamInit("/Motion/tgyr_gain"));
+        SharedPreWriteFloat("/Motion/tgyr_up", dspFaustMotion.getParamInit("/Motion/tgyr_up"));
+        SharedPreWriteFloat("/Motion/tgyr_down", dspFaustMotion.getParamInit("/Motion/tgyr_down"));
+        SharedPreWriteFloat("/Motion/osfproj", dspFaustMotion.getParamInit("/Motion/osfproj"));
+        SharedPreWriteFloat("/Motion/lp", dspFaustMotion.getParamInit("/Motion/lp"));
+
+        SharedPrefWriteString("oscAddress", "192.168.1.5");
+        SharedPrefWriteString("oscInPort", "5510");
+        SharedPrefWriteString("oscOutPort", "5511");
+
+        if (dspFaust.getOSCIsOn()) {
+
+            oscAddress = SharedPrefRead("oscAddress",null);
+            oscInPort = Integer.parseInt(SharedPrefRead("oscInPort",null));
+            oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort",null));
+
+            dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
+
+            ipAddress.setText(oscAddress);
+            inputPort.setText(oscInPort);
+            outputPort.setText(oscOutPort);
+        }
+
+    }
+
+
 @Override
 protected void onPause() {
 Log.d("Faust", "onPause");
@@ -1531,14 +1681,15 @@ if(permissionToRecordAccepted) {
 
 if (!dspFaustMotion.isRunning()) {
 
-dspFaustMotion.start();
+    dspFaustMotion.start();
 }
 
 if (!dspFaust.isRunning()) {
 
-checkAddress();
+    checkAddress();
+    loadDefaultParams();
 
-dspFaust.start();
+    dspFaust.start();
 
 sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
 Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
@@ -1572,6 +1723,7 @@ dspFaust = null;
 if (sensorManager!=null){sensorManager.unregisterListener(mSensorListener);}
 
 sensorManager= null;
+
 
 }
 }

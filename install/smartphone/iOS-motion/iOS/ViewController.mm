@@ -46,29 +46,90 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
+    dspFaust->start();
+    dspFaustMotion->start();
     
     ///////////////////////////////////
     // check motion key word in address
     ///////////////////////////////////
     
-    dspFaust->start();
-    dspFaustMotion->start();
-    
     [self checkAddress];
     
     
-    /////////////////////////////////////////////////////
-    //other Initialization  OSC / CUE
-    /////////////////////////////////////////////////////
+    ///////////////////////
+    //other Initialization
+    ///////////////////////
+    
+    [self startMotion];
+    
+    [self startRotationMatrix];
+    
+    [self startUpdate];
+
+    [self displayTitle];
+    
+    
+    _pikerView.delegate = self;
+    _pikerView.dataSource = self;
+    
+    _motionParamArray = [[NSMutableArray alloc] init];
+    
+    NSArray *ParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
+                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
+                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+    
+    [_motionParamArray addObjectsFromArray:ParamArray];
+    
+    [self loadDefaultParams];
+    
+    
+    myCueNumArrary = [[NSMutableArray alloc] init];
+    
+    // load cues
+    NSString *pathCue = [NSString stringWithFormat:@"%@/cueNums.txt", [[NSBundle mainBundle] resourcePath]];
+    
+    NSString *myTextCues = [NSString stringWithContentsOfFile:pathCue encoding:NSUTF8StringEncoding error:nil];
+    
+    NSArray *myCues = [myTextCues componentsSeparatedByString:@";\n"];
+    
+    NSLog(@"Cue:%@",myCues);
+    [myCueNumArrary addObjectsFromArray:myCues];
+    
+    cueIndex = 0;
+    cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
+    cueIndexNext = 1;
+    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+    _cue.text = [NSString stringWithFormat:@"%ld",(long)cueNum];
+    _cueNext.text = [NSString stringWithFormat:@"%ld",(long)cueNumNext];
+    
+    
+    myCueTipsArrary = [[NSMutableArray alloc] init];
+    
+    // load cue Tips
+    NSString *pathTips = [NSString stringWithFormat:@"%@/cueTips.txt", [[NSBundle mainBundle] resourcePath]];
+    
+    NSString *myTextTips = [NSString stringWithContentsOfFile:pathTips encoding:NSUTF8StringEncoding error:nil];
+    
+    NSArray *myTips = [myTextTips componentsSeparatedByString:@";\n"];
+    
+    NSLog(@"Tips:%@",myTips);
+    [myCueTipsArrary addObjectsFromArray:myTips];
+    
+    if ([myCueTipsArrary count] != [myCueNumArrary count]) {
+        _tips.text = @"!Num of cue and tips must be same!";
+    } else {
+        _tips.text = [myCueTipsArrary objectAtIndex:0];
+    }
+    
     
     if (dspFaust->getOSCIsOn()) {
         _ip.enabled=true;
         _inPort.enabled=true;
         _outPort.enabled=true;
         _setOSC.enabled=true;
-        _ip.text=@"192.168.1.20";
-        _inPort.text=@"5510";
-        _outPort.text=@"5511";
+        _ip.text=oscAddress;
+        _inPort.text=oscInPort;
+        _outPort.text=oscOutPort;
     } else {
         _ip.enabled=false;
         _inPort.enabled=false;
@@ -102,72 +163,104 @@
     }
     
     
-    
-    [self startMotion];
-    
-    [self startRotationMatrix];
-    
-    [self startUpdate];
-
-    [self displayTitle];
-    
-    
-    _pikerView.delegate = self;
-    _pikerView.dataSource = self;
-    
-    _motionParamArray = [[NSMutableArray alloc] init];
-    
-    NSArray *ParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
-                          @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
-                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
-    
-    [_motionParamArray addObjectsFromArray:ParamArray];
-    
-    
-    
-    myCueNumArrary = [[NSMutableArray alloc] init];
-    
-    // load cues
-    NSString *pathCue = [NSString stringWithFormat:@"%@/cueNums.txt", [[NSBundle mainBundle] resourcePath]];
-    
-    NSString *myTextCues = [NSString stringWithContentsOfFile:pathCue encoding:NSUTF8StringEncoding error:nil];
-    
-    NSArray *myCues = [myTextCues componentsSeparatedByString:@";\n"];
-    
-    NSLog(@"Cue:%@",myCues);
-    [myCueNumArrary addObjectsFromArray:myCues];
-    
-    cueIndex = 0;
-    cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
-    cueIndexNext = 1;
-    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cue.text = [NSString stringWithFormat:@"%ld",(long)cueNum];
-    _cueNext.text = [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-    
-    
-    
-    
-    myCueTipsArrary = [[NSMutableArray alloc] init];
-    
-    // load cue Tips
-    NSString *pathTips = [NSString stringWithFormat:@"%@/cueTips.txt", [[NSBundle mainBundle] resourcePath]];
-    
-    NSString *myTextTips = [NSString stringWithContentsOfFile:pathTips encoding:NSUTF8StringEncoding error:nil];
-    
-    NSArray *myTips = [myTextTips componentsSeparatedByString:@";\n"];
-    
-    NSLog(@"Tips:%@",myTips);
-    [myCueTipsArrary addObjectsFromArray:myTips];
-    
-    if ([myCueTipsArrary count] != [myCueNumArrary count]) {
-        _tips.text = @"!Num of cue and tips must be same!";
-    } else {
-        _tips.text = [myCueTipsArrary objectAtIndex:0];
-    }
-    
 
 }
 
+
+-(void) loadDefaultParams {
+    
+    // Default setting for params of motion
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/hp")], @"/Motion/hp",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/shok_thr")], @"/Motion/shok_thr",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/antirebon")], @"/Motion/antirebon",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/lp")], @"/Motion/lp",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tacc_thr")], @"/Motion/tacc_thr",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tacc_gain")], @"/Motion/tacc_gain",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tacc_up")], @"/Motion/tacc_up",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tacc_down")], @"/Motion/tacc_down",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tgyr_thr")], @"/Motion/tgyr_thr",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tgyr_gain")], @"/Motion/tgyr_gain",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tgyr_up")], @"/Motion/tgyr_up",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tgyr_down")], @"/Motion/tgyr_down",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/osfproj")], @"/Motion/osfproj",
+                                 @"192.168.1.20", @"oscAddress",
+                                 @"5510", @"oscInPort",
+                                 @"5511", @"oscOutPort",
+                                 nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+    
+    hpValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/hp"];
+    shok_thrValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/shok_thr"];
+    antirebonValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/antirebon"];
+    lpValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/lp"];
+    tacc_thrValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tacc_thr"];
+    tacc_gainValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tacc_gain"];
+    tacc_upValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tacc_up"];
+    tacc_downValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tacc_down"];
+    tgyr_thrValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tgyr_thr"];
+    tgyr_gainValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tgyr_gain"];
+    tgyr_upValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tgyr_up"];
+    tgyr_downValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tgyr_down"];
+    osfprojValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/osfproj"];
+    
+    
+    dspFaustMotion->setParamValue("/Motion/hp", hpValue);
+    dspFaustMotion->setParamValue("/Motion/shok_thr", shok_thrValue);
+    dspFaustMotion->setParamValue("/Motion/antirebon", antirebonValue);
+    dspFaustMotion->setParamValue("/Motion/tacc_thr", tacc_thrValue);
+    dspFaustMotion->setParamValue("/Motion/tacc_gain", tacc_gainValue);
+    dspFaustMotion->setParamValue("/Motion/tacc_up", tacc_upValue);
+    dspFaustMotion->setParamValue("/Motion/tacc_down", tacc_downValue);
+    dspFaustMotion->setParamValue("/Motion/tgyr_thr", tgyr_thrValue);
+    dspFaustMotion->setParamValue("/Motion/tgyr_gain", tgyr_gainValue);
+    dspFaustMotion->setParamValue("/Motion/tgyr_up", tgyr_upValue);
+    dspFaustMotion->setParamValue("/Motion/tgyr_down", tgyr_downValue);
+    dspFaustMotion->setParamValue("/Motion/lp", lpValue);
+    dspFaustMotion->setParamValue("/Motion/osfproj", osfprojValue);
+    
+    if (dspFaust->getOSCIsOn()) {
+        oscAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
+        oscInPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscInPort"];
+        oscOutPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscOutPort"];
+        
+        dspFaust->setOSCValue([oscAddress cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscInPort cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscOutPort cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+    }
+    
+}
+
+
+-(void) resetDefaultParams {
+
+    NSDictionary* dict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    NSArray* keysArray = [dict allKeys];
+    int i = 0;
+    NSString* key = nil;
+    
+    for (i = 0; i < [keysArray count]; ++i)
+    {
+        key = ((NSString*)[keysArray objectAtIndex:i]);
+        //if ([key compare:@"sampleRate"] != NSOrderedSame)
+        //{
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+        //}
+    }
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    if (dspFaust->getOSCIsOn()) {
+        oscAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
+        oscInPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscInPort"];
+        oscOutPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscOutPort"];
+        
+        _ip.text=oscAddress;
+        _inPort.text=oscInPort;
+        _outPort.text=oscOutPort;
+        
+        dspFaust->setOSCValue([oscAddress cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscInPort cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscOutPort cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+    }
+
+}
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
@@ -586,7 +679,7 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
-    [self stopUpdateGUI];
+    [self stopUpdate];
     [self stopMotion];
     dspFaust->stop();
     dspFaustMotion->stop();
@@ -1182,6 +1275,12 @@
    NSString* _oscOutputPortText = _outPort.text;
     
    dspFaust->setOSCValue([_oscIPOutputText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscInputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscOutputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+    
+    [[NSUserDefaults standardUserDefaults] setObject:_oscIPOutputText forKey:@"oscAddress"];
+    [[NSUserDefaults standardUserDefaults] setObject:_oscInputPortText forKey:@"oscInPort"];
+    [[NSUserDefaults standardUserDefaults] setObject:_oscOutputPortText forKey:@"oscOutPort"];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (IBAction)setParam:(id)sender {
@@ -1258,19 +1357,17 @@
     [_inPort resignFirstResponder];
     [_outPort resignFirstResponder];
     [_motionParam resignFirstResponder];
-
-    if (dspFaust->getOSCIsOn()) {
-        _ip.text = @"192.168.1.20";
-        _inPort.text = @"5510";
-        _outPort.text = @"5511";
-        dspFaust->setOSCValue("192.168.1.20","5510","5511");
-    }
     
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
         dspFaustMotion->setParamValue(i, dspFaustMotion->getParamInit(i));
     }
     
+    _motionParam.text = @"Done";
+    
     [self checkAddress];
+    
+    [self resetDefaultParams];
+
 
 }
 
@@ -1521,32 +1618,46 @@
     
     if (lpIsOn) {
         dspFaustMotion->setParamValue("/Motion/lp", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/lp"];
     }else if (hpIsOn) {
         dspFaustMotion->setParamValue("/Motion/hp", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/hp"];
     }else if (shok_thrIsOn) {
         dspFaustMotion->setParamValue("/Motion/shok_thr", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/shok_thr"];
     }else if (antirebonIsOn) {
         dspFaustMotion->setParamValue("/Motion/antirebon", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/antirebon"];
     }else if (tacc_thrIsOn) {
         dspFaustMotion->setParamValue("/Motion/tacc_thr", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tacc_thr"];
     }else if (tacc_gainIsOn) {
         dspFaustMotion->setParamValue("/Motion/tacc_gain", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tacc_gain"];
     }else if (tacc_upIsOn) {
         dspFaustMotion->setParamValue("/Motion/tacc_up", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tacc_up"];
     }else if (tacc_downIsOn) {
         dspFaustMotion->setParamValue("/Motion/tacc_down", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tacc_down"];
     }else if (tgyr_thrIsOn) {
         dspFaustMotion->setParamValue("/Motion/tgyr_thr", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tgyr_thr"];
     }else if (tgyr_gainIsOn) {
         dspFaustMotion->setParamValue("/Motion/tgyr_gain", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tgyr_gain"];
     }else if (tgyr_upIsOn) {
         dspFaustMotion->setParamValue("/Motion/tgyr_up", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tgyr_up"];
     }else if (tgyr_downIsOn) {
         dspFaustMotion->setParamValue("/Motion/tgyr_down", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/tgyr_down"];
     }else if (osfprojIsOn) {
         dspFaustMotion->setParamValue("/Motion/osfproj", [_motionParam.text floatValue]);
-        
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/osfproj"];
     }
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
 }
 

@@ -99,7 +99,7 @@ public class DspFaust {
     dsp_faustJNI.DspFaust_setParamValue__SWIG_1(swigCPtr, this, arg0, arg1);
   }
 
-  public boolean setOSCValue(String arg0, String arg1, String arg2) {
+  public boolean setOSCValue(String arg0, int arg1, int arg2) {
     return dsp_faustJNI.DspFaust_setOSCValue(swigCPtr, this, arg0, arg1, arg2);
   }
 

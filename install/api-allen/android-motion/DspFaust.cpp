@@ -170,32 +170,24 @@ void DspFaust::setParamValue(int id, float value){
 }
 
 
-bool DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
+bool DspFaust::setOSCValue(const char* address, int inPort, int outPort){
     
 #if OSCCTRL
     
-    delete fOSCUI;
-    const char* argv[9];
-    argv[0] = "0x00";//(char*)_name;
-    argv[1] = "-xmit";
-    argv[2] = "1";//transmit_value(transmit);
-    argv[3] = "-desthost";
-    argv[4] = address;//"192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    argv[5] = "-port";
-    argv[6] = inPort;//"5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    argv[7] = "-outport";
-    argv[8] = outPort;//"5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    fOSCUI = new OSCUI("0x00", 9, (char**)argv);
-    fPolyEngine->buildUserInterface(fOSCUI);
-    fOSCUI->run();
-        
-    return true;
-
+    if (!isRunning()) {
+        return false;
+    } else {
+        fOSCUI->setUDPPort(inPort);
+        fOSCUI->setUDPOut(outPort);
+        fOSCUI->setDestAddress(address);
+        return true;
+    }
+    
 #else
     return false;
 #endif
     
-
+    
     
 }
 

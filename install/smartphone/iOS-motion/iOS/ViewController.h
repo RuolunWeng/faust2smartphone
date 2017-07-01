@@ -234,14 +234,31 @@
     BOOL tgyr_upIsOn;
     BOOL tgyr_downIsOn;
     
+    float hpValue;
+    float shok_thrValue;
+    float antirebonValue;
+    float lpValue;
+    float osfprojValue;
+    float tacc_thrValue;
+    float tacc_gainValue;
+    float tacc_upValue;
+    float tacc_downValue;
+    float tgyr_thrValue;
+    float tgyr_gainValue;
+    float tgyr_upValue;
+    float tgyr_downValue;
+    
     NSMutableArray *myCueNumArrary;
     NSInteger cueNum;
     NSInteger cueIndex;
     NSInteger cueNumNext;
     NSInteger cueIndexNext;
     
-    
     NSMutableArray *myCueTipsArrary;
+
+    NSString* oscAddress;
+    NSString* oscInPort;
+    NSString* oscOutPort;
     
 }
 

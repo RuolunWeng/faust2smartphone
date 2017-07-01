@@ -508,12 +508,12 @@ SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1setParamValue_
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1setOSCValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3, jstring jarg4) {
+SWIGEXPORT jboolean JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1setOSCValue(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jint jarg3, jint jarg4) {
   jboolean jresult = 0 ;
   DspFaust *arg1 = (DspFaust *) 0 ;
   char *arg2 = (char *) 0 ;
-  char *arg3 = (char *) 0 ;
-  char *arg4 = (char *) 0 ;
+  int arg3 ;
+  int arg4 ;
   bool result;
   
   (void)jenv;
@@ -525,21 +525,11 @@ SWIGEXPORT jboolean JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1setOSCValu
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  arg3 = 0;
-  if (jarg3) {
-    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
-    if (!arg3) return 0;
-  }
-  arg4 = 0;
-  if (jarg4) {
-    arg4 = (char *)jenv->GetStringUTFChars(jarg4, 0);
-    if (!arg4) return 0;
-  }
-  result = (bool)(arg1)->setOSCValue((char const *)arg2,(char const *)arg3,(char const *)arg4);
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (bool)(arg1)->setOSCValue((char const *)arg2,arg3,arg4);
   jresult = (jboolean)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
-  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
-  if (arg4) jenv->ReleaseStringUTFChars(jarg4, (const char *)arg4);
   return jresult;
 }
 

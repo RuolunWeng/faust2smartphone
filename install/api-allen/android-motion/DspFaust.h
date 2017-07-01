@@ -201,7 +201,7 @@ public:
     // * `address`: address of inport
     // * `address`: address of outport
     //--------------------------------------------------------
-    bool setOSCValue(const char*, const char*, const char*);
+    bool setOSCValue(const char*, int, int);
     
     
 	//----`float getParamValue(const char* address)`----------
