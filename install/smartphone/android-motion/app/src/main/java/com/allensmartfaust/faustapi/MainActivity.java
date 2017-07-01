@@ -371,11 +371,11 @@ public class MainActivity extends AppCompatActivity {
                     setRef.setVisibility(View.VISIBLE);
                     if (dspFaust.getOSCIsOn()) {
                         ipAddress.setVisibility(View.VISIBLE);
-                        ipAddress.setText(SharedPrefRead("oscAddress",null));
+                        ipAddress.setText(SharedPrefRead("oscAddress","192.168.1.5"));
                         inputPort.setVisibility(View.VISIBLE);
-                        inputPort.setText(SharedPrefRead("oscInPort",null));
+                        inputPort.setText(SharedPrefRead("oscInPort","5510"));
                         outputPort.setVisibility(View.VISIBLE);
-                        outputPort.setText(SharedPrefRead("oscOutPort",null));
+                        outputPort.setText(SharedPrefRead("oscOutPort","5511"));
                         setOSC.setVisibility(View.VISIBLE);
                     }
                 } else {
@@ -1609,9 +1609,9 @@ private void loadDefaultParams() {
     dspFaustMotion.setParamValue("/Motion/osfproj", osfprojValue);
 
     if (dspFaust.getOSCIsOn()) {
-        oscAddress = SharedPrefRead("oscAddress",null);
-        oscInPort = Integer.parseInt(SharedPrefRead("oscInPort",null));
-        oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort",null));
+        oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
+        oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
+        oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
 
         dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
 
@@ -1646,9 +1646,9 @@ private void loadDefaultParams() {
 
         if (dspFaust.getOSCIsOn()) {
 
-            oscAddress = SharedPrefRead("oscAddress",null);
-            oscInPort = Integer.parseInt(SharedPrefRead("oscInPort",null));
-            oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort",null));
+            oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
+            oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
+            oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
 
             dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
 
