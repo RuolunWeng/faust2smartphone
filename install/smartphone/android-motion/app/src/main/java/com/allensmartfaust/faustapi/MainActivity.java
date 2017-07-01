@@ -669,6 +669,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 paramsValue.setText("Done");
+                Toast.makeText(MainActivity.this, "Reset Defaults(restart to use new OSC)", Toast.LENGTH_LONG).show();
                 checkAddress();
 
                 resetParams();
@@ -687,12 +688,15 @@ public class MainActivity extends AppCompatActivity {
                 SharedPrefWriteString("oscInPort",inputPort.getText().toString());
                 SharedPrefWriteString("oscOutPort",outputPort.getText().toString());
 
+                Toast.makeText(MainActivity.this, "Restart to use new OSC", Toast.LENGTH_LONG).show();
+
             }
         });
         
         setRef.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 initFrame();
+                Toast.makeText(MainActivity.this, "Reset Frame", Toast.LENGTH_LONG).show();
             }
         });
         
@@ -1565,7 +1569,6 @@ private void SharedPreWriteFloat(String key, Float value) {
         prefsEditor.putFloat(key, value).commit();
 }
 
-
 private void SharedPreClear() {
         SharedPreferences.Editor prefsEditor = mSharedPref.edit();
         prefsEditor.clear().commit();
@@ -1650,8 +1653,8 @@ private void loadDefaultParams() {
             dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
 
             ipAddress.setText(oscAddress);
-            inputPort.setText(oscInPort);
-            outputPort.setText(oscOutPort);
+            inputPort.setText(SharedPrefRead("oscInPort",null));
+            outputPort.setText(SharedPrefRead("oscOutPort",null));
         }
 
     }
