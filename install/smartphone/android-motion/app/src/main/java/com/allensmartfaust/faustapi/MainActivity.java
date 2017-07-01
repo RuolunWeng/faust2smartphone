@@ -1580,19 +1580,19 @@ private void loadDefaultParams() {
 
     SharedPrefInit(getApplicationContext());
 
-    hpValue = SharedPrefRead("/Motion/hp",0.0f);
-    shok_thrValue = SharedPrefRead("/Motion/shok_thr",0.0f);
-    antirebonValue = SharedPrefRead("/Motion/antirebon",0.0f);
-    lpValue = SharedPrefRead("/Motion/lp",0.0f);
-    tacc_thrValue = SharedPrefRead("/Motion/tacc_thr",0.0f);
-    tacc_gainValue = SharedPrefRead("/Motion/tacc_gain",0.0f);
-    tacc_upValue = SharedPrefRead("/Motion/tacc_up",0.0f);
-    tacc_downValue = SharedPrefRead("/Motion/tacc_down",0.0f);
-    tgyr_thrValue = SharedPrefRead("/Motion/tgyr_thr",0.0f);
-    tgyr_gainValue = SharedPrefRead("/Motion/tgyr_gain",0.0f);
-    tgyr_upValue = SharedPrefRead("/Motion/tgyr_up",0.0f);
-    tgyr_downValue = SharedPrefRead("/Motion/tgyr_down",0.0f);
-    osfprojValue = SharedPrefRead("/Motion/osfproj",0.0f);
+    hpValue = SharedPrefRead("/Motion/hp",dspFaustMotion.getParamInit("/Motion/hp"));
+    shok_thrValue = SharedPrefRead("/Motion/shok_thr",dspFaustMotion.getParamInit("/Motion/shok_thr"));
+    antirebonValue = SharedPrefRead("/Motion/antirebon",dspFaustMotion.getParamInit("/Motion/antirebon"));
+    lpValue = SharedPrefRead("/Motion/lp",dspFaustMotion.getParamInit("/Motion/lp"));
+    tacc_thrValue = SharedPrefRead("/Motion/tacc_thr",dspFaustMotion.getParamInit("/Motion/tacc_thr"));
+    tacc_gainValue = SharedPrefRead("/Motion/tacc_gain",dspFaustMotion.getParamInit("/Motion/tacc_gain"));
+    tacc_upValue = SharedPrefRead("/Motion/tacc_up",dspFaustMotion.getParamInit("/Motion/tacc_up"));
+    tacc_downValue = SharedPrefRead("/Motion/tacc_down",dspFaustMotion.getParamInit("/Motion/tacc_down"));
+    tgyr_thrValue = SharedPrefRead("/Motion/tgyr_thr",dspFaustMotion.getParamInit("/Motion/tgyr_thr"));
+    tgyr_gainValue = SharedPrefRead("/Motion/tgyr_gain",dspFaustMotion.getParamInit("/Motion/tgyr_gain"));
+    tgyr_upValue = SharedPrefRead("/Motion/tgyr_up",dspFaustMotion.getParamInit("/Motion/tgyr_up"));
+    tgyr_downValue = SharedPrefRead("/Motion/tgyr_down",dspFaustMotion.getParamInit("/Motion/tgyr_down"));
+    osfprojValue = SharedPrefRead("/Motion/osfproj",dspFaustMotion.getParamInit("/Motion/osfproj"));
 
     dspFaustMotion.setParamValue("/Motion/hp", hpValue);
     dspFaustMotion.setParamValue("/Motion/shok_thr", shok_thrValue);
@@ -1653,8 +1653,8 @@ private void loadDefaultParams() {
             dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
 
             ipAddress.setText(oscAddress);
-            inputPort.setText(SharedPrefRead("oscInPort",null));
-            outputPort.setText(SharedPrefRead("oscOutPort",null));
+            inputPort.setText(SharedPrefRead("oscInPort","5510"));
+            outputPort.setText(SharedPrefRead("oscOutPort","5511"));
         }
 
     }
