@@ -69,94 +69,87 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 
 DspFaust::DspFaust(int sample_rate, int buffer_size){
-	fPolyEngine = new FaustPolyEngine(new iosaudio(sample_rate, buffer_size));
-
+    fPolyEngine = new FaustPolyEngine(new iosaudio(sample_rate, buffer_size));
+    
 #if IOS_MIDI_SUPPORT
     fMidiUI = new MidiUI(new rt_midi());
-	fPolyEngine->buildUserInterface(fMidiUI);
+    fPolyEngine->buildUserInterface(fMidiUI);
 #endif
-
-//**************************************************************
-// OSC TEST ALLEN
-//**************************************************************
-
-// OSC
+    
 #if OSCCTRL
     const char* argv[9];
-    argv[0] = "0x00";//(char*)_name;
+    argv[0] = "FAUST";
     argv[1] = "-xmit";
-    argv[2] = "1";//transmit_value(transmit);
+    argv[2] = "1";
     argv[3] = "-desthost";
-    argv[4] = "192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[4] = "192.168.1.5";
     argv[5] = "-port";
-    argv[6] = "5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
+    argv[6] = "5510";
     argv[7] = "-outport";
-    argv[8] = "5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    fOSCUI = new OSCUI("0x00", 9, (char**)argv);
+    argv[8] = "5511";
+    fOSCUI = new OSCUI("FAUST", 9, (char**)argv);
     fPolyEngine->buildUserInterface(fOSCUI);
-    
 #endif
-
-
+    
 }
-   
+
 
 
 DspFaust::~DspFaust(){
-	delete fPolyEngine;
+    delete fPolyEngine;
 #if IOS_MIDI_SUPPORT
     delete fMidiUI;
 #endif
-
+    
 #if OSCCTRL
-    delete fOSCUI; 
+    delete fOSCUI;
 #endif
-
-
+    
+    
 }
 
 bool DspFaust::start(){
 #if IOS_MIDI_SUPPORT
     fMidiUI->run();
 #endif
-
+    
 #if OSCCTRL
-    fOSCUI->run(); 
+    fOSCUI->run();
 #endif
-
-	return fPolyEngine->start();
+    
+    return fPolyEngine->start();
 }
 
 void DspFaust::stop(){
 #if IOS_MIDI_SUPPORT
     fMidiUI->stop();
 #endif
-
+    
 #if OSCCTRL
-    fOSCUI->stop(); 
+    fOSCUI->stop();
 #endif
-
-	fPolyEngine->stop();
+    
+    fPolyEngine->stop();
 }
 
 bool DspFaust::isRunning(){
-	return fPolyEngine->isRunning();
+    return fPolyEngine->isRunning();
 }
 
 long DspFaust::keyOn(int pitch, int velocity){
-	return (long) fPolyEngine->keyOn(pitch, velocity);
+    return (long) fPolyEngine->keyOn(pitch, velocity);
 }
 
 int DspFaust::keyOff(int pitch){
-	return fPolyEngine->keyOff(pitch);
+    return fPolyEngine->keyOff(pitch);
 }
 
 long DspFaust::newVoice(){
-	return (long) fPolyEngine->newVoice();
+    return (long) fPolyEngine->newVoice();
 }
 
 int DspFaust::deleteVoice(long voice){
-	return fPolyEngine->deleteVoice(voice);
+    return fPolyEngine->deleteVoice(voice);
 }
 
 void DspFaust::allNotesOff(){
@@ -164,51 +157,51 @@ void DspFaust::allNotesOff(){
 }
 
 const char* DspFaust::getJSONUI(){
-	return fPolyEngine->getJSONUI();
+    return fPolyEngine->getJSONUI();
 }
 
 const char* DspFaust::getJSONMeta(){
-	return fPolyEngine->getJSONMeta();
+    return fPolyEngine->getJSONMeta();
 }
 
-      
-      const char* DspFaust::getMeta(const char* name){
-          return fPolyEngine->getMeta(name);
-      }
-      
-      
-      
+
+const char* DspFaust::getMeta(const char* name){
+    return fPolyEngine->getMeta(name);
+}
+
+
 int DspFaust::getParamsCount(){
-	return fPolyEngine->getParamsCount();
+    return fPolyEngine->getParamsCount();
 }
 
 void DspFaust::setParamValue(const char* address, float value){
-	fPolyEngine->setParamValue(address, value);
+    fPolyEngine->setParamValue(address, value);
 }
 
 void DspFaust::setParamValue(int id, float value){
-	fPolyEngine->setParamValue(id, value);
+    fPolyEngine->setParamValue(id, value);
 }
 
 void DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
-          
+    
 #if OSCCTRL
-          delete fOSCUI;
-          const char* argv[9];
-          argv[0] = "0x00";//(char*)_name;
-          argv[1] = "-xmit";
-          argv[2] = "1";//transmit_value(transmit);
-          argv[3] = "-desthost";
-          argv[4] = address;//"192.168.1.20";//[outputIPText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-          argv[5] = "-port";
-          argv[6] = inPort;//"5510";//[inputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-          argv[7] = "-outport";
-          argv[8] = outPort;//"5511";//[outputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]];
-          fOSCUI = new OSCUI("0x00", 9, (char**)argv);
-          fPolyEngine->buildUserInterface(fOSCUI);
-          fOSCUI->run(); 
+    delete fOSCUI;
+    const char* argv[9];
+    argv[0] = "FAUST";
+    argv[1] = "-xmit";
+    argv[2] = "1";
+    argv[3] = "-desthost";
+    argv[4] = address;
+    argv[5] = "-port";
+    argv[6] = inPort;
+    argv[7] = "-outport";
+    argv[8] = outPort;
+    fOSCUI = new OSCUI("FAUST", 9, (char**)argv);
+    fPolyEngine->buildUserInterface(fOSCUI);
+    fOSCUI->run();
 #endif
-          
+    
+    
 }
 
 
