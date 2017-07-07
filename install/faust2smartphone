@@ -53,6 +53,15 @@ echoHelp ()
 	echo "===================================="
 }
 
+echoVersion ()
+{
+	echo "===================================="
+	echo "- faust2smartphone -"
+	echo "===================================="
+	echo "- Version: 1.2 -"
+	echo "===================================="
+}
+
 ###########################
 # Processing Arguments
 ###########################
@@ -60,10 +69,13 @@ echoHelp ()
 while [ $1 ]
 do
 	p=$1
-
-    if [ $p = "-help" ]; then
+	  if [ $p = "-v" ] ; then
+	  echoVersion
+		exit
+	elif [ $p = "-help" ]; then
 		echoHelp
-    elif [[ -f "$p" ]]; then
+	  exit
+	  elif [[ -f "$p" ]]; then
 		FILE="$p"
     elif [ $p = "-android" ]; then
 		ANDROID=1

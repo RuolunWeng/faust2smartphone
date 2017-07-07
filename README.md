@@ -2,9 +2,6 @@
 A tool for musical mobile application using FAUST API.
 
 
-
-TEST AVEC Christophe!!!!!!!!
-
 ============
 
 INSTALLATION
