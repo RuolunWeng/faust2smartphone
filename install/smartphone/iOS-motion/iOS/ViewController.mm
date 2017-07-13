@@ -834,7 +834,7 @@
         dspFaust->setParamValue(brasGcourAddress, dspFaustMotion->getParamValue("/Motion/brasG_cour"));
     }
     if (brasGrearIsOn) {
-        dspFaust->setParamValue(brasGrearAddress, dspFaustMotion->getParamValue("/Motion/bras_Grear"));
+        dspFaust->setParamValue(brasGrearAddress, dspFaustMotion->getParamValue("/Motion/brasG_rear"));
     }
     if (brasGjardinIsOn) {
         dspFaust->setParamValue(brasGjardinAddress, dspFaustMotion->getParamValue("/Motion/brasG_jardin"));
@@ -852,7 +852,7 @@
         dspFaust->setParamValue(piedscourAddress, dspFaustMotion->getParamValue("/Motion/pieds_cour"));
     }
     if (piedsrearIsOn) {
-        dspFaust->setParamValue(piedsrearAddress, dspFaustMotion->getParamValue("/Motion/pieds_Grear"));
+        dspFaust->setParamValue(piedsrearAddress, dspFaustMotion->getParamValue("/Motion/pieds_rear"));
     }
     if (piedsjardinIsOn) {
         dspFaust->setParamValue(piedsjardinAddress, dspFaustMotion->getParamValue("/Motion/pieds_jardin"));
@@ -870,7 +870,7 @@
         dspFaust->setParamValue(doscourAddress, dspFaustMotion->getParamValue("/Motion/dos_cour"));
     }
     if (dosrearIsOn) {
-        dspFaust->setParamValue(dosrearAddress, dspFaustMotion->getParamValue("/Motion/dos_Grear"));
+        dspFaust->setParamValue(dosrearAddress, dspFaustMotion->getParamValue("/Motion/dos_rear"));
     }
     if (dosjardinIsOn) {
         dspFaust->setParamValue(dosjardinAddress, dspFaustMotion->getParamValue("/Motion/dos_jardin"));
@@ -888,7 +888,7 @@
         dspFaust->setParamValue(brasDcourAddress, dspFaustMotion->getParamValue("/Motion/brasD_cour"));
     }
     if (brasDrearIsOn) {
-        dspFaust->setParamValue(brasDrearAddress, dspFaustMotion->getParamValue("/Motion/brasD_Grear"));
+        dspFaust->setParamValue(brasDrearAddress, dspFaustMotion->getParamValue("/Motion/brasD_rear"));
     }
     if (brasDjardinIsOn) {
         dspFaust->setParamValue(brasDjardinAddress, dspFaustMotion->getParamValue("/Motion/brasD_jardin"));
@@ -906,7 +906,7 @@
         dspFaust->setParamValue(tetecourAddress, dspFaustMotion->getParamValue("/Motion/tete_cour"));
     }
     if (teterearIsOn) {
-        dspFaust->setParamValue(teterearAddress, dspFaustMotion->getParamValue("/Motion/tete_Grear"));
+        dspFaust->setParamValue(teterearAddress, dspFaustMotion->getParamValue("/Motion/tete_rear"));
     }
     if (tetejardinIsOn) {
         dspFaust->setParamValue(tetejardinAddress, dspFaustMotion->getParamValue("/Motion/tete_jardin"));
@@ -924,7 +924,7 @@
         dspFaust->setParamValue(ventrecourAddress, dspFaustMotion->getParamValue("/Motion/ventre_cour"));
     }
     if (ventrerearIsOn) {
-        dspFaust->setParamValue(ventrerearAddress, dspFaustMotion->getParamValue("/Motion/ventre_Grear"));
+        dspFaust->setParamValue(ventrerearAddress, dspFaustMotion->getParamValue("/Motion/ventre_rear"));
     }
     if (ventrejardinIsOn) {
         dspFaust->setParamValue(ventrejardinAddress, dspFaustMotion->getParamValue("/Motion/ventre_jardin"));

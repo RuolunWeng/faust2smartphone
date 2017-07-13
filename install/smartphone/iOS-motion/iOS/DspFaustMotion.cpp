@@ -2,7 +2,7 @@
 // name: "Faust Motion Library [Motion+RotationMatrix]"
 // version: "0.01"
 //
-// Code generated with Faust 0.9.104ec (http://faust.grame.fr)
+// Code generated with Faust 0.10.0ec (http://faust.grame.fr)
 //----------------------------------------------------------
 
 /* link with  */
@@ -289,21 +289,24 @@ class dsp {
         /* Returns the sample rate currently used by the instance */
         virtual int getSampleRate() = 0;
     
-        /** Global init, calls the following methods:
-         * - static class 'classInit': static table initialisation
-         * - 'instanceInit': constants and instance table initialisation
+        /** 
+         * Global init, calls the following methods:
+         * - static class 'classInit': static tables initialization
+         * - 'instanceInit': constants and instance state initialization
          *
          * @param samplingRate - the sampling rate in Herz
          */
         virtual void init(int samplingRate) = 0;
     
-        /** Init instance state
+        /** 
+         * Init instance state
          *
          * @param samplingRate - the sampling rate in Hertz
          */
         virtual void instanceInit(int samplingRate) = 0;
     
-        /** Init instance constant state
+        /** 
+         * Init instance constant state
          *
          * @param samplingRate - the sampling rate in Hertz
          */
@@ -2307,12 +2310,6 @@ class mydsp2 : public dsp {
 		m->declare("compressors.lib/version", "0.0");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "0.0");
-		m->declare("reverbs.lib/name", "Faust Reverb Library");
-		m->declare("reverbs.lib/version", "0.0");
-		m->declare("routes.lib/name", "Faust Signal Routing Library");
-		m->declare("routes.lib/version", "0.0");
-		m->declare("spats.lib/name", "Faust Spatialization Library");
-		m->declare("spats.lib/version", "0.0");
 		m->declare("envelopes.lib/name", "Faust Envelope Library");
 		m->declare("envelopes.lib/version", "0.0");
 		m->declare("envelopes.lib/author", "GRAME");
@@ -2336,6 +2333,12 @@ class mydsp2 : public dsp {
 		m->declare("noises.lib/version", "0.0");
 		m->declare("phaflangers.lib/name", "Faust Phaser and Flanger Library");
 		m->declare("phaflangers.lib/version", "0.0");
+		m->declare("reverbs.lib/name", "Faust Reverb Library");
+		m->declare("reverbs.lib/version", "0.0");
+		m->declare("routes.lib/name", "Faust Signal Routing Library");
+		m->declare("routes.lib/version", "0.0");
+		m->declare("spats.lib/name", "Faust Spatialization Library");
+		m->declare("spats.lib/version", "0.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
 		m->declare("signals.lib/version", "0.0");
 		m->declare("synths.lib/name", "Faust Synthesizer Library");
@@ -2850,8 +2853,8 @@ class mydsp2 : public dsp {
 		ui_interface->addCheckButton("aynOn", &fcheckbox24);
 		ui_interface->addCheckButton("aypOn", &fcheckbox23);
 		ui_interface->addCheckButton("aypnOn", &fcheckbox22);
-		ui_interface->addCheckButton("aznOn", &fcheckbox27);
-		ui_interface->addCheckButton("azpOn", &fcheckbox26);
+		ui_interface->addCheckButton("aznOn", &fcheckbox26);
+		ui_interface->addCheckButton("azpOn", &fcheckbox27);
 		ui_interface->addCheckButton("azpnOn", &fcheckbox25);
 		ui_interface->addHorizontalBargraph("brasD_cour", &fbargraph56, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasD_courOn", &fcheckbox56);
@@ -3034,11 +3037,11 @@ class mydsp2 : public dsp {
 		ui_interface->addCheckButton("tete_courOn", &fcheckbox62);
 		ui_interface->addHorizontalBargraph("tete_down", &fbargraph66, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_downOn", &fcheckbox66);
-		ui_interface->addHorizontalBargraph("tete_ear", &fbargraph63, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("tete_front", &fbargraph65, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_frontOn", &fcheckbox65);
 		ui_interface->addHorizontalBargraph("tete_jardin", &fbargraph64, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox64);
+		ui_interface->addHorizontalBargraph("tete_rear", &fbargraph63, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_rearOn", &fcheckbox63);
 		ui_interface->addHorizontalBargraph("tete_up", &fbargraph67, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_upOn", &fcheckbox67);
@@ -3645,7 +3648,7 @@ class mydsp2 : public dsp {
 			}
 			fbargraph19 = fTempPerm41;
 			output19[i] = (FAUSTFLOAT)fbargraph19;
-			if (iSlow95 || iSlow98 || iSlow100 || iSlow83) {
+			if (iSlow98 || iSlow95 || iSlow100 || iSlow83) {
 				fVec26[0] = fSlow96;
 				fRec50[0] = (fConst4 * ((fSlow96 - fVec26[1]) + (fConst5 * fRec50[1])));
 			}
@@ -3676,12 +3679,12 @@ class mydsp2 : public dsp {
 			}
 			fbargraph22 = fTempPerm50;
 			output22[i] = (FAUSTFLOAT)fbargraph22;
-			if (iSlow98) {
+			if (iSlow100) {
 				fTempPerm51 = fabsf(min((float)1, (fSlow76 * max((float)0, (fRec50[0] - fSlow84)))));
 				fTempPerm52 = ((int((fRec55[1] > fTempPerm51)))?fSlow85:fSlow86);
 				fRec56[0] = ((fRec56[1] * fTempPerm52) + (fTempPerm51 * (1.0f - fTempPerm52)));
 				fRec55[0] = fRec56[0];
-				fTempPerm53 = (fSlow97 * fRec55[0]);
+				fTempPerm53 = (fSlow99 * fRec55[0]);
 			}
 			fbargraph23 = fTempPerm53;
 			output23[i] = (FAUSTFLOAT)fbargraph23;
@@ -3703,12 +3706,12 @@ class mydsp2 : public dsp {
 			}
 			fbargraph25 = fTempPerm59;
 			output25[i] = (FAUSTFLOAT)fbargraph25;
-			if (iSlow100) {
+			if (iSlow98) {
 				fTempPerm60 = fabsf(min((float)1, (fSlow76 * max((float)0, (0 - (fSlow84 + fRec50[0]))))));
 				fTempPerm61 = ((int((fRec61[1] > fTempPerm60)))?fSlow85:fSlow86);
 				fRec62[0] = ((fRec62[1] * fTempPerm61) + (fTempPerm60 * (1.0f - fTempPerm61)));
 				fRec61[0] = fRec62[0];
-				fTempPerm62 = (fSlow99 * fRec61[0]);
+				fTempPerm62 = (fSlow97 * fRec61[0]);
 			}
 			fbargraph26 = fTempPerm62;
 			output26[i] = (FAUSTFLOAT)fbargraph26;
@@ -4198,7 +4201,7 @@ class mydsp2 : public dsp {
 				fRec63[1] = fRec63[0];
 				fRec64[1] = fRec64[0];
 			}
-			if (iSlow100) {
+			if (iSlow98) {
 				fRec61[1] = fRec61[0];
 				fRec62[1] = fRec62[0];
 			}
@@ -4210,7 +4213,7 @@ class mydsp2 : public dsp {
 				fRec57[1] = fRec57[0];
 				fRec58[1] = fRec58[0];
 			}
-			if (iSlow98) {
+			if (iSlow100) {
 				fRec55[1] = fRec55[0];
 				fRec56[1] = fRec56[0];
 			}
@@ -4226,7 +4229,7 @@ class mydsp2 : public dsp {
 				fRec48[1] = fRec48[0];
 				fRec49[1] = fRec49[0];
 			}
-			if (iSlow95 || iSlow98 || iSlow100 || iSlow83) {
+			if (iSlow98 || iSlow95 || iSlow100 || iSlow83) {
 				fRec50[1] = fRec50[0];
 				fVec26[1] = fVec26[0];
 			}
