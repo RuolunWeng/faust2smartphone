@@ -20,9 +20,11 @@
 #include "faust/misc.h"
 #include "faust/gui/UI.h"
 #include "faust/dsp/dsp.h"
-#include "faust/dsp/dsp-adapter.h"
 #include "faust/gui/meta.h"
-
+#include "faust/gui/jsonfaustui.h"
+#include "faust/gui/JSONUI.h"
+#include "faust/gui/MapUI.h"
+#include "faust/gui/GUI.h"
 
 #include <math.h>
 #include <cmath>
@@ -64,6 +66,7 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
 
 
 DspFaustMotion::~DspFaustMotion(){
+    
 	delete fMotionEngine;
 
 }
@@ -80,6 +83,7 @@ void DspFaustMotion::stop(){
 
 
 void DspFaustMotion::render(){
+
     
     fMotionEngine->render();
 }
