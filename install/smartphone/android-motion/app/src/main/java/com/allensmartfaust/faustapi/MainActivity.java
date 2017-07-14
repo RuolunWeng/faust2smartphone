@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPref;
     
-    private TextView cue,cueNext,cueText, cueNextText,tips;
+    private TextView cue,cueNext,cueText, cueNextText, tips, appName;
     private EditText paramsValue, ipAddress, inputPort, outputPort;
     
     private ImageView touche;
@@ -280,10 +280,12 @@ public class MainActivity extends AppCompatActivity {
         cueIndex = 0;
         cueIndexNext = 1;
         tips = (TextView) findViewById(R.id.tips);
+        appName = (TextView) findViewById(R.id.appName);
         
         cue.setText(cueList.get(cueIndex));
         cueNext.setText(cueList.get(cueIndexNext));
         tips.setText(tipsList.get(cueIndex));
+        appName.setText(getApplicationContext().getPackageName().replace("com.allensmartfaust."," ").concat(" | Grame"));
         
         nextCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
