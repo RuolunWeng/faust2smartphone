@@ -58,7 +58,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone -"
 	echo "===================================="
-	echo "- Version: 1.2 -"
+	echo "- Version: 1.5 -"
 	echo "===================================="
 }
 
@@ -305,8 +305,7 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
-	faust -i -a $FAUSTLIB/smartphone/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
-	echo "std::list<GUI*> GUI::fGuiList; ztimedmap GUI::gTimedZoneMap;" >>  "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
+	faust -i -a $FAUSTLIB/api-allen/android-motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	fi
 
 elif [ $IOS -eq 1 ]; then
@@ -340,7 +339,7 @@ elif [ $IOSMOTION -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
-	faust -i -a $FAUSTLIB/smartphone/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	faust -i -a $FAUSTLIB/api-allen/iOS-motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	fi
 fi
 

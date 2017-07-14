@@ -1,6 +1,6 @@
 /************************************************************************
  ************************************************************************
- FAUST API Architecture File 
+ FAUST API Architecture File
  Copyright (C) 2016 GRAME, Romain Michon, CCRMA - Stanford University
  Copyright (C) 2014-2016 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
@@ -17,12 +17,12 @@
  ************************************************************************
  ************************************************************************/
 
-
 //===============API Reference==============
 //==========================================
 
 class FaustPolyEngine;
 class OSCUI;
+class DspFaustMotion;
 
 class DspFaust
 {
@@ -35,30 +35,30 @@ public:
 	// * `SR`: sampling rate
 	// * `BS`: block size
 	//--------------------------------------------------------
-	DspFaust(int,int);
+	DspFaust(DspFaustMotion*,int,int);
 	~DspFaust();
-	
+
 	//---------------------`bool start()`---------------------
 	// Start the audio processing.
 	//
 	// Returns `true` if successful and `false` if not.
 	//--------------------------------------------------------
 	bool start();
-	
+  
 	//-----------------`void stop()`--------------------------
 	// Stop the audio processing. 
 	//--------------------------------------------------------
 	void stop();
-	
+
 	//---------------------`bool isRunning()`-----------------
 	// Returns `true` if audio is running.
 	//--------------------------------------------------------
 	bool isRunning();
-	
+
 	//--------`long keyOn(int pitch, int velocity)`-----------
 	// Instantiate a new polyphonic voice. This method can
 	// only be used if the `[style:poly]` metadata is used in
-	// the Faust code or if the `-polyvoices` flag has been
+	// the Faust code or if the `-nvoices` flag has been
 	// provided before compilation.
 	//
 	// `keyOn` will return 0 if the Faust object is not
@@ -73,12 +73,12 @@ public:
 	// * `pitch`: MIDI note number (0-127)
 	// * `velocity`: MIDI velocity (0-127)
 	//--------------------------------------------------------
-	long keyOn(int, int);
-	
+	unsigned long keyOn(int, int);
+
 	//----------------`int keyOff(int pitch)`-----------------
 	// De-instantiate a polyphonic voice. This method can
 	// only be used if the `[style:poly]` metadata is used in
-	// the Faust code or if the `-polyvoices` flag has been
+	// the Faust code or if the `-nvoices` flag has been
 	// provided before compilation.
 	//
 	// `keyOff` will return 0 if the object is not polyphonic
@@ -90,22 +90,22 @@ public:
 	// as the one used for `keyOn`
 	//--------------------------------------------------------
 	int keyOff(int);
-	
+
 	//-------------------`long newVoice()`--------------------
 	// Instantiate a new polyphonic voice. This method can
 	// only be used if the `[style:poly]` metadata is used in
 	// the Faust code or if `-polyvoices` flag has been
 	// provided before compilation.
 	//
-	// `keyOn` will return 0 if the Faust object is not
+	// `newVoice` will return 0 if the Faust object is not
 	// polyphonic or the address to the allocated voice as
 	// a `long` otherwise. This value can be used later with
 	// `setVoiceParamValue`, `getVoiceParamValue` or
 	// `deleteVoice` to access the parameters of a specific
 	// voice.
 	//--------------------------------------------------------
-	long newVoice();
-	
+	unsigned long newVoice();
+
 	//---------`int deleteVoice(long voice)`------------------
 	// De-instantiate a polyphonic voice. This method can
 	// only be used if the `[style:poly]` metadata is used in
@@ -119,12 +119,33 @@ public:
 	//
 	// * `voice`: the address of the voice given by `newVoice`
 	//--------------------------------------------------------
-	int deleteVoice(long);
+	int deleteVoice(unsigned long);
 
 	//-----------------`void allNotesOff()`----------------
 	// Gently terminates all the active voices. 
 	//--------------------------------------------------------
 	void allNotesOff();
+
+	//-------`void propagateMidi(int count, double time, int type, int channel, int data1, int data2)`--------
+	// Take a raw MIDI message and propagate it to the Faust
+	// DSP object. This method can be used concurrently with
+	// [`keyOn`](#keyOn) and [`keyOff`](#keyOff).
+	//
+	// `propagateMidi` can
+	// only be used if the `[style:poly]` metadata is used in
+	// the Faust code or if `-polyvoices` flag has been
+	// provided before compilation.
+	//
+	// #### Arguments
+	//
+	// * `count`: size of the message (1-3)
+	// * `time`: time stamp
+	// * `type`: message type (byte)
+	// * `channel`: channel number
+	// * `data1`: first data byte (should be `null` if `count<2`)
+	// * `data2`: second data byte (should be `null` if `count<3`)
+	//--------------------------------------------------------
+	void propagateMidi(int, double, int, int, int, int);
 	
 	//-----------------`const char* getJSONUI()`----------------
 	// Returns the JSON description of the UI of the Faust object. 
@@ -136,6 +157,7 @@ public:
 	//--------------------------------------------------------
 	const char* getJSONMeta();
 	
+    
     //-----------------`const char* getMeta(const char*)`----------------
     // Returns the JSON description of the metadata of the Faust object.
     //--------------------------------------------------------
@@ -157,18 +179,6 @@ public:
 	// * `value`: value of the parameter
 	//--------------------------------------------------------
 	void setParamValue(const char*, float);
-    
-    //----`void setOSCValue(const char* address, const char* address, const char* address)`------
-    // Set the value of OSC of the Faust
-    //
-    //
-    // #### Arguments
-    //
-    // * `address`: address of ip
-    // * `address`: address of inport
-    // * `address`: address of outport
-    //--------------------------------------------------------
-    void setOSCValue(const char*, const char*, const char*);
 	
 	//----`void setParamValue(int id, float value)`---
 	// Set the value of one of the parameters of the Faust
@@ -181,6 +191,20 @@ public:
 	//--------------------------------------------------------
 	void setParamValue(int, float);
 	
+    
+    //----`bool setOSCValue(const char* address, const char* address, const char* address)`------
+    // Set the value of OSC of the Faust
+    //
+    //
+    // #### Arguments
+    //
+    // * `address`: address of ip
+    // * `address`: address of inport
+    // * `address`: address of outport
+    //--------------------------------------------------------
+    bool setOSCValue(const char*, int, int);
+    
+    
 	//----`float getParamValue(const char* address)`----------
 	// Returns the value of a parameter in function of its
 	// address (path).
@@ -213,7 +237,7 @@ public:
 	// from `keyOn`
 	// * `value`: value of the parameter
 	//--------------------------------------------------------
-	void setVoiceParamValue(const char*, long, float);
+	void setVoiceParamValue(const char*, unsigned long, float);
 	
 	//----`void setVoiceValue(int id, long voice, float value)`-----
 	// Set the value of one of the parameters of the Faust
@@ -227,7 +251,7 @@ public:
 	// from `keyOn`
 	// * `value`: value of the parameter
 	//--------------------------------------------------------
-	void setVoiceParamValue(int, long, float);
+	void setVoiceParamValue(int, unsigned long, float);
 	
 	//----`float getVoiceParamValue(const char* address, long voice)`----
 	// Returns the value of a parameter in function of its
@@ -239,7 +263,7 @@ public:
 	// * `voice`: address of the polyphonic voice (retrieved
 	// from `keyOn`)
 	//--------------------------------------------------------
-	float getVoiceParamValue(const char*, long);
+	float getVoiceParamValue(const char*, unsigned long);
 	
 	//----`float getVoiceParamValue(int id, long voice)`----
 	// Returns the value of a parameter in function of its
@@ -251,7 +275,7 @@ public:
 	// * `voice`: address of the polyphonic voice (retrieved
 	// from `keyOn`)
 	//--------------------------------------------------------
-	float getVoiceParamValue(int, long);
+	float getVoiceParamValue(int, unsigned long);
 	
 	//----`const char* getParamAddress(int id)`---------------
 	// Returns the address (path) of a parameter in function
@@ -273,9 +297,9 @@ public:
 	// * `voice`: address of the polyphonic voice (retrieved
 	// from `keyOn`)
 	//--------------------------------------------------------
-	const char* getVoiceParamAddress(int, long);
-	
-    //-------`float getParamMin(const char* address)`---------
+	const char* getVoiceParamAddress(int, unsigned long);
+
+	    //-------`float getParamMin(const char* address)`---------
     // Returns the minimum value of a parameter in function of
     // its address (path).
     //
@@ -413,11 +437,185 @@ public:
 	float getCPULoad();
 	
 	int getScreenColor();
-	
-	bool getOSCIsOn();
-	
-private:
-    FaustPolyEngine *fPolyEngine;
-    OSCUI *fOSCUI;
-};
+    
+    bool getOSCIsOn();
+    
+    void motionRender(float,float,float,float,float,float,float,float,float);
+    
+    void initFrame();
+    
+    void sendMotion();
+    
+    void checkAdress();
 
+private:
+	FaustPolyEngine *fPolyEngine;
+    OSCUI *fOSCUI;
+    DspFaustMotion *fDSPFAUSTMOTION;
+    
+    float matrixA[3][3];
+    float matrixB[3][3];
+    float matrixC[3][3];
+    
+    const char* totalAccelAddress;
+    const char* totalGyroAddress;
+    const char* sxpAddress;
+    const char* sypAddress;
+    const char* szpAddress;
+    const char* sxnAddress;
+    const char* synAddress;
+    const char* sznAddress;
+    const char* ixpAddress;
+    const char* iypAddress;
+    const char* izpAddress;
+    const char* ixnAddress;
+    const char* iynAddress;
+    const char* iznAddress;
+    const char* pixpAddress;
+    const char* piypAddress;
+    const char* pizpAddress;
+    const char* pixnAddress;
+    const char* piynAddress;
+    const char* piznAddress;
+    const char* axpnAddress;
+    const char* aypnAddress;
+    const char* azpnAddress;
+    const char* axpAddress;
+    const char* aypAddress;
+    const char* azpAddress;
+    const char* axnAddress;
+    const char* aynAddress;
+    const char* aznAddress;
+    const char* gxpnAddress;
+    const char* gypnAddress;
+    const char* gzpnAddress;
+    const char* gxpAddress;
+    const char* gypAddress;
+    const char* gzpAddress;
+    const char* gxnAddress;
+    const char* gynAddress;
+    const char* gznAddress;
+    
+    const char* brasGcourAddress;
+    const char* brasGrearAddress;
+    const char* brasGjardinAddress;
+    const char* brasGfrontAddress;
+    const char* brasGdownAddress;
+    const char* brasGupAddress;
+    
+    const char* piedscourAddress;
+    const char* piedsrearAddress;
+    const char* piedsjardinAddress;
+    const char* piedsfrontAddress;
+    const char* piedsdownAddress;
+    const char* piedsupAddress;
+    
+    const char* doscourAddress;
+    const char* dosrearAddress;
+    const char* dosjardinAddress;
+    const char* dosfrontAddress;
+    const char* dosdownAddress;
+    const char* dosupAddress;
+    
+    const char* brasDcourAddress;
+    const char* brasDrearAddress;
+    const char* brasDjardinAddress;
+    const char* brasDfrontAddress;
+    const char* brasDdownAddress;
+    const char* brasDupAddress;
+    
+    const char* tetecourAddress;
+    const char* teterearAddress;
+    const char* tetejardinAddress;
+    const char* tetefrontAddress;
+    const char* tetedownAddress;
+    const char* teteupAddress;
+    
+    const char* ventrecourAddress;
+    const char* ventrerearAddress;
+    const char* ventrejardinAddress;
+    const char* ventrefrontAddress;
+    const char* ventredownAddress;
+    const char* ventreupAddress;
+    
+    bool totalAccelIsOn = false;
+    bool totalGyroIsOn = false;
+    bool sxpIsOn = false;
+    bool sypIsOn = false;
+    bool szpIsOn = false;
+    bool sxnIsOn = false;
+    bool synIsOn = false;
+    bool sznIsOn = false;
+    bool ixpIsOn = false;
+    bool iypIsOn = false;
+    bool izpIsOn = false;
+    bool ixnIsOn = false;
+    bool iynIsOn = false;
+    bool iznIsOn = false;
+    bool pixpIsOn = false;
+    bool piypIsOn = false;
+    bool pizpIsOn = false;
+    bool pixnIsOn = false;
+    bool piynIsOn = false;
+    bool piznIsOn = false;
+    bool axpnIsOn = false;
+    bool aypnIsOn = false;
+    bool azpnIsOn = false;
+    bool axpIsOn = false;
+    bool aypIsOn = false;
+    bool azpIsOn = false;
+    bool axnIsOn = false;
+    bool aynIsOn = false;
+    bool aznIsOn = false;
+    bool gxpnIsOn = false;
+    bool gypnIsOn = false;
+    bool gzpnIsOn = false;
+    bool gxpIsOn = false;
+    bool gypIsOn = false;
+    bool gzpIsOn = false;
+    bool gxnIsOn = false;
+    bool gynIsOn = false;
+    bool gznIsOn = false;
+    
+    bool brasGcourIsOn = false;
+    bool brasGrearIsOn = false;
+    bool brasGjardinIsOn = false;
+    bool brasGfrontIsOn = false;
+    bool brasGdownIsOn = false;
+    bool brasGupIsOn = false;
+    
+    bool piedscourIsOn = false;
+    bool piedsrearIsOn = false;
+    bool piedsjardinIsOn = false;
+    bool piedsfrontIsOn = false;
+    bool piedsdownIsOn = false;
+    bool piedsupIsOn = false;
+    
+    bool doscourIsOn = false;
+    bool dosrearIsOn = false;
+    bool dosjardinIsOn = false;
+    bool dosfrontIsOn = false;
+    bool dosdownIsOn = false;
+    bool dosupIsOn = false;
+    
+    bool brasDcourIsOn = false;
+    bool brasDrearIsOn = false;
+    bool brasDjardinIsOn = false;
+    bool brasDfrontIsOn = false;
+    bool brasDdownIsOn = false;
+    bool brasDupIsOn = false;
+    
+    bool tetecourIsOn = false;
+    bool teterearIsOn = false;
+    bool tetejardinIsOn = false;
+    bool tetefrontIsOn = false;
+    bool tetedownIsOn = false;
+    bool teteupIsOn = false;
+    
+    bool ventrecourIsOn = false;
+    bool ventrerearIsOn = false;
+    bool ventrejardinIsOn = false;
+    bool ventrefrontIsOn = false;
+    bool ventredownIsOn = false;
+    bool ventreupIsOn = false;
+};

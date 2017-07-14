@@ -35,8 +35,8 @@ public class DspFaust {
     }
   }
 
-  public DspFaust(int arg0, int arg1) {
-    this(dsp_faustJNI.new_DspFaust(arg0, arg1), true);
+  public DspFaust(DspFaustMotion arg0, int arg1, int arg2) {
+    this(dsp_faustJNI.new_DspFaust(DspFaustMotion.getCPtr(arg0), arg0, arg1, arg2), true);
   }
 
   public boolean start() {
@@ -193,6 +193,22 @@ public class DspFaust {
 
   public boolean getOSCIsOn() {
     return dsp_faustJNI.DspFaust_getOSCIsOn(swigCPtr, this);
+  }
+
+  public void motionRender(float arg0, float arg1, float arg2, float arg3, float arg4, float arg5, float arg6, float arg7, float arg8) {
+    dsp_faustJNI.DspFaust_motionRender(swigCPtr, this, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+  }
+
+  public void initFrame() {
+    dsp_faustJNI.DspFaust_initFrame(swigCPtr, this);
+  }
+
+  public void sendMotion() {
+    dsp_faustJNI.DspFaust_sendMotion(swigCPtr, this);
+  }
+
+  public void checkAdress() {
+    dsp_faustJNI.DspFaust_checkAdress(swigCPtr, this);
   }
 
 }

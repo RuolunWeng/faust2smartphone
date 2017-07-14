@@ -25,8 +25,8 @@
 //==========================================
 
 class FaustPolyEngine;
-class MidiUI;
 class OSCUI;
+class DspFaustMotion;
 
 class DspFaust
 {
@@ -39,7 +39,7 @@ public:
 	// * `SR`: sampling rate
 	// * `BS`: block size
 	//--------------------------------------------------------
-	DspFaust(int,int);
+	DspFaust(DspFaustMotion*,int,int);
 	~DspFaust();
 	
 	//---------------------`bool start()`---------------------
@@ -419,11 +419,187 @@ public:
 	int getScreenColor();
 	
 	bool getOSCIsOn();
+    
+    void motionRender(float,float,float,float,float,float,float,float,float);
+    
+    void initFrame();
+    
+    void sendMotion();
+    
+    void checkAdress();
 	
 private:
     FaustPolyEngine *fPolyEngine;
-    MidiUI *fMidiUI;
     OSCUI *fOSCUI;
+    DspFaustMotion *fDSPFAUSTMOTION;
+    
+    float matrixA[3][3];
+    float matrixB[3][3];
+    float matrixC[3][3];
+    
+    const char* totalAccelAddress;
+    const char* totalGyroAddress;
+    const char* sxpAddress;
+    const char* sypAddress;
+    const char* szpAddress;
+    const char* sxnAddress;
+    const char* synAddress;
+    const char* sznAddress;
+    const char* ixpAddress;
+    const char* iypAddress;
+    const char* izpAddress;
+    const char* ixnAddress;
+    const char* iynAddress;
+    const char* iznAddress;
+    const char* pixpAddress;
+    const char* piypAddress;
+    const char* pizpAddress;
+    const char* pixnAddress;
+    const char* piynAddress;
+    const char* piznAddress;
+    const char* axpnAddress;
+    const char* aypnAddress;
+    const char* azpnAddress;
+    const char* axpAddress;
+    const char* aypAddress;
+    const char* azpAddress;
+    const char* axnAddress;
+    const char* aynAddress;
+    const char* aznAddress;
+    const char* gxpnAddress;
+    const char* gypnAddress;
+    const char* gzpnAddress;
+    const char* gxpAddress;
+    const char* gypAddress;
+    const char* gzpAddress;
+    const char* gxnAddress;
+    const char* gynAddress;
+    const char* gznAddress;
+    
+    const char* brasGcourAddress;
+    const char* brasGrearAddress;
+    const char* brasGjardinAddress;
+    const char* brasGfrontAddress;
+    const char* brasGdownAddress;
+    const char* brasGupAddress;
+    
+    const char* piedscourAddress;
+    const char* piedsrearAddress;
+    const char* piedsjardinAddress;
+    const char* piedsfrontAddress;
+    const char* piedsdownAddress;
+    const char* piedsupAddress;
+    
+    const char* doscourAddress;
+    const char* dosrearAddress;
+    const char* dosjardinAddress;
+    const char* dosfrontAddress;
+    const char* dosdownAddress;
+    const char* dosupAddress;
+    
+    const char* brasDcourAddress;
+    const char* brasDrearAddress;
+    const char* brasDjardinAddress;
+    const char* brasDfrontAddress;
+    const char* brasDdownAddress;
+    const char* brasDupAddress;
+    
+    const char* tetecourAddress;
+    const char* teterearAddress;
+    const char* tetejardinAddress;
+    const char* tetefrontAddress;
+    const char* tetedownAddress;
+    const char* teteupAddress;
+    
+    const char* ventrecourAddress;
+    const char* ventrerearAddress;
+    const char* ventrejardinAddress;
+    const char* ventrefrontAddress;
+    const char* ventredownAddress;
+    const char* ventreupAddress;
+    
+    bool totalAccelIsOn = false;
+    bool totalGyroIsOn = false;
+    bool sxpIsOn = false;
+    bool sypIsOn = false;
+    bool szpIsOn = false;
+    bool sxnIsOn = false;
+    bool synIsOn = false;
+    bool sznIsOn = false;
+    bool ixpIsOn = false;
+    bool iypIsOn = false;
+    bool izpIsOn = false;
+    bool ixnIsOn = false;
+    bool iynIsOn = false;
+    bool iznIsOn = false;
+    bool pixpIsOn = false;
+    bool piypIsOn = false;
+    bool pizpIsOn = false;
+    bool pixnIsOn = false;
+    bool piynIsOn = false;
+    bool piznIsOn = false;
+    bool axpnIsOn = false;
+    bool aypnIsOn = false;
+    bool azpnIsOn = false;
+    bool axpIsOn = false;
+    bool aypIsOn = false;
+    bool azpIsOn = false;
+    bool axnIsOn = false;
+    bool aynIsOn = false;
+    bool aznIsOn = false;
+    bool gxpnIsOn = false;
+    bool gypnIsOn = false;
+    bool gzpnIsOn = false;
+    bool gxpIsOn = false;
+    bool gypIsOn = false;
+    bool gzpIsOn = false;
+    bool gxnIsOn = false;
+    bool gynIsOn = false;
+    bool gznIsOn = false;
+    
+    bool brasGcourIsOn = false;
+    bool brasGrearIsOn = false;
+    bool brasGjardinIsOn = false;
+    bool brasGfrontIsOn = false;
+    bool brasGdownIsOn = false;
+    bool brasGupIsOn = false;
+    
+    bool piedscourIsOn = false;
+    bool piedsrearIsOn = false;
+    bool piedsjardinIsOn = false;
+    bool piedsfrontIsOn = false;
+    bool piedsdownIsOn = false;
+    bool piedsupIsOn = false;
+    
+    bool doscourIsOn = false;
+    bool dosrearIsOn = false;
+    bool dosjardinIsOn = false;
+    bool dosfrontIsOn = false;
+    bool dosdownIsOn = false;
+    bool dosupIsOn = false;
+    
+    bool brasDcourIsOn = false;
+    bool brasDrearIsOn = false;
+    bool brasDjardinIsOn = false;
+    bool brasDfrontIsOn = false;
+    bool brasDdownIsOn = false;
+    bool brasDupIsOn = false;
+    
+    bool tetecourIsOn = false;
+    bool teterearIsOn = false;
+    bool tetejardinIsOn = false;
+    bool tetefrontIsOn = false;
+    bool tetedownIsOn = false;
+    bool teteupIsOn = false;
+    
+    bool ventrecourIsOn = false;
+    bool ventrerearIsOn = false;
+    bool ventrejardinIsOn = false;
+    bool ventrefrontIsOn = false;
+    bool ventredownIsOn = false;
+    bool ventreupIsOn = false;
+    
+    
 };
 
 #endif

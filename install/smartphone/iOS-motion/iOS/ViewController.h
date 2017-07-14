@@ -23,13 +23,7 @@
     CMMotionManager* _motionManager;
     CLLocationManager* _locationManager;
     
-    CMAttitude *referenceAttitude;
     
-    CMRotationMatrix referenceMatrix;
-    
-    float matrixA[3][3];
-    float matrixB[3][3];
-    float matrixC[3][3];
     
     NSTimer* _guiTimer;
     NSTimer *_sensorTimer;
@@ -39,86 +33,6 @@
     float magneticNew;
     float offset;
     
-    const char* totalAccelAddress;
-    const char* totalGyroAddress;
-    const char* sxpAddress;
-    const char* sypAddress;
-    const char* szpAddress;
-    const char* sxnAddress;
-    const char* synAddress;
-    const char* sznAddress;
-    const char* ixpAddress;
-    const char* iypAddress;
-    const char* izpAddress;
-    const char* ixnAddress;
-    const char* iynAddress;
-    const char* iznAddress;
-    const char* pixpAddress;
-    const char* piypAddress;
-    const char* pizpAddress;
-    const char* pixnAddress;
-    const char* piynAddress;
-    const char* piznAddress;
-    const char* axpnAddress;
-    const char* aypnAddress;
-    const char* azpnAddress;
-    const char* axpAddress;
-    const char* aypAddress;
-    const char* azpAddress;
-    const char* axnAddress;
-    const char* aynAddress;
-    const char* aznAddress;
-    const char* gxpnAddress;
-    const char* gypnAddress;
-    const char* gzpnAddress;
-    const char* gxpAddress;
-    const char* gypAddress;
-    const char* gzpAddress;
-    const char* gxnAddress;
-    const char* gynAddress;
-    const char* gznAddress;
-    
-    const char* brasGcourAddress;
-    const char* brasGrearAddress;
-    const char* brasGjardinAddress;
-    const char* brasGfrontAddress;
-    const char* brasGdownAddress;
-    const char* brasGupAddress;
-    
-    const char* piedscourAddress;
-    const char* piedsrearAddress;
-    const char* piedsjardinAddress;
-    const char* piedsfrontAddress;
-    const char* piedsdownAddress;
-    const char* piedsupAddress;
-    
-    const char* doscourAddress;
-    const char* dosrearAddress;
-    const char* dosjardinAddress;
-    const char* dosfrontAddress;
-    const char* dosdownAddress;
-    const char* dosupAddress;
-    
-    const char* brasDcourAddress;
-    const char* brasDrearAddress;
-    const char* brasDjardinAddress;
-    const char* brasDfrontAddress;
-    const char* brasDdownAddress;
-    const char* brasDupAddress;
-    
-    const char* tetecourAddress;
-    const char* teterearAddress;
-    const char* tetejardinAddress;
-    const char* tetefrontAddress;
-    const char* tetedownAddress;
-    const char* teteupAddress;
-    
-    const char* ventrecourAddress;
-    const char* ventrerearAddress;
-    const char* ventrejardinAddress;
-    const char* ventrefrontAddress;
-    const char* ventredownAddress;
-    const char* ventreupAddress;
     
     const char* touchGateAddress;
     const char* screenXAddress;
@@ -126,88 +40,6 @@
     const char* magneticHeadingAddress;
     
     const char* cueAddress;
-    const char* tipAddress;
-    
-    BOOL totalAccelIsOn;
-    BOOL totalGyroIsOn;
-    BOOL sxpIsOn;
-    BOOL sypIsOn;
-    BOOL szpIsOn;
-    BOOL sxnIsOn;
-    BOOL synIsOn;
-    BOOL sznIsOn;
-    BOOL ixpIsOn;
-    BOOL iypIsOn;
-    BOOL izpIsOn;
-    BOOL ixnIsOn;
-    BOOL iynIsOn;
-    BOOL iznIsOn;
-    BOOL pixpIsOn;
-    BOOL piypIsOn;
-    BOOL pizpIsOn;
-    BOOL pixnIsOn;
-    BOOL piynIsOn;
-    BOOL piznIsOn;
-    BOOL axpnIsOn;
-    BOOL aypnIsOn;
-    BOOL azpnIsOn;
-    BOOL axpIsOn;
-    BOOL aypIsOn;
-    BOOL azpIsOn;
-    BOOL axnIsOn;
-    BOOL aynIsOn;
-    BOOL aznIsOn;
-    BOOL gxpnIsOn;
-    BOOL gypnIsOn;
-    BOOL gzpnIsOn;
-    BOOL gxpIsOn;
-    BOOL gypIsOn;
-    BOOL gzpIsOn;
-    BOOL gxnIsOn;
-    BOOL gynIsOn;
-    BOOL gznIsOn;
-    
-    BOOL brasGcourIsOn;
-    BOOL brasGrearIsOn;
-    BOOL brasGjardinIsOn;
-    BOOL brasGfrontIsOn;
-    BOOL brasGdownIsOn;
-    BOOL brasGupIsOn;
-    
-    BOOL piedscourIsOn;
-    BOOL piedsrearIsOn;
-    BOOL piedsjardinIsOn;
-    BOOL piedsfrontIsOn;
-    BOOL piedsdownIsOn;
-    BOOL piedsupIsOn;
-    
-    BOOL doscourIsOn;
-    BOOL dosrearIsOn;
-    BOOL dosjardinIsOn;
-    BOOL dosfrontIsOn;
-    BOOL dosdownIsOn;
-    BOOL dosupIsOn;
-    
-    BOOL brasDcourIsOn;
-    BOOL brasDrearIsOn;
-    BOOL brasDjardinIsOn;
-    BOOL brasDfrontIsOn;
-    BOOL brasDdownIsOn;
-    BOOL brasDupIsOn;
-    
-    BOOL tetecourIsOn;
-    BOOL teterearIsOn;
-    BOOL tetejardinIsOn;
-    BOOL tetefrontIsOn;
-    BOOL tetedownIsOn;
-    BOOL teteupIsOn;
-    
-    BOOL ventrecourIsOn;
-    BOOL ventrerearIsOn;
-    BOOL ventrejardinIsOn;
-    BOOL ventrefrontIsOn;
-    BOOL ventredownIsOn;
-    BOOL ventreupIsOn;
     
     BOOL touchGateIsOn;
     BOOL screenXIsOn;
@@ -215,8 +47,6 @@
     BOOL magneticHeadingIsOn;
     
     BOOL cueIsOn;
-    BOOL tipIsOn;
-    
     
     NSMutableArray *_motionParamArray;
     

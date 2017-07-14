@@ -35,9 +35,9 @@
     // init faust motor
     ////////////////////
     
-    dspFaust = new DspFaust(SR,bufferSize);
-    
     dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
+    
+    dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
     ////////////////////////////////
     //Check the MetaData in console
@@ -53,6 +53,7 @@
     // check motion key word in address
     ///////////////////////////////////
     
+    dspFaust->checkAdress();
     [self checkAddress];
     
     
@@ -161,7 +162,6 @@
         _prevCue.hidden=true;
         _nextCue.hidden=true;
     }
-    
     
 
 }
@@ -290,303 +290,7 @@
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
         NSString *data = [NSString stringWithUTF8String:dspFaust->getParamAddress(i)];
-        if ([data hasSuffix:@"/totalaccel"]) {
-            totalAccelIsOn = true;
-            totalAccelAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/totalaccelOn", 1);
-        } else if ([data hasSuffix:@"/totalgyro"]) {
-            totalGyroIsOn = true;
-            totalGyroAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/totalgyroOn", 1);
-        } else if ([data hasSuffix:@"/sxp"]) {
-            sxpIsOn = true;
-            sxpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/sxpOn", 1);
-        } else if ([data hasSuffix:@"/syp"]) {
-            sypIsOn = true;
-            sypAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/sypOn", 1);
-        } else if ([data hasSuffix:@"/szp"]) {
-            szpIsOn = true;
-            szpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/szpOn", 1);
-        } else if ([data hasSuffix:@"/sxn"]) {
-            sxnIsOn = true;
-            sxnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/sxnOn", 1);
-        } else if ([data hasSuffix:@"/syn"]) {
-            synIsOn = true;
-            synAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/synOn", 1);
-        } else if ([data hasSuffix:@"/szn"]) {
-            sznIsOn = true;
-            sznAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/sznOn", 1);
-        } else if ([data hasSuffix:@"/ixp"]) {
-            ixpIsOn = true;
-            ixpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ixpOn", 1);
-        } else if ([data hasSuffix:@"/iyp"]) {
-            iypIsOn = true;
-            iypAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/iypOn", 1);
-        } else if ([data hasSuffix:@"/izp"]) {
-            izpIsOn = true;
-            izpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/izpOn", 1);
-        } else if ([data hasSuffix:@"/ixn"]) {
-            ixnIsOn = true;
-            ixnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ixnOn", 1);
-        } else if ([data hasSuffix:@"/iyn"]) {
-            iynIsOn = true;
-            iynAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/iynOn", 1);
-        } else if ([data hasSuffix:@"/izn"]) {
-            iznIsOn = true;
-            iznAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/iznOn", 1);
-        } else if ([data hasSuffix:@"/pixp"]) {
-            pixpIsOn = true;
-            pixpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pixpOn", 1);
-        } else if ([data hasSuffix:@"/piyp"]) {
-            piypIsOn = true;
-            piypAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/piypOn", 1);
-        } else if ([data hasSuffix:@"/pizp"]) {
-            pizpIsOn = true;
-            pizpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pizpOn", 1);
-        } else if ([data hasSuffix:@"/pixn"]) {
-            pixnIsOn = true;
-            pixnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pixnOn", 1);
-        } else if ([data hasSuffix:@"/piyn"]) {
-            piynIsOn = true;
-            piynAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/piynOn", 1);
-        } else if ([data hasSuffix:@"/pizn"]) {
-            piznIsOn = true;
-            piznAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/piznOn", 1);
-        } else if ([data hasSuffix:@"/axpn"]) {
-            axpnIsOn = true;
-            axpnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/axpnOn", 1);
-        } else if ([data hasSuffix:@"/aypn"]) {
-            aypnIsOn = true;
-            aypnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/aypnOn", 1);
-        } else if ([data hasSuffix:@"/azpn"]) {
-            azpnIsOn = true;
-            azpnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/azpnOn", 1);
-        } else if ([data hasSuffix:@"/axp"]) {
-            axpIsOn = true;
-            axpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/axpOn", 1);
-        } else if ([data hasSuffix:@"/ayp"]) {
-            aypIsOn = true;
-            aypAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/aypOn", 1);
-        } else if ([data hasSuffix:@"/azp"]) {
-            azpIsOn = true;
-            azpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/azpOn", 1);
-        } else if ([data hasSuffix:@"/axn"]) {
-            axnIsOn = true;
-            axnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/axnOn", 1);
-        } else if ([data hasSuffix:@"/ayn"]) {
-            aynIsOn = true;
-            aynAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/aynOn", 1);
-        } else if ([data hasSuffix:@"/azn"]) {
-            aznIsOn = true;
-            aznAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/aznOn", 1);
-        } else if ([data hasSuffix:@"/gxpn"]) {
-            gxpnIsOn = true;
-            gxpnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gxpnOn", 1);
-        } else if ([data hasSuffix:@"/gypn"]) {
-            gypnIsOn = true;
-            gypnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gypnOn", 1);
-        } else if ([data hasSuffix:@"/gzpn"]) {
-            gzpnIsOn = true;
-            gzpnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gzpnOn", 1);
-        } else if ([data hasSuffix:@"/gxp"]) {
-            gxpIsOn = true;
-            gxpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gxpOn", 1);
-        } else if ([data hasSuffix:@"/gyp"]) {
-            gypIsOn = true;
-            gypAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gypOn", 1);
-        } else if ([data hasSuffix:@"/gzp"]) {
-            gzpIsOn = true;
-            gzpAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gzpOn", 1);
-        } else if ([data hasSuffix:@"/gxn"]) {
-            gxnIsOn = true;
-            gxnAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gxnOn", 1);
-        } else if ([data hasSuffix:@"/gyn"]) {
-            gynIsOn = true;
-            gynAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gynOn", 1);
-        } else if ([data hasSuffix:@"/gzn"]) {
-            gznIsOn = true;
-            gznAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/gznOn", 1);
-        } else if ([data hasSuffix:@"/brasG_cour"]) {
-            brasGcourIsOn = true;
-            brasGcourAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasG_courOn", 1);
-        } else if ([data hasSuffix:@"/brasG_rear"]) {
-            brasGrearIsOn = true;
-            brasGrearAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasG_rearOn", 1);
-        } else if ([data hasSuffix:@"/brasG_jardin"]) {
-            brasGjardinIsOn = true;
-            brasGjardinAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasG_jardinOn", 1);
-        } else if ([data hasSuffix:@"/brasG_front"]) {
-            brasGfrontIsOn = true;
-            brasGfrontAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasG_frontOn", 1);
-        } else if ([data hasSuffix:@"/brasG_down"]) {
-            brasGdownIsOn = true;
-            brasGdownAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasG_downOn", 1);
-        } else if ([data hasSuffix:@"/brasG_up"]) {
-            brasGupIsOn = true;
-            brasGupAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasG_upOn", 1);
-        } else if ([data hasSuffix:@"/pieds_cour"]) {
-            piedscourIsOn = true;
-            piedscourAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pieds_courOn", 1);
-        } else if ([data hasSuffix:@"/pieds_rear"]) {
-            piedsrearIsOn = true;
-            piedsrearAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pieds_rearOn", 1);
-        } else if ([data hasSuffix:@"/pieds_jardin"]) {
-            piedsjardinIsOn = true;
-            piedsjardinAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pieds_jardinOn", 1);
-        } else if ([data hasSuffix:@"/pieds_front"]) {
-            piedsfrontIsOn = true;
-            piedsfrontAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pieds_frontOn", 1);
-        } else if ([data hasSuffix:@"/pieds_down"]) {
-            piedsdownIsOn = true;
-            piedsdownAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pieds_downOn", 1);
-        } else if ([data hasSuffix:@"/pieds_up"]) {
-            piedsupIsOn = true;
-            piedsupAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/pieds_upOn", 1);
-        } else if ([data hasSuffix:@"/dos_cour"]) {
-            doscourIsOn = true;
-            doscourAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/dos_courOn", 1);
-        } else if ([data hasSuffix:@"/dos_rear"]) {
-            dosrearIsOn = true;
-            dosrearAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/dos_rearOn", 1);
-        } else if ([data hasSuffix:@"/dos_jardin"]) {
-            dosjardinIsOn = true;
-            dosjardinAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/dos_jardinOn", 1);
-        } else if ([data hasSuffix:@"/dos_front"]) {
-            dosfrontIsOn = true;
-            dosfrontAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/dos_frontOn", 1);
-        } else if ([data hasSuffix:@"/dos_down"]) {
-            dosdownIsOn = true;
-            dosdownAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/dos_downOn", 1);
-        } else if ([data hasSuffix:@"/dos_up"]) {
-            dosupIsOn = true;
-            dosupAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/dos_upOn", 1);
-        } else if ([data hasSuffix:@"/brasD_cour"]) {
-            brasDcourIsOn = true;
-            brasDcourAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasD_courOn", 1);
-        } else if ([data hasSuffix:@"/brasD_rear"]) {
-            brasDrearIsOn = true;
-            brasDrearAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasD_rearOn", 1);
-        } else if ([data hasSuffix:@"/brasD_jardin"]) {
-            brasDjardinIsOn = true;
-            brasDjardinAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasD_jardinOn", 1);
-        } else if ([data hasSuffix:@"/brasD_front"]) {
-            brasDfrontIsOn = true;
-            brasDfrontAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasD_frontOn", 1);
-        } else if ([data hasSuffix:@"/brasD_down"]) {
-            brasDdownIsOn = true;
-            brasDdownAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasD_downOn", 1);
-        } else if ([data hasSuffix:@"/brasD_up"]) {
-            brasDupIsOn = true;
-            brasDupAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/brasD_upOn", 1);
-        } else if ([data hasSuffix:@"/tete_cour"]) {
-            tetecourIsOn = true;
-            tetecourAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/tete_courOn", 1);
-        } else if ([data hasSuffix:@"/tete_rear"]) {
-            teterearIsOn = true;
-            teterearAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/tete_rearOn", 1);
-        } else if ([data hasSuffix:@"/tete_jardin"]) {
-            tetejardinIsOn = true;
-            tetejardinAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/tete_jardinOn", 1);
-        } else if ([data hasSuffix:@"/tete_front"]) {
-            tetefrontIsOn = true;
-            tetefrontAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/tete_frontOn", 1);
-        } else if ([data hasSuffix:@"/tete_down"]) {
-            tetedownIsOn = true;
-            tetedownAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/tete_downOn", 1);
-        } else if ([data hasSuffix:@"/tete_up"]) {
-            teteupIsOn = true;
-            teteupAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/tete_upOn", 1);
-        }else if ([data hasSuffix:@"/ventre_cour"]) {
-            ventrecourIsOn = true;
-            ventrecourAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ventre_courOn", 1);
-        } else if ([data hasSuffix:@"/ventre_rear"]) {
-            ventrerearIsOn = true;
-            ventrerearAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ventre_rearOn", 1);
-        } else if ([data hasSuffix:@"/ventre_jardin"]) {
-            ventrejardinIsOn = true;
-            ventrejardinAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ventre_jardinOn", 1);
-        } else if ([data hasSuffix:@"/ventre_front"]) {
-            ventrefrontIsOn = true;
-            ventrefrontAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ventre_frontOn", 1);
-        } else if ([data hasSuffix:@"/ventre_down"]) {
-            ventredownIsOn = true;
-            ventredownAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ventre_downOn", 1);
-        } else if ([data hasSuffix:@"/ventre_up"]) {
-            ventreupIsOn = true;
-            ventreupAddress = dspFaust->getParamAddress(i);
-            dspFaustMotion->setParamValue("/Motion/ventre_upOn", 1);
-        } else if ([data hasSuffix:@"/touchgate"]) {
+        if ([data hasSuffix:@"/touchgate"]) {
             touchGateIsOn = true;
             touchGateAddress = dspFaust->getParamAddress(i);
         } else if ([data hasSuffix:@"/screenx"]) {
@@ -601,11 +305,7 @@
         } else if ([data hasSuffix:@"/cue"]) {
             cueIsOn = true;
             cueAddress = dspFaust->getParamAddress(i);
-        } else if ([data hasSuffix:@"/tip"]) {
-            tipIsOn = true;
-            [self startUpdateGUI];
-            tipAddress = dspFaust->getParamAddress(i);
-        }
+        } 
         
     }
     
@@ -616,7 +316,7 @@
 {
     
     _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1./(SR/bufferSize) target:self
-                                            selector:@selector(updateMotion) userInfo:nil repeats:YES];
+                                            selector:@selector(updateAccGyo) userInfo:nil repeats:YES];
     
 }
 
@@ -688,7 +388,7 @@
 }
 
 
-- (void)updateMotion
+- (void)updateAccGyo
 {
     
     dspFaust->propagateAcc(0, _motionManager.accelerometerData.acceleration.x * ONE_G);
@@ -705,240 +405,9 @@
     dspFaustMotion->propagateGyr(1, _motionManager.gyroData.rotationRate.y);
     dspFaustMotion->propagateGyr(2, _motionManager.gyroData.rotationRate.z);
     
-    dspFaustMotion->render();
-    
-    [self sendMotion];
     
 }
 
-- (void) sendMotion  {
-    
-    if (totalAccelIsOn) {
-        dspFaust->setParamValue(totalAccelAddress, dspFaustMotion->getParamValue("/Motion/Mtotalaccel"));
-    }
-    if (totalGyroIsOn) {
-        dspFaust->setParamValue(totalGyroAddress, dspFaustMotion->getParamValue("/Motion/Mtotalgyro"));
-    }
-    if (sxpIsOn) {
-        dspFaust->setParamValue(sxpAddress, dspFaustMotion->getParamValue("/Motion/Msxp"));
-    }
-    if (sypIsOn) {
-        dspFaust->setParamValue(sypAddress, dspFaustMotion->getParamValue("/Motion/Msyp"));
-    }
-    if (szpIsOn) {
-        dspFaust->setParamValue(szpAddress, dspFaustMotion->getParamValue("/Motion/Mszp"));
-    }
-    if (sxnIsOn) {
-        dspFaust->setParamValue(sxnAddress, dspFaustMotion->getParamValue("/Motion/Msxn"));
-    }
-    if (synIsOn) {
-        dspFaust->setParamValue(synAddress, dspFaustMotion->getParamValue("/Motion/Msyn"));
-    }
-    if (sznIsOn) {
-        dspFaust->setParamValue(sznAddress, dspFaustMotion->getParamValue("/Motion/Mszn"));
-    }
-    if (ixpIsOn) {
-        dspFaust->setParamValue(ixpAddress, dspFaustMotion->getParamValue("/Motion/Mixp"));
-    }
-    if (iypIsOn) {
-        dspFaust->setParamValue(iypAddress, dspFaustMotion->getParamValue("/Motion/Miyp"));
-    }
-    if (izpIsOn) {
-        dspFaust->setParamValue(izpAddress, dspFaustMotion->getParamValue("/Motion/Mizp"));
-    }
-    if (ixnIsOn) {
-        dspFaust->setParamValue(ixnAddress, dspFaustMotion->getParamValue("/Motion/Mixn"));
-    }
-    if (iynIsOn) {
-        dspFaust->setParamValue(iynAddress, dspFaustMotion->getParamValue("/Motion/Miyn"));
-    }
-    if (iznIsOn) {
-        dspFaust->setParamValue(iznAddress, dspFaustMotion->getParamValue("/Motion/Mizn"));
-    }
-    if (pixpIsOn) {
-        dspFaust->setParamValue(pixpAddress, dspFaustMotion->getParamValue("/Motion/Mpixp"));
-    }
-    if (piypIsOn) {
-        dspFaust->setParamValue(piypAddress, dspFaustMotion->getParamValue("/Motion/Mpiyp"));
-    }
-    if (pizpIsOn) {
-        dspFaust->setParamValue(pizpAddress, dspFaustMotion->getParamValue("/Motion/Mpizp"));
-    }
-    if (pixnIsOn) {
-        dspFaust->setParamValue(pixnAddress, dspFaustMotion->getParamValue("/Motion/Mpixn"));
-    }
-    if (piynIsOn) {
-        dspFaust->setParamValue(piynAddress, dspFaustMotion->getParamValue("/Motion/Mpiyn"));
-    }
-    if (piznIsOn) {
-        dspFaust->setParamValue(piznAddress, dspFaustMotion->getParamValue("/Motion/Mpizn"));
-    }
-    if (axpnIsOn) {
-        dspFaust->setParamValue(axpnAddress, dspFaustMotion->getParamValue("/Motion/Maxpn"));
-    }
-    if (aypnIsOn) {
-        dspFaust->setParamValue(aypnAddress, dspFaustMotion->getParamValue("/Motion/Maypn"));
-    }
-    if (azpnIsOn) {
-        dspFaust->setParamValue(azpnAddress, dspFaustMotion->getParamValue("/Motion/Mazpn"));
-    }
-    if (axpIsOn) {
-        dspFaust->setParamValue(axpAddress, dspFaustMotion->getParamValue("/Motion/Maxp"));
-    }
-    if (aypIsOn) {
-        dspFaust->setParamValue(aypAddress, dspFaustMotion->getParamValue("/Motion/Mayp"));
-    }
-    if (azpIsOn) {
-        dspFaust->setParamValue(azpAddress, dspFaustMotion->getParamValue("/Motion/Mazp"));
-    }
-    if (axnIsOn) {
-        dspFaust->setParamValue(axnAddress, dspFaustMotion->getParamValue("/Motion/Maxn"));
-    }
-    if (aynIsOn) {
-        dspFaust->setParamValue(aynAddress, dspFaustMotion->getParamValue("/Motion/Mayn"));
-    }
-    if (aznIsOn) {
-        dspFaust->setParamValue(aznAddress, dspFaustMotion->getParamValue("/Motion/Mazn"));
-    }
-    if (gxpnIsOn) {
-        dspFaust->setParamValue(gxpnAddress, dspFaustMotion->getParamValue("/Motion/Mgxpn"));
-    }
-    if (gypnIsOn) {
-        dspFaust->setParamValue(gypnAddress, dspFaustMotion->getParamValue("/Motion/Mgypn"));
-    }
-    if (gzpnIsOn) {
-        dspFaust->setParamValue(gzpnAddress, dspFaustMotion->getParamValue("/Motion/Mgzpn"));
-    }
-    if (gxpIsOn) {
-        dspFaust->setParamValue(gxpAddress, dspFaustMotion->getParamValue("/Motion/Mgxp"));
-    }
-    if (gypIsOn) {
-        dspFaust->setParamValue(gypAddress, dspFaustMotion->getParamValue("/Motion/Mgyp"));
-    }
-    if (gzpIsOn) {
-        dspFaust->setParamValue(gzpAddress, dspFaustMotion->getParamValue("/Motion/Mgzp"));
-    }
-    if (gypIsOn) {
-        dspFaust->setParamValue(gypAddress, dspFaustMotion->getParamValue("/Motion/Mgyp"));
-    }
-    if (gxnIsOn) {
-        dspFaust->setParamValue(gxnAddress, dspFaustMotion->getParamValue("/Motion/Mgxn"));
-    }
-    if (gynIsOn) {
-        dspFaust->setParamValue(gynAddress, dspFaustMotion->getParamValue("/Motion/Mgyn"));
-    }
-    if (gznIsOn) {
-        dspFaust->setParamValue(gznAddress, dspFaustMotion->getParamValue("/Motion/Mgzn"));
-    }
-    if (brasGcourIsOn) {
-        dspFaust->setParamValue(brasGcourAddress, dspFaustMotion->getParamValue("/Motion/brasG_cour"));
-    }
-    if (brasGrearIsOn) {
-        dspFaust->setParamValue(brasGrearAddress, dspFaustMotion->getParamValue("/Motion/brasG_rear"));
-    }
-    if (brasGjardinIsOn) {
-        dspFaust->setParamValue(brasGjardinAddress, dspFaustMotion->getParamValue("/Motion/brasG_jardin"));
-    }
-    if (brasGfrontIsOn) {
-        dspFaust->setParamValue(brasGfrontAddress, dspFaustMotion->getParamValue("/Motion/brasG_front"));
-    }
-    if (brasGdownIsOn) {
-        dspFaust->setParamValue(brasGdownAddress, dspFaustMotion->getParamValue("/Motion/brasG_down"));
-    }
-    if (brasGupIsOn) {
-        dspFaust->setParamValue(brasGupAddress, dspFaustMotion->getParamValue("/Motion/brasG_up"));
-    }
-    if (piedscourIsOn) {
-        dspFaust->setParamValue(piedscourAddress, dspFaustMotion->getParamValue("/Motion/pieds_cour"));
-    }
-    if (piedsrearIsOn) {
-        dspFaust->setParamValue(piedsrearAddress, dspFaustMotion->getParamValue("/Motion/pieds_rear"));
-    }
-    if (piedsjardinIsOn) {
-        dspFaust->setParamValue(piedsjardinAddress, dspFaustMotion->getParamValue("/Motion/pieds_jardin"));
-    }
-    if (piedsfrontIsOn) {
-        dspFaust->setParamValue(piedsfrontAddress, dspFaustMotion->getParamValue("/Motion/pieds_front"));
-    }
-    if (piedsdownIsOn) {
-        dspFaust->setParamValue(piedsdownAddress, dspFaustMotion->getParamValue("/Motion/pieds_down"));
-    }
-    if (piedsupIsOn) {
-        dspFaust->setParamValue(piedsupAddress, dspFaustMotion->getParamValue("/Motion/pieds_up"));
-    }
-    if (doscourIsOn) {
-        dspFaust->setParamValue(doscourAddress, dspFaustMotion->getParamValue("/Motion/dos_cour"));
-    }
-    if (dosrearIsOn) {
-        dspFaust->setParamValue(dosrearAddress, dspFaustMotion->getParamValue("/Motion/dos_rear"));
-    }
-    if (dosjardinIsOn) {
-        dspFaust->setParamValue(dosjardinAddress, dspFaustMotion->getParamValue("/Motion/dos_jardin"));
-    }
-    if (dosfrontIsOn) {
-        dspFaust->setParamValue(dosfrontAddress, dspFaustMotion->getParamValue("/Motion/dos_front"));
-    }
-    if (dosdownIsOn) {
-        dspFaust->setParamValue(dosdownAddress, dspFaustMotion->getParamValue("/Motion/dos_down"));
-    }
-    if (dosupIsOn) {
-        dspFaust->setParamValue(dosupAddress, dspFaustMotion->getParamValue("/Motion/dos_up"));
-    }
-    if (brasDcourIsOn) {
-        dspFaust->setParamValue(brasDcourAddress, dspFaustMotion->getParamValue("/Motion/brasD_cour"));
-    }
-    if (brasDrearIsOn) {
-        dspFaust->setParamValue(brasDrearAddress, dspFaustMotion->getParamValue("/Motion/brasD_rear"));
-    }
-    if (brasDjardinIsOn) {
-        dspFaust->setParamValue(brasDjardinAddress, dspFaustMotion->getParamValue("/Motion/brasD_jardin"));
-    }
-    if (brasDfrontIsOn) {
-        dspFaust->setParamValue(brasDfrontAddress, dspFaustMotion->getParamValue("/Motion/brasD_front"));
-    }
-    if (brasDdownIsOn) {
-        dspFaust->setParamValue(brasDdownAddress, dspFaustMotion->getParamValue("/Motion/brasD_down"));
-    }
-    if (brasDupIsOn) {
-        dspFaust->setParamValue(brasDupAddress, dspFaustMotion->getParamValue("/Motion/brasD_up"));
-    }
-    if (tetecourIsOn) {
-        dspFaust->setParamValue(tetecourAddress, dspFaustMotion->getParamValue("/Motion/tete_cour"));
-    }
-    if (teterearIsOn) {
-        dspFaust->setParamValue(teterearAddress, dspFaustMotion->getParamValue("/Motion/tete_rear"));
-    }
-    if (tetejardinIsOn) {
-        dspFaust->setParamValue(tetejardinAddress, dspFaustMotion->getParamValue("/Motion/tete_jardin"));
-    }
-    if (tetefrontIsOn) {
-        dspFaust->setParamValue(tetefrontAddress, dspFaustMotion->getParamValue("/Motion/tete_front"));
-    }
-    if (tetedownIsOn) {
-        dspFaust->setParamValue(tetedownAddress, dspFaustMotion->getParamValue("/Motion/tete_down"));
-    }
-    if (teteupIsOn) {
-        dspFaust->setParamValue(teteupAddress, dspFaustMotion->getParamValue("/Motion/tete_up"));
-    }
-    if (ventrecourIsOn) {
-        dspFaust->setParamValue(ventrecourAddress, dspFaustMotion->getParamValue("/Motion/ventre_cour"));
-    }
-    if (ventrerearIsOn) {
-        dspFaust->setParamValue(ventrerearAddress, dspFaustMotion->getParamValue("/Motion/ventre_rear"));
-    }
-    if (ventrejardinIsOn) {
-        dspFaust->setParamValue(ventrejardinAddress, dspFaustMotion->getParamValue("/Motion/ventre_jardin"));
-    }
-    if (ventrefrontIsOn) {
-        dspFaust->setParamValue(ventrefrontAddress, dspFaustMotion->getParamValue("/Motion/ventre_front"));
-    }
-    if (ventredownIsOn) {
-        dspFaust->setParamValue(ventredownAddress, dspFaustMotion->getParamValue("/Motion/ventre_down"));
-    }
-    if (ventreupIsOn) {
-        dspFaust->setParamValue(ventreupAddress, dspFaustMotion->getParamValue("/Motion/ventre_up"));
-    }
-}
 
 - (void)startRotationMatrix
 {
@@ -957,111 +426,19 @@
                                            
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             
-            referenceMatrix = motion.attitude.rotationMatrix;
+            dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
             
-            matrixA[0][0] =motion.attitude.rotationMatrix.m11;
-            matrixA[0][1] =motion.attitude.rotationMatrix.m12;
-            matrixA[0][2] =motion.attitude.rotationMatrix.m13;
             
-            matrixA[1][0] =motion.attitude.rotationMatrix.m21;
-            matrixA[1][1] =motion.attitude.rotationMatrix.m22;
-            matrixA[1][2] =motion.attitude.rotationMatrix.m23;
-            
-            matrixA[2][0] =motion.attitude.rotationMatrix.m31;
-            matrixA[2][1] =motion.attitude.rotationMatrix.m32;
-            matrixA[2][2] =motion.attitude.rotationMatrix.m33;
-            
-            vDSP_mmul(&matrixA[0][0], 1, &matrixB[0][0], 1, &matrixC[0][0], 1, 3, 3, 3);
-            
-            dspFaustMotion->setParamValue("/Motion/brasD_x", (-1)*matrixC[0][0]);
-            dspFaustMotion->setParamValue("/Motion/brasD_y", (-1)*matrixC[0][1]);
-            dspFaustMotion->setParamValue("/Motion/brasD_z", (-1)*matrixC[0][2]);
-            
-            dspFaustMotion->setParamValue("/Motion/pieds_x", (-1)*matrixC[1][0]);
-            dspFaustMotion->setParamValue("/Motion/pieds_y", (-1)*matrixC[1][1]);
-            dspFaustMotion->setParamValue("/Motion/pieds_z", (-1)*matrixC[1][2]);
-            
-            dspFaustMotion->setParamValue("/Motion/dos_x", (-1)*matrixC[2][0]);
-            dspFaustMotion->setParamValue("/Motion/dos_y", (-1)*matrixC[2][1]);
-            dspFaustMotion->setParamValue("/Motion/dos_z", (-1)*matrixC[2][2]);
-            
-            dspFaustMotion->setParamValue("/Motion/brasG_x", matrixC[0][0]);
-            dspFaustMotion->setParamValue("/Motion/brasG_y", matrixC[0][1]);
-            dspFaustMotion->setParamValue("/Motion/brasG_z", matrixC[0][2]);
-            
-            dspFaustMotion->setParamValue("/Motion/tete_x", matrixC[1][0]);
-            dspFaustMotion->setParamValue("/Motion/tete_y", matrixC[1][1]);
-            dspFaustMotion->setParamValue("/Motion/tete_z", matrixC[1][2]);
-            
-            dspFaustMotion->setParamValue("/Motion/ventre_x", matrixC[2][0]);
-            dspFaustMotion->setParamValue("/Motion/ventre_y", matrixC[2][1]);
-            dspFaustMotion->setParamValue("/Motion/ventre_z", matrixC[2][2]);
-            
-            /* crash... comment for now
-            if (referenceAttitude != nil) {
-                [motion.attitude multiplyByInverseOfAttitude:referenceAttitude];
-                }
-
-                dspFaustMotion->setParamValue("/Motion/brasG_x", motion.attitude.rotationMatrix.m11);
-                dspFaustMotion->setParamValue("/Motion/brasG_y", motion.attitude.rotationMatrix.m12);
-                dspFaustMotion->setParamValue("/Motion/brasG_z", motion.attitude.rotationMatrix.m13);
-            
-                dspFaustMotion->setParamValue("/Motion/pieds_x", motion.attitude.rotationMatrix.m21);
-                dspFaustMotion->setParamValue("/Motion/pieds_y", motion.attitude.rotationMatrix.m22);
-                dspFaustMotion->setParamValue("/Motion/pieds_z", motion.attitude.rotationMatrix.m23);
-            
-                dspFaustMotion->setParamValue("/Motion/dos_x", motion.attitude.rotationMatrix.m31);
-                dspFaustMotion->setParamValue("/Motion/dos_y", motion.attitude.rotationMatrix.m32);
-                dspFaustMotion->setParamValue("/Motion/dos_z", motion.attitude.rotationMatrix.m33);
-            
-                dspFaustMotion->setParamValue("/Motion/brasD_x", (-1)*motion.attitude.rotationMatrix.m11);
-                dspFaustMotion->setParamValue("/Motion/brasD_y", (-1)*motion.attitude.rotationMatrix.m12);
-                dspFaustMotion->setParamValue("/Motion/brasD_z", (-1)*motion.attitude.rotationMatrix.m13);
-            
-                dspFaustMotion->setParamValue("/Motion/tete_x", (-1)*motion.attitude.rotationMatrix.m21);
-                dspFaustMotion->setParamValue("/Motion/tete_y", (-1)*motion.attitude.rotationMatrix.m22);
-                dspFaustMotion->setParamValue("/Motion/tete_z", (-1)*motion.attitude.rotationMatrix.m23);
-            
-                dspFaustMotion->setParamValue("/Motion/ventre_x", (-1)*motion.attitude.rotationMatrix.m31);
-                dspFaustMotion->setParamValue("/Motion/ventre_y", (-1)*motion.attitude.rotationMatrix.m32);
-                dspFaustMotion->setParamValue("/Motion/ventre_z", (-1)*motion.attitude.rotationMatrix.m33);
-             */
-            
-            }];
+        }];
     }];
     
 }
 
 -(void) initFrame {
     
-    // referenceAttitude is an instance variable
     if (_motionManager!=nil) {
         
-        // inverse matrix the matrix reference
-        float a11 = referenceMatrix.m11;
-        float a12 = referenceMatrix.m12;
-        float a13 = referenceMatrix.m13;
-        float a21 = referenceMatrix.m21;
-        float a22 = referenceMatrix.m22;
-        float a23 = referenceMatrix.m23;
-        float a31 = referenceMatrix.m31;
-        float a32 = referenceMatrix.m32;
-        float a33 = referenceMatrix.m33;
-        
-        float detA=a11*a22*a33+a21*a32*a13+a31*a12*a23-a11*a32*a23-a31*a22*a13-a21*a12*a33;
-        
-        matrixB[0][0] =(1/detA)*(a22*a33-a23*a32);
-        matrixB[0][1] =(1/detA)*(a13*a32-a12*a33);
-        matrixB[0][2] =(1/detA)*(a12*a23-a13*a22);
-        
-        matrixB[1][0] =(1/detA)*(a23*a31-a21*a33);
-        matrixB[1][1] =(1/detA)*(a11*a33-a13*a31);
-        matrixB[1][2] =(1/detA)*(a13*a21-a11*a23);
-        
-        matrixB[2][0] =(1/detA)*(a21*a32-a22*a31);
-        matrixB[2][1] =(1/detA)*(a12*a31-a11*a32);
-        matrixB[2][2] =(1/detA)*(a11*a22-a12*a21);
-        //referenceAttitude = _motionManager.deviceMotion.attitude;
+        dspFaust->initFrame();
         
     }
     
@@ -1123,22 +500,6 @@
 - (void)updateGUI
 {
     
-    if (tipIsOn) {
-        switch ((int)dspFaust->getParamValue(tipAddress)) {
-            case 1:
-                _tips.text = @"FaustTips:part1";
-                break;
-            case 2:
-                _tips.text = @"FaustTips:part2";
-                break;
-            case 3:
-                _tips.text = @"FaustTips:part4";
-                break;
-            case 4:
-                _tips.text = @"FaustTips:part4";
-                break;
-        }
-    }
     
 }
 
@@ -1364,6 +725,7 @@
     
     _motionParam.text = @"Done";
     
+    dspFaust->checkAdress();
     [self checkAddress];
     
     [self resetDefaultParams];

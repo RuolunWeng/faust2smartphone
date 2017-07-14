@@ -35,7 +35,7 @@ import android.widget.Toast;
 
 
 import com.DspFaust.DspFaust;
-import com.DspFaustMotion.DspFaustMotion;
+import com.DspFaust.DspFaustMotion;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     
     int scrWidth = 0,scrHeight= 0;
+
+    long lastDate=0;
     
     
     String[] ParamArray = {"hp","shok_thr","antirebon","lp","tacc_thr",
@@ -193,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         
         if (dspFaustMotion == null) {
             dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
-            
+
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
                 System.out.println(dspFaustMotion.getParamAddress(i));
@@ -202,8 +204,11 @@ public class MainActivity extends AppCompatActivity {
         }
         
         if (dspFaust == null) {
-            
-            dspFaust = new DspFaust(SR, blockSize);
+
+            //long a = DspFaustMotion.getCPtr(dspFaustMotion);
+            //dspFaustMotionSWIG = SWIGTYPE_p_DspFaustMotion(a,false);
+
+            dspFaust = new DspFaust(dspFaustMotion,SR, blockSize);
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaust.getParamsCount(); i++) {
                 System.out.println(dspFaust.getParamAddress(i));
@@ -671,6 +676,7 @@ public class MainActivity extends AppCompatActivity {
                 paramsValue.setText("Done");
                 Toast.makeText(MainActivity.this, "Reset Defaults(restart to use new OSC)", Toast.LENGTH_LONG).show();
                 checkAddress();
+                dspFaust.checkAdress();
 
                 resetParams();
                 
@@ -719,303 +725,7 @@ public class MainActivity extends AppCompatActivity {
                 
                 String Str = dspFaust.getParamAddress(i);
                 
-                if (Str.endsWith("/totalaccel")) {
-                    totalAccelIsOn = true;
-                    totalAccelAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/totalaccelOn", 1);
-                } else if (Str.endsWith("/totalgyro")) {
-                    totalGyroIsOn = true;
-                    totalGyroAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/totalgyroOn", 1);
-                } else if (Str.endsWith("/sxp")) {
-                    sxpIsOn = true;
-                    sxpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/sxpOn", 1);
-                } else if (Str.endsWith("/syp")) {
-                    sypIsOn = true;
-                    sypAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/sypOn", 1);
-                } else if (Str.endsWith("/szp")) {
-                    szpIsOn = true;
-                    szpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/szpOn", 1);
-                } else if (Str.endsWith("/sxn")) {
-                    sxnIsOn = true;
-                    sxnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/sxnOn", 1);
-                } else if (Str.endsWith("/syn")) {
-                    synIsOn = true;
-                    synAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/synOn", 1);
-                } else if (Str.endsWith("/szn")) {
-                    sznIsOn = true;
-                    sznAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/sznOn", 1);
-                } else if (Str.endsWith("/ixp")) {
-                    ixpIsOn = true;
-                    ixpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ixpOn", 1);
-                } else if (Str.endsWith("/iyp")) {
-                    iypIsOn = true;
-                    iypAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/iypOn", 1);
-                } else if (Str.endsWith("/izp")) {
-                    izpIsOn = true;
-                    izpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/izpOn", 1);
-                } else if (Str.endsWith("/ixn")) {
-                    ixnIsOn = true;
-                    ixnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ixnOn", 1);
-                } else if (Str.endsWith("/iyn")) {
-                    iynIsOn = true;
-                    iynAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/iynOn", 1);
-                } else if (Str.endsWith("/izn")) {
-                    iznIsOn = true;
-                    iznAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/iznOn", 1);
-                } else if (Str.endsWith("/pixp")) {
-                    pixpIsOn = true;
-                    pixpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pixpOn", 1);
-                } else if (Str.endsWith("/piyp")) {
-                    piypIsOn = true;
-                    piypAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/piypOn", 1);
-                } else if (Str.endsWith("/pizp")) {
-                    pizpIsOn = true;
-                    pizpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pizpOn", 1);
-                } else if (Str.endsWith("/pixn")) {
-                    pixnIsOn = true;
-                    pixnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pixnOn", 1);
-                } else if (Str.endsWith("/piyn")) {
-                    piynIsOn = true;
-                    piynAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/piynOn", 1);
-                } else if (Str.endsWith("/pizn")) {
-                    piznIsOn = true;
-                    piznAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/piznOn", 1);
-                } else if (Str.endsWith("/axpn")) {
-                    axpnIsOn = true;
-                    axpnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/axpnOn", 1);
-                } else if (Str.endsWith("/aypn")) {
-                    aypnIsOn = true;
-                    aypnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/aypnOn", 1);
-                } else if (Str.endsWith("/azpn")) {
-                    azpnIsOn = true;
-                    azpnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/azpnOn", 1);
-                } else if (Str.endsWith("/axp")) {
-                    axpIsOn = true;
-                    axpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/axpOn", 1);
-                } else if (Str.endsWith("/ayp")) {
-                    aypIsOn = true;
-                    aypAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/aypOn", 1);
-                } else if (Str.endsWith("/azp")) {
-                    azpIsOn = true;
-                    azpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/azpOn", 1);
-                } else if (Str.endsWith("/axn")) {
-                    axnIsOn = true;
-                    axnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/axnOn", 1);
-                } else if (Str.endsWith("/ayn")) {
-                    aynIsOn = true;
-                    aynAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/aynOn", 1);
-                } else if (Str.endsWith("/azn")) {
-                    aznIsOn = true;
-                    aznAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/aznOn", 1);
-                } else if (Str.endsWith("/gxpn")) {
-                    gxpnIsOn = true;
-                    gxpnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gxpnOn", 1);
-                } else if (Str.endsWith("/gypn")) {
-                    gypnIsOn = true;
-                    gypnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gypnOn", 1);
-                } else if (Str.endsWith("/gzpn")) {
-                    gzpnIsOn = true;
-                    gzpnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gzpnOn", 1);
-                } else if (Str.endsWith("/gxp")) {
-                    gxpIsOn = true;
-                    gxpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gxpOn", 1);
-                } else if (Str.endsWith("/gyp")) {
-                    gypIsOn = true;
-                    gypAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gypOn", 1);
-                } else if (Str.endsWith("/gzp")) {
-                    gzpIsOn = true;
-                    gzpAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gzpOn", 1);
-                } else if (Str.endsWith("/gxn")) {
-                    gxnIsOn = true;
-                    gxnAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gxnOn", 1);
-                } else if (Str.endsWith("/gyn")) {
-                    gynIsOn = true;
-                    gynAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gynOn", 1);
-                } else if (Str.endsWith("/gzn")) {
-                    gznIsOn = true;
-                    gznAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/gznOn", 1);
-                } else if (Str.endsWith("/brasG_cour")) {
-                    brasGcourIsOn = true;
-                    brasGcourAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasG_courOn", 1);
-                } else if (Str.endsWith("/brasG_rear")) {
-                    brasGrearIsOn = true;
-                    brasGrearAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasG_rearOn", 1);
-                } else if (Str.endsWith("/brasG_jardin")) {
-                    brasGjardinIsOn = true;
-                    brasGjardinAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasG_jardinOn", 1);
-                } else if (Str.endsWith("/brasG_front")) {
-                    brasGfrontIsOn = true;
-                    brasGfrontAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasG_frontOn", 1);
-                } else if (Str.endsWith("/brasG_down")) {
-                    brasGdownIsOn = true;
-                    brasGdownAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasG_downOn", 1);
-                } else if (Str.endsWith("/brasG_up")) {
-                    brasGupIsOn = true;
-                    brasGupAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasG_upOn", 1);
-                } else if (Str.endsWith("/pieds_cour")) {
-                    piedscourIsOn = true;
-                    piedscourAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pieds_courOn", 1);
-                } else if (Str.endsWith("/pieds_rear")) {
-                    piedsrearIsOn = true;
-                    piedsrearAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pieds_rearOn", 1);
-                } else if (Str.endsWith("/pieds_jardin")) {
-                    piedsjardinIsOn = true;
-                    piedsjardinAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pieds_jardinOn", 1);
-                } else if (Str.endsWith("/pieds_front")) {
-                    piedsfrontIsOn = true;
-                    piedsfrontAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pieds_frontOn", 1);
-                } else if (Str.endsWith("/pieds_down")) {
-                    piedsdownIsOn = true;
-                    piedsdownAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pieds_downOn", 1);
-                } else if (Str.endsWith("/pieds_up")) {
-                    piedsupIsOn = true;
-                    piedsupAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/pieds_upOn", 1);
-                } else if (Str.endsWith("/dos_cour")) {
-                    doscourIsOn = true;
-                    doscourAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/dos_courOn", 1);
-                } else if (Str.endsWith("/dos_rear")) {
-                    dosrearIsOn = true;
-                    dosrearAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/dos_rearOn", 1);
-                } else if (Str.endsWith("/dos_jardin")) {
-                    dosjardinIsOn = true;
-                    dosjardinAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/dos_jardinOn", 1);
-                } else if (Str.endsWith("/dos_front")) {
-                    dosfrontIsOn = true;
-                    dosfrontAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/dos_frontOn", 1);
-                } else if (Str.endsWith("/dos_down")) {
-                    dosdownIsOn = true;
-                    dosdownAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/dos_downOn", 1);
-                } else if (Str.endsWith("/dos_up")) {
-                    dosupIsOn = true;
-                    dosupAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/dos_upOn", 1);
-                } else if (Str.endsWith("/brasD_cour")) {
-                    brasDcourIsOn = true;
-                    brasDcourAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasD_courOn", 1);
-                } else if (Str.endsWith("/brasD_rear")) {
-                    brasDrearIsOn = true;
-                    brasDrearAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasD_rearOn", 1);
-                } else if (Str.endsWith("/brasD_jardin")) {
-                    brasDjardinIsOn = true;
-                    brasDjardinAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasD_jardinOn", 1);
-                } else if (Str.endsWith("/brasD_front")) {
-                    brasDfrontIsOn = true;
-                    brasDfrontAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasD_frontOn", 1);
-                } else if (Str.endsWith("/brasD_down")) {
-                    brasDdownIsOn = true;
-                    brasDdownAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasD_downOn", 1);
-                } else if (Str.endsWith("/brasD_up")) {
-                    brasDupIsOn = true;
-                    brasDupAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/brasD_upOn", 1);
-                } else if (Str.endsWith("/tete_cour")) {
-                    tetecourIsOn = true;
-                    tetecourAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/tete_courOn", 1);
-                } else if (Str.endsWith("/tete_rear")) {
-                    teterearIsOn = true;
-                    teterearAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/tete_rearOn", 1);
-                } else if (Str.endsWith("/tete_jardin")) {
-                    tetejardinIsOn = true;
-                    tetejardinAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/tete_jardinOn", 1);
-                } else if (Str.endsWith("/tete_front")) {
-                    tetefrontIsOn = true;
-                    tetefrontAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/tete_frontOn", 1);
-                } else if (Str.endsWith("/tete_down")) {
-                    tetedownIsOn = true;
-                    tetedownAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/tete_downOn", 1);
-                } else if (Str.endsWith("/tete_up")) {
-                    teteupIsOn = true;
-                    teteupAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/tete_upOn", 1);
-                } else if (Str.endsWith("/ventre_cour")) {
-                    ventrecourIsOn = true;
-                    ventrecourAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ventre_courOn", 1);
-                } else if (Str.endsWith("/ventre_rear")) {
-                    ventrerearIsOn = true;
-                    ventrerearAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ventre_rearOn", 1);
-                } else if (Str.endsWith("/ventre_jardin")) {
-                    ventrejardinIsOn = true;
-                    ventrejardinAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ventre_jardinOn", 1);
-                } else if (Str.endsWith("/ventre_front")) {
-                    ventrefrontIsOn = true;
-                    ventrefrontAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ventre_frontOn", 1);
-                } else if (Str.endsWith("/ventre_down")) {
-                    ventredownIsOn = true;
-                    ventredownAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ventre_downOn", 1);
-                } else if (Str.endsWith("/ventre_up")) {
-                    ventreupIsOn = true;
-                    ventreupAddress = dspFaust.getParamAddress(i);
-                    dspFaustMotion.setParamValue("/Motion/ventre_upOn", 1);
-                } else if (Str.endsWith("/touchgate")) {
+                if (Str.endsWith("/touchgate")) {
                     touchGateIsOn = true;
                     touchGateAddress = dspFaust.getParamAddress(i);
                 } else if (Str.endsWith("/screenx")) {
@@ -1178,372 +888,76 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-    
-    
+
+
     private final SensorEventListener mSensorListener = new SensorEventListener() {
-    
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-    
-    public void onSensorChanged(SensorEvent event) {
-    
-    if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-    // Update acc at sensor rate
-    if (dspFaust != null) {
-    dspFaust.propagateAcc(0, event.values[0] * (-1));
-    dspFaust.propagateAcc(1, event.values[1] * (-1));
-    dspFaust.propagateAcc(2, event.values[2]);
-}
 
-if (dspFaustMotion != null) {
-dspFaustMotion.propagateAcc(0, event.values[0] * (-1));
-dspFaustMotion.propagateAcc(1, event.values[1] * (-1));
-dspFaustMotion.propagateAcc(2, event.values[2]);
-}
-}
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
 
-if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-// Update gyr at sensor rate
-if (dspFaust != null) {
-dspFaust.propagateGyr(0, event.values[0] * (-1));
-dspFaust.propagateGyr(1, event.values[1] * (-1));
-dspFaust.propagateGyr(2, event.values[2]);
-}
+        public void onSensorChanged(SensorEvent event) {
 
-if (dspFaustMotion != null) {
-dspFaustMotion.propagateGyr(0, event.values[0] * (-1));
-dspFaustMotion.propagateGyr(1, event.values[1] * (-1));
-dspFaustMotion.propagateGyr(2, event.values[2]);
-}
-}
+            long currentTime= System.currentTimeMillis();
+            long updateInterval = 10;
 
-if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-// Update rotation matrix at sensor rate
-SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
-SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_X,
-SensorManager.AXIS_Y, adjustedRotationMatrix);
 
-//matrixA =rotationMatrix;
-matrixA[0][0] =rotationMatrix[0];
-matrixA[0][1] =rotationMatrix[3];
-matrixA[0][2] =rotationMatrix[6];
+            if ((currentTime-lastDate) > updateInterval) {
 
-matrixA[1][0] =rotationMatrix[1];
-matrixA[1][1] =rotationMatrix[4];
-matrixA[1][2] =rotationMatrix[7];
+                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                    // Update acc at sensor rate
 
-matrixA[2][0] =rotationMatrix[2];
-matrixA[2][1] =rotationMatrix[5];
-matrixA[2][2] =rotationMatrix[8];
+                        dspFaust.propagateAcc(0, event.values[0] * (-1));
+                        dspFaust.propagateAcc(1, event.values[1] * (-1));
+                        dspFaust.propagateAcc(2, event.values[2]);
 
-matrixC = matrixMultiplication(matrixA,matrixB);
+                        dspFaustMotion.propagateAcc(0, event.values[0] * (-1));
+                        dspFaustMotion.propagateAcc(1, event.values[1] * (-1));
+                        dspFaustMotion.propagateAcc(2, event.values[2]);
 
-if (dspFaustMotion != null) {
-dspFaustMotion.setParamValue("/Motion/brasD_x", (-1) * matrixC[0][0]);
-dspFaustMotion.setParamValue("/Motion/brasD_y", (-1) * matrixC[0][1]);
-dspFaustMotion.setParamValue("/Motion/brasD_z", (-1) * matrixC[0][2]);
+                }
 
-dspFaustMotion.setParamValue("/Motion/pieds_x", (-1) * matrixC[1][0]);
-dspFaustMotion.setParamValue("/Motion/pieds_y", (-1) * matrixC[1][1]);
-dspFaustMotion.setParamValue("/Motion/pieds_z", (-1) * matrixC[1][2]);
+                if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                // Update gyr at sensor rate
 
-dspFaustMotion.setParamValue("/Motion/dos_x", (-1) * matrixC[2][0]);
-dspFaustMotion.setParamValue("/Motion/dos_y", (-1) * matrixC[2][1]);
-dspFaustMotion.setParamValue("/Motion/dos_z", (-1) * matrixC[2][2]);
+                        dspFaust.propagateGyr(0, event.values[0] * (-1));
+                        dspFaust.propagateGyr(1, event.values[1] * (-1));
+                        dspFaust.propagateGyr(2, event.values[2]);
 
-dspFaustMotion.setParamValue("/Motion/brasG_x", matrixC[0][0]);
-dspFaustMotion.setParamValue("/Motion/brasG_y", matrixC[0][1]);
-dspFaustMotion.setParamValue("/Motion/brasG_z", matrixC[0][2]);
+                        dspFaustMotion.propagateGyr(0, event.values[0] * (-1));
+                        dspFaustMotion.propagateGyr(1, event.values[1] * (-1));
+                        dspFaustMotion.propagateGyr(2, event.values[2]);
 
-dspFaustMotion.setParamValue("/Motion/tete_x", matrixC[1][0]);
-dspFaustMotion.setParamValue("/Motion/tete_y", matrixC[1][1]);
-dspFaustMotion.setParamValue("/Motion/tete_z", matrixC[1][2]);
+                }
 
-dspFaustMotion.setParamValue("/Motion/ventre_x", matrixC[2][0]);
-dspFaustMotion.setParamValue("/Motion/ventre_y", matrixC[2][1]);
-dspFaustMotion.setParamValue("/Motion/ventre_z", matrixC[2][2]);
-}
-}
+                if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+                    // Update rotation matrix at sensor rate
+                    SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
+                    SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_X,
+                            SensorManager.AXIS_Y, adjustedRotationMatrix);
 
-dspFaustMotion.render();
 
-if (totalAccelIsOn) {
-dspFaust.setParamValue(totalAccelAddress, dspFaustMotion.getParamValue("/Motion/Mtotalaccel"));
-}
-if (totalGyroIsOn) {
-dspFaust.setParamValue(totalGyroAddress, dspFaustMotion.getParamValue("/Motion/Mtotalgyro"));
-}
-if (sxpIsOn) {
-dspFaust.setParamValue(sxpAddress, dspFaustMotion.getParamValue("/Motion/Msxp"));
-}
-if (sypIsOn) {
-dspFaust.setParamValue(sypAddress, dspFaustMotion.getParamValue("/Motion/Msyp"));
-}
-if (szpIsOn) {
-dspFaust.setParamValue(szpAddress, dspFaustMotion.getParamValue("/Motion/Mszp"));
-}
-if (sxnIsOn) {
-dspFaust.setParamValue(sxnAddress, dspFaustMotion.getParamValue("/Motion/Msxn"));
-}
-if (synIsOn) {
-dspFaust.setParamValue(synAddress, dspFaustMotion.getParamValue("/Motion/Msyn"));
-}
-if (sznIsOn) {
-dspFaust.setParamValue(sznAddress, dspFaustMotion.getParamValue("/Motion/Mszn"));
-}
-if (ixpIsOn) {
-dspFaust.setParamValue(ixpAddress, dspFaustMotion.getParamValue("/Motion/Mixp"));
-}
-if (iypIsOn) {
-dspFaust.setParamValue(iypAddress, dspFaustMotion.getParamValue("/Motion/Miyp"));
-}
-if (izpIsOn) {
-dspFaust.setParamValue(izpAddress, dspFaustMotion.getParamValue("/Motion/Mizp"));
-}
-if (ixnIsOn) {
-dspFaust.setParamValue(ixnAddress, dspFaustMotion.getParamValue("/Motion/Mixn"));
-}
-if (iynIsOn) {
-dspFaust.setParamValue(iynAddress, dspFaustMotion.getParamValue("/Motion/Miyn"));
-}
-if (iznIsOn) {
-dspFaust.setParamValue(iznAddress, dspFaustMotion.getParamValue("/Motion/Mizn"));
-}
-if (pixpIsOn) {
-dspFaust.setParamValue(pixpAddress, dspFaustMotion.getParamValue("/Motion/Mpixp"));
-}
-if (piypIsOn) {
-dspFaust.setParamValue(piypAddress, dspFaustMotion.getParamValue("/Motion/Mpiyp"));
-}
-if (pizpIsOn) {
-dspFaust.setParamValue(pizpAddress, dspFaustMotion.getParamValue("/Motion/Mpizp"));
-}
-if (pixnIsOn) {
-dspFaust.setParamValue(pixnAddress, dspFaustMotion.getParamValue("/Motion/Mpixn"));
-}
-if (piynIsOn) {
-dspFaust.setParamValue(piynAddress, dspFaustMotion.getParamValue("/Motion/Mpiyn"));
-}
-if (piznIsOn) {
-dspFaust.setParamValue(piznAddress, dspFaustMotion.getParamValue("/Motion/Mpizn"));
-}
-if (axpnIsOn) {
-dspFaust.setParamValue(axpnAddress, dspFaustMotion.getParamValue("/Motion/Maxpn"));
-}
-if (aypnIsOn) {
-dspFaust.setParamValue(aypnAddress, dspFaustMotion.getParamValue("/Motion/Maypn"));
-}
-if (azpnIsOn) {
-dspFaust.setParamValue(azpnAddress, dspFaustMotion.getParamValue("/Motion/Mazpn"));
-}
-if (axpIsOn) {
-dspFaust.setParamValue(axpAddress, dspFaustMotion.getParamValue("/Motion/Maxp"));
-}
-if (aypIsOn) {
-dspFaust.setParamValue(aypAddress, dspFaustMotion.getParamValue("/Motion/Mayp"));
-}
-if (azpIsOn) {
-dspFaust.setParamValue(azpAddress, dspFaustMotion.getParamValue("/Motion/Mazp"));
-}
-if (axnIsOn) {
-dspFaust.setParamValue(axnAddress, dspFaustMotion.getParamValue("/Motion/Maxn"));
-}
-if (aynIsOn) {
-dspFaust.setParamValue(aynAddress, dspFaustMotion.getParamValue("/Motion/Mayn"));
-}
-if (aznIsOn) {
-dspFaust.setParamValue(aznAddress, dspFaustMotion.getParamValue("/Motion/Mazn"));
-}
-if (gxpnIsOn) {
-dspFaust.setParamValue(gxpnAddress, dspFaustMotion.getParamValue("/Motion/Mgxpn"));
-}
-if (gypnIsOn) {
-dspFaust.setParamValue(gypnAddress, dspFaustMotion.getParamValue("/Motion/Mgypn"));
-}
-if (gzpnIsOn) {
-dspFaust.setParamValue(gzpnAddress, dspFaustMotion.getParamValue("/Motion/Mgzpn"));
-}
-if (gxpIsOn) {
-dspFaust.setParamValue(gxpAddress, dspFaustMotion.getParamValue("/Motion/Mgxp"));
-}
-if (gypIsOn) {
-dspFaust.setParamValue(gypAddress, dspFaustMotion.getParamValue("/Motion/Mgyp"));
-}
-if (gzpIsOn) {
-dspFaust.setParamValue(gzpAddress, dspFaustMotion.getParamValue("/Motion/Mgzp"));
-}
-if (gypIsOn) {
-dspFaust.setParamValue(gypAddress, dspFaustMotion.getParamValue("/Motion/Mgyp"));
-}
-if (gxnIsOn) {
-dspFaust.setParamValue(gxnAddress, dspFaustMotion.getParamValue("/Motion/Mgxn"));
-}
-if (gynIsOn) {
-dspFaust.setParamValue(gynAddress, dspFaustMotion.getParamValue("/Motion/Mgyn"));
-}
-if (gznIsOn) {
-dspFaust.setParamValue(gznAddress, dspFaustMotion.getParamValue("/Motion/Mgzn"));
-}
-if (brasGcourIsOn) {
-dspFaust.setParamValue(brasGcourAddress, dspFaustMotion.getParamValue("/Motion/brasG_cour"));
-}
-if (brasGrearIsOn) {
-dspFaust.setParamValue(brasGrearAddress, dspFaustMotion.getParamValue("/Motion/brasG_rear"));
-}
-if (brasGjardinIsOn) {
-dspFaust.setParamValue(brasGjardinAddress, dspFaustMotion.getParamValue("/Motion/brasG_jardin"));
-}
-if (brasGfrontIsOn) {
-dspFaust.setParamValue(brasGfrontAddress, dspFaustMotion.getParamValue("/Motion/brasG_front"));
-}
-if (brasGdownIsOn) {
-dspFaust.setParamValue(brasGdownAddress, dspFaustMotion.getParamValue("/Motion/brasG_down"));
-}
-if (brasGupIsOn) {
-dspFaust.setParamValue(brasGupAddress, dspFaustMotion.getParamValue("/Motion/brasG_up"));
-}
-if (piedscourIsOn) {
-dspFaust.setParamValue(piedscourAddress, dspFaustMotion.getParamValue("/Motion/pieds_cour"));
-}
-if (piedsrearIsOn) {
-dspFaust.setParamValue(piedsrearAddress, dspFaustMotion.getParamValue("/Motion/pieds_rear"));
-}
-if (piedsjardinIsOn) {
-dspFaust.setParamValue(piedsjardinAddress, dspFaustMotion.getParamValue("/Motion/pieds_jardin"));
-}
-if (piedsfrontIsOn) {
-dspFaust.setParamValue(piedsfrontAddress, dspFaustMotion.getParamValue("/Motion/pieds_front"));
-}
-if (piedsdownIsOn) {
-dspFaust.setParamValue(piedsdownAddress, dspFaustMotion.getParamValue("/Motion/pieds_down"));
-}
-if (piedsupIsOn) {
-dspFaust.setParamValue(piedsupAddress, dspFaustMotion.getParamValue("/Motion/pieds_up"));
-}
-if (doscourIsOn) {
-dspFaust.setParamValue(doscourAddress, dspFaustMotion.getParamValue("/Motion/dos_cour"));
-}
-if (dosrearIsOn) {
-dspFaust.setParamValue(dosrearAddress, dspFaustMotion.getParamValue("/Motion/dos_rear"));
-}
-if (dosjardinIsOn) {
-dspFaust.setParamValue(dosjardinAddress, dspFaustMotion.getParamValue("/Motion/dos_jardin"));
-}
-if (dosfrontIsOn) {
-dspFaust.setParamValue(dosfrontAddress, dspFaustMotion.getParamValue("/Motion/dos_front"));
-}
-if (dosdownIsOn) {
-dspFaust.setParamValue(dosdownAddress, dspFaustMotion.getParamValue("/Motion/dos_down"));
-}
-if (dosupIsOn) {
-dspFaust.setParamValue(dosupAddress, dspFaustMotion.getParamValue("/Motion/dos_up"));
-}
-if (brasDcourIsOn) {
-dspFaust.setParamValue(brasDcourAddress, dspFaustMotion.getParamValue("/Motion/brasD_cour"));
-}
-if (brasDrearIsOn) {
-dspFaust.setParamValue(brasDrearAddress, dspFaustMotion.getParamValue("/Motion/brasD_rear"));
-}
-if (brasDjardinIsOn) {
-dspFaust.setParamValue(brasDjardinAddress, dspFaustMotion.getParamValue("/Motion/brasD_jardin"));
-}
-if (brasDfrontIsOn) {
-dspFaust.setParamValue(brasDfrontAddress, dspFaustMotion.getParamValue("/Motion/brasD_front"));
-}
-if (brasDdownIsOn) {
-dspFaust.setParamValue(brasDdownAddress, dspFaustMotion.getParamValue("/Motion/brasD_down"));
-}
-if (brasDupIsOn) {
-dspFaust.setParamValue(brasDupAddress, dspFaustMotion.getParamValue("/Motion/brasD_up"));
-}
-if (tetecourIsOn) {
-dspFaust.setParamValue(tetecourAddress, dspFaustMotion.getParamValue("/Motion/tete_cour"));
-}
-if (teterearIsOn) {
-dspFaust.setParamValue(teterearAddress, dspFaustMotion.getParamValue("/Motion/tete_rear"));
-}
-if (tetejardinIsOn) {
-dspFaust.setParamValue(tetejardinAddress, dspFaustMotion.getParamValue("/Motion/tete_jardin"));
-}
-if (tetefrontIsOn) {
-dspFaust.setParamValue(tetefrontAddress, dspFaustMotion.getParamValue("/Motion/tete_front"));
-}
-if (tetedownIsOn) {
-dspFaust.setParamValue(tetedownAddress, dspFaustMotion.getParamValue("/Motion/tete_down"));
-}
-if (teteupIsOn) {
-dspFaust.setParamValue(teteupAddress, dspFaustMotion.getParamValue("/Motion/tete_up"));
-}
-if (ventrecourIsOn) {
-dspFaust.setParamValue(ventrecourAddress, dspFaustMotion.getParamValue("/Motion/ventre_cour"));
-}
-if (ventrerearIsOn) {
-dspFaust.setParamValue(ventrerearAddress, dspFaustMotion.getParamValue("/Motion/ventre_rear"));
-}
-if (ventrejardinIsOn) {
-dspFaust.setParamValue(ventrejardinAddress, dspFaustMotion.getParamValue("/Motion/ventre_jardin"));
-}
-if (ventrefrontIsOn) {
-dspFaust.setParamValue(ventrefrontAddress, dspFaustMotion.getParamValue("/Motion/ventre_front"));
-}
-if (ventredownIsOn) {
-dspFaust.setParamValue(ventredownAddress, dspFaustMotion.getParamValue("/Motion/ventre_down"));
-}
-if (ventreupIsOn) {
-dspFaust.setParamValue(ventreupAddress, dspFaustMotion.getParamValue("/Motion/ventre_up"));
-}
+                    dspFaust.motionRender(rotationMatrix[0], rotationMatrix[3], rotationMatrix[6],
+                            rotationMatrix[1], rotationMatrix[4], rotationMatrix[7],
+                            rotationMatrix[2], rotationMatrix[5], rotationMatrix[8]);
 
-}
+                }
 
+                lastDate = currentTime;
+            }
+
+        }
 };
 
 
-// 3 rows * 3 columns
-public static float[][] matrixMultiplication (float[][] m1, float[][] m2) {
 
-int x= 3;
-int y= 3;
-float m[][] = new float[3][3];
-
-for(int i = 0; i < x; i++) {
-for(int j = 0; j < y; j++) {
-for(int k = 0; k < y; k++){
-m[i][j] += m1[i][k]*m2[k][j];
-}
-}
-}
-
-return m;
-}
 
 // set Ref function
 private void initFrame () {
 
 if (sensorManager!=null){
-// inverse matrix the matrix reference
-float a11 = rotationMatrix[0];
-float a12 = rotationMatrix[3];
-float a13 = rotationMatrix[6];
-float a21 = rotationMatrix[1];
-float a22 = rotationMatrix[4];
-float a23 = rotationMatrix[7];
-float a31 = rotationMatrix[2];
-float a32 = rotationMatrix[5];
-float a33 = rotationMatrix[8];
 
-float detA=a11*a22*a33+a21*a32*a13+a31*a12*a23-a11*a32*a23-a31*a22*a13-a21*a12*a33;
+    dspFaust.initFrame();
 
-matrixB[0][0] =(1/detA)*(a22*a33-a23*a32);
-matrixB[0][1] =(1/detA)*(a13*a32-a12*a33);
-matrixB[0][2] =(1/detA)*(a12*a23-a13*a22);
-
-matrixB[1][0] =(1/detA)*(a23*a31-a21*a33);
-matrixB[1][1] =(1/detA)*(a11*a33-a13*a31);
-matrixB[1][2] =(1/detA)*(a13*a21-a11*a23);
-
-matrixB[2][0] =(1/detA)*(a21*a32-a22*a31);
-matrixB[2][1] =(1/detA)*(a12*a31-a11*a32);
-matrixB[2][2] =(1/detA)*(a11*a22-a12*a21);
 }
 
 }
@@ -1575,10 +989,9 @@ private void SharedPreClear() {
 }
 
 
+
+
 private void loadDefaultParams() {
-
-
-    SharedPrefInit(getApplicationContext());
 
     hpValue = SharedPrefRead("/Motion/hp",dspFaustMotion.getParamInit("/Motion/hp"));
     shok_thrValue = SharedPrefRead("/Motion/shok_thr",dspFaustMotion.getParamInit("/Motion/shok_thr"));
@@ -1608,21 +1021,10 @@ private void loadDefaultParams() {
     dspFaustMotion.setParamValue("/Motion/lp", lpValue);
     dspFaustMotion.setParamValue("/Motion/osfproj", osfprojValue);
 
-    if (dspFaust.getOSCIsOn()) {
-        oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
-        oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
-        oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
-
-        dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
-
-
-    }
-
 
 }
 
-
-    private void resetParams() {
+private void resetParams() {
 
         SharedPreClear();
 
@@ -1645,7 +1047,6 @@ private void loadDefaultParams() {
         SharedPrefWriteString("oscOutPort", "5511");
 
         if (dspFaust.getOSCIsOn()) {
-
             oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
             oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
             oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
@@ -1657,7 +1058,7 @@ private void loadDefaultParams() {
             outputPort.setText(SharedPrefRead("oscOutPort","5511"));
         }
 
-    }
+}
 
 
 @Override
@@ -1689,10 +1090,23 @@ if (!dspFaustMotion.isRunning()) {
 
 if (!dspFaust.isRunning()) {
 
-    checkAddress();
-    loadDefaultParams();
+    SharedPrefInit(getApplicationContext());
+
+    if (dspFaust.getOSCIsOn()) {
+        oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
+        oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
+        oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
+
+        dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
+
+    }
 
     dspFaust.start();
+
+    checkAddress();
+    dspFaust.checkAdress();
+    loadDefaultParams();
+
 
 sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
 Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);

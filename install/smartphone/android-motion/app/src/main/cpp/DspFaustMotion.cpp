@@ -6162,4 +6162,4 @@ float DspFaustMotion::getCPULoad(){
 int DspFaustMotion::getScreenColor(){
 	return fMotionEngine->getScreenColor();
 }
-std::list<GUI*> GUI::fGuiList; ztimedmap GUI::gTimedZoneMap;
+

@@ -231,23 +231,27 @@ static void SWIGUNUSED SWIG_JavaThrowException(JNIEnv *jenv, SWIG_JavaExceptionC
 
 
 #include "DspFaust.h"
+#include "DspFaustMotion.h"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-SWIGEXPORT jlong JNICALL Java_com_DspFaust_dsp_1faustJNI_new_1DspFaust(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2) {
+SWIGEXPORT jlong JNICALL Java_com_DspFaust_dsp_1faustJNI_new_1DspFaust(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
   jlong jresult = 0 ;
-  int arg1 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
   int arg2 ;
+  int arg3 ;
   DspFaust *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  arg1 = (int)jarg1; 
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = (DspFaust *)new DspFaust(arg1,arg2);
+  arg3 = (int)jarg3; 
+  result = (DspFaust *)new DspFaust(arg1,arg2,arg3);
   *(DspFaust **)&jresult = result; 
   return jresult;
 }
@@ -964,6 +968,544 @@ SWIGEXPORT jboolean JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getOSCIsOn
   arg1 = *(DspFaust **)&jarg1; 
   result = (bool)(arg1)->getOSCIsOn();
   jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1motionRender(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2, jfloat jarg3, jfloat jarg4, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jfloat jarg10) {
+  DspFaust *arg1 = (DspFaust *) 0 ;
+  float arg2 ;
+  float arg3 ;
+  float arg4 ;
+  float arg5 ;
+  float arg6 ;
+  float arg7 ;
+  float arg8 ;
+  float arg9 ;
+  float arg10 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaust **)&jarg1; 
+  arg2 = (float)jarg2; 
+  arg3 = (float)jarg3; 
+  arg4 = (float)jarg4; 
+  arg5 = (float)jarg5; 
+  arg6 = (float)jarg6; 
+  arg7 = (float)jarg7; 
+  arg8 = (float)jarg8; 
+  arg9 = (float)jarg9; 
+  arg10 = (float)jarg10; 
+  (arg1)->motionRender(arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1initFrame(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  DspFaust *arg1 = (DspFaust *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaust **)&jarg1; 
+  (arg1)->initFrame();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1sendMotion(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  DspFaust *arg1 = (DspFaust *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaust **)&jarg1; 
+  (arg1)->sendMotion();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1checkAdress(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  DspFaust *arg1 = (DspFaust *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaust **)&jarg1; 
+  (arg1)->checkAdress();
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_DspFaust_dsp_1faustJNI_new_1DspFaustMotion(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  int arg2 ;
+  DspFaustMotion *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  arg2 = (int)jarg2; 
+  result = (DspFaustMotion *)new DspFaustMotion(arg1,arg2);
+  *(DspFaustMotion **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_delete_1DspFaustMotion(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1start(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (bool)(arg1)->start();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1stop(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  (arg1)->stop();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1render(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  (arg1)->render();
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1isRunning(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (bool)(arg1)->isRunning();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getJSONUI(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (char *)(arg1)->getJSONUI();
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getJSONMeta(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jstring jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (char *)(arg1)->getJSONMeta();
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamsCount(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (int)(arg1)->getParamsCount();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1setParamValue_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jfloat jarg3) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *arg2 = (char *) 0 ;
+  float arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return ;
+  }
+  arg3 = (float)jarg3; 
+  (arg1)->setParamValue((char const *)arg2,arg3);
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1setParamValue_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (float)jarg3; 
+  (arg1)->setParamValue(arg2,arg3);
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamValue_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *arg2 = (char *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (float)(arg1)->getParamValue((char const *)arg2);
+  jresult = (jfloat)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamValue_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (float)(arg1)->getParamValue(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamAddress(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jstring jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (char *)(arg1)->getParamAddress(arg2);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamMin_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *arg2 = (char *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (float)(arg1)->getParamMin((char const *)arg2);
+  jresult = (jfloat)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamMin_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (float)(arg1)->getParamMin(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamMax_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *arg2 = (char *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (float)(arg1)->getParamMax((char const *)arg2);
+  jresult = (jfloat)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamMax_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (float)(arg1)->getParamMax(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamInit_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *arg2 = (char *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (float)(arg1)->getParamInit((char const *)arg2);
+  jresult = (jfloat)result; 
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamInit_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (float)(arg1)->getParamInit(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamTooltip_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jstring jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (char *)(arg1)->getParamTooltip((char const *)arg2);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamTooltip_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jstring jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (char *)(arg1)->getParamTooltip(arg2);
+  if (result) jresult = jenv->NewStringUTF((const char *)result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1propagateAcc(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (float)jarg3; 
+  (arg1)->propagateAcc(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1setAccConverter(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3, jint jarg4, jfloat jarg5, jfloat jarg6, jfloat jarg7) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  float arg5 ;
+  float arg6 ;
+  float arg7 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = (float)jarg5; 
+  arg6 = (float)jarg6; 
+  arg7 = (float)jarg7; 
+  (arg1)->setAccConverter(arg2,arg3,arg4,arg5,arg6,arg7);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1propagateGyr(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (float)jarg3; 
+  (arg1)->propagateGyr(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1setGyrConverter(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3, jint jarg4, jfloat jarg5, jfloat jarg6, jfloat jarg7) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  float arg5 ;
+  float arg6 ;
+  float arg7 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = (float)jarg5; 
+  arg6 = (float)jarg6; 
+  arg7 = (float)jarg7; 
+  (arg1)->setGyrConverter(arg2,arg3,arg4,arg5,arg6,arg7);
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getCPULoad(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (float)(arg1)->getCPULoad();
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getScreenColor(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (int)(arg1)->getScreenColor();
+  jresult = (jint)result; 
   return jresult;
 }
 
