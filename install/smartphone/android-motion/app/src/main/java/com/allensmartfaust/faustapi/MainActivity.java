@@ -72,11 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     long lastDate=0;
     
-    
-    String[] ParamArray = {"hp","shok_thr","antirebon","lp","tacc_thr",
-    "tacc_gain","tacc_up","tacc_down","tgyr_thr",
-    "tgyr_gain","tgyr_up","tgyr_down","osfproj"};
-
     float hpValue, shok_thrValue, antirebonValue, lpValue, osfprojValue, tacc_thrValue, tacc_gainValue,
      tacc_upValue, tacc_downValue, tgyr_thrValue, tgyr_gainValue, tgyr_upValue, tgyr_downValue;
     
@@ -87,20 +82,6 @@ public class MainActivity extends AppCompatActivity {
     int cueIndex,cueIndexNext;
     
     float[] rotationMatrix = new float[9];
-    float[] adjustedRotationMatrix = new float[9];
-    float[][] matrixA = new float[3][3];
-    float[][] matrixB = new float[3][3];
-    float[][] matrixC = new float[3][3];
-    
-    String totalAccelAddress, totalGyroAddress ,sxpAddress, sypAddress, szpAddress, sxnAddress, synAddress, sznAddress, ixpAddress,
-    iypAddress, izpAddress, ixnAddress, iynAddress, iznAddress, pixpAddress, piypAddress, pizpAddress, pixnAddress, piynAddress,
-    piznAddress, axpnAddress, aypnAddress, azpnAddress, axpAddress, aypAddress, azpAddress, axnAddress, aynAddress, aznAddress,
-    gxpnAddress, gypnAddress, gzpnAddress, gxpAddress, gypAddress, gzpAddress, gxnAddress, gynAddress, gznAddress, brasGcourAddress,
-    brasGrearAddress, brasGjardinAddress, brasGfrontAddress, brasGdownAddress, brasGupAddress, piedscourAddress, piedsrearAddress,
-    piedsjardinAddress, piedsfrontAddress, piedsdownAddress, piedsupAddress, doscourAddress, dosrearAddress, dosjardinAddress,
-    dosfrontAddress, dosdownAddress, dosupAddress, brasDcourAddress, brasDrearAddress, brasDjardinAddress, brasDfrontAddress,
-    brasDdownAddress, brasDupAddress, tetecourAddress, teterearAddress, tetejardinAddress, tetefrontAddress, tetedownAddress,
-    teteupAddress, ventrecourAddress, ventrerearAddress, ventrejardinAddress, ventrefrontAddress, ventredownAddress, ventreupAddress;
 
     String oscAddress;
     int oscInPort;
@@ -113,16 +94,6 @@ public class MainActivity extends AppCompatActivity {
     
     String cueAddress;
     String tipAddress;
-    
-    
-    boolean totalAccelIsOn, totalGyroIsOn, sxpIsOn, sypIsOn, szpIsOn, sxnIsOn, synIsOn, sznIsOn, ixpIsOn, iypIsOn, izpIsOn, ixnIsOn,
-    iynIsOn, iznIsOn, pixpIsOn, piypIsOn, pizpIsOn, pixnIsOn, piynIsOn, piznIsOn, axpnIsOn, aypnIsOn, azpnIsOn, axpIsOn,
-    aypIsOn, azpIsOn, axnIsOn, aynIsOn, aznIsOn, gxpnIsOn, gypnIsOn, gzpnIsOn, gxpIsOn, gypIsOn, gzpIsOn, gxnIsOn, gynIsOn,
-    gznIsOn, brasGcourIsOn, brasGrearIsOn, brasGjardinIsOn, brasGfrontIsOn, brasGdownIsOn, brasGupIsOn, piedscourIsOn,
-    piedsrearIsOn, piedsjardinIsOn, piedsfrontIsOn, piedsdownIsOn, piedsupIsOn, doscourIsOn, dosrearIsOn, dosjardinIsOn,
-    dosfrontIsOn, dosdownIsOn, dosupIsOn, brasDcourIsOn, brasDrearIsOn, brasDjardinIsOn, brasDfrontIsOn, brasDdownIsOn,
-    brasDupIsOn, tetecourIsOn, teterearIsOn, tetejardinIsOn, tetefrontIsOn, tetedownIsOn, teteupIsOn, ventrecourIsOn,
-    ventrerearIsOn, ventrejardinIsOn, ventrefrontIsOn, ventredownIsOn, ventreupIsOn;
     
     boolean touchGateIsOn;
     boolean screenXIsOn;
@@ -204,9 +175,6 @@ public class MainActivity extends AppCompatActivity {
         }
         
         if (dspFaust == null) {
-
-            //long a = DspFaustMotion.getCPtr(dspFaustMotion);
-            //dspFaustMotionSWIG = SWIGTYPE_p_DspFaustMotion(a,false);
 
             dspFaust = new DspFaust(dspFaustMotion,SR, blockSize);
             // PRINT ALL PARAMETRE ADDRESS
@@ -932,9 +900,6 @@ public class MainActivity extends AppCompatActivity {
                 if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
                     // Update rotation matrix at sensor rate
                     SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
-                    SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_X,
-                            SensorManager.AXIS_Y, adjustedRotationMatrix);
-
 
                     dspFaust.motionRender(rotationMatrix[0], rotationMatrix[3], rotationMatrix[6],
                             rotationMatrix[1], rotationMatrix[4], rotationMatrix[7],
