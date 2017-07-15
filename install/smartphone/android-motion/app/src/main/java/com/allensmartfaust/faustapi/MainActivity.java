@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     private void createFaust() {
         
         int SR = 44100;
-        int blockSize = 256;
+        int blockSize = 512;
         
         if (dspFaustMotion == null) {
             dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
@@ -866,13 +866,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void onSensorChanged(SensorEvent event) {
-
-            long currentTime= System.currentTimeMillis();
-            long updateInterval = 10;
-
+    
+    
+        long currentTime= System.currentTimeMillis();
+        long updateInterval = 0;
+        if (dspFaust.getOSCIsOn()) {
+            updateInterval = 10;
+        } else {
+            updateInterval = 0;
+        }
 
             if ((currentTime-lastDate) > updateInterval) {
-
+            
                 if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                     // Update acc at sensor rate
 
@@ -910,6 +915,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 lastDate = currentTime;
+            
             }
 
         }

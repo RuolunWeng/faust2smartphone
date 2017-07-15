@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
     private SensorManager sensorManager;
     
+    long lastDate=0;
+    
     private SeekBar param1,param2;
     private TextView paramOut1,paramOut2;
 
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
+        
 
         // TODO: SET PARAMETRE ADDRESS & VALUE
         // TODO: Change interface in .xml
@@ -148,6 +150,12 @@ public class MainActivity extends AppCompatActivity {
     
     public void onSensorChanged(SensorEvent event) {
     
+    long currentTime= System.currentTimeMillis();
+    long updateInterval = 10;
+    
+    
+    if ((currentTime-lastDate) > updateInterval) {
+    
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Update mapping at sensor rate
             dspFaust.propagateAcc(0, event.values[0]*(-1));
@@ -171,7 +179,8 @@ public class MainActivity extends AppCompatActivity {
         param2.setProgress((int)(getParam2+96.0f));
         paramOut1.setText("Freq:"+getParam1+"Hz");
         paramOut2.setText("Volume:"+getParam2+"dB");
-
+        
+    }
         }
     };
 
@@ -208,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
                 int SR = 44100;
-                int blockSize = 256;
+                int blockSize = 512;
                 dspFaust = new DspFaust(SR,blockSize);
                 // PRINT ALL PARAMETRE ADDRESS
                 for(int i=0; i < dspFaust.getParamsCount(); i++){

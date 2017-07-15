@@ -20,8 +20,11 @@
 #include "faust/misc.h"
 #include "faust/gui/UI.h"
 #include "faust/dsp/dsp.h"
-#include "faust/dsp/dsp-adapter.h"
 #include "faust/gui/meta.h"
+#include "faust/gui/jsonfaustui.h"
+#include "faust/gui/JSONUI.h"
+#include "faust/gui/MapUI.h"
+#include "faust/gui/GUI.h"
 
 #if OSCCTRL
 #include "faust/gui/OSCUI.h"

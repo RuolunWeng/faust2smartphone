@@ -20,8 +20,11 @@
 #include "faust/misc.h"
 #include "faust/gui/UI.h"
 #include "faust/dsp/dsp.h"
-#include "faust/dsp/dsp-adapter.h"
 #include "faust/gui/meta.h"
+#include "faust/gui/jsonfaustui.h"
+#include "faust/gui/JSONUI.h"
+#include "faust/gui/MapUI.h"
+#include "faust/gui/GUI.h"
 
 #if OSCCTRL
 #include "faust/gui/OSCUI.h"
@@ -86,7 +89,87 @@ DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_s
     fPolyEngine->buildUserInterface(fOSCUI);
     
 #endif
-
+    
+    totalAccelIsOn = false;
+    totalGyroIsOn = false;
+    sxpIsOn = false;
+    sypIsOn = false;
+    szpIsOn = false;
+    sxnIsOn = false;
+    synIsOn = false;
+    sznIsOn = false;
+    ixpIsOn = false;
+    iypIsOn = false;
+    izpIsOn = false;
+    ixnIsOn = false;
+    iynIsOn = false;
+    iznIsOn = false;
+    pixpIsOn = false;
+    piypIsOn = false;
+    pizpIsOn = false;
+    pixnIsOn = false;
+    piynIsOn = false;
+    piznIsOn = false;
+    axpnIsOn = false;
+    aypnIsOn = false;
+    azpnIsOn = false;
+    axpIsOn = false;
+    aypIsOn = false;
+    azpIsOn = false;
+    axnIsOn = false;
+    aynIsOn = false;
+    aznIsOn = false;
+    gxpnIsOn = false;
+    gypnIsOn = false;
+    gzpnIsOn = false;
+    gxpIsOn = false;
+    gypIsOn = false;
+    gzpIsOn = false;
+    gxnIsOn = false;
+    gynIsOn = false;
+    gznIsOn = false;
+    
+    brasGcourIsOn = false;
+    brasGrearIsOn = false;
+    brasGjardinIsOn = false;
+    brasGfrontIsOn = false;
+    brasGdownIsOn = false;
+    brasGupIsOn = false;
+    
+    piedscourIsOn = false;
+    piedsrearIsOn = false;
+    piedsjardinIsOn = false;
+    piedsfrontIsOn = false;
+    piedsdownIsOn = false;
+    piedsupIsOn = false;
+    
+    doscourIsOn = false;
+    dosrearIsOn = false;
+    dosjardinIsOn = false;
+    dosfrontIsOn = false;
+    dosdownIsOn = false;
+    dosupIsOn = false;
+    
+    brasDcourIsOn = false;
+    brasDrearIsOn = false;
+    brasDjardinIsOn = false;
+    brasDfrontIsOn = false;
+    brasDdownIsOn = false;
+    brasDupIsOn = false;
+    
+    tetecourIsOn = false;
+    teterearIsOn = false;
+    tetejardinIsOn = false;
+    tetefrontIsOn = false;
+    tetedownIsOn = false;
+    teteupIsOn = false;
+    
+    ventrecourIsOn = false;
+    ventrerearIsOn = false;
+    ventrejardinIsOn = false;
+    ventrefrontIsOn = false;
+    ventredownIsOn = false;
+    ventreupIsOn = false;
     
 }
 

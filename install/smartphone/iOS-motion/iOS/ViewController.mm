@@ -12,7 +12,7 @@
 #define kGUIUpdateRate 30
 
 #define SR 44100
-#define bufferSize 256
+#define bufferSize 512
 
 
 @interface ViewController ()

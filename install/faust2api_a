@@ -3,7 +3,7 @@
 #####################################################################
 #                                                                   #
 #    Generates an API for Android or iOS based on a Faust object    #
-#               (c) Romain Michon CCRMA and Grame, 2016             #
+#               (c) Allen and Grame, 2017                           #
 #                                                                   #
 #####################################################################
 
@@ -40,10 +40,11 @@ echoHelp ()
     echo "GLOBAL OPTIONS:"
     echo "   -nvoices N : creates a polyphonic object with N voices."
     echo "   -effect <effect.dsp>: adds an effect to the polyphonic synth (this option is ignored if -nvoices is not specified)."
-	echo "   -nodoc : prevents documentation from being generated."
+	  echo "   -nodoc : prevents documentation from being generated."
     echo ""
     echo "ANDROID-SPECIFIC OPTIONS:"
     echo "   -package : set the JAVA package name (e.g. '-package mypackage' will change the JAVA package name to 'mypackage.DspFaust'). The default package name is 'com.DspFaust.'"
+    echo "   -osc : add osc support to the API."
     echo "   -androidmotion : generate app with motion support."
     echo ""
     echo "IOS-SPECIFIC OPTIONS "
@@ -56,7 +57,7 @@ echoHelp ()
 while [ $1 ]
 do
 	p=$1
-	
+
     if [ $p = "-help" ]; then
 	echoHelp
     elif [ "$PACKAGENAME" = "-1" ]; then
@@ -94,7 +95,7 @@ do
     fi
 
 shift
-	
+
 done
 
 if [ -z $FILE ]; then
@@ -137,7 +138,7 @@ if [ $ANDROID -eq 1 ]; then
     if [ "$NVOICES" -gt "0" ]; then
 	echo "#define NVOICES $NVOICES" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     fi
-    
+
 elif [ $ANDROIDMOTION -eq 1 ]; then
     echo "Your dsp-faust.zip API package for Android Motion support is being created"
     CPPFOLDER="$APIFOLDER/cpp"
@@ -157,7 +158,7 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
     else
     faust -i -a api-allen/android-motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
     fi
-   
+
 elif [ $IOS -eq 1 ]; then
     echo "Your dsp-faust.zip API package for iOS is being created"
     cp -r /usr/local/share/faust/api-allen/iOS/DspFaust.h $APIFOLDER
@@ -199,6 +200,9 @@ if [ $NODOC -eq 0 ]; then
 	if [ $ANDROID -eq 1 ]; then
 		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/Android.md"
 		APIHEADERFILE="/usr/local/share/faust/api-allen/android/DspFaust.h"
+  elif [ $ANDROIDMOTION -eq 1 ]; then
+  		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/Android.md"
+  		APIHEADERFILE="/usr/local/share/faust/api-allen/android-motion/DspFaust.h"
 	elif [ $IOS -eq 1 ]; then
 		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/iOS.md"
 		APIHEADERFILE="/usr/local/share/faust/api-allen/iOS/DspFaust.h"
@@ -206,11 +210,11 @@ if [ $NODOC -eq 0 ]; then
 		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/iOS.md"
 		APIHEADERFILE="/usr/local/share/faust/api-allen/iOS-motion/DspFaust.h"
 	fi
-    
+
 	PPFILE=pPrinter.cpp
 	PPBINARY=pp
 	READMEFILE="$APIFOLDER/README.md"
-	
+
 	CXXFLAGS=$MYGCCFLAGS
 	MYGCCFLAGS="-O3"
 	CXX=g++
@@ -230,11 +234,11 @@ if [ $NODOC -eq 0 ]; then
 		$CXX $CXXFLAGS "$PPFILE" -o "$PPBINARY"
 	) > /dev/null || exit
 	rm "$PPFILE" || exit
-	
+
 	cp "$DOCHEADERFILE"  "$READMEFILE" || exit
 	./"$PPBINARY" | cat "$READMEFILE" - > temp && mv temp "$READMEFILE" || exit
 	rm "$PPBINARY" || exit
-	
+
 	faust2md "$APIHEADERFILE"  | cat "$READMEFILE" - > temp && mv temp "$READMEFILE" || exit
 fi
 
