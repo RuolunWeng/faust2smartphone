@@ -63,6 +63,12 @@
     BOOL tgyr_gainIsOn;
     BOOL tgyr_upIsOn;
     BOOL tgyr_downIsOn;
+    BOOL shapeCourIsOn;
+    BOOL shapeRearIsOn;
+    BOOL shapeJardinIsOn;
+    BOOL shapeFrontIsOn;
+    BOOL shapeDownIsOn;
+    BOOL shapeUpIsOn;
     
     float hpValue;
     float shok_thrValue;
@@ -77,6 +83,12 @@
     float tgyr_gainValue;
     float tgyr_upValue;
     float tgyr_downValue;
+    float shapeCourValue;
+    float shapeRearValue;
+    float shapeJardinValue;
+    float shapeFrontValue;
+    float shapeDownValue;
+    float shapeUpValue;
     
     NSMutableArray *myCueNumArrary;
     NSInteger cueNum;

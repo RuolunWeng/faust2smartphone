@@ -283,6 +283,65 @@
                 android:text="osfproj"
                 android:textColor="@android:color/white" />
 
+            <RadioButton
+                android:id="@+id/shapeCour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:checked="false"
+                android:text="shapeCour"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/shapeRear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:checked="false"
+                android:text="shapeRear"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/shapeJardin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:checked="false"
+                android:text="shapeJardin"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/shapeFront"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:checked="false"
+                android:text="shapeFront"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/shapeDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:checked="false"
+                android:text="shapeDown"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/shapeUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:checked="false"
+                android:text="shapeUp"
+                android:textColor="@android:color/white" />
 
         </RadioGroup>
 
@@ -314,14 +373,14 @@
         android:id="@+id/paramValue"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/SetParams"
+        android:layout_toEndOf="@+id/scrollView2"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:singleLine="false"
         android:text="0.0"
         android:textColor="@android:color/white"
-        android:visibility="invisible"
-        android:layout_below="@+id/SetParams"
-        android:layout_toEndOf="@+id/scrollView2" />
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/defaultParams"

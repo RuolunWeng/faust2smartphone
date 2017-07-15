@@ -77,7 +77,8 @@
     
     NSArray *ParamArray = @[@"hp",@"shok_thr",@"antirebon",@"lp",@"tacc_thr",
                           @"tacc_gain",@"tacc_up",@"tacc_down",@"tgyr_thr",
-                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj"];
+                          @"tgyr_gain",@"tgyr_up",@"tgyr_down",@"osfproj",
+                          @"shapeCour",@"shapeRear",@"shapeJardin",@"shapeFront",@"shapeDown",@"shapeUp"];
     
     [_motionParamArray addObjectsFromArray:ParamArray];
     
@@ -184,6 +185,12 @@
                                  [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tgyr_up")], @"/Motion/tgyr_up",
                                  [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/tgyr_down")], @"/Motion/tgyr_down",
                                  [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/osfproj")], @"/Motion/osfproj",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/shape0")], @"/Motion/shape0",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/shape1")], @"/Motion/shape1",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/shape2")], @"/Motion/shape2",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/shape3")], @"/Motion/shape3",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/shape4")], @"/Motion/shape4",
+                                 [NSNumber numberWithFloat:dspFaustMotion->getParamInit("/Motion/shape5")], @"/Motion/shape5",
                                  @"192.168.1.20", @"oscAddress",
                                  @"5510", @"oscInPort",
                                  @"5511", @"oscOutPort",
@@ -203,7 +210,12 @@
     tgyr_upValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tgyr_up"];
     tgyr_downValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/tgyr_down"];
     osfprojValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/osfproj"];
-    
+    shapeCourValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/shape0"];
+    shapeRearValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/shape1"];
+    shapeJardinValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/shape2"];
+    shapeFrontValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/shape3"];
+    shapeDownValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/shape4"];
+    shapeUpValue = (float)[[NSUserDefaults standardUserDefaults] floatForKey:@"/Motion/shape5"];
     
     dspFaustMotion->setParamValue("/Motion/hp", hpValue);
     dspFaustMotion->setParamValue("/Motion/shok_thr", shok_thrValue);
@@ -218,6 +230,12 @@
     dspFaustMotion->setParamValue("/Motion/tgyr_down", tgyr_downValue);
     dspFaustMotion->setParamValue("/Motion/lp", lpValue);
     dspFaustMotion->setParamValue("/Motion/osfproj", osfprojValue);
+    dspFaustMotion->setParamValue("/Motion/shape0", shapeCourValue);
+    dspFaustMotion->setParamValue("/Motion/shape1", shapeRearValue);
+    dspFaustMotion->setParamValue("/Motion/shape2", shapeJardinValue);
+    dspFaustMotion->setParamValue("/Motion/shape3", shapeFrontValue);
+    dspFaustMotion->setParamValue("/Motion/shape4", shapeDownValue);
+    dspFaustMotion->setParamValue("/Motion/shape5", shapeUpValue);
     
     if (dspFaust->getOSCIsOn()) {
         oscAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
@@ -739,7 +757,7 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, pickerView.frame.size.width, 44)];
     label.backgroundColor = [UIColor grayColor];
     label.textColor = [UIColor whiteColor];
-    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18];
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17];
     
     label.text = [_motionParamArray objectAtIndex:row];
     return label;
@@ -766,6 +784,12 @@
          tgyr_gainIsOn= false;
          tgyr_upIsOn= false;
          tgyr_downIsOn= false;
+         shapeCourIsOn= false;
+         shapeRearIsOn= false;
+         shapeJardinIsOn= false;
+         shapeFrontIsOn= false;
+         shapeDownIsOn= false;
+         shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/lp")];
     } else if ([seletedParam isEqualToString:@"shok_thr"]) {
         lpIsOn = false;
@@ -781,6 +805,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shok_thr")];
     } else if ([seletedParam isEqualToString:@"hp"]) {
         hpIsOn = true;
@@ -796,6 +826,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/hp")];
     } else if ([seletedParam isEqualToString:@"antirebon"]) {
         antirebonIsOn = true;
@@ -811,6 +847,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/antirebon")];
     } else if ([seletedParam isEqualToString:@"tacc_thr"]) {
         tacc_thrIsOn = true;
@@ -826,6 +868,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_thr")];
     } else if ([seletedParam isEqualToString:@"tacc_gain"]) {
         tacc_gainIsOn = true;
@@ -841,6 +889,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_gain")];
     } else if ([seletedParam isEqualToString:@"tacc_up"]) {
         tacc_upIsOn = true;
@@ -856,6 +910,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_up")];
     } else if ([seletedParam isEqualToString:@"tacc_down"]) {
         tacc_downIsOn = true;
@@ -871,6 +931,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tacc_down")];
     } else if ([seletedParam isEqualToString:@"tgyr_thr"]) {
         tgyr_thrIsOn = true;
@@ -886,6 +952,12 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_thr")];
     } else if ([seletedParam isEqualToString:@"tgyr_gain"]) {
         tgyr_gainIsOn = true;
@@ -901,6 +973,12 @@
         tgyr_thrIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_gain")];
     } else if ([seletedParam isEqualToString:@"tgyr_up"]) {
         tgyr_upIsOn = true;
@@ -916,6 +994,12 @@
         tgyr_thrIsOn= false;
         tgyr_gainIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_up")];
     } else if ([seletedParam isEqualToString:@"tgyr_down"]) {
         tgyr_downIsOn = true;
@@ -931,6 +1015,12 @@
         tgyr_thrIsOn= false;
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/tgyr_down")];
     } else if ([seletedParam isEqualToString:@"osfproj"]) {
         osfprojIsOn = true;
@@ -946,7 +1036,139 @@
         tgyr_gainIsOn= false;
         tgyr_upIsOn= false;
         tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/osfproj")];
+    } else if ([seletedParam isEqualToString:@"shapeCour"]) {
+        osfprojIsOn = false;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        shapeCourIsOn= true;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shape0")];
+    } else if ([seletedParam isEqualToString:@"shapeRear"]) {
+        osfprojIsOn = false;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= true;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shape1")];
+    } else if ([seletedParam isEqualToString:@"shapeJardin"]) {
+        osfprojIsOn = false;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= true;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shape2")];
+    } else if ([seletedParam isEqualToString:@"shapeFront"]) {
+        osfprojIsOn = false;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= true;
+        shapeDownIsOn= false;
+        shapeUpIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shape3")];
+    } else if ([seletedParam isEqualToString:@"shapeDown"]) {
+        osfprojIsOn = false;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= true;
+        shapeUpIsOn= false;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shape4")];
+    } else if ([seletedParam isEqualToString:@"shapeUp"]) {
+        osfprojIsOn = false;
+        antirebonIsOn = false;
+        hpIsOn = false;
+        lpIsOn = false;
+        shok_thrIsOn= false;
+        tacc_thrIsOn= false;
+        tacc_gainIsOn= false;
+        tacc_upIsOn= false;
+        tacc_downIsOn= false;
+        tgyr_thrIsOn= false;
+        tgyr_gainIsOn= false;
+        tgyr_upIsOn= false;
+        tgyr_downIsOn= false;
+        shapeCourIsOn= false;
+        shapeRearIsOn= false;
+        shapeJardinIsOn= false;
+        shapeFrontIsOn= false;
+        shapeDownIsOn= false;
+        shapeUpIsOn= true;
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue("/Motion/shape5")];
     }
 
 
@@ -1017,6 +1239,24 @@
     }else if (osfprojIsOn) {
         dspFaustMotion->setParamValue("/Motion/osfproj", [_motionParam.text floatValue]);
         [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/osfproj"];
+    }else if (shapeCourIsOn) {
+        dspFaustMotion->setParamValue("/Motion/shape0", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/shape0"];
+    }else if (shapeRearIsOn) {
+        dspFaustMotion->setParamValue("/Motion/shape1", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/shape1"];
+    }else if (shapeJardinIsOn) {
+        dspFaustMotion->setParamValue("/Motion/shape2", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/shape2"];
+    }else if (shapeFrontIsOn) {
+        dspFaustMotion->setParamValue("/Motion/shape3", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/shape3"];
+    }else if (shapeDownIsOn) {
+        dspFaustMotion->setParamValue("/Motion/shape4", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/shape4"];
+    }else if (shapeUpIsOn) {
+        dspFaustMotion->setParamValue("/Motion/shape5", [_motionParam.text floatValue]);
+        [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:@"/Motion/shape5"];
     }
     
     [[NSUserDefaults standardUserDefaults] synchronize];
