@@ -89,7 +89,7 @@ elseif(NOT OSCCTRL)
 target_link_libraries( dsp_faust ${log-lib} )
 endif(OSCCTRL)
 
-``
+```
 
 
 Finally, since your Faust object might need to access the audio input of your device, the following line should be added to the manifest of your app (typically before the `application` tag):
