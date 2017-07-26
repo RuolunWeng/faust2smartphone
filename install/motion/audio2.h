@@ -43,30 +43,34 @@
 
 #ifndef __audio2__
 #define __audio2__
-			
+
 class dsp;
 
 typedef void (* shutdown_callback)(const char* message, void* arg);
 
 class audio2 {
     
- public:
+public:
 			 audio2() {}
-	virtual ~audio2() {}
-	
-	virtual bool init(const char* name, dsp*)               = 0;
-	virtual bool start()                                    = 0;
-	virtual void stop()                                     = 0;
+    virtual ~audio2() {}
+    
+    virtual bool init(const char* name, dsp*)               = 0;
+    virtual bool start()                                    = 0;
+    virtual void stop()                                     = 0;
     virtual void render()                                   = 0;
     virtual void shutdown(shutdown_callback cb, void* arg)  {}
     
-    virtual int get_buffer_size() = 0;
-    virtual int get_sample_rate() = 0;
+    virtual int getBufferSize() = 0;
+    virtual int getSampleRate() = 0;
     
-    virtual int get_num_inputs() { return -1; }
-    virtual int get_num_outputs() { return -1; }
+    virtual int getNumInputs() { return -1; }
+    virtual int getNumOutputs() { return -1; }
     
-    virtual float get_cpu_load() { return 0.f; }
+    virtual float getCPULoad() { return 0.f; }
+    
+    virtual void sendInputValue(int ch,float val)           = 0;
+    virtual float getOutputValue(int ch) { return 0.f; }
+    
 };
 					
 #endif

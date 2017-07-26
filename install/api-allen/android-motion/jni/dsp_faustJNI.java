@@ -69,6 +69,10 @@ public class dsp_faustJNI {
   public final static native boolean DspFaustMotion_start(long jarg1, DspFaustMotion jarg1_);
   public final static native void DspFaustMotion_stop(long jarg1, DspFaustMotion jarg1_);
   public final static native void DspFaustMotion_render(long jarg1, DspFaustMotion jarg1_);
+  public final static native void DspFaustMotion_sendInput(long jarg1, DspFaustMotion jarg1_, int jarg2, float jarg3);
+  public final static native float DspFaustMotion_getOutput(long jarg1, DspFaustMotion jarg1_, int jarg2);
+  public final static native int DspFaustMotion_getOutputChannelNum(long jarg1, DspFaustMotion jarg1_);
+  public final static native int DspFaustMotion_getInputChannelNum(long jarg1, DspFaustMotion jarg1_);
   public final static native boolean DspFaustMotion_isRunning(long jarg1, DspFaustMotion jarg1_);
   public final static native String DspFaustMotion_getJSONUI(long jarg1, DspFaustMotion jarg1_);
   public final static native String DspFaustMotion_getJSONMeta(long jarg1, DspFaustMotion jarg1_);

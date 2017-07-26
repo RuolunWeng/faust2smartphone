@@ -52,83 +52,128 @@
 #include "faust/audio/audio2.h"
 
 
-class dummy_audio : public audio2 {
-
-    private:
-
-        dsp* fDSP2;
-
-        long fSampleRate2;
-        long fBufferSize2; 
-
-        FAUSTFLOAT** fInChannel2;
-        FAUSTFLOAT** fOutChannel2;  
-
-        int fCount;
-
-    public:
-
-        dummy_audio(int count = 10)
-            :fSampleRate2(48000), fBufferSize2(512), fCount(count) {}
-        dummy_audio(int srate, int bsize, int count = 10)
-            :fSampleRate2(srate), fBufferSize2(bsize), fCount(count) {}
+class motion_audio : public audio2 {
     
-        virtual ~dummy_audio() 
-        {
-            for (int i = 0; i < fDSP2->getNumInputs(); i++) {
-                delete[] fInChannel2[i];
-            }
-            for (int i = 0; i < fDSP2->getNumOutputs(); i++) {
-               delete[] fOutChannel2[i];
-            }
-            
-            delete [] fInChannel2;
-            delete [] fOutChannel2;
+private:
+    
+    dsp* fDSP2;
+    
+    long fSampleRate2;
+    long fBufferSize2;
+    
+    int fNumInputs2;
+    int fNumOutputs2;
+    
+    FAUSTFLOAT** fInChannel2;
+    FAUSTFLOAT** fOutChannel2;
+    
+    int fRender;
+    int fCount;
+    bool fIsSample;
+    bool fManager;
+    
+public:
+    
+    motion_audio(int sr, int bs, int count = 10, bool sample = false, bool manager = false)
+    :fSampleRate2(sr), fBufferSize2(bs), fRender(0), fCount(count), fIsSample(sample), fManager(manager) {}
+    
+    motion_audio(int count = 10)
+    :fSampleRate2(48000), fBufferSize2(512), fRender(0), fCount(count), fIsSample(false), fManager(false) {}
+    
+    virtual ~motion_audio()
+    {
+        for (int i = 0; i < fDSP2->getNumInputs(); i++) {
+            delete[] fInChannel2[i];
         }
-
-        virtual bool init(const char* name, dsp* dsp)
-        {
-            fDSP2 = dsp;
+        for (int i = 0; i < fDSP2->getNumOutputs(); i++) {
+            delete[] fOutChannel2[i];
+        }
+        
+        delete [] fInChannel2;
+        delete [] fOutChannel2;
+    }
+    
+    virtual bool init(const char* name, dsp* dsp)
+    {
+        fDSP2 = dsp;
+        fNumInputs2 = fDSP2->getNumInputs();
+        fNumOutputs2 = fDSP2->getNumOutputs();
+        
+        if (fManager) {
+            // classInit is called elsewhere with a custom memory manager
+            fDSP2->instanceInit(fSampleRate2);
+        } else {
             fDSP2->init(fSampleRate2);
-            
-            fInChannel2 = new FAUSTFLOAT*[fDSP2->getNumInputs()];
-            fOutChannel2 = new FAUSTFLOAT*[fDSP2->getNumOutputs()];
-            
-            for (int i = 0; i < fDSP2->getNumInputs(); i++) {
-                fInChannel2[i] = new FAUSTFLOAT[fBufferSize2];
-                memset(fInChannel2[i], 0, sizeof(FAUSTFLOAT) * fBufferSize2);
-            }
-            for (int i = 0; i < fDSP2->getNumOutputs(); i++) {
-                fOutChannel2[i] = new FAUSTFLOAT[fBufferSize2];
-                memset(fOutChannel2[i], 0, sizeof(FAUSTFLOAT) * fBufferSize2);
-            }
-            return true;
         }
-        virtual bool start()
-        {
-            printf("Render Motion\n");
-            //printf("...\n");
-            
-            //render();
+        
+        fInChannel2 = new FAUSTFLOAT*[fNumInputs2];
+        fOutChannel2 = new FAUSTFLOAT*[fNumOutputs2];
+        
+        for (int i = 0; i < fDSP2->getNumInputs(); i++) {
+            fInChannel2[i] = new FAUSTFLOAT[fBufferSize2];
+            memset(fInChannel2[i], 0, sizeof(FAUSTFLOAT) * fBufferSize2);
+        }
+        for (int i = 0; i < fDSP2->getNumOutputs(); i++) {
+            fOutChannel2[i] = new FAUSTFLOAT[fBufferSize2];
+            memset(fOutChannel2[i], 0, sizeof(FAUSTFLOAT) * fBufferSize2);
+        }
+        return true;
+    }
+    virtual bool start()
+    {
+        fRender = fCount;
+        while (--fRender > 0) {
+            printf("Render motion buffer\n");
+            render();
+        }
+        return true;
+    }
+    virtual void stop()
+    {
+        printf("stop buffer\n");
+    }
     
-            return true;
+    virtual void sendInputValue(int channel,float value)
+    {
+        for (int frame = 0; frame < fBufferSize2; frame++) {
+            fInChannel2[channel][frame] = value;
         }
-        virtual void stop()
-        {
-            
-            //delete fDSP2;
-            printf("stop buffer\n");
+    }
+    
+    virtual void render()
+    {
+        fDSP2->compute(fBufferSize2, fInChannel2, fOutChannel2);
+        
+        if (fNumInputs2 > 0) {
+            if (fIsSample) {
+                for (int frame = 0; frame < fBufferSize2; frame++) {
+                    std::cout << std::setprecision(6) << "sample in " << fInChannel2[0][frame] << std::endl;
+                }
+            }
         }
-
-        virtual void render()
-        {
-            fDSP2->compute(fBufferSize2, fInChannel2, fOutChannel2);
-            //printf("...\n");
+        if (fNumOutputs2 > 0) {
+            if (fIsSample) {
+                for (int frame = 0; frame < fBufferSize2; frame++) {
+                    std::cout << std::fixed << std::setprecision(6) << "sample out " << fOutChannel2[0][frame] << std::endl;
+                }
+            }
         }
-
-        virtual int get_buffer_size() { return 0; }
-        virtual int get_sample_rate() { return 0; }
+        
+    }
+    
+    virtual float getOutputValue(int channel)
+    {
+        for (int frame = 0; frame < fBufferSize2; frame++) {
+            return fOutChannel2[channel][frame];
+        }
+    }
+    
+    virtual int getBufferSize() { return fBufferSize2; }
+    virtual int getSampleRate() { return fSampleRate2; }
+    
+    virtual int getNumInputs() { return fNumInputs2; }
+    virtual int getNumOutputs() { return fNumOutputs2; }
     
 };
-					
+
 #endif

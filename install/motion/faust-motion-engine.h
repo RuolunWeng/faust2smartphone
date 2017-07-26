@@ -40,95 +40,131 @@ using namespace std;
 
 
 class FaustMotionEngine {
-
-    protected:
-
-        dsp* fFinalDSP;           // the "final" dsp object submitted to the audio driver
-
-        APIUI fAPIUI;             // the UI description
-
-        string fJSONUI;
-        string fJSONMeta;
-        bool fRunning;
-        audio2* fDriver;
-
     
-
-    public:
-
-        FaustMotionEngine(audio2* driver = NULL)
-        {
-
-            fDriver = driver;
-            fRunning = false;
-            mydsp* motion_dsp = new mydsp();
-            
-            fFinalDSP = motion_dsp;
-            
-            // Update JSONs version
-            JSONUI jsonui2(motion_dsp->getNumInputs(), motion_dsp->getNumOutputs());
-            fFinalDSP->buildUserInterface(&jsonui2);
-            fJSONUI = jsonui2.JSON();
-            JSONUI jsonui2M(motion_dsp->getNumInputs(), motion_dsp->getNumOutputs());
-            fFinalDSP->metadata(&jsonui2M);
-            fJSONMeta = jsonui2M.JSON();
-            
-            fFinalDSP->buildUserInterface(&fAPIUI);
-
-			fDriver->init("Motion", fFinalDSP);
-        }
-
-        virtual ~FaustMotionEngine()
-        {
-            delete fDriver;
-            delete fFinalDSP;
-        }
-
-        /*
-         * start()
-         * Begins the processing and return true if the connection
-         * with the audio device was successful and false if not.
-         */
-        bool start()
-        {
-            if (!fRunning) {
-                fRunning = fDriver->start();
-            }
-            return fRunning;
-        }
-
-        /*
-         * isRunning()
-         * Returns true if the DSP frames are being computed and
-         * false if not.
-         */
-        bool isRunning()
-        {
-            return fRunning;
-        }
-
-        /*
-         * stop()
-         * Stops the processing, closes the audio engine.
-         */
-        void stop()
-        {
-            if (fRunning) {
-                fRunning = false;
-                fDriver->stop();
-            }
-        }
+protected:
     
-        /*
-         * render()
-         * Render motion dsp buffer
-         */
+    dsp* fFinalDSP;           // the "final" dsp object submitted to the audio driver
     
-        void render()
-        {
+    APIUI fAPIUI;             // the UI description
+    
+    string fJSONUI;
+    string fJSONMeta;
+    bool fRunning;
+    audio2* fDriver;
+    
+    
+    
+public:
+    
+    FaustMotionEngine(audio2* driver = NULL)
+    {
         
-            fDriver->render();
+        fDriver = driver;
+        fRunning = false;
+        mydsp2* motion_dsp = new mydsp2();
+        
+        fFinalDSP = motion_dsp;
+        
+        // Update JSONs version
+        JSONUI jsonui2(motion_dsp->getNumInputs(), motion_dsp->getNumOutputs());
+        fFinalDSP->buildUserInterface(&jsonui2);
+        fJSONUI = jsonui2.JSON();
+        JSONUI jsonui2M(motion_dsp->getNumInputs(), motion_dsp->getNumOutputs());
+        fFinalDSP->metadata(&jsonui2M);
+        fJSONMeta = jsonui2M.JSON();
+        
+        fFinalDSP->buildUserInterface(&fAPIUI);
+        
+        fDriver->init("Motion", fFinalDSP);
+    }
+    
+    virtual ~FaustMotionEngine()
+    {
+        delete fDriver;
+        delete fFinalDSP;
+    }
+    
+    /*
+     * start()
+     * Begins the processing and return true if the connection
+     * with the audio device was successful and false if not.
+     */
+    bool start()
+    {
+        if (!fRunning) {
+            fRunning = fDriver->start();
         }
+        return fRunning;
+    }
+    
+    /*
+     * isRunning()
+     * Returns true if the DSP frames are being computed and
+     * false if not.
+     */
+    bool isRunning()
+    {
+        return fRunning;
+    }
+    
+    /*
+     * stop()
+     * Stops the processing, closes the audio engine.
+     */
+    void stop()
+    {
+        if (fRunning) {
+            fRunning = false;
+            fDriver->stop();
+        }
+    }
+    
+    /*
+     * render()
+     * Render motion dsp buffer
+     */
+    
+    void render()
+    {
+        
+        fDriver->render();
+    }
+    
+    /*
+     * sendInput(int,float)
+     * connect motion input
+     */
+    void sendInput(int channel,float value)
+    {
+        fDriver->sendInputValue(channel, value);
+    }
+    
+    /*
+     * getOutput(int)
+     * get motion output
+     */
+    float getOutput(int channel)
+    {
+        return fDriver->getOutputValue(channel);
+    }
+    
+    /*
+     * getOutputChannelNum()
+     * get motion output num
+     */
+    float getOutputChannelNum()
+    {
+        return fDriver->getNumOutputs();
+    }
+    
+    /*
+     * getInputChannelNum()
+     * get motion output
+     */
+    float getInputChannelNum()
+    {
+        return fDriver->getNumInputs();
+    }
 
         /*
          * getJSONUI()

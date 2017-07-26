@@ -20,6 +20,8 @@
 %module dsp_faust
 
 %{
+#include <string>
+#include <vector>
 #include "DspFaust.h"
 #include "DspFaustMotion.h"
 %}

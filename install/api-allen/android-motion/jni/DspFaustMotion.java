@@ -51,6 +51,22 @@ public class DspFaustMotion {
     dsp_faustJNI.DspFaustMotion_render(swigCPtr, this);
   }
 
+  public void sendInput(int arg0, float arg1) {
+    dsp_faustJNI.DspFaustMotion_sendInput(swigCPtr, this, arg0, arg1);
+  }
+
+  public float getOutput(int arg0) {
+    return dsp_faustJNI.DspFaustMotion_getOutput(swigCPtr, this, arg0);
+  }
+
+  public int getOutputChannelNum() {
+    return dsp_faustJNI.DspFaustMotion_getOutputChannelNum(swigCPtr, this);
+  }
+
+  public int getInputChannelNum() {
+    return dsp_faustJNI.DspFaustMotion_getInputChannelNum(swigCPtr, this);
+  }
+
   public boolean isRunning() {
     return dsp_faustJNI.DspFaustMotion_isRunning(swigCPtr, this);
   }

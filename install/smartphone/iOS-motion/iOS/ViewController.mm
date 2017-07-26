@@ -94,6 +94,7 @@
 
     [self loadDefaultParams];
     
+    if (cueIsOn) {
     myCueNumArrary = [[NSMutableArray alloc] init];
     
     // load cues
@@ -131,7 +132,7 @@
     } else {
         _tips.text = [myCueTipsArrary objectAtIndex:0];
     }
-    
+    }
     
     if (dspFaust->getOSCIsOn()) {
         _ip.enabled=true;

@@ -230,6 +230,8 @@ static void SWIGUNUSED SWIG_JavaThrowException(JNIEnv *jenv, SWIG_JavaExceptionC
 #define SWIG_contract_assert(nullreturn, expr, msg) if (!(expr)) {SWIG_JavaThrowException(jenv, SWIG_JavaIllegalArgumentException, msg); return nullreturn; } else
 
 
+#include <string>
+#include <vector>
 #include "DspFaust.h"
 #include "DspFaustMotion.h"
 
@@ -1094,6 +1096,68 @@ SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1render(J
   (void)jarg1_;
   arg1 = *(DspFaustMotion **)&jarg1; 
   (arg1)->render();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1sendInput(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (float)jarg3; 
+  (arg1)->sendInput(arg2,arg3);
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getOutput(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int arg2 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (float)(arg1)->getOutput(arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getOutputChannelNum(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (int)(arg1)->getOutputChannelNum();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getInputChannelNum(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaustMotion **)&jarg1; 
+  result = (int)(arg1)->getInputChannelNum();
+  jresult = (jint)result; 
+  return jresult;
 }
 
 

@@ -59,54 +59,74 @@
 
 
 DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
-	fMotionEngine = new FaustMotionEngine(new dummy_audio(sample_rate, buffer_size, 10));
-
+    fMotionEngine = new FaustMotionEngine(new motion_audio(sample_rate, buffer_size, 0, false, false));
+    
 }
 
 
 
 DspFaustMotion::~DspFaustMotion(){
+    delete fMotionEngine;
     
-	delete fMotionEngine;
-
 }
 
 bool DspFaustMotion::start(){
-
-	return fMotionEngine->start();
+    
+    return fMotionEngine->start();
 }
 
 void DspFaustMotion::stop(){
-
-	fMotionEngine->stop();
+    
+    fMotionEngine->stop();
 }
 
 
 void DspFaustMotion::render(){
-
     
     fMotionEngine->render();
 }
 
+void DspFaustMotion::sendInput(int channel, float value) {
+    
+    fMotionEngine->sendInput(channel, value);
+}
+
+float DspFaustMotion::getOutput(int channel) {
+    
+    return fMotionEngine->getOutput(channel);
+    
+}
+
+int DspFaustMotion::getOutputChannelNum() {
+    
+    return fMotionEngine->getOutputChannelNum();
+}
+
+int DspFaustMotion::getInputChannelNum() {
+    
+    return fMotionEngine->getInputChannelNum();
+    
+}
+
 bool DspFaustMotion::isRunning(){
-	return fMotionEngine->isRunning();
+    return fMotionEngine->isRunning();
 }
 
 
 const char* DspFaustMotion::getJSONUI(){
-	return fMotionEngine->getJSONUI();
+    return fMotionEngine->getJSONUI();
 }
 
 const char* DspFaustMotion::getJSONMeta(){
-	return fMotionEngine->getJSONMeta();
+    return fMotionEngine->getJSONMeta();
 }
 
 int DspFaustMotion::getParamsCount(){
-	return fMotionEngine->getParamsCount();
+    return fMotionEngine->getParamsCount();
 }
 
 void DspFaustMotion::setParamValue(const char* address, float value){
-	fMotionEngine->setParamValue(address, value);
+    fMotionEngine->setParamValue(address, value);
 }
 
 const char* DspFaustMotion::getParamAddress(int id){
@@ -114,15 +134,15 @@ const char* DspFaustMotion::getParamAddress(int id){
 }
 
 void DspFaustMotion::setParamValue(int id, float value){
-	fMotionEngine->setParamValue(id, value);
+    fMotionEngine->setParamValue(id, value);
 }
 
 float DspFaustMotion::getParamValue(const char* address){
-	return fMotionEngine->getParamValue(address);
+    return fMotionEngine->getParamValue(address);
 }
 
 float DspFaustMotion::getParamValue(int id){
-	return fMotionEngine->getParamValue(id);
+    return fMotionEngine->getParamValue(id);
 }
 
 float DspFaustMotion::getParamMin(const char* address){
@@ -158,25 +178,25 @@ const char* DspFaustMotion::getParamTooltip(int id){
 }
 
 void DspFaustMotion::propagateAcc(int acc, float v){
-	fMotionEngine->propagateAcc(acc, v);
+    fMotionEngine->propagateAcc(acc, v);
 }
 
 void DspFaustMotion::setAccConverter(int p, int acc, int curve, float amin, float amid, float amax){
-	fMotionEngine->setAccConverter(p, acc, curve, amin, amid, amax);
+    fMotionEngine->setAccConverter(p, acc, curve, amin, amid, amax);
 }
 
 void DspFaustMotion::propagateGyr(int acc, float v){
-	fMotionEngine->propagateGyr(acc, v);
+    fMotionEngine->propagateGyr(acc, v);
 }
 
 void DspFaustMotion::setGyrConverter(int p, int gyr, int curve, float amin, float amid, float amax){
-	fMotionEngine->setGyrConverter(p, gyr, curve, amin, amid, amax);
+    fMotionEngine->setGyrConverter(p, gyr, curve, amin, amid, amax);
 }
 
 float DspFaustMotion::getCPULoad(){
-	return fMotionEngine->getCPULoad();
+    return fMotionEngine->getCPULoad();
 }
 
 int DspFaustMotion::getScreenColor(){
-	return fMotionEngine->getScreenColor();
+    return fMotionEngine->getScreenColor();
 }

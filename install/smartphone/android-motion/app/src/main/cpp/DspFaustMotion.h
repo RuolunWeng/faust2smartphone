@@ -17,8 +17,8 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __ios_api_motion__
-#define __ios_api_motion__
+#ifndef __api_motion__
+#define __api_motion__
 
 //===============API Reference==============
 //==========================================
@@ -52,7 +52,16 @@ public:
 	//--------------------------------------------------------
 	void stop();
     
+    //-----------------RENDER MOTION--------------------------
     void render();
+    
+    void sendInput(int,float);
+    
+    float getOutput(int);
+    
+    int getOutputChannelNum();
+    
+    int getInputChannelNum();
     
 	//---------------------`bool isRunning()`-----------------
 	// Returns `true` if audio is running.

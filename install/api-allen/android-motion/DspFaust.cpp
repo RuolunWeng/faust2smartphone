@@ -320,34 +320,33 @@ void DspFaust::initFrame(){
 
 void DspFaust::checkAdress() {
     
-    for (int i=0; i< paramsMotionNum; i++) {
-        paramsOn[i] = false;
-    }
-    
-    for (int i=0; i< paramsMotionNum; i++) {
-        paramsPaths.push_back("/" + paramsMotion[i]);
-    }
-    
-    for (int i=0; i< paramsMotionNum; i++) {
-        paramsMotionGates.push_back("/Motion/" + paramsMotion[i] + "On");
-    }
-    
-    for (int i=0; i< paramsMotionNum; i++) {
-        paramsMotionVumetres.push_back("/Motion/M" + paramsMotion[i]);
-    }
-    
-    
-    for(int i=0; i<getParamsCount(); i++){
-        const char* data = getParamAddress(i);
-        
-        for (int p=0; p< paramsMotionNum; p++) {
-            if (endsWith(data,paramsPaths[p])) {
-                paramsOn[p] = true;
-                paramsAddress[p] = data;
-                fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
-            }
+    if (paramsMotionNum != fDSPFAUSTMOTION->getOutputChannelNum()) {
+        printf("!!!!ERROR: Num of Params != Num of Output!!!!");
+    } else {
+        for (int i=0; i< paramsMotionNum; i++) {
+            paramsOn[i] = false;
         }
         
+        for (int i=0; i< paramsMotionNum; i++) {
+            paramsPaths.push_back("/" + paramsMotion[i]);
+        }
+        
+        for (int i=0; i< paramsMotionNum; i++) {
+            paramsMotionGates.push_back("/Motion/" + paramsMotion[i] + "On");
+        }
+        
+        for(int i=0; i<getParamsCount(); i++){
+            const char* data = getParamAddress(i);
+            
+            for (int p=0; p< paramsMotionNum; p++) {
+                if (endsWith(data,paramsPaths[p])) {
+                    paramsOn[p] = true;
+                    paramsAddress[p] = data;
+                    fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
+                }
+            }
+            
+        }
     }
 }
 
@@ -356,7 +355,7 @@ void  DspFaust::sendMotion()  {
     
     for (int i=0; i< paramsMotionNum; i++) {
         if (paramsOn[i]) {
-            setParamValue(paramsAddress[i], fDSPFAUSTMOTION->getParamValue(paramsMotionVumetres[i].c_str()));
+            setParamValue(paramsAddress[i], fDSPFAUSTMOTION->getOutput(i));
         }
     }
     
@@ -393,33 +392,33 @@ void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m
         }
     }
     
-    fDSPFAUSTMOTION->setParamValue("/Motion/brasD_x", (-1)*matrixC[0][0]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/brasD_y", (-1)*matrixC[0][1]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/brasD_z", (-1)*matrixC[0][2]);
-    
-    fDSPFAUSTMOTION->setParamValue("/Motion/pieds_x", (-1)*matrixC[1][0]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/pieds_y", (-1)*matrixC[1][1]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/pieds_z", (-1)*matrixC[1][2]);
-    
-    fDSPFAUSTMOTION->setParamValue("/Motion/dos_x", (-1)*matrixC[2][0]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/dos_y", (-1)*matrixC[2][1]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/dos_z", (-1)*matrixC[2][2]);
-    
-    fDSPFAUSTMOTION->setParamValue("/Motion/brasG_x", matrixC[0][0]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/brasG_y", matrixC[0][1]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/brasG_z", matrixC[0][2]);
-    
-    fDSPFAUSTMOTION->setParamValue("/Motion/tete_x", matrixC[1][0]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/tete_y", matrixC[1][1]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/tete_z", matrixC[1][2]);
-    
-    fDSPFAUSTMOTION->setParamValue("/Motion/ventre_x", matrixC[2][0]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/ventre_y", matrixC[2][1]);
-    fDSPFAUSTMOTION->setParamValue("/Motion/ventre_z", matrixC[2][2]);
+    // brasG
+    fDSPFAUSTMOTION->sendInput(0, matrixC[0][0]);
+    fDSPFAUSTMOTION->sendInput(1, matrixC[0][1]);
+    fDSPFAUSTMOTION->sendInput(2, matrixC[0][2]);
+    // pieds
+    fDSPFAUSTMOTION->sendInput(3, (-1)*matrixC[1][0]);
+    fDSPFAUSTMOTION->sendInput(4, (-1)*matrixC[1][1]);
+    fDSPFAUSTMOTION->sendInput(5, (-1)*matrixC[1][2]);
+    // dos
+    fDSPFAUSTMOTION->sendInput(6, (-1)*matrixC[2][0]);
+    fDSPFAUSTMOTION->sendInput(7, (-1)*matrixC[2][1]);
+    fDSPFAUSTMOTION->sendInput(8, (-1)*matrixC[2][2]);
+    // brasD
+    fDSPFAUSTMOTION->sendInput(9, (-1)*matrixC[0][0]);
+    fDSPFAUSTMOTION->sendInput(10, (-1)*matrixC[0][1]);
+    fDSPFAUSTMOTION->sendInput(11, (-1)*matrixC[0][2]);
+    // tête
+    fDSPFAUSTMOTION->sendInput(12, matrixC[1][0]);
+    fDSPFAUSTMOTION->sendInput(13, matrixC[1][1]);
+    fDSPFAUSTMOTION->sendInput(14, matrixC[1][2]);
+    // ventre
+    fDSPFAUSTMOTION->sendInput(15, matrixC[2][0]);
+    fDSPFAUSTMOTION->sendInput(16, matrixC[2][1]);
+    fDSPFAUSTMOTION->sendInput(17, matrixC[2][2]);
     
     fDSPFAUSTMOTION->render();
     
     sendMotion();
-    
     
 }
