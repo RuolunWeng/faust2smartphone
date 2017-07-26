@@ -17,6 +17,9 @@
  ************************************************************************
  ************************************************************************/
 
+#include <string>
+#include <vector>
+
 //===============API Reference==============
 //==========================================
 
@@ -457,165 +460,21 @@ private:
     float matrixB[3][3];
     float matrixC[3][3];
     
-    const char* totalAccelAddress;
-    const char* totalGyroAddress;
-    const char* sxpAddress;
-    const char* sypAddress;
-    const char* szpAddress;
-    const char* sxnAddress;
-    const char* synAddress;
-    const char* sznAddress;
-    const char* ixpAddress;
-    const char* iypAddress;
-    const char* izpAddress;
-    const char* ixnAddress;
-    const char* iynAddress;
-    const char* iznAddress;
-    const char* pixpAddress;
-    const char* piypAddress;
-    const char* pizpAddress;
-    const char* pixnAddress;
-    const char* piynAddress;
-    const char* piznAddress;
-    const char* axpnAddress;
-    const char* aypnAddress;
-    const char* azpnAddress;
-    const char* axpAddress;
-    const char* aypAddress;
-    const char* azpAddress;
-    const char* axnAddress;
-    const char* aynAddress;
-    const char* aznAddress;
-    const char* gxpnAddress;
-    const char* gypnAddress;
-    const char* gzpnAddress;
-    const char* gxpAddress;
-    const char* gypAddress;
-    const char* gzpAddress;
-    const char* gxnAddress;
-    const char* gynAddress;
-    const char* gznAddress;
+    int paramsMotionNum = 74;
+    const char* paramsAddress[74];
+    bool paramsOn[74];
+    std::vector<std::string>paramsPaths;
+    std::vector<std::string>paramsMotionGates;
+    std::vector<std::string>paramsMotionVumetres;
     
-    const char* brasGcourAddress;
-    const char* brasGrearAddress;
-    const char* brasGjardinAddress;
-    const char* brasGfrontAddress;
-    const char* brasGdownAddress;
-    const char* brasGupAddress;
-    
-    const char* piedscourAddress;
-    const char* piedsrearAddress;
-    const char* piedsjardinAddress;
-    const char* piedsfrontAddress;
-    const char* piedsdownAddress;
-    const char* piedsupAddress;
-    
-    const char* doscourAddress;
-    const char* dosrearAddress;
-    const char* dosjardinAddress;
-    const char* dosfrontAddress;
-    const char* dosdownAddress;
-    const char* dosupAddress;
-    
-    const char* brasDcourAddress;
-    const char* brasDrearAddress;
-    const char* brasDjardinAddress;
-    const char* brasDfrontAddress;
-    const char* brasDdownAddress;
-    const char* brasDupAddress;
-    
-    const char* tetecourAddress;
-    const char* teterearAddress;
-    const char* tetejardinAddress;
-    const char* tetefrontAddress;
-    const char* tetedownAddress;
-    const char* teteupAddress;
-    
-    const char* ventrecourAddress;
-    const char* ventrerearAddress;
-    const char* ventrejardinAddress;
-    const char* ventrefrontAddress;
-    const char* ventredownAddress;
-    const char* ventreupAddress;
-    
-    bool totalAccelIsOn ;
-    bool totalGyroIsOn ;
-    bool sxpIsOn ;
-    bool sypIsOn ;
-    bool szpIsOn ;
-    bool sxnIsOn ;
-    bool synIsOn ;
-    bool sznIsOn ;
-    bool ixpIsOn ;
-    bool iypIsOn ;
-    bool izpIsOn ;
-    bool ixnIsOn ;
-    bool iynIsOn ;
-    bool iznIsOn ;
-    bool pixpIsOn ;
-    bool piypIsOn ;
-    bool pizpIsOn ;
-    bool pixnIsOn ;
-    bool piynIsOn ;
-    bool piznIsOn ;
-    bool axpnIsOn ;
-    bool aypnIsOn ;
-    bool azpnIsOn ;
-    bool axpIsOn ;
-    bool aypIsOn ;
-    bool azpIsOn ;
-    bool axnIsOn ;
-    bool aynIsOn ;
-    bool aznIsOn ;
-    bool gxpnIsOn ;
-    bool gypnIsOn ;
-    bool gzpnIsOn ;
-    bool gxpIsOn ;
-    bool gypIsOn ;
-    bool gzpIsOn ;
-    bool gxnIsOn ;
-    bool gynIsOn ;
-    bool gznIsOn ;
-    
-    bool brasGcourIsOn ;
-    bool brasGrearIsOn ;
-    bool brasGjardinIsOn ;
-    bool brasGfrontIsOn ;
-    bool brasGdownIsOn ;
-    bool brasGupIsOn ;
-    
-    bool piedscourIsOn ;
-    bool piedsrearIsOn ;
-    bool piedsjardinIsOn ;
-    bool piedsfrontIsOn ;
-    bool piedsdownIsOn ;
-    bool piedsupIsOn ;
-    
-    bool doscourIsOn ;
-    bool dosrearIsOn ;
-    bool dosjardinIsOn ;
-    bool dosfrontIsOn ;
-    bool dosdownIsOn ;
-    bool dosupIsOn ;
-    
-    bool brasDcourIsOn ;
-    bool brasDrearIsOn ;
-    bool brasDjardinIsOn ;
-    bool brasDfrontIsOn ;
-    bool brasDdownIsOn ;
-    bool brasDupIsOn ;
-    
-    bool tetecourIsOn ;
-    bool teterearIsOn ;
-    bool tetejardinIsOn ;
-    bool tetefrontIsOn ;
-    bool tetedownIsOn ;
-    bool teteupIsOn ;
-    
-    bool ventrecourIsOn ;
-    bool ventrerearIsOn ;
-    bool ventrejardinIsOn ;
-    bool ventrefrontIsOn ;
-    bool ventredownIsOn ;
-    bool ventreupIsOn ;
+    std::string paramsMotion[74] = {"totalaccel","totalgyro","sxp","syp","szp","sxn","syn","szn","ixp","iyp"
+        ,"izp","ixn","iyn","izn","pixp","piyp","pizp","pixn","piyn","pizn","axpn"
+        ,"aypn","azpn","axp","ayp","azp","axn","ayn","azn","gxpn","gypn","gzpn"
+        ,"gxp","gyp","gzp","gxn","gyn","gzn"
+        ,"brasG_cour","brasG_rear","brasG_jardin","brasG_front","brasG_down","brasG_up"
+        ,"pieds_cour","pieds_rear","pieds_jardin","pieds_front","pieds_down","pieds_up"
+        ,"dos_cour","dos_rear","dos_jardin","dos_front","dos_down","dos_up"
+        ,"brasD_cour","brasD_rear","brasD_jardin","brasD_front","brasD_down","brasD_up"
+        ,"tete_cour","tete_rear","tete_jardin","tete_front","tete_down","tete_up"
+        ,"ventre_cour","ventre_rear","ventre_jardin","ventre_front","ventre_down","ventre_up"};
 };

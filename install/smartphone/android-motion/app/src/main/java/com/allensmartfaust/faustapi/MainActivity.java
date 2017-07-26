@@ -1,19 +1,15 @@
 package com.allensmartfaust.faustapi;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.graphics.Path;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -29,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,15 +33,10 @@ import com.DspFaust.DspFaust;
 import com.DspFaust.DspFaustMotion;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -72,13 +62,11 @@ public class MainActivity extends AppCompatActivity {
 
     long lastDate=0;
     
-    float hpValue, shok_thrValue, antirebonValue, lpValue, osfprojValue, tacc_thrValue, tacc_gainValue,
-     tacc_upValue, tacc_downValue, tgyr_thrValue, tgyr_gainValue, tgyr_upValue, tgyr_downValue,
-     shapeCourValue, shapeRearValue, shapeJardinValue, shapeFrontValue, shapeDownValue, shapeUpValue;
-    
     ArrayList<String> cueList = new ArrayList<String>();
     ArrayList<String> tipsList = new ArrayList<String>();
-    
+
+    ArrayList<String>  motionParamArray = new ArrayList<String>();
+    ArrayList<String>  motionParamAddress = new ArrayList<String>();
     
     int cueIndex,cueIndexNext;
     
@@ -95,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
     
     String cueAddress;
     String tipAddress;
-    
+
+    boolean[] paramsOn;
     boolean touchGateIsOn;
     boolean screenXIsOn;
     boolean screenYIsOn;
@@ -103,28 +92,6 @@ public class MainActivity extends AppCompatActivity {
     
     boolean cueIsOn;
     boolean tipIsOn;
-    
-    boolean hpIsOn;
-    boolean shok_thrIsOn;
-    boolean antirebonIsOn;
-    boolean lpIsOn;
-    boolean osfprojIsOn;
-    boolean tacc_thrIsOn;
-    boolean tacc_gainIsOn;
-    boolean tacc_upIsOn;
-    boolean tacc_downIsOn;
-    boolean tgyr_thrIsOn;
-    boolean tgyr_gainIsOn;
-    boolean tgyr_upIsOn;
-    boolean tgyr_downIsOn;
-
-    boolean shapeCourIsOn;
-    boolean shapeRearIsOn;
-    boolean shapeJardinIsOn;
-    boolean shapeFrontIsOn;
-    boolean shapeDownIsOn;
-    boolean shapeUpIsOn;
-    
     
     public static final int RequestPermissionCode = 1;
     
@@ -253,8 +220,26 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println(cueList);
         System.out.println(tipsList);
-        
-        
+
+        String[] ParamName= {"highPass","shokThred","antirebon","lowPass","accThred",
+        "accGain","accEvUp","accEvDown","gyrThred",
+        "gyrGain","gyrEvUp","gyrEvDown","osfproj",
+        "shapeCour","shapeRear","shapeJardin","shapeFront","shapeDown","shapeUp"};
+
+        String[] ParamAddress = {"/Motion/hp","/Motion/shok_thr","/Motion/antirebon","/Motion/lp","/Motion/tacc_thr",
+        "/Motion/tacc_gain","/Motion/tacc_up","/Motion/tacc_down","/Motion/tgyr_thr",
+        "/Motion/tgyr_gain","/Motion/tgyr_up","/Motion/tgyr_down","/Motion/osfproj",
+        "/Motion/shape0","/Motion/shape1","/Motion/shape2","/Motion/shape3","/Motion/shape4","/Motion/shape5"};
+
+        for (int i=0; i< 19; i++){
+            motionParamArray.add(i,ParamName[i]);
+            motionParamAddress.add(i,ParamAddress[i]);
+        }
+        System.out.println(motionParamArray);
+        System.out.println(motionParamAddress);
+
+        paramsOn = new boolean[motionParamArray.size()];
+
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -375,413 +360,18 @@ public class MainActivity extends AppCompatActivity {
             {
                 // This will get the radiobutton that has changed in its check state
                 RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
-                // This puts the value (true/false) into the variable
+                //Log.d("%i",String.valueOf(checkedId-2131427428));
+                int buttonID = checkedId-2131427428;
                 boolean isChecked = checkedRadioButton.isChecked();
-                // If the radiobutton that has changed in check state is now checked...
                 if (isChecked)
                 {
-                    
-                    if ("lp".equals(checkedRadioButton.getText().toString())) {
-                        lpIsOn = true;
-                        hpIsOn = false;
-                        shok_thrIsOn= false;
-                        antirebonIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/lp")) );
-                    } else if ("shok_thr".equals(checkedRadioButton.getText().toString())) {
-                        lpIsOn = false;
-                        hpIsOn = false;
-                        shok_thrIsOn= true;
-                        antirebonIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/shok_thr")));
-                    } else if ("hp".equals(checkedRadioButton.getText().toString())) {
-                        hpIsOn = true;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        antirebonIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/hp")));
-                    } else if ("antirebon".equals(checkedRadioButton.getText().toString())) {
-                        antirebonIsOn = true;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/antirebon")));
-                    } else if ("tacc_thr".equals(checkedRadioButton.getText().toString())) {
-                        tacc_thrIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tacc_thr")));
-                    } else if ("tacc_gain".equals(checkedRadioButton.getText().toString())) {
-                        tacc_gainIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tacc_gain")));
-                    } else if ("tacc_up".equals(checkedRadioButton.getText().toString())) {
-                        tacc_upIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tacc_up")));
-                    } else if ("tacc_down".equals(checkedRadioButton.getText().toString())) {
-                        tacc_downIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tacc_down")));
-                    } else if ("tgyr_thr".equals(checkedRadioButton.getText().toString())) {
-                        tgyr_thrIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tgyr_thr")));
-                    } else if ("tgyr_gain".equals(checkedRadioButton.getText().toString())) {
-                        tgyr_gainIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tgyr_gain")));
-                    } else if ("tgyr_up".equals(checkedRadioButton.getText().toString())) {
-                        tgyr_upIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tgyr_up")));
-                    } else if ("tgyr_down".equals(checkedRadioButton.getText().toString())) {
-                        tgyr_downIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        osfprojIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/tgyr_down")));
-                    } else if ("osfproj".equals(checkedRadioButton.getText().toString())) {
-                        osfprojIsOn = true;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/osfproj")));
-                    } else if ("shapeCour".equals(checkedRadioButton.getText().toString())) {
-                        osfprojIsOn = false;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= true;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/shape0")));
-                    } else if ("shapeRear".equals(checkedRadioButton.getText().toString())) {
-                        osfprojIsOn = false;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= true;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/shape1")));
-                    } else if ("shapeJardin".equals(checkedRadioButton.getText().toString())) {
-                        osfprojIsOn = false;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= true;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/shape2")));
-                    } else if ("shapeFront".equals(checkedRadioButton.getText().toString())) {
-                        osfprojIsOn = false;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= true;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/shape3")));
-                    } else if ("shapeDown".equals(checkedRadioButton.getText().toString())) {
-                        osfprojIsOn = false;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= true;
-                        shapeUpIsOn= false;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/shape4")));
-                    } else if ("shapeUp".equals(checkedRadioButton.getText().toString())) {
-                        osfprojIsOn = false;
-                        antirebonIsOn = false;
-                        hpIsOn = false;
-                        lpIsOn = false;
-                        shok_thrIsOn= false;
-                        tacc_thrIsOn= false;
-                        tacc_gainIsOn= false;
-                        tacc_upIsOn= false;
-                        tacc_downIsOn= false;
-                        tgyr_thrIsOn= false;
-                        tgyr_gainIsOn= false;
-                        tgyr_upIsOn= false;
-                        tgyr_downIsOn= false;
-                        shapeCourIsOn= false;
-                        shapeRearIsOn= false;
-                        shapeJardinIsOn= false;
-                        shapeFrontIsOn= false;
-                        shapeDownIsOn= false;
-                        shapeUpIsOn= true;
-                        paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue("/Motion/shape5")));
+
+                    for (int i=0; i< motionParamArray.size(); i++) {
+                        paramsOn[i]=false;
                     }
-                    
+                    paramsOn[buttonID]=true;
+                    paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue(motionParamAddress.get(buttonID))));
+
                 }
             }
         });
@@ -789,64 +379,14 @@ public class MainActivity extends AppCompatActivity {
         
         setMotion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                
-                if (lpIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/lp", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/lp",Float.valueOf(paramsValue.getText().toString()));
-                }else if (hpIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/hp", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/hp",Float.valueOf(paramsValue.getText().toString()));
-                }else if (shok_thrIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/shok_thr", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/shok_thr",Float.valueOf(paramsValue.getText().toString()));
-                }else if (antirebonIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/antirebon", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/antirebon",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tacc_thrIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tacc_thr", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tacc_thr",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tacc_gainIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tacc_gain", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tacc_gain",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tacc_upIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tacc_up", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tacc_up",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tacc_downIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tacc_down", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tacc_down",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tgyr_thrIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tgyr_thr", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tgyr_thr",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tgyr_gainIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tgyr_gain", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tgyr_gain",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tgyr_upIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tgyr_up", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tgyr_up",Float.valueOf(paramsValue.getText().toString()));
-                }else if (tgyr_downIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/tgyr_down", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/tgyr_down",Float.valueOf(paramsValue.getText().toString()));
-                }else if (osfprojIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/osfproj", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/osfproj",Float.valueOf(paramsValue.getText().toString()));
-                }else if (shapeCourIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/shape0", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/shape0",Float.valueOf(paramsValue.getText().toString()));
-                }else if (shapeRearIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/shape1", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/shape1",Float.valueOf(paramsValue.getText().toString()));
-                }else if (shapeJardinIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/shape2", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/shape2",Float.valueOf(paramsValue.getText().toString()));
-                }else if (shapeFrontIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/shape3", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/shape3",Float.valueOf(paramsValue.getText().toString()));
-                }else if (shapeDownIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/shape4", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/shape4",Float.valueOf(paramsValue.getText().toString()));
-                }else if (shapeUpIsOn) {
-                    dspFaustMotion.setParamValue("/Motion/shape5", Float.valueOf(paramsValue.getText().toString()));
-                    SharedPreWriteFloat("/Motion/shape5",Float.valueOf(paramsValue.getText().toString()));
+
+                for (int i=0; i< motionParamArray.size(); i++) {
+
+                    if (paramsOn[i]){
+                        dspFaustMotion.setParamValue(motionParamAddress.get(i), Float.valueOf(paramsValue.getText().toString()));
+                        SharedPreWriteFloat(motionParamArray.get(i),Float.valueOf(paramsValue.getText().toString()));
+                    }
+
                 }
                 
             }
@@ -1136,8 +676,6 @@ public class MainActivity extends AppCompatActivity {
 };
 
 
-
-
 // set Ref function
 private void initFrame () {
 
@@ -1180,45 +718,10 @@ private void SharedPreClear() {
 
 private void loadDefaultParams() {
 
-    hpValue = SharedPrefRead("/Motion/hp",dspFaustMotion.getParamInit("/Motion/hp"));
-    shok_thrValue = SharedPrefRead("/Motion/shok_thr",dspFaustMotion.getParamInit("/Motion/shok_thr"));
-    antirebonValue = SharedPrefRead("/Motion/antirebon",dspFaustMotion.getParamInit("/Motion/antirebon"));
-    lpValue = SharedPrefRead("/Motion/lp",dspFaustMotion.getParamInit("/Motion/lp"));
-    tacc_thrValue = SharedPrefRead("/Motion/tacc_thr",dspFaustMotion.getParamInit("/Motion/tacc_thr"));
-    tacc_gainValue = SharedPrefRead("/Motion/tacc_gain",dspFaustMotion.getParamInit("/Motion/tacc_gain"));
-    tacc_upValue = SharedPrefRead("/Motion/tacc_up",dspFaustMotion.getParamInit("/Motion/tacc_up"));
-    tacc_downValue = SharedPrefRead("/Motion/tacc_down",dspFaustMotion.getParamInit("/Motion/tacc_down"));
-    tgyr_thrValue = SharedPrefRead("/Motion/tgyr_thr",dspFaustMotion.getParamInit("/Motion/tgyr_thr"));
-    tgyr_gainValue = SharedPrefRead("/Motion/tgyr_gain",dspFaustMotion.getParamInit("/Motion/tgyr_gain"));
-    tgyr_upValue = SharedPrefRead("/Motion/tgyr_up",dspFaustMotion.getParamInit("/Motion/tgyr_up"));
-    tgyr_downValue = SharedPrefRead("/Motion/tgyr_down",dspFaustMotion.getParamInit("/Motion/tgyr_down"));
-    osfprojValue = SharedPrefRead("/Motion/osfproj",dspFaustMotion.getParamInit("/Motion/osfproj"));
-    shapeCourValue = SharedPrefRead("/Motion/shape0",dspFaustMotion.getParamInit("/Motion/shape0"));
-    shapeRearValue = SharedPrefRead("/Motion/shape1",dspFaustMotion.getParamInit("/Motion/shape1"));
-    shapeJardinValue = SharedPrefRead("/Motion/shape2",dspFaustMotion.getParamInit("/Motion/shape2"));
-    shapeFrontValue = SharedPrefRead("/Motion/shape3",dspFaustMotion.getParamInit("/Motion/shape3"));
-    shapeDownValue = SharedPrefRead("/Motion/shape4",dspFaustMotion.getParamInit("/Motion/shape4"));
-    shapeUpValue = SharedPrefRead("/Motion/shape5",dspFaustMotion.getParamInit("/Motion/shape5"));
-
-    dspFaustMotion.setParamValue("/Motion/hp", hpValue);
-    dspFaustMotion.setParamValue("/Motion/shok_thr", shok_thrValue);
-    dspFaustMotion.setParamValue("/Motion/antirebon", antirebonValue);
-    dspFaustMotion.setParamValue("/Motion/tacc_thr", tacc_thrValue);
-    dspFaustMotion.setParamValue("/Motion/tacc_gain", tacc_gainValue);
-    dspFaustMotion.setParamValue("/Motion/tacc_up", tacc_upValue);
-    dspFaustMotion.setParamValue("/Motion/tacc_down", tacc_downValue);
-    dspFaustMotion.setParamValue("/Motion/tgyr_thr", tgyr_thrValue);
-    dspFaustMotion.setParamValue("/Motion/tgyr_gain", tgyr_gainValue);
-    dspFaustMotion.setParamValue("/Motion/tgyr_up", tgyr_upValue);
-    dspFaustMotion.setParamValue("/Motion/tgyr_down", tgyr_downValue);
-    dspFaustMotion.setParamValue("/Motion/lp", lpValue);
-    dspFaustMotion.setParamValue("/Motion/osfproj", osfprojValue);
-    dspFaustMotion.setParamValue("/Motion/shape0", shapeCourValue);
-    dspFaustMotion.setParamValue("/Motion/shape1", shapeRearValue);
-    dspFaustMotion.setParamValue("/Motion/shape2", shapeJardinValue);
-    dspFaustMotion.setParamValue("/Motion/shape3", shapeFrontValue);
-    dspFaustMotion.setParamValue("/Motion/shape4", shapeDownValue);
-    dspFaustMotion.setParamValue("/Motion/shape5", shapeUpValue);
+    for (int i=0; i<motionParamAddress.size(); i++){
+        dspFaustMotion.setParamValue(motionParamAddress.get(i),
+                       SharedPrefRead(motionParamArray.get(i),dspFaustMotion.getParamInit(motionParamAddress.get(i))));
+    }
 
 
 }
@@ -1227,25 +730,9 @@ private void resetParams() {
 
         SharedPreClear();
 
-        SharedPreWriteFloat("/Motion/hp", dspFaustMotion.getParamInit("/Motion/hp"));
-        SharedPreWriteFloat("/Motion/shok_thr", dspFaustMotion.getParamInit("/Motion/shok_thr"));
-        SharedPreWriteFloat("/Motion/antirebon", dspFaustMotion.getParamInit("/Motion/antirebon"));
-        SharedPreWriteFloat("/Motion/tacc_thr", dspFaustMotion.getParamInit("/Motion/tacc_thr"));
-        SharedPreWriteFloat("/Motion/tacc_gain", dspFaustMotion.getParamInit("/Motion/tacc_gain"));
-        SharedPreWriteFloat("/Motion/tacc_up", dspFaustMotion.getParamInit("/Motion/tacc_up"));
-        SharedPreWriteFloat("/Motion/tacc_down", dspFaustMotion.getParamInit("/Motion/tacc_down"));
-        SharedPreWriteFloat("/Motion/tgyr_thr", dspFaustMotion.getParamInit("/Motion/tgyr_thr"));
-        SharedPreWriteFloat("/Motion/tgyr_gain", dspFaustMotion.getParamInit("/Motion/tgyr_gain"));
-        SharedPreWriteFloat("/Motion/tgyr_up", dspFaustMotion.getParamInit("/Motion/tgyr_up"));
-        SharedPreWriteFloat("/Motion/tgyr_down", dspFaustMotion.getParamInit("/Motion/tgyr_down"));
-        SharedPreWriteFloat("/Motion/osfproj", dspFaustMotion.getParamInit("/Motion/osfproj"));
-        SharedPreWriteFloat("/Motion/lp", dspFaustMotion.getParamInit("/Motion/lp"));
-        SharedPreWriteFloat("/Motion/shape0", dspFaustMotion.getParamInit("/Motion/shape0"));
-        SharedPreWriteFloat("/Motion/shape1", dspFaustMotion.getParamInit("/Motion/shape1"));
-        SharedPreWriteFloat("/Motion/shape2", dspFaustMotion.getParamInit("/Motion/shape2"));
-        SharedPreWriteFloat("/Motion/shape3", dspFaustMotion.getParamInit("/Motion/shape3"));
-        SharedPreWriteFloat("/Motion/shape4", dspFaustMotion.getParamInit("/Motion/shape4"));
-        SharedPreWriteFloat("/Motion/shape5", dspFaustMotion.getParamInit("/Motion/shape5"));
+    for (int i=0; i<motionParamAddress.size(); i++){
+        SharedPreWriteFloat(motionParamArray.get(i), dspFaustMotion.getParamInit((motionParamAddress.get(i))));
+    }
 
         SharedPrefWriteString("oscAddress", "192.168.1.5");
         SharedPrefWriteString("oscInPort", "5510");

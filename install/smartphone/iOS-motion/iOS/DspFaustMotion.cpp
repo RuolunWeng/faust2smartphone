@@ -404,632 +404,179 @@ class decorator_dsp : public dsp {
 #endif
 
 #endif
-/*
-
-  Copyright (C) 2012 Grame
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
-  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
-  research@grame.fr
-
-*/
-
-#ifndef __jsonfaustui__
-#define __jsonfaustui__
-
-#include <string>
-
-namespace httpdfaust
-{
-
-template <typename C> class jsonui;
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
  
-class jsonfaustui : public UI, public Meta
-{
-	jsonui<FAUSTFLOAT>* fJSON;
-	public:
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
 
-				 jsonfaustui(const char *name, const char* address, int port);
-		virtual ~jsonfaustui();
+#ifndef __dsp_adapter__
+#define __dsp_adapter__
 
-		//--------------------------------------------
-		// UI methods
-		//--------------------------------------------
-		// -- widget's layouts
-		virtual void openTabBox(const char* label);
-		virtual void openHorizontalBox(const char* label);
-		virtual void openVerticalBox(const char* label);
-		virtual void closeBox();
+#include <string.h>
+#include <iostream>
 
-		// -- active widgets
-		void addButton(const char* label, FAUSTFLOAT* zone);
-		void addCheckButton(const char* label, FAUSTFLOAT* zone);
-		void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step);
-		void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step);
-		void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step);
+// Adapts a DSP for a different number of inputs/outputs
 
-		// -- passive widgets
-		void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max);
-		void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, float min, float max);
-
-		// -- metadata declarations
-		void declare(FAUSTFLOAT*, const char*, const char*);
-
-		//--------------------------------------------
-		// additionnal methods (not part of UI)
-		//--------------------------------------------
-		void numInput(int n);			// should be called with the inputs number
-		void numOutput(int n);		// should be called with the outputs number
-		void declare(const char* , const char*); // global metadata declaration
-
-		//--------------------------------------------
-		// and eventually how to get the json as a string
-		//--------------------------------------------
-		std::string	json(bool flatten);
+class dsp_adapter : public decorator_dsp {
+    
+    private:
+        
+        FAUSTFLOAT** fAdaptedInputs;
+        FAUSTFLOAT** fAdaptedOutputs;
+        int fHardwareInputs;
+        int fHardwareOutputs;
+        
+        void adaptBuffers(FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            for (int i = 0; i < fHardwareInputs; i++) {
+                fAdaptedInputs[i] = inputs[i];
+            }
+            for (int i = 0; i < fHardwareOutputs; i++) {
+                fAdaptedOutputs[i] = outputs[i];
+            }
+        }
+        
+    public:
+        
+        dsp_adapter(dsp* dsp, int hardware_inputs, int hardware_outputs, int buffer_size):decorator_dsp(dsp)
+        {
+            fHardwareInputs = hardware_inputs;
+            fHardwareOutputs = hardware_outputs;
+             
+            fAdaptedInputs = new FAUSTFLOAT*[dsp->getNumInputs()];
+            for (int i = 0; i < dsp->getNumInputs() - fHardwareInputs; i++) {
+                fAdaptedInputs[i + fHardwareInputs] = new FAUSTFLOAT[buffer_size];
+                memset(fAdaptedInputs[i + fHardwareInputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
+            }
+            
+            fAdaptedOutputs = new FAUSTFLOAT*[dsp->getNumOutputs()];
+            for (int i = 0; i < dsp->getNumOutputs() - fHardwareOutputs; i++) {
+                fAdaptedOutputs[i + fHardwareOutputs] = new FAUSTFLOAT[buffer_size];
+                memset(fAdaptedOutputs[i + fHardwareOutputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
+            }
+        }
+        
+        virtual ~dsp_adapter()
+        {
+            for (int i = 0; i < fDSP->getNumInputs() - fHardwareInputs; i++) {
+                delete [] fAdaptedInputs[i + fHardwareInputs];
+            }
+            delete [] fAdaptedInputs;
+            
+            for (int i = 0; i < fDSP->getNumOutputs() - fHardwareOutputs; i++) {
+                delete [] fAdaptedOutputs[i + fHardwareOutputs];
+            }
+            delete [] fAdaptedOutputs;
+        }
+    
+        virtual int getNumInputs() { return fHardwareInputs; }
+        virtual int getNumOutputs() { return fHardwareOutputs; }
+    
+        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptBuffers(inputs, outputs);
+            fDSP->compute(date_usec, count, fAdaptedInputs, fAdaptedOutputs);
+        }
+        
+        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptBuffers(inputs, outputs);
+            fDSP->compute(count, fAdaptedInputs, fAdaptedOutputs);
+        }
 };
 
-} //end namespace
+// Adapts a DSP for a different sample size
+
+template <typename TYPE_INT, typename TYPE_EXT>
+class dsp_sample_adapter : public decorator_dsp {
+    
+    protected:
+    
+        TYPE_INT** fAdaptedInputs;
+        TYPE_INT** fAdaptedOutputs;
+    
+        void adaptInputBuffers(int count, FAUSTFLOAT** inputs)
+        {
+            for (int chan = 0; chan < fDSP->getNumInputs(); chan++) {
+                for (int frame = 0; frame < count; frame++) {
+                    fAdaptedInputs[chan][frame] = TYPE_INT(reinterpret_cast<TYPE_EXT**>(inputs)[chan][frame]);
+                }
+            }
+        }
+    
+        void adaptOutputsBuffers(int count, FAUSTFLOAT** outputs)
+        {
+            for (int chan = 0; chan < fDSP->getNumOutputs(); chan++) {
+                for (int frame = 0; frame < count; frame++) {
+                    reinterpret_cast<TYPE_EXT**>(outputs)[chan][frame] = TYPE_EXT(fAdaptedOutputs[chan][frame]);
+                }
+            }
+        }
+    
+    public:
+    
+        dsp_sample_adapter(dsp* dsp):decorator_dsp(dsp)
+        {
+            fAdaptedInputs = new TYPE_INT*[dsp->getNumInputs()];
+            for (int i = 0; i < dsp->getNumInputs(); i++) {
+                fAdaptedInputs[i] = new TYPE_INT[4096];
+            }
+            
+            fAdaptedOutputs = new TYPE_INT*[dsp->getNumOutputs()];
+            for (int i = 0; i < dsp->getNumOutputs(); i++) {
+                fAdaptedOutputs[i] = new TYPE_INT[4096];
+            }
+        }
+    
+        virtual ~dsp_sample_adapter()
+        {
+            for (int i = 0; i < fDSP->getNumInputs(); i++) {
+                delete [] fAdaptedInputs[i];
+            }
+            delete [] fAdaptedInputs;
+            
+            for (int i = 0; i < fDSP->getNumOutputs(); i++) {
+                delete [] fAdaptedOutputs[i];
+            }
+            delete [] fAdaptedOutputs;
+        }
+    
+        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptInputBuffers(count, inputs);
+            // DSP base class uses FAUSTFLOAT** type, so reinterpret_cast has to be used even if the real DSP uses SAMPLE_TYPE
+            fDSP->compute(count, reinterpret_cast<FAUSTFLOAT**>(fAdaptedInputs), reinterpret_cast<FAUSTFLOAT**>(fAdaptedOutputs));
+            adaptOutputsBuffers(count, outputs);
+        }
+    
+        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptInputBuffers(count, inputs);
+            // DSP base class uses FAUSTFLOAT** type, so reinterpret_cast has to be used even if the real DSP uses SAMPLE_TYPE
+            fDSP->compute(date_usec, count, reinterpret_cast<FAUSTFLOAT**>(fAdaptedInputs), reinterpret_cast<FAUSTFLOAT**>(fAdaptedOutputs));
+            adaptOutputsBuffers(count, outputs);
+       }
+};
 
 #endif
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- ************************************************************************/
- 
-#ifndef FAUST_JSONUI_H
-#define FAUST_JSONUI_H
-
-#include <vector>
-#include <map>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <assert.h>
-
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- ************************************************************************/
-
-#ifndef FAUST_PATHBUILDER_H
-#define FAUST_PATHBUILDER_H
-
-#include <vector>
-#include <string>
-#include <algorithm>
-
-/*******************************************************************************
- * PathBuilder : Faust User Interface
- * Helper class to build complete hierarchical path for UI items.
- ******************************************************************************/
-
-class PathBuilder
-{
-
-    protected:
-    
-        std::vector<std::string> fControlsLevel;
-       
-    public:
-    
-        PathBuilder() {}
-        virtual ~PathBuilder() {}
-    
-        std::string buildPath(const std::string& label) 
-        {
-            std::string res = "/";
-            for (size_t i = 0; i < fControlsLevel.size(); i++) {
-                res += fControlsLevel[i];
-                res += "/";
-            }
-            res += label;
-            replace(res.begin(), res.end(), ' ', '_');
-            return res;
-        }
-    
-};
-
-#endif  // FAUST_PATHBUILDER_H
-
-/*******************************************************************************
- * JSONUI : Faust User Interface
- * This class produce a complete JSON decription of the DSP instance.
- ******************************************************************************/
-
-template <typename REAL>
-class JSONUIAux : public PathBuilder, public Meta, public UI
-{
-
-    protected:
-    
-        std::stringstream fJSON;
-        std::stringstream fUI;
-        std::stringstream fMeta;
-        std::vector<std::pair <std::string, std::string> > fMetaAux;
-        std::string fName;
-        std::string fExpandedCode;
-        std::string fSHAKey;
-    
-        char fCloseUIPar;
-        char fCloseMetaPar;
-        int fTab;
-    
-        int fInputs, fOutputs;
-         
-        void tab(int n, std::ostream& fout)
-        {
-            fout << '\n';
-            while (n-- > 0) {
-                fout << '\t';
-            }
-        }
-    
-        void addMeta(int tab_val, bool quote = true)
-        {
-            if (fMetaAux.size() > 0) {
-                tab(tab_val, fUI); fUI << "\"meta\": [";
-                std::string sep = "";
-                for (size_t i = 0; i < fMetaAux.size(); i++) {
-                    fUI << sep;
-                    tab(tab_val + 1, fUI); fUI << "{ \"" << fMetaAux[i].first << "\": \"" << fMetaAux[i].second << "\" }";
-                    sep = ",";
-                }
-                tab(tab_val, fUI); fUI << ((quote) ? "],": "]");
-                fMetaAux.clear();
-            }
-        }
-        
-        void init(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code)
-        {
-            fTab = 1;
-            
-            // Start Meta generation
-            tab(fTab, fMeta); fMeta << "\"meta\": [";
-            fCloseMetaPar = ' ';
-            
-            // Start UI generation
-            tab(fTab, fUI); fUI << "\"ui\": [";
-            fCloseUIPar = ' ';
-            fTab += 1;
-            
-            fName = name;
-            fInputs = inputs;
-            fOutputs = outputs;
-            fExpandedCode = dsp_code;
-            fSHAKey = sha_key;
-        }
-        
-        inline std::string flatten(const std::string& src)
-        {
-            std::stringstream dst;
-            for (size_t i = 0; i < src.size(); i++) {
-                switch (src[i]) {
-                    case '\n':
-                    case '\t':
-                        dst << ' ';
-                        break;
-                    case '"':
-                        dst << "\\" << '"';
-                        break;
-                    default:
-                        dst << src[i];
-                        break;
-                }
-            }
-            return dst.str();
-        }
-      
-     public:
-     
-        JSONUIAux(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code)
-        {
-            init(name, inputs, outputs, sha_key, dsp_code);
-        }
-
-        JSONUIAux(const std::string& name, int inputs, int outputs)
-        {
-            init(name, inputs, outputs, "", "");
-        }
-
-        JSONUIAux(int inputs, int outputs)
-        {
-            init("", inputs, outputs, "", "");
-        }
-        
-        JSONUIAux()
-        {
-            init("", -1, -1, "", "");
-        }
- 
-        virtual ~JSONUIAux() {}
-        
-        void setInputs(int inputs) { fInputs = inputs; }
-        void setOutputs(int outputs) { fOutputs = outputs; }
-
-        // -- widget's layouts
-    
-        virtual void openGenericGroup(const char* label, const char* name)
-        {
-            fControlsLevel.push_back(label);
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            fTab += 1;
-            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
-            addMeta(fTab + 1);
-            tab(fTab, fUI); fUI << "\"items\": [";
-            fCloseUIPar = ' ';
-            fTab += 1;
-        }
-
-        virtual void openTabBox(const char* label)
-        {
-            openGenericGroup(label, "tgroup");
-        }
-    
-        virtual void openHorizontalBox(const char* label)
-        {
-            openGenericGroup(label, "hgroup");
-        }
-    
-        virtual void openVerticalBox(const char* label)
-        {
-            openGenericGroup(label, "vgroup");
-        }
-    
-        virtual void closeBox()
-        {
-            fControlsLevel.pop_back();
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "]";
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-    
-        // -- active widgets
-    
-        virtual void addGenericButton(const char* label, const char* name)
-        {
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
-            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ((fMetaAux.size() > 0) ? "," : "");
-            addMeta(fTab + 1, false);
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-
-        virtual void addButton(const char* label, REAL* zone)
-        {
-            addGenericButton(label, "button");
-        }
-    
-        virtual void addCheckButton(const char* label, REAL* zone)
-        {
-            addGenericButton(label, "checkbox");
-        }
-
-        virtual void addGenericEntry(const char* label, const char* name, REAL init, REAL min, REAL max, REAL step)
-        {
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
-            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ",";
-            addMeta(fTab + 1);
-            tab(fTab + 1, fUI); fUI << "\"init\": \"" << init << "\",";
-            tab(fTab + 1, fUI); fUI << "\"min\": \"" << min << "\",";
-            tab(fTab + 1, fUI); fUI << "\"max\": \"" << max << "\",";
-            tab(fTab + 1, fUI); fUI << "\"step\": \"" << step << "\"";
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-    
-        virtual void addVerticalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
-        {
-            addGenericEntry(label, "vslider", init, min, max, step);
-        }
-    
-        virtual void addHorizontalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
-        {
-            addGenericEntry(label, "hslider", init, min, max, step);
-        }
-    
-        virtual void addNumEntry(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
-        {
-            addGenericEntry(label, "nentry", init, min, max, step);
-        }
-
-        // -- passive widgets
-    
-        virtual void addGenericBargraph(const char* label, const char* name, REAL min, REAL max) 
-        {
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
-            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ",";
-            addMeta(fTab + 1);
-            tab(fTab + 1, fUI); fUI << "\"min\": \"" << min << "\",";
-            tab(fTab + 1, fUI); fUI << "\"max\": \"" << max << "\"";
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-
-        virtual void addHorizontalBargraph(const char* label, REAL* zone, REAL min, REAL max) 
-        {
-            addGenericBargraph(label, "hbargraph", min, max);
-        }
-    
-        virtual void addVerticalBargraph(const char* label, REAL* zone, REAL min, REAL max)
-        {
-            addGenericBargraph(label, "vbargraph", min, max);
-        }
-
-        // -- metadata declarations
-
-        virtual void declare(REAL* zone, const char* key, const char* val)
-        {
-            fMetaAux.push_back(std::make_pair(key, val));
-        }
-    
-        // Meta interface
-        virtual void declare(const char* key, const char* value)
-        {
-            fMeta << fCloseMetaPar;
-            if ((strcmp(key, "name") == 0) && (fName == "")) fName = value;
-            tab(fTab, fMeta); fMeta << "{ " << "\"" << key << "\"" << ": " << "\"" << value << "\" }";
-            fCloseMetaPar = ',';
-        }
-    
-        std::string JSON(bool flat = false)
-        {
-            fTab = 0;
-            fJSON << "{";
-            fTab += 1;
-            tab(fTab, fJSON); fJSON << "\"name\": \"" << fName << "\",";
-            if (fSHAKey != "") { tab(fTab, fJSON); fJSON << "\"sha_key\": \"" << fSHAKey << "\","; }
-            if (fExpandedCode != "") { tab(fTab, fJSON); fJSON << "\"code\": \"" << fExpandedCode << "\","; }
-            tab(fTab, fJSON); fJSON << "\"inputs\": \"" << fInputs << "\","; 
-            tab(fTab, fJSON); fJSON << "\"outputs\": \"" << fOutputs << "\",";
-            tab(fTab, fMeta); fMeta << "],";
-            tab(fTab, fUI); fUI << "]";
-            fTab -= 1;
-            if (fCloseMetaPar == ',') { // If "declare" has been called, fCloseMetaPar state is now ','
-                fJSON << fMeta.str() << fUI.str();
-            } else {
-                fJSON << fUI.str();
-            }
-            tab(fTab, fJSON); fJSON << "}" << std::endl;
-            return (flat) ? flatten(fJSON.str()) : fJSON.str();
-        }
-    
-};
-
-// Externally available class using FAUSTFLOAT
-
-class JSONUI : public JSONUIAux<FAUSTFLOAT>
-{
-    public :
-    
-        JSONUI(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code):
-        JSONUIAux<FAUSTFLOAT>(name, inputs, outputs, sha_key, dsp_code)
-        {}
-        
-        JSONUI(const std::string& name, int inputs, int outputs):
-        JSONUIAux<FAUSTFLOAT>(name, inputs, outputs)
-        {}
-        
-        JSONUI(int inputs, int outputs):
-        JSONUIAux<FAUSTFLOAT>(inputs, outputs)
-        {}
-        
-        JSONUI():
-        JSONUIAux<FAUSTFLOAT>()
-        {}
-    
-};
-
-#endif // FAUST_JSONUI_H
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- ************************************************************************/
-
-#ifndef FAUST_MAPUI_H
-#define FAUST_MAPUI_H
-
-#include <vector>
-#include <map>
-#include <string>
-
-
-/*******************************************************************************
- * MapUI : Faust User Interface
- * This class creates a map of complete hierarchical path and zones for each UI items.
- ******************************************************************************/
-
-class MapUI : public UI, public PathBuilder
-{
-    
-    protected:
-    
-        // Complete path map
-        std::map<std::string, FAUSTFLOAT*> fPathZoneMap;
-    
-        // Label zone map
-        std::map<std::string, FAUSTFLOAT*> fLabelZoneMap;
-    
-    public:
-        
-        MapUI() {};
-        virtual ~MapUI() {};
-        
-        // -- widget's layouts
-        void openTabBox(const char* label)
-        {
-            fControlsLevel.push_back(label);
-        }
-        void openHorizontalBox(const char* label)
-        {
-            fControlsLevel.push_back(label);
-        }
-        void openVerticalBox(const char* label)
-        {
-            fControlsLevel.push_back(label);
-        }
-        void closeBox()
-        {
-            fControlsLevel.pop_back();
-        }
-        
-        // -- active widgets
-        void addButton(const char* label, FAUSTFLOAT* zone)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addCheckButton(const char* label, FAUSTFLOAT* zone)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        
-        // -- passive widgets
-        void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        
-        // -- metadata declarations
-        void declare(FAUSTFLOAT* zone, const char* key, const char* val)
-        {}
-        
-        // set/get
-        void setParamValue(const std::string& path, FAUSTFLOAT value)
-        {
-            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
-                *fPathZoneMap[path] = value;
-            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
-                *fLabelZoneMap[path] = value;
-            }
-        }
-        
-        FAUSTFLOAT getParamValue(const std::string& path)
-        {
-            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
-                return *fPathZoneMap[path];
-            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
-                return *fLabelZoneMap[path];
-            } else {
-                return FAUSTFLOAT(0);
-            }
-        }
-    
-        // map access 
-        std::map<std::string, FAUSTFLOAT*>& getMap() { return fPathZoneMap; }
-        
-        int getParamsCount() { return fPathZoneMap.size(); }
-        
-        std::string getParamAddress(int index)
-        { 
-            std::map<std::string, FAUSTFLOAT*>::iterator it = fPathZoneMap.begin();
-            while (index-- > 0 && it++ != fPathZoneMap.end()) {}
-            return (*it).first;
-        }
-};
-
-#endif // FAUST_MAPUI_H
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -1782,6 +1329,7 @@ inline clist::~clist()
 
 #endif
 
+
 #include <math.h>
 #include <cmath>
 
@@ -2304,17 +1852,29 @@ class mydsp2 : public dsp {
 		m->declare("version", "0.01");
 		m->declare("analyzers.lib/name", "Faust Analyzer Library");
 		m->declare("analyzers.lib/version", "0.0");
+		m->declare("envelopes.lib/name", "Faust Envelope Library");
+		m->declare("envelopes.lib/version", "0.0");
+		m->declare("envelopes.lib/author", "GRAME");
+		m->declare("envelopes.lib/copyright", "GRAME");
+		m->declare("envelopes.lib/license", "LGPL with exception");
+		m->declare("phaflangers.lib/name", "Faust Phaser and Flanger Library");
+		m->declare("phaflangers.lib/version", "0.0");
+		m->declare("routes.lib/name", "Faust Signal Routing Library");
+		m->declare("routes.lib/version", "0.0");
+		m->declare("spats.lib/name", "Faust Spatialization Library");
+		m->declare("spats.lib/version", "0.0");
+		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("signals.lib/version", "0.0");
+		m->declare("synths.lib/name", "Faust Synthesizer Library");
+		m->declare("synths.lib/version", "0.0");
+		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
+		m->declare("vaeffects.lib/version", "0.0");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "0.0");
 		m->declare("compressors.lib/name", "Faust Compressor Effect Library");
 		m->declare("compressors.lib/version", "0.0");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "0.0");
-		m->declare("envelopes.lib/name", "Faust Envelope Library");
-		m->declare("envelopes.lib/version", "0.0");
-		m->declare("envelopes.lib/author", "GRAME");
-		m->declare("envelopes.lib/copyright", "GRAME");
-		m->declare("envelopes.lib/license", "LGPL with exception");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/version", "0.0");
 		m->declare("hoa.lib/name", "High Order Ambisonics library");
@@ -2331,20 +1891,8 @@ class mydsp2 : public dsp {
 		m->declare("oscillators.lib/version", "0.0");
 		m->declare("noises.lib/name", "Faust Noise Generator Library");
 		m->declare("noises.lib/version", "0.0");
-		m->declare("phaflangers.lib/name", "Faust Phaser and Flanger Library");
-		m->declare("phaflangers.lib/version", "0.0");
 		m->declare("reverbs.lib/name", "Faust Reverb Library");
 		m->declare("reverbs.lib/version", "0.0");
-		m->declare("routes.lib/name", "Faust Signal Routing Library");
-		m->declare("routes.lib/version", "0.0");
-		m->declare("spats.lib/name", "Faust Spatialization Library");
-		m->declare("spats.lib/version", "0.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
-		m->declare("signals.lib/version", "0.0");
-		m->declare("synths.lib/name", "Faust Synthesizer Library");
-		m->declare("synths.lib/version", "0.0");
-		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
-		m->declare("vaeffects.lib/version", "0.0");
 	}
 
 	virtual int getNumInputs() { return 0; }
@@ -2805,6 +2353,24 @@ class mydsp2 : public dsp {
 		ui_interface->addHorizontalBargraph("Mazn", &fbargraph26, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mazp", &fbargraph23, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mazpn", &fbargraph20, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasD_cour", &fbargraph56, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasD_down", &fbargraph60, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasD_jardin", &fbargraph58, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasD_rear", &fbargraph57, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasD_ront", &fbargraph59, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasD_up", &fbargraph61, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasG_cour", &fbargraph38, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasG_down", &fbargraph42, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasG_front", &fbargraph41, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasG_jardin", &fbargraph40, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasG_rear", &fbargraph39, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("MbrasG_up", &fbargraph43, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mdos_cour", &fbargraph50, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mdos_down", &fbargraph54, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mdos_front", &fbargraph53, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mdos_jardin", &fbargraph52, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mdos_rear", &fbargraph51, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mdos_up", &fbargraph55, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mgxn", &fbargraph34, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mgxp", &fbargraph31, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mgxpn", &fbargraph28, 0.0f, 1.0f);
@@ -2820,6 +2386,12 @@ class mydsp2 : public dsp {
 		ui_interface->addHorizontalBargraph("Miyp", &fbargraph7, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mizn", &fbargraph11, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mizp", &fbargraph8, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mpieds_cour", &fbargraph44, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mpieds_down", &fbargraph48, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mpieds_front", &fbargraph47, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mpieds_jardin", &fbargraph46, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mpieds_rear", &fbargraph45, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mpieds_up", &fbargraph49, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mpixn", &fbargraph15, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mpixp", &fbargraph12, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mpiyn", &fbargraph16, 0.0f, 1.0f);
@@ -2832,8 +2404,20 @@ class mydsp2 : public dsp {
 		ui_interface->addHorizontalBargraph("Msyp", &fbargraph1, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mszn", &fbargraph5, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mszp", &fbargraph2, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mtete_cour", &fbargraph62, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mtete_down", &fbargraph66, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mtete_front", &fbargraph65, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mtete_jardin", &fbargraph64, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mtete_rear", &fbargraph63, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mtete_up", &fbargraph67, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mtotalaccel", &fbargraph27, 0.0f, 1.0f);
 		ui_interface->addHorizontalBargraph("Mtotalgyro", &fbargraph37, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mventre_cour", &fbargraph68, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mventre_down", &fbargraph72, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mventre_front", &fbargraph71, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mventre_jardin", &fbargraph70, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mventre_rear", &fbargraph69, 0.0f, 1.0f);
+		ui_interface->addHorizontalBargraph("Mventre_up", &fbargraph73, 0.0f, 1.0f);
 		ui_interface->declare(&fslider24, "acc", "0 0 -30 0 30");
 		ui_interface->declare(&fslider24, "hidden", "1");
 		ui_interface->addHorizontalSlider("acc_x", &fslider24, 0.0f, -1.0f, 1.0f, 0.001f);
@@ -2847,56 +2431,38 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fslider3, "osc", "antirebon 0 500");
 		ui_interface->declare(&fslider3, "unit", "ms");
 		ui_interface->addHorizontalSlider("antirebon", &fslider3, 1.4e+02f, 0.0f, 5e+03f, 1.0f);
-		ui_interface->addCheckButton("axnOn", &fcheckbox20);
-		ui_interface->addCheckButton("axpOn", &fcheckbox19);
+		ui_interface->addCheckButton("axnOn", &fcheckbox21);
+		ui_interface->addCheckButton("axpOn", &fcheckbox20);
 		ui_interface->addCheckButton("axpnOn", &fcheckbox18);
 		ui_interface->addCheckButton("aynOn", &fcheckbox24);
 		ui_interface->addCheckButton("aypOn", &fcheckbox23);
 		ui_interface->addCheckButton("aypnOn", &fcheckbox22);
-		ui_interface->addCheckButton("aznOn", &fcheckbox26);
-		ui_interface->addCheckButton("azpOn", &fcheckbox27);
+		ui_interface->addCheckButton("aznOn", &fcheckbox27);
+		ui_interface->addCheckButton("azpOn", &fcheckbox26);
 		ui_interface->addCheckButton("azpnOn", &fcheckbox25);
-		ui_interface->addHorizontalBargraph("brasD_cour", &fbargraph56, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasD_courOn", &fcheckbox56);
-		ui_interface->addHorizontalBargraph("brasD_down", &fbargraph60, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasD_downOn", &fcheckbox60);
 		ui_interface->addCheckButton("brasD_frontOn", &fcheckbox59);
-		ui_interface->addHorizontalBargraph("brasD_jardin", &fbargraph58, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasD_jardinOn", &fcheckbox58);
-		ui_interface->addHorizontalBargraph("brasD_rear", &fbargraph57, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasD_rearOn", &fcheckbox57);
-		ui_interface->addHorizontalBargraph("brasD_ront", &fbargraph59, 0.0f, 1.0f);
-		ui_interface->addHorizontalBargraph("brasD_up", &fbargraph61, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasD_upOn", &fcheckbox61);
 		ui_interface->addHorizontalSlider("brasD_x", &fslider52, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("brasD_y", &fslider53, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("brasD_z", &fslider54, 0.0f, -1.0f, 1.0f, 0.001f);
-		ui_interface->addHorizontalBargraph("brasG_cour", &fbargraph38, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasG_courOn", &fcheckbox38);
-		ui_interface->addHorizontalBargraph("brasG_down", &fbargraph42, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasG_downOn", &fcheckbox42);
-		ui_interface->addHorizontalBargraph("brasG_front", &fbargraph41, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasG_frontOn", &fcheckbox41);
-		ui_interface->addHorizontalBargraph("brasG_jardin", &fbargraph40, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasG_jardinOn", &fcheckbox40);
-		ui_interface->addHorizontalBargraph("brasG_rear", &fbargraph39, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasG_rearOn", &fcheckbox39);
-		ui_interface->addHorizontalBargraph("brasG_up", &fbargraph43, 0.0f, 1.0f);
 		ui_interface->addCheckButton("brasG_upOn", &fcheckbox43);
 		ui_interface->addHorizontalSlider("brasG_x", &fslider38, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("brasG_y", &fslider39, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("brasG_z", &fslider40, 0.0f, -1.0f, 1.0f, 0.001f);
-		ui_interface->addHorizontalBargraph("dos_cour", &fbargraph50, 0.0f, 1.0f);
 		ui_interface->addCheckButton("dos_courOn", &fcheckbox50);
-		ui_interface->addHorizontalBargraph("dos_down", &fbargraph54, 0.0f, 1.0f);
 		ui_interface->addCheckButton("dos_downOn", &fcheckbox54);
-		ui_interface->addHorizontalBargraph("dos_front", &fbargraph53, 0.0f, 1.0f);
 		ui_interface->addCheckButton("dos_frontOn", &fcheckbox53);
-		ui_interface->addHorizontalBargraph("dos_jardin", &fbargraph52, 0.0f, 1.0f);
 		ui_interface->addCheckButton("dos_jardinOn", &fcheckbox52);
-		ui_interface->addHorizontalBargraph("dos_rear", &fbargraph51, 0.0f, 1.0f);
 		ui_interface->addCheckButton("dos_rearOn", &fcheckbox51);
-		ui_interface->addHorizontalBargraph("dos_up", &fbargraph55, 0.0f, 1.0f);
 		ui_interface->addCheckButton("dos_upOn", &fcheckbox55);
 		ui_interface->addHorizontalSlider("dos_x", &fslider49, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("dos_y", &fslider50, 0.0f, -1.0f, 1.0f, 0.001f);
@@ -2949,17 +2515,11 @@ class mydsp2 : public dsp {
 		ui_interface->addHorizontalSlider("lp", &fslider9, 1.5f, 0.1f, 2e+01f, 0.01f);
 		ui_interface->declare(&fslider16, "hidden", "1");
 		ui_interface->addHorizontalSlider("osfproj", &fslider16, 0.08f, 0.0f, 0.33f, 0.01f);
-		ui_interface->addHorizontalBargraph("pieds_cour", &fbargraph44, 0.0f, 1.0f);
 		ui_interface->addCheckButton("pieds_courOn", &fcheckbox44);
-		ui_interface->addHorizontalBargraph("pieds_down", &fbargraph48, 0.0f, 1.0f);
 		ui_interface->addCheckButton("pieds_downOn", &fcheckbox48);
-		ui_interface->addHorizontalBargraph("pieds_front", &fbargraph47, 0.0f, 1.0f);
 		ui_interface->addCheckButton("pieds_frontOn", &fcheckbox47);
-		ui_interface->addHorizontalBargraph("pieds_jardin", &fbargraph46, 0.0f, 1.0f);
 		ui_interface->addCheckButton("pieds_jardinOn", &fcheckbox46);
-		ui_interface->addHorizontalBargraph("pieds_rear", &fbargraph45, 0.0f, 1.0f);
 		ui_interface->addCheckButton("pieds_rearOn", &fcheckbox45);
-		ui_interface->addHorizontalBargraph("pieds_up", &fbargraph49, 0.0f, 1.0f);
 		ui_interface->addCheckButton("pieds_upOn", &fcheckbox49);
 		ui_interface->addHorizontalSlider("pieds_x", &fslider46, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("pieds_y", &fslider47, 0.0f, -1.0f, 1.0f, 0.001f);
@@ -3033,17 +2593,11 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fslider27, "hidden", "1");
 		ui_interface->declare(&fslider27, "osc", "tacc_envup 0 5000");
 		ui_interface->addHorizontalSlider("tacc_up", &fslider27, 1e+01f, 0.0f, 5e+03f, 1.0f);
-		ui_interface->addHorizontalBargraph("tete_cour", &fbargraph62, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_courOn", &fcheckbox62);
-		ui_interface->addHorizontalBargraph("tete_down", &fbargraph66, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_downOn", &fcheckbox66);
-		ui_interface->addHorizontalBargraph("tete_front", &fbargraph65, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_frontOn", &fcheckbox65);
-		ui_interface->addHorizontalBargraph("tete_jardin", &fbargraph64, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox64);
-		ui_interface->addHorizontalBargraph("tete_rear", &fbargraph63, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_rearOn", &fcheckbox63);
-		ui_interface->addHorizontalBargraph("tete_up", &fbargraph67, 0.0f, 1.0f);
 		ui_interface->addCheckButton("tete_upOn", &fcheckbox67);
 		ui_interface->addHorizontalSlider("tete_x", &fslider55, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("tete_y", &fslider56, 0.0f, -1.0f, 1.0f, 0.001f);
@@ -3058,19 +2612,13 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fslider34, "hidden", "1");
 		ui_interface->declare(&fslider34, "osc", "tgyr_envup 0 5000");
 		ui_interface->addHorizontalSlider("tgyr_up", &fslider34, 1.5e+02f, 0.0f, 5e+03f, 1.0f);
-		ui_interface->addCheckButton("totalaccelOn", &fcheckbox21);
+		ui_interface->addCheckButton("totalaccelOn", &fcheckbox19);
 		ui_interface->addCheckButton("totalgyroOn", &fcheckbox31);
-		ui_interface->addHorizontalBargraph("ventre_cour", &fbargraph68, 0.0f, 1.0f);
 		ui_interface->addCheckButton("ventre_courOn", &fcheckbox68);
-		ui_interface->addHorizontalBargraph("ventre_down", &fbargraph72, 0.0f, 1.0f);
 		ui_interface->addCheckButton("ventre_downOn", &fcheckbox72);
-		ui_interface->addHorizontalBargraph("ventre_front", &fbargraph71, 0.0f, 1.0f);
 		ui_interface->addCheckButton("ventre_frontOn", &fcheckbox71);
-		ui_interface->addHorizontalBargraph("ventre_jardin", &fbargraph70, 0.0f, 1.0f);
 		ui_interface->addCheckButton("ventre_jardinOn", &fcheckbox70);
-		ui_interface->addHorizontalBargraph("ventre_rear", &fbargraph69, 0.0f, 1.0f);
 		ui_interface->addCheckButton("ventre_rearOn", &fcheckbox69);
-		ui_interface->addHorizontalBargraph("ventre_up", &fbargraph73, 0.0f, 1.0f);
 		ui_interface->addCheckButton("ventre_upOn", &fcheckbox73);
 		ui_interface->addHorizontalSlider("ventre_x", &fslider58, 0.0f, -1.0f, 1.0f, 0.001f);
 		ui_interface->addHorizontalSlider("ventre_y", &fslider59, 0.0f, -1.0f, 1.0f, 0.001f);
@@ -3622,7 +3170,7 @@ class mydsp2 : public dsp {
 			}
 			fbargraph17 = fTempPerm35;
 			output17[i] = (FAUSTFLOAT)fbargraph17;
-			if (iSlow75 || iSlow79 || iSlow81 || iSlow83) {
+			if (iSlow79 || iSlow75 || iSlow81 || iSlow83) {
 				fVec24[0] = fSlow77;
 				fRec44[0] = (fConst4 * ((fSlow77 - fVec24[1]) + (fConst5 * fRec44[1])));
 			}
@@ -3635,7 +3183,7 @@ class mydsp2 : public dsp {
 			}
 			fbargraph18 = fTempPerm38;
 			output18[i] = (FAUSTFLOAT)fbargraph18;
-			if (iSlow88 || iSlow91 || iSlow93 || iSlow83) {
+			if (iSlow79 || iSlow88 || iSlow91 || iSlow93) {
 				fVec25[0] = fSlow89;
 				fRec47[0] = (fConst4 * ((fSlow89 - fVec25[1]) + (fConst5 * fRec47[1])));
 			}
@@ -3648,7 +3196,7 @@ class mydsp2 : public dsp {
 			}
 			fbargraph19 = fTempPerm41;
 			output19[i] = (FAUSTFLOAT)fbargraph19;
-			if (iSlow98 || iSlow95 || iSlow100 || iSlow83) {
+			if (iSlow79 || iSlow95 || iSlow98 || iSlow100) {
 				fVec26[0] = fSlow96;
 				fRec50[0] = (fConst4 * ((fSlow96 - fVec26[1]) + (fConst5 * fRec50[1])));
 			}
@@ -3661,12 +3209,12 @@ class mydsp2 : public dsp {
 			}
 			fbargraph20 = fTempPerm44;
 			output20[i] = (FAUSTFLOAT)fbargraph20;
-			if (iSlow79) {
+			if (iSlow81) {
 				fTempPerm45 = fabsf(min((float)1, (fSlow76 * max((float)0, (fRec44[0] - fSlow84)))));
 				fTempPerm46 = ((int((fRec51[1] > fTempPerm45)))?fSlow85:fSlow86);
 				fRec52[0] = ((fRec52[1] * fTempPerm46) + (fTempPerm45 * (1.0f - fTempPerm46)));
 				fRec51[0] = fRec52[0];
-				fTempPerm47 = (fSlow78 * fRec51[0]);
+				fTempPerm47 = (fSlow80 * fRec51[0]);
 			}
 			fbargraph21 = fTempPerm47;
 			output21[i] = (FAUSTFLOAT)fbargraph21;
@@ -3679,21 +3227,21 @@ class mydsp2 : public dsp {
 			}
 			fbargraph22 = fTempPerm50;
 			output22[i] = (FAUSTFLOAT)fbargraph22;
-			if (iSlow100) {
+			if (iSlow98) {
 				fTempPerm51 = fabsf(min((float)1, (fSlow76 * max((float)0, (fRec50[0] - fSlow84)))));
 				fTempPerm52 = ((int((fRec55[1] > fTempPerm51)))?fSlow85:fSlow86);
 				fRec56[0] = ((fRec56[1] * fTempPerm52) + (fTempPerm51 * (1.0f - fTempPerm52)));
 				fRec55[0] = fRec56[0];
-				fTempPerm53 = (fSlow99 * fRec55[0]);
+				fTempPerm53 = (fSlow97 * fRec55[0]);
 			}
 			fbargraph23 = fTempPerm53;
 			output23[i] = (FAUSTFLOAT)fbargraph23;
-			if (iSlow81) {
+			if (iSlow83) {
 				fTempPerm54 = fabsf(min((float)1, (fSlow76 * max((float)0, (0 - (fSlow84 + fRec44[0]))))));
 				fTempPerm55 = ((int((fRec57[1] > fTempPerm54)))?fSlow85:fSlow86);
 				fRec58[0] = ((fRec58[1] * fTempPerm55) + (fTempPerm54 * (1.0f - fTempPerm55)));
 				fRec57[0] = fRec58[0];
-				fTempPerm56 = (fSlow80 * fRec57[0]);
+				fTempPerm56 = (fSlow82 * fRec57[0]);
 			}
 			fbargraph24 = fTempPerm56;
 			output24[i] = (FAUSTFLOAT)fbargraph24;
@@ -3706,21 +3254,21 @@ class mydsp2 : public dsp {
 			}
 			fbargraph25 = fTempPerm59;
 			output25[i] = (FAUSTFLOAT)fbargraph25;
-			if (iSlow98) {
+			if (iSlow100) {
 				fTempPerm60 = fabsf(min((float)1, (fSlow76 * max((float)0, (0 - (fSlow84 + fRec50[0]))))));
 				fTempPerm61 = ((int((fRec61[1] > fTempPerm60)))?fSlow85:fSlow86);
 				fRec62[0] = ((fRec62[1] * fTempPerm61) + (fTempPerm60 * (1.0f - fTempPerm61)));
 				fRec61[0] = fRec62[0];
-				fTempPerm62 = (fSlow97 * fRec61[0]);
+				fTempPerm62 = (fSlow99 * fRec61[0]);
 			}
 			fbargraph26 = fTempPerm62;
 			output26[i] = (FAUSTFLOAT)fbargraph26;
-			if (iSlow83) {
+			if (iSlow79) {
 				fTempPerm63 = fabsf(min((float)1, (fSlow76 * max((float)0, (sqrtf(((faustpower<2>(fRec44[0]) + faustpower<2>(fRec47[0])) + faustpower<2>(fRec50[0]))) - fSlow84)))));
 				fTempPerm64 = ((int((fRec63[1] > fTempPerm63)))?fSlow85:fSlow86);
 				fRec64[0] = ((fRec64[1] * fTempPerm64) + (fTempPerm63 * (1.0f - fTempPerm64)));
 				fRec63[0] = fRec64[0];
-				fTempPerm65 = (fSlow82 * fRec63[0]);
+				fTempPerm65 = (fSlow78 * fRec63[0]);
 			}
 			fbargraph27 = fTempPerm65;
 			output27[i] = (FAUSTFLOAT)fbargraph27;
@@ -4197,11 +3745,11 @@ class mydsp2 : public dsp {
 			if (iSlow102 || iSlow106 || iSlow108 || iSlow110) {
 				fRec67[1] = fRec67[0];
 			}
-			if (iSlow83) {
+			if (iSlow79) {
 				fRec63[1] = fRec63[0];
 				fRec64[1] = fRec64[0];
 			}
-			if (iSlow98) {
+			if (iSlow100) {
 				fRec61[1] = fRec61[0];
 				fRec62[1] = fRec62[0];
 			}
@@ -4209,11 +3757,11 @@ class mydsp2 : public dsp {
 				fRec59[1] = fRec59[0];
 				fRec60[1] = fRec60[0];
 			}
-			if (iSlow81) {
+			if (iSlow83) {
 				fRec57[1] = fRec57[0];
 				fRec58[1] = fRec58[0];
 			}
-			if (iSlow100) {
+			if (iSlow98) {
 				fRec55[1] = fRec55[0];
 				fRec56[1] = fRec56[0];
 			}
@@ -4221,7 +3769,7 @@ class mydsp2 : public dsp {
 				fRec53[1] = fRec53[0];
 				fRec54[1] = fRec54[0];
 			}
-			if (iSlow79) {
+			if (iSlow81) {
 				fRec51[1] = fRec51[0];
 				fRec52[1] = fRec52[0];
 			}
@@ -4229,7 +3777,7 @@ class mydsp2 : public dsp {
 				fRec48[1] = fRec48[0];
 				fRec49[1] = fRec49[0];
 			}
-			if (iSlow98 || iSlow95 || iSlow100 || iSlow83) {
+			if (iSlow79 || iSlow95 || iSlow98 || iSlow100) {
 				fRec50[1] = fRec50[0];
 				fVec26[1] = fVec26[0];
 			}
@@ -4237,7 +3785,7 @@ class mydsp2 : public dsp {
 				fRec45[1] = fRec45[0];
 				fRec46[1] = fRec46[0];
 			}
-			if (iSlow88 || iSlow91 || iSlow93 || iSlow83) {
+			if (iSlow79 || iSlow88 || iSlow91 || iSlow93) {
 				fRec47[1] = fRec47[0];
 				fVec25[1] = fVec25[0];
 			}
@@ -4245,7 +3793,7 @@ class mydsp2 : public dsp {
 				fRec42[1] = fRec42[0];
 				fRec43[1] = fRec43[0];
 			}
-			if (iSlow75 || iSlow79 || iSlow81 || iSlow83) {
+			if (iSlow79 || iSlow75 || iSlow81 || iSlow83) {
 				fRec44[1] = fRec44[0];
 				fVec24[1] = fVec24[0];
 			}
@@ -4453,6 +4001,404 @@ class audio2 {
 };
 					
 #endif
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+ 
+#ifndef FAUST_JSONUI_H
+#define FAUST_JSONUI_H
+
+#include <vector>
+#include <map>
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <assert.h>
+
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef FAUST_PATHBUILDER_H
+#define FAUST_PATHBUILDER_H
+
+#include <vector>
+#include <string>
+#include <algorithm>
+
+/*******************************************************************************
+ * PathBuilder : Faust User Interface
+ * Helper class to build complete hierarchical path for UI items.
+ ******************************************************************************/
+
+class PathBuilder
+{
+
+    protected:
+    
+        std::vector<std::string> fControlsLevel;
+       
+    public:
+    
+        PathBuilder() {}
+        virtual ~PathBuilder() {}
+    
+        std::string buildPath(const std::string& label) 
+        {
+            std::string res = "/";
+            for (size_t i = 0; i < fControlsLevel.size(); i++) {
+                res += fControlsLevel[i];
+                res += "/";
+            }
+            res += label;
+            replace(res.begin(), res.end(), ' ', '_');
+            return res;
+        }
+    
+};
+
+#endif  // FAUST_PATHBUILDER_H
+
+/*******************************************************************************
+ * JSONUI : Faust User Interface
+ * This class produce a complete JSON decription of the DSP instance.
+ ******************************************************************************/
+
+template <typename REAL>
+class JSONUIAux : public PathBuilder, public Meta, public UI
+{
+
+    protected:
+    
+        std::stringstream fJSON;
+        std::stringstream fUI;
+        std::stringstream fMeta;
+        std::vector<std::pair <std::string, std::string> > fMetaAux;
+        std::string fName;
+        std::string fExpandedCode;
+        std::string fSHAKey;
+    
+        char fCloseUIPar;
+        char fCloseMetaPar;
+        int fTab;
+    
+        int fInputs, fOutputs;
+         
+        void tab(int n, std::ostream& fout)
+        {
+            fout << '\n';
+            while (n-- > 0) {
+                fout << '\t';
+            }
+        }
+    
+        void addMeta(int tab_val, bool quote = true)
+        {
+            if (fMetaAux.size() > 0) {
+                tab(tab_val, fUI); fUI << "\"meta\": [";
+                std::string sep = "";
+                for (size_t i = 0; i < fMetaAux.size(); i++) {
+                    fUI << sep;
+                    tab(tab_val + 1, fUI); fUI << "{ \"" << fMetaAux[i].first << "\": \"" << fMetaAux[i].second << "\" }";
+                    sep = ",";
+                }
+                tab(tab_val, fUI); fUI << ((quote) ? "],": "]");
+                fMetaAux.clear();
+            }
+        }
+        
+        void init(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code)
+        {
+            fTab = 1;
+            
+            // Start Meta generation
+            tab(fTab, fMeta); fMeta << "\"meta\": [";
+            fCloseMetaPar = ' ';
+            
+            // Start UI generation
+            tab(fTab, fUI); fUI << "\"ui\": [";
+            fCloseUIPar = ' ';
+            fTab += 1;
+            
+            fName = name;
+            fInputs = inputs;
+            fOutputs = outputs;
+            fExpandedCode = dsp_code;
+            fSHAKey = sha_key;
+        }
+        
+        inline std::string flatten(const std::string& src)
+        {
+            std::stringstream dst;
+            for (size_t i = 0; i < src.size(); i++) {
+                switch (src[i]) {
+                    case '\n':
+                    case '\t':
+                        dst << ' ';
+                        break;
+                    case '"':
+                        dst << "\\" << '"';
+                        break;
+                    default:
+                        dst << src[i];
+                        break;
+                }
+            }
+            return dst.str();
+        }
+      
+     public:
+     
+        JSONUIAux(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code)
+        {
+            init(name, inputs, outputs, sha_key, dsp_code);
+        }
+
+        JSONUIAux(const std::string& name, int inputs, int outputs)
+        {
+            init(name, inputs, outputs, "", "");
+        }
+
+        JSONUIAux(int inputs, int outputs)
+        {
+            init("", inputs, outputs, "", "");
+        }
+        
+        JSONUIAux()
+        {
+            init("", -1, -1, "", "");
+        }
+ 
+        virtual ~JSONUIAux() {}
+        
+        void setInputs(int inputs) { fInputs = inputs; }
+        void setOutputs(int outputs) { fOutputs = outputs; }
+
+        // -- widget's layouts
+    
+        virtual void openGenericGroup(const char* label, const char* name)
+        {
+            fControlsLevel.push_back(label);
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            fTab += 1;
+            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
+            addMeta(fTab + 1);
+            tab(fTab, fUI); fUI << "\"items\": [";
+            fCloseUIPar = ' ';
+            fTab += 1;
+        }
+
+        virtual void openTabBox(const char* label)
+        {
+            openGenericGroup(label, "tgroup");
+        }
+    
+        virtual void openHorizontalBox(const char* label)
+        {
+            openGenericGroup(label, "hgroup");
+        }
+    
+        virtual void openVerticalBox(const char* label)
+        {
+            openGenericGroup(label, "vgroup");
+        }
+    
+        virtual void closeBox()
+        {
+            fControlsLevel.pop_back();
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "]";
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+    
+        // -- active widgets
+    
+        virtual void addGenericButton(const char* label, const char* name)
+        {
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
+            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ((fMetaAux.size() > 0) ? "," : "");
+            addMeta(fTab + 1, false);
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+
+        virtual void addButton(const char* label, REAL* zone)
+        {
+            addGenericButton(label, "button");
+        }
+    
+        virtual void addCheckButton(const char* label, REAL* zone)
+        {
+            addGenericButton(label, "checkbox");
+        }
+
+        virtual void addGenericEntry(const char* label, const char* name, REAL init, REAL min, REAL max, REAL step)
+        {
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
+            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ",";
+            addMeta(fTab + 1);
+            tab(fTab + 1, fUI); fUI << "\"init\": \"" << init << "\",";
+            tab(fTab + 1, fUI); fUI << "\"min\": \"" << min << "\",";
+            tab(fTab + 1, fUI); fUI << "\"max\": \"" << max << "\",";
+            tab(fTab + 1, fUI); fUI << "\"step\": \"" << step << "\"";
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+    
+        virtual void addVerticalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
+        {
+            addGenericEntry(label, "vslider", init, min, max, step);
+        }
+    
+        virtual void addHorizontalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
+        {
+            addGenericEntry(label, "hslider", init, min, max, step);
+        }
+    
+        virtual void addNumEntry(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
+        {
+            addGenericEntry(label, "nentry", init, min, max, step);
+        }
+
+        // -- passive widgets
+    
+        virtual void addGenericBargraph(const char* label, const char* name, REAL min, REAL max) 
+        {
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
+            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ",";
+            addMeta(fTab + 1);
+            tab(fTab + 1, fUI); fUI << "\"min\": \"" << min << "\",";
+            tab(fTab + 1, fUI); fUI << "\"max\": \"" << max << "\"";
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+
+        virtual void addHorizontalBargraph(const char* label, REAL* zone, REAL min, REAL max) 
+        {
+            addGenericBargraph(label, "hbargraph", min, max);
+        }
+    
+        virtual void addVerticalBargraph(const char* label, REAL* zone, REAL min, REAL max)
+        {
+            addGenericBargraph(label, "vbargraph", min, max);
+        }
+
+        // -- metadata declarations
+
+        virtual void declare(REAL* zone, const char* key, const char* val)
+        {
+            fMetaAux.push_back(std::make_pair(key, val));
+        }
+    
+        // Meta interface
+        virtual void declare(const char* key, const char* value)
+        {
+            fMeta << fCloseMetaPar;
+            if ((strcmp(key, "name") == 0) && (fName == "")) fName = value;
+            tab(fTab, fMeta); fMeta << "{ " << "\"" << key << "\"" << ": " << "\"" << value << "\" }";
+            fCloseMetaPar = ',';
+        }
+    
+        std::string JSON(bool flat = false)
+        {
+            fTab = 0;
+            fJSON << "{";
+            fTab += 1;
+            tab(fTab, fJSON); fJSON << "\"name\": \"" << fName << "\",";
+            if (fSHAKey != "") { tab(fTab, fJSON); fJSON << "\"sha_key\": \"" << fSHAKey << "\","; }
+            if (fExpandedCode != "") { tab(fTab, fJSON); fJSON << "\"code\": \"" << fExpandedCode << "\","; }
+            tab(fTab, fJSON); fJSON << "\"inputs\": \"" << fInputs << "\","; 
+            tab(fTab, fJSON); fJSON << "\"outputs\": \"" << fOutputs << "\",";
+            tab(fTab, fMeta); fMeta << "],";
+            tab(fTab, fUI); fUI << "]";
+            fTab -= 1;
+            if (fCloseMetaPar == ',') { // If "declare" has been called, fCloseMetaPar state is now ','
+                fJSON << fMeta.str() << fUI.str();
+            } else {
+                fJSON << fUI.str();
+            }
+            tab(fTab, fJSON); fJSON << "}" << std::endl;
+            return (flat) ? flatten(fJSON.str()) : fJSON.str();
+        }
+    
+};
+
+// Externally available class using FAUSTFLOAT
+
+class JSONUI : public JSONUIAux<FAUSTFLOAT>
+{
+    public :
+    
+        JSONUI(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code):
+        JSONUIAux<FAUSTFLOAT>(name, inputs, outputs, sha_key, dsp_code)
+        {}
+        
+        JSONUI(const std::string& name, int inputs, int outputs):
+        JSONUIAux<FAUSTFLOAT>(name, inputs, outputs)
+        {}
+        
+        JSONUI(int inputs, int outputs):
+        JSONUIAux<FAUSTFLOAT>(inputs, outputs)
+        {}
+        
+        JSONUI():
+        JSONUIAux<FAUSTFLOAT>()
+        {}
+    
+};
+
+#endif // FAUST_JSONUI_H
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -6051,7 +5997,6 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
 
 
 DspFaustMotion::~DspFaustMotion(){
-    
 	delete fMotionEngine;
 
 }
@@ -6068,7 +6013,6 @@ void DspFaustMotion::stop(){
 
 
 void DspFaustMotion::render(){
-
     
     fMotionEngine->render();
 }

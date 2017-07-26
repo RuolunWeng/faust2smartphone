@@ -164,23 +164,23 @@
 
 
             <RadioButton
-                android:id="@+id/hp"
+                android:id="@+id/highPass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="hp"
+                android:text="highPass"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/shok_thr"
+                android:id="@+id/shokThred"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="shok_thr"
+                android:text="shokThred"
                 android:textColor="@android:color/white" />
 
             <RadioButton
@@ -194,83 +194,93 @@
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/lp"
+                android:id="@+id/lowPass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="lp"
+                android:text="lowPass"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/tacc_thr"
+                android:id="@+id/accThred"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="tacc_thr"
+                android:text="accThred"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/tacc_gain"
+                android:id="@+id/accGain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="tacc_gain"
+                android:text="accGain"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/tacc_up"
+                android:id="@+id/accEvUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="tacc_up"
+                android:text="accEvUp"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/tacc_down"
+                android:id="@+id/accEvDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="tacc_down"
+                android:text="accEvDown"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/tgyr_gain"
+                android:id="@+id/gyrThred"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="tgyr_gain"
+                android:text="gyrThred"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/tgyr_up"
+                android:id="@+id/gyrGain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="tgyr_up"
+                android:text="gyrGain"
                 android:textColor="@android:color/white" />
 
             <RadioButton
-                android:id="@+id/tgyr_down"
+                android:id="@+id/gyrEvUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/radioGroup"
                 android:layout_toEndOf="@+id/radioGroup"
                 android:checked="false"
-                android:text="tgyr_down"
+                android:text="gyrEvUp"
+                android:textColor="@android:color/white" />
+
+            <RadioButton
+                android:id="@+id/gyrEvDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_toEndOf="@+id/radioGroup"
+                android:checked="false"
+                android:text="gyrEvDown"
                 android:textColor="@android:color/white" />
 
             <RadioButton

@@ -24,7 +24,6 @@
     CLLocationManager* _locationManager;
     
     
-    
     NSTimer* _guiTimer;
     NSTimer *_sensorTimer;
     
@@ -49,46 +48,9 @@
     BOOL cueIsOn;
     
     NSMutableArray *_motionParamArray;
+    NSMutableArray *_motionParamAddress;
     
-    BOOL hpIsOn;
-    BOOL shok_thrIsOn;
-    BOOL antirebonIsOn;
-    BOOL lpIsOn;
-    BOOL osfprojIsOn;
-    BOOL tacc_thrIsOn;
-    BOOL tacc_gainIsOn;
-    BOOL tacc_upIsOn;
-    BOOL tacc_downIsOn;
-    BOOL tgyr_thrIsOn;
-    BOOL tgyr_gainIsOn;
-    BOOL tgyr_upIsOn;
-    BOOL tgyr_downIsOn;
-    BOOL shapeCourIsOn;
-    BOOL shapeRearIsOn;
-    BOOL shapeJardinIsOn;
-    BOOL shapeFrontIsOn;
-    BOOL shapeDownIsOn;
-    BOOL shapeUpIsOn;
-    
-    float hpValue;
-    float shok_thrValue;
-    float antirebonValue;
-    float lpValue;
-    float osfprojValue;
-    float tacc_thrValue;
-    float tacc_gainValue;
-    float tacc_upValue;
-    float tacc_downValue;
-    float tgyr_thrValue;
-    float tgyr_gainValue;
-    float tgyr_upValue;
-    float tgyr_downValue;
-    float shapeCourValue;
-    float shapeRearValue;
-    float shapeJardinValue;
-    float shapeFrontValue;
-    float shapeDownValue;
-    float shapeUpValue;
+    BOOL* paramsOn;
     
     NSMutableArray *myCueNumArrary;
     NSInteger cueNum;
