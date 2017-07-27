@@ -80,6 +80,10 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
     -------------------------------------------------------------
 
     "./updatecue toto" to update your cue manager.
+
+    "-iosplugin" to generate a project with Faust Plugin for iOS.
+
+    "-androidplugin" to generate a project with Faust Plugin for Android.
     
 3) Compile Application
     
