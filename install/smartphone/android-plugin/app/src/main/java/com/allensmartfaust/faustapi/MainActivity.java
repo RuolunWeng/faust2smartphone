@@ -160,16 +160,16 @@ public class MainActivity extends AppCompatActivity {
     
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Update mapping at sensor rate
-            dspFaust.propagateAcc(0, event.values[0]*(-9.8f));
-            dspFaust.propagateAcc(1, event.values[1]*(-9.8f));
-            dspFaust.propagateAcc(2, event.values[2]*(9.8f));
+            dspFaust.propagateAcc(0, -event.values[0]);
+            dspFaust.propagateAcc(1, -event.values[1]);
+            dspFaust.propagateAcc(2, -event.values[2]);
             }
 
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             // Update mapping at sensor rate
-            dspFaust.propagateGyr(0, event.values[0]*(-1));
-            dspFaust.propagateGyr(1, event.values[1]*(-1));
-            dspFaust.propagateGyr(2, event.values[2]);
+            dspFaust.propagateGyr(0, -event.values[0]);
+            dspFaust.propagateGyr(1, -event.values[1]);
+            dspFaust.propagateGyr(2, -event.values[2]);
             }
 
         dspFaust.render();
