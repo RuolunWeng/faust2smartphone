@@ -9,7 +9,8 @@
 
 /************************************************************************
     FAUST Architecture File
-    Copyright (C) 2003-2011 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2017 GRAME, Allen Weng, SHCM
+    Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This Architecture section is free software; you can redistribute it
     and/or modify it under the terms of the GNU General Public License
@@ -47,6 +48,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <iostream>
+#include <iomanip>
 			
 #include "faust/dsp/dsp.h"
 #include "faust/audio/audio2.h"
@@ -135,8 +138,10 @@ public:
     
     virtual void sendInputValue(int channel,float value)
     {
-        for (int frame = 0; frame < fBufferSize2; frame++) {
-            fInChannel2[channel][frame] = value;
+        if (fNumInputs2 > channel) {
+            for (int frame = 0; frame < fBufferSize2; frame++) {
+                fInChannel2[channel][frame] = value;
+            }
         }
     }
     
@@ -163,9 +168,12 @@ public:
     
     virtual float getOutputValue(int channel)
     {
-        for (int frame = 0; frame < fBufferSize2; frame++) {
-            return fOutChannel2[channel][frame];
+        if (fNumOutputs2 > channel) {
+            for (int frame = 0; frame < fBufferSize2; frame++) {
+                return fOutChannel2[channel][frame];
+            }
         }
+        
     }
     
     virtual int getBufferSize() { return fBufferSize2; }

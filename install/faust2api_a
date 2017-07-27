@@ -19,6 +19,8 @@ ANDROID="0"
 IOS="0"
 IOSMOTION="0"
 ANDROIDMOTION="0"
+IOSPLUGIN="0"
+ANDROIDPLUGIN="0"
 NVOICES="0"
 #PACKAGENAME="0"
 POLY2="0"
@@ -46,11 +48,13 @@ echoHelp ()
     echo "   -package : set the JAVA package name (e.g. '-package mypackage' will change the JAVA package name to 'mypackage.DspFaust'). The default package name is 'com.DspFaust.'"
     echo "   -osc : add osc support to the API."
     echo "   -androidmotion : generate app with motion support."
+    echo "   -androidplugin : generate faustplugin support."
     echo ""
     echo "IOS-SPECIFIC OPTIONS "
     echo "   -midi : add built-in RtMidi support to the API."
     echo "   -osc : add osc support to the API."
     echo "   -iosmotion : generate app with motion support."
+    echo "   -iosplugin : generate faustplugin support."
 }
 
 # dispatch command arguments
@@ -74,6 +78,10 @@ do
 		IOSMOTION="1"
 	elif [ $p = "-androidmotion" ]; then
 		ANDROIDMOTION="1"
+  elif [ $p = "-iosplugin" ]; then
+    IOSPLUGIN="1"
+  elif [ $p = "-androidplugin" ]; then
+    ANDROIDPLUGIN="1"
     elif [ "$p" = "-effect" ]; then
         POLY2="1"
 		shift
@@ -159,6 +167,26 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
     faust -i -a api-allen/android-motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
     fi
 
+elif [ $ANDROIDPLUGIN -eq 1 ]; then
+      echo "Your dsp-faust.zip API package for Android Plugin support is being created"
+      CPPFOLDER="$APIFOLDER/cpp"
+      JAVAFOLDER="$APIFOLDER/java"
+      mkdir $CPPFOLDER
+      mkdir $JAVAFOLDER
+      cp -r /usr/local/share/faust/api-allen/android-plugin/jni/*.java $JAVAFOLDER
+      if [ -n "$PACKAGENAME" ]; then
+  	PACKAGENAME="$PACKAGENAME.DspFaust"
+  	sed -i "s/com.DspFaust/$PACKAGENAME/g" $JAVAFOLDER/*.java
+      fi
+      cp -r /usr/local/share/faust/api-allen/android-plugin/DspFaust.h $CPPFOLDER
+      cp -r /usr/local/share/faust/api-allen/android-plugin/jni/java_interface_wrap.cpp $CPPFOLDER
+      if [ "$OSCCTRL" = "1" ]; then
+      faust -i -a api-allen/android-plugin/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+      echo "#define OSCCTRL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+      else
+      faust -i -a api-allen/android-plugin/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+      fi
+
 elif [ $IOS -eq 1 ]; then
     echo "Your dsp-faust.zip API package for iOS is being created"
     cp -r /usr/local/share/faust/api-allen/iOS/DspFaust.h $APIFOLDER
@@ -178,6 +206,7 @@ elif [ $IOS -eq 1 ]; then
     if [ "$MIDI" = "1" ]; then
 	echo "#define IOS_MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
+
 elif [ $IOSMOTION -eq 1 ]; then
     echo "Your dsp-faust.zip API package for iOS-MOTION is being created"
     cp -r /usr/local/share/faust/api-allen/iOS-motion/DspFaust.h $APIFOLDER
@@ -186,6 +215,16 @@ elif [ $IOSMOTION -eq 1 ]; then
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     else
     faust -i -a api-allen/iOS-motion/DspFaust.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+    fi
+
+elif [ $IOSPLUGIN -eq 1 ]; then
+    echo "Your dsp-faust.zip API package for iOS-PLUGIN is being created"
+    cp -r /usr/local/share/faust/api-allen/iOS-plugin/DspFaust.h $APIFOLDER
+    if [ "$OSCCTRL" = "1" ]; then
+    faust -i -a api-allen/iOS-plugin/DspFaust.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+    echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    else
+    faust -i -a api-allen/iOS-plugin/DspFaust.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     fi
 else
     echoHelp
@@ -203,12 +242,18 @@ if [ $NODOC -eq 0 ]; then
   elif [ $ANDROIDMOTION -eq 1 ]; then
   		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/Android.md"
   		APIHEADERFILE="/usr/local/share/faust/api-allen/android-motion/DspFaust.h"
+  elif [ $ANDROIDPLUGIN -eq 1 ]; then
+    	DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/Android.md"
+    	APIHEADERFILE="/usr/local/share/faust/api-allen/android-plugin/DspFaust.h"
 	elif [ $IOS -eq 1 ]; then
 		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/iOS.md"
 		APIHEADERFILE="/usr/local/share/faust/api-allen/iOS/DspFaust.h"
 	elif [ $IOSMOTION -eq 1 ]; then
 		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/iOS.md"
 		APIHEADERFILE="/usr/local/share/faust/api-allen/iOS-motion/DspFaust.h"
+  elif [ $IOSPLUGIN -eq 1 ]; then
+		DOCHEADERFILE="/usr/local/share/faust/api-allen/doc/iOS.md"
+		APIHEADERFILE="/usr/local/share/faust/api-allen/iOS-plugin/DspFaust.h"
 	fi
 
 	PPFILE=pPrinter.cpp

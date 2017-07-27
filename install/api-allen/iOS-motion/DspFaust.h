@@ -1,8 +1,8 @@
 /************************************************************************
  ************************************************************************
  FAUST API Architecture File
- Copyright (C) 2016 GRAME, Romain Michon, CCRMA - Stanford University
- Copyright (C) 2014-2016 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2017 GRAME, Allen Weng, SHCM
+ Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  
  This is sample code. This file is provided as an example of minimal

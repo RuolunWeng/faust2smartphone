@@ -5910,9 +5910,12 @@ class motion_audio : public audio2 {
     
         virtual void sendInputValue(int channel,float value)
         {
-            for (int frame = 0; frame < fBufferSize2; frame++) {
-                fInChannel2[channel][frame] = value;
+            if (fNumInputs2 > channel) {
+                for (int frame = 0; frame < fBufferSize2; frame++) {
+                    fInChannel2[channel][frame] = value;
+                }
             }
+            
         }
     
         virtual void render()
@@ -5938,8 +5941,10 @@ class motion_audio : public audio2 {
     
         virtual float getOutputValue(int channel)
         {
-            for (int frame = 0; frame < fBufferSize2; frame++) {
-                return fOutChannel2[channel][frame];
+            if (fNumOutputs2 > channel) {
+                for (int frame = 0; frame < fBufferSize2; frame++) {
+                    return fOutChannel2[channel][frame];
+                }
             }
         }
 

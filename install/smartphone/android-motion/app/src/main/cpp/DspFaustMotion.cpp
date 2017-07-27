@@ -5908,40 +5908,45 @@ class motion_audio : public audio2 {
             printf("stop buffer\n");
         }
     
-        virtual void sendInputValue(int channel,float value)
-        {
+    virtual void sendInputValue(int channel,float value)
+    {
+        if (fNumInputs2 > channel) {
             for (int frame = 0; frame < fBufferSize2; frame++) {
                 fInChannel2[channel][frame] = value;
             }
         }
+        
+    }
     
-        virtual void render()
-        {
-            fDSP2->compute(fBufferSize2, fInChannel2, fOutChannel2);
-            
-            if (fNumInputs2 > 0) {
-                if (fIsSample) {
-                    for (int frame = 0; frame < fBufferSize2; frame++) {
-                        std::cout << std::setprecision(6) << "sample in " << fInChannel2[0][frame] << std::endl;
-                    }
+    virtual void render()
+    {
+        fDSP2->compute(fBufferSize2, fInChannel2, fOutChannel2);
+        
+        if (fNumInputs2 > 0) {
+            if (fIsSample) {
+                for (int frame = 0; frame < fBufferSize2; frame++) {
+                    std::cout << std::setprecision(6) << "sample in " << fInChannel2[0][frame] << std::endl;
                 }
             }
-            if (fNumOutputs2 > 0) {
-                if (fIsSample) {
-                    for (int frame = 0; frame < fBufferSize2; frame++) {
-                        std::cout << std::fixed << std::setprecision(6) << "sample out " << fOutChannel2[0][frame] << std::endl;
-                    }
-                }
-            }
-            
         }
+        if (fNumOutputs2 > 0) {
+            if (fIsSample) {
+                for (int frame = 0; frame < fBufferSize2; frame++) {
+                    std::cout << std::fixed << std::setprecision(6) << "sample out " << fOutChannel2[0][frame] << std::endl;
+                }
+            }
+        }
+        
+    }
     
-        virtual float getOutputValue(int channel)
-        {
+    virtual float getOutputValue(int channel)
+    {
+        if (fNumOutputs2 > channel) {
             for (int frame = 0; frame < fBufferSize2; frame++) {
                 return fOutChannel2[channel][frame];
             }
         }
+    }
 
         virtual int getBufferSize() { return fBufferSize2; }
         virtual int getSampleRate() { return fSampleRate2; }

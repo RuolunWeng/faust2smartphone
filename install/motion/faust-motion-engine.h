@@ -1,8 +1,8 @@
 /************************************************************************
  ************************************************************************
  FAUST Polyphonic Architecture File
- Copyright (C) 2013 GRAME, Romain Michon, CCRMA - Stanford University
- Copyright (C) 2003-2015 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2017 GRAME, Allen Weng, SHCM
+ Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
 
  This is sample code. This file is provided as an example of minimal
@@ -61,7 +61,7 @@ public:
         
         fDriver = driver;
         fRunning = false;
-        mydsp2* motion_dsp = new mydsp2();
+        mydsp* motion_dsp = new mydsp();
         
         fFinalDSP = motion_dsp;
         
@@ -377,7 +377,7 @@ public:
          * getCPULoad()
          * Return DSP CPU load.
          */
-        float getCPULoad() { return fDriver->get_cpu_load(); }
+        float getCPULoad() { return fDriver->getCPULoad(); }
 
         /*
          * getScreenColor() -> c:int

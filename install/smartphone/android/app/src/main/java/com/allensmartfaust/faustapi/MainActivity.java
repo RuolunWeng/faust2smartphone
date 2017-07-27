@@ -32,7 +32,10 @@ public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
     private SensorManager sensorManager;
     
+    int SR = 44100;
+    int blockSize = 512;
     long lastDate=0;
+    int updateInterval = (int)(1000.f/(SR/blockSize));
     
     private SeekBar param1,param2;
     private TextView paramOut1,paramOut2;
@@ -151,16 +154,14 @@ public class MainActivity extends AppCompatActivity {
     public void onSensorChanged(SensorEvent event) {
     
     long currentTime= System.currentTimeMillis();
-    long updateInterval = 10;
-    
     
     if ((currentTime-lastDate) > updateInterval) {
     
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Update mapping at sensor rate
-            dspFaust.propagateAcc(0, event.values[0]*(-1));
-            dspFaust.propagateAcc(1, event.values[1]*(-1));
-            dspFaust.propagateAcc(2, event.values[2]);
+            dspFaust.propagateAcc(0, event.values[0] * (-9.81f));
+            dspFaust.propagateAcc(1, event.values[1] * (-9.81f));
+            dspFaust.propagateAcc(2, event.values[2] * (9.81f));
             }
 
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -179,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
         param2.setProgress((int)(getParam2+96.0f));
         paramOut1.setText("Freq:"+getParam1+"Hz");
         paramOut2.setText("Volume:"+getParam2+"dB");
+        
+        lastDate = currentTime;
         
     }
         }
@@ -216,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
             if(checkPermission()){
 
                 Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
-                int SR = 44100;
-                int blockSize = 512;
+
                 dspFaust = new DspFaust(SR,blockSize);
                 // PRINT ALL PARAMETRE ADDRESS
                 for(int i=0; i < dspFaust.getParamsCount(); i++){

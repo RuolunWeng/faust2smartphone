@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     DspFaustMotion dspFaustMotion;
     
     private SensorManager sensorManager;
-
+    
     private SharedPreferences mSharedPref;
     
     private TextView cue,cueNext,cueText, cueNextText, tips, appName;
@@ -59,19 +59,22 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     
     int scrWidth = 0,scrHeight= 0;
-
+    
+    int SR = 44100;
+    int blockSize = 512;
     long lastDate=0;
+    int updateInterval = (int)(1000.f/(SR/blockSize));
     
     ArrayList<String> cueList = new ArrayList<String>();
     ArrayList<String> tipsList = new ArrayList<String>();
-
+    
     ArrayList<String>  motionParamArray = new ArrayList<String>();
     ArrayList<String>  motionParamAddress = new ArrayList<String>();
     
     int cueIndex,cueIndexNext;
     
     float[] rotationMatrix = new float[9];
-
+    
     String oscAddress;
     int oscInPort;
     int oscOutPort;
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     
     String cueAddress;
     String tipAddress;
-
+    
     boolean[] paramsOn;
     boolean touchGateIsOn;
     boolean screenXIsOn;
@@ -132,21 +135,20 @@ public class MainActivity extends AppCompatActivity {
     
     private void createFaust() {
         
-        int SR = 44100;
-        int blockSize = 512;
         
         if (dspFaustMotion == null) {
-            dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
-
+            //dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
+            dspFaustMotion = new DspFaustMotion(SR, blockSize);
+            
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
                 System.out.println(dspFaustMotion.getParamAddress(i));
             }
-
+            
         }
         
         if (dspFaust == null) {
-
+            
             dspFaust = new DspFaust(dspFaustMotion,SR, blockSize);
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaust.getParamsCount(); i++) {
@@ -154,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             }
             
         }
-
+        
         
     }
     
@@ -217,29 +219,29 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException x) {
             System.err.println(x);
         }
-
+        
         System.out.println(cueList);
         System.out.println(tipsList);
-
+        
         String[] ParamName= {"highPass","shokThred","antirebon","lowPass","accThred",
-        "accGain","accEvUp","accEvDown","gyrThred",
-        "gyrGain","gyrEvUp","gyrEvDown","osfproj",
-        "shapeCour","shapeRear","shapeJardin","shapeFront","shapeDown","shapeUp"};
-
+            "accGain","accEvUp","accEvDown","gyrThred",
+            "gyrGain","gyrEvUp","gyrEvDown","osfproj",
+            "shapeCour","shapeRear","shapeJardin","shapeFront","shapeDown","shapeUp"};
+        
         String[] ParamAddress = {"/Motion/hp","/Motion/shok_thr","/Motion/antirebon","/Motion/lp","/Motion/tacc_thr",
-        "/Motion/tacc_gain","/Motion/tacc_up","/Motion/tacc_down","/Motion/tgyr_thr",
-        "/Motion/tgyr_gain","/Motion/tgyr_up","/Motion/tgyr_down","/Motion/osfproj",
-        "/Motion/shape0","/Motion/shape1","/Motion/shape2","/Motion/shape3","/Motion/shape4","/Motion/shape5"};
-
+            "/Motion/tacc_gain","/Motion/tacc_up","/Motion/tacc_down","/Motion/tgyr_thr",
+            "/Motion/tgyr_gain","/Motion/tgyr_up","/Motion/tgyr_down","/Motion/osfproj",
+            "/Motion/shape0","/Motion/shape1","/Motion/shape2","/Motion/shape3","/Motion/shape4","/Motion/shape5"};
+        
         for (int i=0; i< 19; i++){
             motionParamArray.add(i,ParamName[i]);
             motionParamAddress.add(i,ParamAddress[i]);
         }
         System.out.println(motionParamArray);
         System.out.println(motionParamAddress);
-
+        
         paramsOn = new boolean[motionParamArray.size()];
-
+        
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -315,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
         defaultParams =(Button) findViewById(R.id.defaultParams);
         
         setRef =(Button) findViewById(R.id.setRef);
-
+        
         
         setParams.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             
@@ -365,13 +367,13 @@ public class MainActivity extends AppCompatActivity {
                 boolean isChecked = checkedRadioButton.isChecked();
                 if (isChecked)
                 {
-
+                    
                     for (int i=0; i< motionParamArray.size(); i++) {
                         paramsOn[i]=false;
                     }
                     paramsOn[buttonID]=true;
                     paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue(motionParamAddress.get(buttonID))));
-
+                    
                 }
             }
         });
@@ -379,14 +381,14 @@ public class MainActivity extends AppCompatActivity {
         
         setMotion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                
                 for (int i=0; i< motionParamArray.size(); i++) {
-
+                    
                     if (paramsOn[i]){
                         dspFaustMotion.setParamValue(motionParamAddress.get(i), Float.valueOf(paramsValue.getText().toString()));
                         SharedPreWriteFloat(motionParamArray.get(i),Float.valueOf(paramsValue.getText().toString()));
                     }
-
+                    
                 }
                 
             }
@@ -400,12 +402,12 @@ public class MainActivity extends AppCompatActivity {
                 for (int i=0; i<dspFaustMotion.getParamsCount(); i++) {
                     dspFaustMotion.setParamValue(i, dspFaustMotion.getParamInit(i));
                 }
-
+                
                 paramsValue.setText("Done");
                 Toast.makeText(MainActivity.this, "Reset Defaults(restart to use new OSC)", Toast.LENGTH_LONG).show();
                 checkAddress();
                 dspFaust.checkAdress();
-
+                
                 resetParams();
                 
             }
@@ -414,16 +416,16 @@ public class MainActivity extends AppCompatActivity {
         
         setOSC.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                
                 dspFaust.setOSCValue(ipAddress.getText().toString(),
-                        Integer.parseInt(inputPort.getText().toString()),
-                        Integer.parseInt(outputPort.getText().toString()));
+                                     Integer.parseInt(inputPort.getText().toString()),
+                                     Integer.parseInt(outputPort.getText().toString()));
                 SharedPrefWriteString("oscAddress",ipAddress.getText().toString());
                 SharedPrefWriteString("oscInPort",inputPort.getText().toString());
                 SharedPrefWriteString("oscOutPort",outputPort.getText().toString());
-
+                
                 Toast.makeText(MainActivity.this, "Restart to use new OSC", Toast.LENGTH_LONG).show();
-
+                
             }
         });
         
@@ -579,7 +581,7 @@ public class MainActivity extends AppCompatActivity {
             }
                 
             case MotionEvent.ACTION_POINTER_UP: {
-
+                
                 break;
             }
                 
@@ -612,67 +614,62 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
-
+    
+    
     private final SensorEventListener mSensorListener = new SensorEventListener() {
-
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
-        public void onSensorChanged(SensorEvent event) {
+    
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+    
+    public void onSensorChanged(SensorEvent event) {
     
     
-        long currentTime= System.currentTimeMillis();
-        long updateInterval = 0;
-        if (dspFaust.getOSCIsOn()) {
-            updateInterval = 10;
-        } else {
-            updateInterval = 0;
-        }
-
-            if ((currentTime-lastDate) > updateInterval) {
+    long currentTime= System.currentTimeMillis();
+    
+    if ((currentTime-lastDate) > updateInterval) {
+        
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            // Update acc at sensor rate
             
-                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    // Update acc at sensor rate
-
-                        dspFaust.propagateAcc(0, event.values[0] * (-1));
-                        dspFaust.propagateAcc(1, event.values[1] * (-1));
-                        dspFaust.propagateAcc(2, event.values[2]);
-
-                        dspFaustMotion.propagateAcc(0, event.values[0] * (-1));
-                        dspFaustMotion.propagateAcc(1, event.values[1] * (-1));
-                        dspFaustMotion.propagateAcc(2, event.values[2]);
-
-                }
-
-                if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-                // Update gyr at sensor rate
-
-                        dspFaust.propagateGyr(0, event.values[0] * (-1));
-                        dspFaust.propagateGyr(1, event.values[1] * (-1));
-                        dspFaust.propagateGyr(2, event.values[2]);
-
-                        dspFaustMotion.propagateGyr(0, event.values[0] * (-1));
-                        dspFaustMotion.propagateGyr(1, event.values[1] * (-1));
-                        dspFaustMotion.propagateGyr(2, event.values[2]);
-
-                }
-
-                if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-                    // Update rotation matrix at sensor rate
-                    SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
-
-                    dspFaust.motionRender(rotationMatrix[0], rotationMatrix[3], rotationMatrix[6],
-                            rotationMatrix[1], rotationMatrix[4], rotationMatrix[7],
-                            rotationMatrix[2], rotationMatrix[5], rotationMatrix[8]);
-
-                }
-
-                lastDate = currentTime;
+            dspFaust.propagateAcc(0, -event.values[0]);
+            dspFaust.propagateAcc(1, -event.values[1]);
+            dspFaust.propagateAcc(2, event.values[2]);
             
-            }
-
+            dspFaustMotion.propagateAcc(0, -event.values[0]);
+            dspFaustMotion.propagateAcc(1, -event.values[1]);
+            dspFaustMotion.propagateAcc(2, event.values[2]);
+            
         }
+        
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            // Update gyr at sensor rate
+            
+            dspFaust.propagateGyr(0, event.values[0] * (-1));
+            dspFaust.propagateGyr(1, event.values[1] * (-1));
+            dspFaust.propagateGyr(2, event.values[2]);
+            
+            dspFaustMotion.propagateGyr(0, event.values[0] * (-1));
+            dspFaustMotion.propagateGyr(1, event.values[1] * (-1));
+            dspFaustMotion.propagateGyr(2, event.values[2]);
+            
+        }
+        
+        
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            // Update rotation matrix at sensor rate
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
+            
+            dspFaust.motionRender(rotationMatrix[0], rotationMatrix[3], rotationMatrix[6],
+                                  rotationMatrix[1], rotationMatrix[4], rotationMatrix[7],
+                                  rotationMatrix[2], rotationMatrix[5], rotationMatrix[8]);
+            
+        }
+        
+        lastDate = currentTime;
+        
+    }
+    
+}
 };
 
 
@@ -681,36 +678,36 @@ private void initFrame () {
 
 if (sensorManager!=null){
 
-    dspFaust.initFrame();
+dspFaust.initFrame();
 
 }
 
 }
 
 private void SharedPrefInit(Context name) {
-    if(mSharedPref == null)
-        mSharedPref = getSharedPreferences(name.getPackageName(), 0);
+if(mSharedPref == null)
+mSharedPref = getSharedPreferences(name.getPackageName(), 0);
 }
 
 private  String SharedPrefRead(String key, String defValue) {
-        return mSharedPref.getString(key, defValue);
+return mSharedPref.getString(key, defValue);
 }
 private  void SharedPrefWriteString(String key, String value) {
-        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
-        prefsEditor.putString(key, value);
-        prefsEditor.commit();
+SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+prefsEditor.putString(key, value);
+prefsEditor.commit();
 }
 private  Float SharedPrefRead(String key, float defValue) {
-        return mSharedPref.getFloat(key, defValue);
+return mSharedPref.getFloat(key, defValue);
 }
 private void SharedPreWriteFloat(String key, Float value) {
-        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
-        prefsEditor.putFloat(key, value).commit();
+SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+prefsEditor.putFloat(key, value).commit();
 }
 
 private void SharedPreClear() {
-        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
-        prefsEditor.clear().commit();
+SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+prefsEditor.clear().commit();
 }
 
 
@@ -718,37 +715,37 @@ private void SharedPreClear() {
 
 private void loadDefaultParams() {
 
-    for (int i=0; i<motionParamAddress.size(); i++){
-        dspFaustMotion.setParamValue(motionParamAddress.get(i),
-                       SharedPrefRead(motionParamArray.get(i),dspFaustMotion.getParamInit(motionParamAddress.get(i))));
-    }
+for (int i=0; i<motionParamAddress.size(); i++){
+dspFaustMotion.setParamValue(motionParamAddress.get(i),
+SharedPrefRead(motionParamArray.get(i),dspFaustMotion.getParamInit(motionParamAddress.get(i))));
+}
 
 
 }
 
 private void resetParams() {
 
-        SharedPreClear();
+SharedPreClear();
 
-    for (int i=0; i<motionParamAddress.size(); i++){
-        SharedPreWriteFloat(motionParamArray.get(i), dspFaustMotion.getParamInit((motionParamAddress.get(i))));
-    }
+for (int i=0; i<motionParamAddress.size(); i++){
+SharedPreWriteFloat(motionParamArray.get(i), dspFaustMotion.getParamInit((motionParamAddress.get(i))));
+}
 
-        SharedPrefWriteString("oscAddress", "192.168.1.5");
-        SharedPrefWriteString("oscInPort", "5510");
-        SharedPrefWriteString("oscOutPort", "5511");
+SharedPrefWriteString("oscAddress", "192.168.1.5");
+SharedPrefWriteString("oscInPort", "5510");
+SharedPrefWriteString("oscOutPort", "5511");
 
-        if (dspFaust.getOSCIsOn()) {
-            oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
-            oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
-            oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
+if (dspFaust.getOSCIsOn()) {
+oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
+oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
+oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
 
-            dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
+dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
 
-            ipAddress.setText(oscAddress);
-            inputPort.setText(SharedPrefRead("oscInPort","5510"));
-            outputPort.setText(SharedPrefRead("oscOutPort","5511"));
-        }
+ipAddress.setText(oscAddress);
+inputPort.setText(SharedPrefRead("oscInPort","5510"));
+outputPort.setText(SharedPrefRead("oscOutPort","5511"));
+}
 
 }
 
@@ -777,27 +774,27 @@ if(permissionToRecordAccepted) {
 
 if (!dspFaustMotion.isRunning()) {
 
-    dspFaustMotion.start();
+dspFaustMotion.start();
 }
 
 if (!dspFaust.isRunning()) {
 
-    SharedPrefInit(getApplicationContext());
+SharedPrefInit(getApplicationContext());
 
-    if (dspFaust.getOSCIsOn()) {
-        oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
-        oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
-        oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
+if (dspFaust.getOSCIsOn()) {
+oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
+oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
+oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
 
-        dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
+dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
 
-    }
+}
 
-    dspFaust.start();
+dspFaust.start();
 
-    checkAddress();
-    dspFaust.checkAdress();
-    loadDefaultParams();
+checkAddress();
+dspFaust.checkAdress();
+loadDefaultParams();
 
 
 sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(

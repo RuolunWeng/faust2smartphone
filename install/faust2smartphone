@@ -21,6 +21,8 @@ ANDROID="0"
 IOS="0"
 IOSMOTION="0"
 ANDROIDMOTION="0"
+IOSPLUGIN="0"
+ANDROIDPLUGIN="0"
 NVOICES="12"
 POLY2="0"
 MIDI="0"
@@ -43,8 +45,10 @@ echoHelp ()
 	echo "===================================="
 	echo "Option: -ios for Xcode simple project"
 	echo "Option: -soloios for Xcode project for smartSOLO"
+	echo "Option: -iosplugin for Xcode project with faust plugin"
 	echo "Option: -android for Android Studio simple project"
 	echo "Option: -soloandroid for Android Studio project for smartSOLO"
+	echo "Option: -androidplugin for Android Studio with faust plugin"
 	echo "Option: -updatelib <.lib> for update motion library"
 	echo "Option: -osc for OSC support"
 	echo "Option: -cuemanager for using Cue Maneger system"
@@ -85,6 +89,10 @@ do
 		IOSMOTION="1"
 	elif [ $p = "-soloandroid" ]; then
 		ANDROIDMOTION="1"
+	elif [ $p = "-iosplugin" ]; then
+		IOSPLUGIN="1"
+	elif [ $p = "-androidplugin" ]; then
+		ANDROIDPLUGIN="1"
 	elif [ $p = "-reuse" ]; then
 		REUSE=1
 	elif [ $p = "-source" ]; then
@@ -147,12 +155,16 @@ if [ $ANDROID -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/app/src/main"
 elif [ $ANDROIDMOTION -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/app/src/main"
+elif [ $ANDROIDPLUGIN -eq 1 ]; then
+	APPFOLDER="$BUILDDIR/app/src/main"
 elif [ $IOS -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/iOS"
 elif [ $IOSMOTION -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/iOS"
+elif [ $IOSPLUGIN -eq 1 ]; then
+	APPFOLDER="$BUILDDIR/iOS"
 else
-	echo "Please, specify a platform: -android -soloandroid -ios -soloios"
+	echo "Please, specify a platform: -android -soloandroid -ios -soloios -iosplugin -androidplugin"
 	echoHelp
 	exit 1
 fi
@@ -247,11 +259,52 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			fi
 			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
 
+		elif [ $ANDROIDPLUGIN -eq 1 ]; then
+			echo "Creating a new Android project for Faust Plugin in $BUILDDIR" > $LOG
+			cp -r $FAUSTLIB/smartphone/android-plugin/* "$BUILDDIR"
+			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
+			# change 'faustapi' with real *APPNAME
+			PLATFORM=$(uname)
+
+			if [ $PLATFORM = "Darwin" ]; then
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i '' 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
+				if [[ $OPTIONS = " -osc" ]]; then
+					echo "osc" > $LOG
+					sed -i '' 's,OSCCTRL=false,OSCCTRL=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
+				else
+					echo "noosc" > $LOG
+				fi
+			else
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
+				if [[ $OPTIONS = " -osc" ]]; then
+					echo "osc" > $LOG
+					sed -i '' 's,OSCCTRL=false,OSCCTRL=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
+				else
+					echo "noosc" > $LOG
+				fi
+			fi
+			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
+
 		elif [ $IOS -eq 1 ]; then
 			echo "Creating a new iOS project in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS/* "$BUILDDIR"
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
-
+			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
+			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
+		elif [ $IOSPLUGIN -eq 1 ]; then
+			echo "Creating a new iOS FAUST PLUGIN project in $BUILDDIR" > $LOG
+			cp -r $FAUSTLIB/smartphone/iOS-plugin/* "$BUILDDIR"
+			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
 			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
 		elif [ $IOSMOTION -eq 1 ]; then
@@ -308,6 +361,20 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	faust -i -a $FAUSTLIB/api-allen/android-motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	fi
 
+elif [ $ANDROIDPLUGIN -eq 1 ]; then
+	echo "Adding DSP with motion support to the app" > $LOG
+	if [ -z $OPTIONS ]; then
+		faust2api_a -androidplugin -nodoc "$FILE" > $LOG
+		else
+		faust2api_a -androidplugin -nodoc "$OPTIONS" "$FILE" > $LOG
+	fi
+	unzip "dsp-faust.zip" > $LOG
+	mv "dsp-faust" "$BUILDDIR"
+	rm "dsp-faust.zip"
+	cp -r "$BUILDDIR/dsp-faust/cpp" "$APPFOLDER"
+	cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
+	rm -r "$BUILDDIR/dsp-faust"
+
 elif [ $IOS -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
 		echo "Adding DSP with no effect chain to the app" > $LOG
@@ -325,6 +392,20 @@ elif [ $IOS -eq 1 ]; then
 	rm "dsp-faust.zip"
 	cp $BUILDDIR/dsp-faust/* "$APPFOLDER"
 	rm -r "$BUILDDIR/dsp-faust"
+	
+elif [ $IOSPLUGIN -eq 1 ]; then
+	echo "Adding DSP to the app" > $LOG
+	if [ -z $OPTIONS ]; then
+		faust2api_a -iosplugin -nodoc "$FILE" > $LOG
+	else
+		faust2api_a -iosplugin -nodoc "$OPTIONS" "$FILE" > $LOG
+	fi
+	unzip "dsp-faust.zip" > $LOG
+	mv "dsp-faust" "$BUILDDIR"
+	rm "dsp-faust.zip"
+	cp $BUILDDIR/dsp-faust/* "$APPFOLDER"
+	rm -r "$BUILDDIR/dsp-faust"
+
 elif [ $IOSMOTION -eq 1 ]; then
 	echo "Adding DSP with motion support to the app" > $LOG
 	if [ -z $OPTIONS ]; then

@@ -30,12 +30,13 @@
     // no sleep mode
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-
+    
     ////////////////////
     // init faust motor
     ////////////////////
     
-    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
+    //dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
+    dspFaustMotion = new DspFaustMotion(SR, bufferSize);
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
@@ -66,7 +67,7 @@
     [self startRotationMatrix];
     
     [self startUpdate];
-
+    
     [self displayTitle];
     
     
@@ -77,61 +78,61 @@
     _motionParamAddress = [[NSMutableArray alloc] init];
     
     NSArray *ParamName = @[@"highPass",@"shokThred",@"antirebon",@"lowPass",@"accThred",
-                          @"accGain",@"accEvUp",@"accEvDown",@"gyrThred",
-                          @"gyrGain",@"gyrEvUp",@"gyrEvDown",@"osfproj",
-                          @"shapeCour",@"shapeRear",@"shapeJardin",@"shapeFront",@"shapeDown",@"shapeUp"];
+                           @"accGain",@"accEvUp",@"accEvDown",@"gyrThred",
+                           @"gyrGain",@"gyrEvUp",@"gyrEvDown",@"osfproj",
+                           @"shapeCour",@"shapeRear",@"shapeJardin",@"shapeFront",@"shapeDown",@"shapeUp"];
     
     [_motionParamArray addObjectsFromArray:ParamName];
     
     NSArray *ParamAddress = @[@"/Motion/hp",@"/Motion/shok_thr",@"/Motion/antirebon",@"/Motion/lp",@"/Motion/tacc_thr",
-                            @"/Motion/tacc_gain",@"/Motion/tacc_up",@"/Motion/tacc_down",@"/Motion/tgyr_thr",
-                            @"/Motion/tgyr_gain",@"/Motion/tgyr_up",@"/Motion/tgyr_down",@"/Motion/osfproj",
-                            @"/Motion/shape0",@"/Motion/shape1",@"/Motion/shape2",@"/Motion/shape3",@"/Motion/shape4",@"/Motion/shape5"];
+                              @"/Motion/tacc_gain",@"/Motion/tacc_up",@"/Motion/tacc_down",@"/Motion/tgyr_thr",
+                              @"/Motion/tgyr_gain",@"/Motion/tgyr_up",@"/Motion/tgyr_down",@"/Motion/osfproj",
+                              @"/Motion/shape0",@"/Motion/shape1",@"/Motion/shape2",@"/Motion/shape3",@"/Motion/shape4",@"/Motion/shape5"];
     
     [_motionParamAddress addObjectsFromArray:ParamAddress];
     
     paramsOn = new BOOL[_motionParamAddress.count];
-
+    
     [self loadDefaultParams];
     
     if (cueIsOn) {
-    myCueNumArrary = [[NSMutableArray alloc] init];
-    
-    // load cues
-    NSString *pathCue = [NSString stringWithFormat:@"%@/cueNums.txt", [[NSBundle mainBundle] resourcePath]];
-    
-    NSString *myTextCues = [NSString stringWithContentsOfFile:pathCue encoding:NSUTF8StringEncoding error:nil];
-    
-    NSArray *myCues = [myTextCues componentsSeparatedByString:@";\n"];
-    
-    NSLog(@"Cue:%@",myCues);
-    [myCueNumArrary addObjectsFromArray:myCues];
-    
-    cueIndex = 0;
-    cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
-    cueIndexNext = 1;
-    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cue.text = [NSString stringWithFormat:@"%ld",(long)cueNum];
-    _cueNext.text = [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-    
-    
-    myCueTipsArrary = [[NSMutableArray alloc] init];
-    
-    // load cue Tips
-    NSString *pathTips = [NSString stringWithFormat:@"%@/cueTips.txt", [[NSBundle mainBundle] resourcePath]];
-    
-    NSString *myTextTips = [NSString stringWithContentsOfFile:pathTips encoding:NSUTF8StringEncoding error:nil];
-    
-    NSArray *myTips = [myTextTips componentsSeparatedByString:@";\n"];
-    
-    NSLog(@"Tips:%@",myTips);
-    [myCueTipsArrary addObjectsFromArray:myTips];
-    
-    if ([myCueTipsArrary count] != [myCueNumArrary count]) {
-        _tips.text = @"!Num of cue and tips must be same!";
-    } else {
-        _tips.text = [myCueTipsArrary objectAtIndex:0];
-    }
+        myCueNumArrary = [[NSMutableArray alloc] init];
+        
+        // load cues
+        NSString *pathCue = [NSString stringWithFormat:@"%@/cueNums.txt", [[NSBundle mainBundle] resourcePath]];
+        
+        NSString *myTextCues = [NSString stringWithContentsOfFile:pathCue encoding:NSUTF8StringEncoding error:nil];
+        
+        NSArray *myCues = [myTextCues componentsSeparatedByString:@";\n"];
+        
+        NSLog(@"Cue:%@",myCues);
+        [myCueNumArrary addObjectsFromArray:myCues];
+        
+        cueIndex = 0;
+        cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
+        cueIndexNext = 1;
+        cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+        _cue.text = [NSString stringWithFormat:@"%ld",(long)cueNum];
+        _cueNext.text = [NSString stringWithFormat:@"%ld",(long)cueNumNext];
+        
+        
+        myCueTipsArrary = [[NSMutableArray alloc] init];
+        
+        // load cue Tips
+        NSString *pathTips = [NSString stringWithFormat:@"%@/cueTips.txt", [[NSBundle mainBundle] resourcePath]];
+        
+        NSString *myTextTips = [NSString stringWithContentsOfFile:pathTips encoding:NSUTF8StringEncoding error:nil];
+        
+        NSArray *myTips = [myTextTips componentsSeparatedByString:@";\n"];
+        
+        NSLog(@"Tips:%@",myTips);
+        [myCueTipsArrary addObjectsFromArray:myTips];
+        
+        if ([myCueTipsArrary count] != [myCueNumArrary count]) {
+            _tips.text = @"!Num of cue and tips must be same!";
+        } else {
+            _tips.text = [myCueTipsArrary objectAtIndex:0];
+        }
     }
     
     if (dspFaust->getOSCIsOn()) {
@@ -174,7 +175,7 @@
         _nextCue.hidden=true;
     }
     
-
+    
 }
 
 
@@ -184,7 +185,7 @@
     
     for (int i=0; i<_motionParamAddress.count; i++) {
         [appDefaultsDictionary setValue:
-        [NSNumber numberWithFloat:dspFaustMotion->getParamInit([_motionParamAddress[i] UTF8String])] forKey:_motionParamArray[i]];
+         [NSNumber numberWithFloat:dspFaustMotion->getParamInit([_motionParamAddress[i] UTF8String])] forKey:_motionParamArray[i]];
     }
     
     [appDefaultsDictionary setValue:@"192.168.1.20" forKey:@"oscAddress"];
@@ -199,7 +200,7 @@
                                       (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
         
     }
-
+    
     if (dspFaust->getOSCIsOn()) {
         oscAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
         oscInPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscInPort"];
@@ -212,7 +213,7 @@
 
 
 -(void) resetDefaultParams {
-
+    
     NSDictionary* dict = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
     NSArray* keysArray = [dict allKeys];
     int i = 0;
@@ -237,7 +238,7 @@
         
         dspFaust->setOSCValue([oscAddress cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscInPort cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscOutPort cStringUsingEncoding:[NSString defaultCStringEncoding]]);
     }
-
+    
 }
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
@@ -283,7 +284,7 @@
         } else if ([data hasSuffix:@"/cue"]) {
             cueIsOn = true;
             cueAddress = dspFaust->getParamAddress(i);
-        } 
+        }
         
     }
     
@@ -292,8 +293,8 @@
 - (void)startUpdate
 {
     
-    _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1./(SR/bufferSize) target:self
-                                            selector:@selector(updateAccGyo) userInfo:nil repeats:YES];
+    _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1.f/(SR/bufferSize) target:self
+                                                  selector:@selector(updateMotion) userInfo:nil repeats:YES];
     
 }
 
@@ -318,17 +319,17 @@
     }
     
     if (magneticHeadingIsOn) {
-    if (_locationManager == nil) {
-        
-        _locationManager = [[CLLocationManager alloc] init];
-        _locationManager.delegate = self;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        _locationManager.distanceFilter = kCLHeadingFilterNone;
-        _locationManager.headingFilter = 5;//kCLHeadingFilterNone;
-        magnetic = 0;
-        offset = 0;
-        [_locationManager startUpdatingHeading];
-    }
+        if (_locationManager == nil) {
+            
+            _locationManager = [[CLLocationManager alloc] init];
+            _locationManager.delegate = self;
+            _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+            _locationManager.distanceFilter = kCLHeadingFilterNone;
+            _locationManager.headingFilter = 5;//kCLHeadingFilterNone;
+            magnetic = 0;
+            offset = 0;
+            [_locationManager startUpdatingHeading];
+        }
     }
 }
 
@@ -345,11 +346,11 @@
     }
     
     if (magneticHeadingIsOn) {
-    if (_locationManager != nil) {
-        
-        [_locationManager stopUpdatingHeading];
-        _locationManager = nil;
-    }
+        if (_locationManager != nil) {
+            
+            [_locationManager stopUpdatingHeading];
+            _locationManager = nil;
+        }
     }
 }
 
@@ -365,7 +366,7 @@
 }
 
 
-- (void)updateAccGyo
+- (void)updateMotion
 {
     
     dspFaust->propagateAcc(0, _motionManager.accelerometerData.acceleration.x * ONE_G);
@@ -389,7 +390,7 @@
 - (void)startRotationMatrix
 {
     
-    CGFloat updateInterval = 1./(SR/bufferSize);
+    CGFloat updateInterval = 1.f/(SR/bufferSize);
     //referenceAttitude = _motionManager.deviceMotion.attitude;
     // delay pour init frame
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
@@ -399,15 +400,15 @@
     [_motionManager setDeviceMotionUpdateInterval:updateInterval];
     NSOperationQueue *motionQueue = [[NSOperationQueue alloc] init];
     [_motionManager startDeviceMotionUpdatesToQueue: motionQueue
-                                       withHandler:^(CMDeviceMotion* motion, NSError* error){
-                                           
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            
-            dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
-            
-            
-        }];
-    }];
+                                        withHandler:^(CMDeviceMotion* motion, NSError* error){
+                                            
+                                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                
+                                                dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
+                                                
+                                                
+                                            }];
+                                        }];
     
 }
 
@@ -460,7 +461,7 @@
 {
     
     _guiTimer = [NSTimer scheduledTimerWithTimeInterval:1./kGUIUpdateRate target:self
-                                                  selector:@selector(updateGUI) userInfo:nil repeats:YES];
+                                               selector:@selector(updateGUI) userInfo:nil repeats:YES];
     
 }
 
@@ -490,32 +491,32 @@
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
-     
+    
     CGFloat pointX = point.x/screenWidth;
     CGFloat pointY = point.y/(screenHeight/2);
     
     if (cueIsOn) {
-    
-    if (point.y < screenHeight/2) {
         
-    if (touchGateIsOn) {
-    
-        dspFaust->setParamValue(touchGateAddress, 1);
-        [self counter];
-        _touch.alpha=1;
-    
-        if (magneticHeadingIsOn) {
-            offset = magnetic;
+        if (point.y < screenHeight/2) {
+            
+            if (touchGateIsOn) {
+                
+                dspFaust->setParamValue(touchGateAddress, 1);
+                [self counter];
+                _touch.alpha=1;
+                
+                if (magneticHeadingIsOn) {
+                    offset = magnetic;
+                }
+            }
+            if (screenXIsOn) {
+                dspFaust->setParamValue(screenXAddress, pointX);
+            }
+            if (screenYIsOn) {
+                dspFaust->setParamValue(screenYAddress, pointY);
+            }
+            
         }
-    }
-        if (screenXIsOn) {
-        dspFaust->setParamValue(screenXAddress, pointX);
-        }
-        if (screenYIsOn) {
-        dspFaust->setParamValue(screenYAddress, pointY);
-        }
-    
-    }
     }
 }
 
@@ -523,62 +524,62 @@
             withEvent:(UIEvent *)event {
     //NSUInteger touchCount = [touches count];
     
-     UITouch *touch = [touches anyObject];
-     CGPoint point = [touch locationInView:self.view];
+    UITouch *touch = [touches anyObject];
+    CGPoint point = [touch locationInView:self.view];
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
-     
+    
     CGFloat pointX = point.x/screenWidth;
     CGFloat pointY = point.y/(screenHeight/2.0f);
     
     if (cueIsOn) {
         
-    if (point.y < screenHeight/2) {
-        
-        if (screenXIsOn) {
-        dspFaust->setParamValue(screenXAddress, (float)pointX);
+        if (point.y < screenHeight/2) {
+            
+            if (screenXIsOn) {
+                dspFaust->setParamValue(screenXAddress, (float)pointX);
+            }
+            if (screenYIsOn) {
+                dspFaust->setParamValue(screenYAddress, pointY);
+            }
+            
         }
-        if (screenYIsOn) {
-        dspFaust->setParamValue(screenYAddress, pointY);
-        }
- 
-    }
     }
     
 }
 
 - (void) touchesEnded:(NSSet *)touches
             withEvent:(UIEvent *)event {
-   //NSUInteger touchCount = [touches count];
+    //NSUInteger touchCount = [touches count];
     
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self.view];
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
-     
+    
     CGFloat pointX = point.x/screenWidth;
     CGFloat pointY = point.y/(screenHeight/2);
     
     if (cueIsOn) {
         
-    if (point.y < screenHeight/2) {
-        if (touchGateIsOn) {
-    
-        dspFaust->setParamValue(touchGateAddress, 0);
-        _touch.alpha=0.1;
-        }
-        
         if (point.y < screenHeight/2) {
-            if (screenXIsOn) {
-                dspFaust->setParamValue(screenXAddress, pointX);
+            if (touchGateIsOn) {
+                
+                dspFaust->setParamValue(touchGateAddress, 0);
+                _touch.alpha=0.1;
             }
-            if (screenYIsOn) {
-                dspFaust->setParamValue(screenYAddress, pointY);
+            
+            if (point.y < screenHeight/2) {
+                if (screenXIsOn) {
+                    dspFaust->setParamValue(screenXAddress, pointX);
+                }
+                if (screenYIsOn) {
+                    dspFaust->setParamValue(screenYAddress, pointY);
+                }
             }
         }
-    }
     }
 }
 
@@ -594,25 +595,25 @@
         dspFaust->setParamValue(cueAddress, cueNum);
     }
     if (cueIndexNext < [myCueNumArrary count] -1) {
-    cueIndexNext++;
-    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
+        cueIndexNext++;
+        cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+        _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
     }
 }
 
 
 
 - (IBAction)setOSC:(id)sender {
-  
+    
     [_ip resignFirstResponder];
     [_inPort resignFirstResponder];
     [_outPort resignFirstResponder];
- 
-   NSString* _oscIPOutputText = _ip.text;
-   NSString* _oscInputPortText = _inPort.text;
-   NSString* _oscOutputPortText = _outPort.text;
     
-   dspFaust->setOSCValue([_oscIPOutputText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscInputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscOutputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+    NSString* _oscIPOutputText = _ip.text;
+    NSString* _oscInputPortText = _inPort.text;
+    NSString* _oscOutputPortText = _outPort.text;
+    
+    dspFaust->setOSCValue([_oscIPOutputText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscInputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscOutputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]]);
     
     [[NSUserDefaults standardUserDefaults] setObject:_oscIPOutputText forKey:@"oscAddress"];
     [[NSUserDefaults standardUserDefaults] setObject:_oscInputPortText forKey:@"oscInPort"];
@@ -644,7 +645,7 @@
         _motionParam.hidden=true;
         _motionParamSend.hidden=true;
         _setRefrence.hidden=true;
-    
+        
     }
     
 }
@@ -680,16 +681,16 @@
 - (IBAction)prevCue:(id)sender {
     
     if (cueIndexNext > 0) {
-    cueIndexNext--;
-    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-    _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
+        cueIndexNext--;
+        cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+        _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
+        _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
     }
 }
 
 
 - (IBAction)defautParam:(id)sender {
-
+    
     
     [_ip resignFirstResponder];
     [_inPort resignFirstResponder];
@@ -706,8 +707,8 @@
     [self checkAddress];
     
     [self resetDefaultParams];
-
-
+    
+    
 }
 
 
@@ -732,7 +733,7 @@
     paramsOn[row]=true;
     
     _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue([_motionParamAddress[row] UTF8String])];
-
+    
 }
 
 // number Of Components
@@ -745,7 +746,7 @@
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:   (NSInteger)component
 {
     
-   
+    
     return _motionParamArray.count;
 }
 
@@ -754,7 +755,7 @@
     
     
     return _motionParamArray[row];
-
+    
 }
 
 - (IBAction)motionParamSend:(id)sender {
@@ -767,7 +768,7 @@
             [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
         }
     }
-
+    
     [[NSUserDefaults standardUserDefaults] synchronize];
     
 }

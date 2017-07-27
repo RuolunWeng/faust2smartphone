@@ -9,7 +9,8 @@
 
 /************************************************************************
     FAUST Architecture File
-    Copyright (C) 2003-2011 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2017 GRAME, Allen Weng, SHCM
+    Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This Architecture section is free software; you can redistribute it
     and/or modify it under the terms of the GNU General Public License
