@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.R.color.white;
 
 public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
@@ -222,26 +226,7 @@ public class MainActivity extends AppCompatActivity {
         
         System.out.println(cueList);
         System.out.println(tipsList);
-        
-        String[] ParamName= {"highPass","shokThred","antirebon","lowPass","accThred",
-            "accGain","accEvUp","accEvDown","gyrThred",
-            "gyrGain","gyrEvUp","gyrEvDown","osfproj",
-            "shapeCour","shapeRear","shapeJardin","shapeFront","shapeDown","shapeUp"};
-        
-        String[] ParamAddress = {"/Motion/hp","/Motion/shok_thr","/Motion/antirebon","/Motion/lp","/Motion/tacc_thr",
-            "/Motion/tacc_gain","/Motion/tacc_up","/Motion/tacc_down","/Motion/tgyr_thr",
-            "/Motion/tgyr_gain","/Motion/tgyr_up","/Motion/tgyr_down","/Motion/osfproj",
-            "/Motion/shape0","/Motion/shape1","/Motion/shape2","/Motion/shape3","/Motion/shape4","/Motion/shape5"};
-        
-        for (int i=0; i< 19; i++){
-            motionParamArray.add(i,ParamName[i]);
-            motionParamAddress.add(i,ParamAddress[i]);
-        }
-        System.out.println(motionParamArray);
-        System.out.println(motionParamAddress);
-        
-        paramsOn = new boolean[motionParamArray.size()];
-        
+
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -315,9 +300,7 @@ public class MainActivity extends AppCompatActivity {
         paramsValue = (EditText) findViewById(R.id.paramValue);
         setMotion = (Button) findViewById(R.id.setMotion);
         defaultParams =(Button) findViewById(R.id.defaultParams);
-        
         setRef =(Button) findViewById(R.id.setRef);
-        
         
         setParams.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             
@@ -354,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-                                             );
+        );
         
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
                                               {
@@ -362,17 +345,14 @@ public class MainActivity extends AppCompatActivity {
             {
                 // This will get the radiobutton that has changed in its check state
                 RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
-                //Log.d("%i",String.valueOf(checkedId-2131427428));
-                int buttonID = checkedId-2131427428;
                 boolean isChecked = checkedRadioButton.isChecked();
                 if (isChecked)
                 {
-                    
                     for (int i=0; i< motionParamArray.size(); i++) {
                         paramsOn[i]=false;
                     }
-                    paramsOn[buttonID]=true;
-                    paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue(motionParamAddress.get(buttonID))));
+                    paramsOn[checkedId]=true;
+                    paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue(motionParamAddress.get(checkedId))));
                     
                 }
             }
@@ -383,7 +363,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 
                 for (int i=0; i< motionParamArray.size(); i++) {
-                    
                     if (paramsOn[i]){
                         dspFaustMotion.setParamValue(motionParamAddress.get(i), Float.valueOf(paramsValue.getText().toString()));
                         SharedPreWriteFloat(motionParamArray.get(i),Float.valueOf(paramsValue.getText().toString()));
@@ -447,8 +426,28 @@ public class MainActivity extends AppCompatActivity {
     
     
     public void checkAddress() {
-        
-        if (dspFaust != null) {
+
+            for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
+                String Str = dspFaustMotion.getParamAddress(i);
+                if (Str.endsWith("_Param")) {
+                    motionParamArray.add(i-dspFaustMotion.getOutputChannelNum(),dspFaustMotion.getParamTooltip(i));
+                    motionParamAddress.add(i-dspFaustMotion.getOutputChannelNum(),dspFaustMotion.getParamAddress(i));
+                }
+            }
+
+            System.out.println(motionParamArray);
+            System.out.println(motionParamAddress);
+
+            paramsOn = new boolean[motionParamArray.size()];
+
+            for(int i = 0; i < motionParamArray.size(); i++) {
+                RadioButton rdbtn = new RadioButton(this);
+                rdbtn.setId(i);
+                rdbtn.setTextColor(Color.WHITE);
+                rdbtn.setText(motionParamArray.get(i));
+                radioGroup.addView(rdbtn);
+            }
+
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaust.getParamsCount(); i++) {
                 System.out.println(dspFaust.getParamAddress(i));
@@ -476,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 
             }
-        }
+
         
         
         if(cueIsOn) {

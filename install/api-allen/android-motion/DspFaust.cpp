@@ -320,33 +320,29 @@ void DspFaust::initFrame(){
 
 void DspFaust::checkAdress() {
     
-    if (paramsMotionNum != fDSPFAUSTMOTION->getOutputChannelNum()) {
-        printf("!!!!ERROR: Num of Params != Num of Output!!!!");
-    } else {
-        for (int i=0; i< paramsMotionNum; i++) {
-            paramsOn[i] = false;
+    paramsMotionNum = fDSPFAUSTMOTION->getOutputChannelNum();
+    
+    for(int i=0; i<fDSPFAUSTMOTION->getParamsCount(); i++){
+        const char* data = fDSPFAUSTMOTION->getParamAddress(i);
+        if (endsWith(data,"On")) {
+            paramsMotionGates.push_back(data);
+            paramsMotionNames.push_back(fDSPFAUSTMOTION->getParamTooltip(i));
+            paramsKeys.push_back("/" + paramsMotionNames[i]);
+            paramsOn.push_back(false);
+            paramsAddress.push_back("");
         }
-        
-        for (int i=0; i< paramsMotionNum; i++) {
-            paramsPaths.push_back("/" + paramsMotion[i]);
-        }
-        
-        for (int i=0; i< paramsMotionNum; i++) {
-            paramsMotionGates.push_back("/Motion/" + paramsMotion[i] + "On");
-        }
-        
-        for(int i=0; i<getParamsCount(); i++){
-            const char* data = getParamAddress(i);
-            
-            for (int p=0; p< paramsMotionNum; p++) {
-                if (endsWith(data,paramsPaths[p])) {
-                    paramsOn[p] = true;
-                    paramsAddress[p] = data;
-                    fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
-                }
+    }
+    
+    for(int i=0; i<getParamsCount(); i++){
+        const char* data = getParamAddress(i);
+        for (int p=0; p< paramsMotionNum; p++) {
+            if (endsWith(data,paramsKeys[p])) {
+                paramsOn[p] = true;
+                paramsAddress[p]= data;
+                fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
             }
-            
         }
+        
     }
 }
 
@@ -355,7 +351,7 @@ void  DspFaust::sendMotion()  {
     
     for (int i=0; i< paramsMotionNum; i++) {
         if (paramsOn[i]) {
-            setParamValue(paramsAddress[i], fDSPFAUSTMOTION->getOutput(i));
+            setParamValue(paramsAddress[i].c_str(), fDSPFAUSTMOTION->getOutput(i));
         }
     }
     

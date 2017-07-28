@@ -29,7 +29,8 @@
     
     // no sleep mode
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    
+    _pikerView.delegate = self;
+    _pikerView.dataSource = self;
     
     ////////////////////
     // init faust motor
@@ -69,29 +70,6 @@
     [self startUpdate];
     
     [self displayTitle];
-    
-    
-    _pikerView.delegate = self;
-    _pikerView.dataSource = self;
-    
-    _motionParamArray = [[NSMutableArray alloc] init];
-    _motionParamAddress = [[NSMutableArray alloc] init];
-    
-    NSArray *ParamName = @[@"highPass",@"shokThred",@"antirebon",@"lowPass",@"accThred",
-                           @"accGain",@"accEvUp",@"accEvDown",@"gyrThred",
-                           @"gyrGain",@"gyrEvUp",@"gyrEvDown",@"osfproj",
-                           @"shapeCour",@"shapeRear",@"shapeJardin",@"shapeFront",@"shapeDown",@"shapeUp"];
-    
-    [_motionParamArray addObjectsFromArray:ParamName];
-    
-    NSArray *ParamAddress = @[@"/Motion/hp",@"/Motion/shok_thr",@"/Motion/antirebon",@"/Motion/lp",@"/Motion/tacc_thr",
-                              @"/Motion/tacc_gain",@"/Motion/tacc_up",@"/Motion/tacc_down",@"/Motion/tgyr_thr",
-                              @"/Motion/tgyr_gain",@"/Motion/tgyr_up",@"/Motion/tgyr_down",@"/Motion/osfproj",
-                              @"/Motion/shape0",@"/Motion/shape1",@"/Motion/shape2",@"/Motion/shape3",@"/Motion/shape4",@"/Motion/shape5"];
-    
-    [_motionParamAddress addObjectsFromArray:ParamAddress];
-    
-    paramsOn = new BOOL[_motionParamAddress.count];
     
     [self loadDefaultParams];
     
@@ -140,14 +118,22 @@
         _inPort.enabled=true;
         _outPort.enabled=true;
         _setOSC.enabled=true;
+        _ip.alpha=1;
+        _inPort.alpha=1;
+        _outPort.alpha=1;
+        _setOSC.alpha=1;
         _ip.text=oscAddress;
         _inPort.text=oscInPort;
         _outPort.text=oscOutPort;
     } else {
-        _ip.enabled=false;
+        _ip.hidden=false;
         _inPort.enabled=false;
         _outPort.enabled=false;
         _setOSC.enabled=false;
+        _ip.alpha=0;
+        _inPort.alpha=0;
+        _outPort.alpha=0;
+        _setOSC.alpha=0;
         _ip.text=@"NO";
         _inPort.text=@"NO";
         _outPort.text=@"NO";
@@ -181,7 +167,7 @@
 
 -(void) loadDefaultParams {
     
-    NSMutableDictionary *appDefaultsDictionary = [NSMutableDictionary dictionaryWithCapacity:30];
+    NSMutableDictionary *appDefaultsDictionary = [NSMutableDictionary dictionaryWithCapacity:_motionParamAddress.count];
     
     for (int i=0; i<_motionParamAddress.count; i++) {
         [appDefaultsDictionary setValue:
@@ -266,6 +252,26 @@
 }
 
 - (void) checkAddress {
+    
+    std::vector<std::string>motionParamNames;
+    std::vector<std::string>motionParamAddress;
+    _motionParamArray = [[NSMutableArray alloc] init];
+    _motionParamAddress = [[NSMutableArray alloc] init];
+    
+    for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
+        NSString *dataMotion = [NSString stringWithUTF8String:dspFaustMotion->getParamAddress(i)];
+        if ([dataMotion hasSuffix:@"_Param"]) {
+            motionParamNames.push_back(dspFaustMotion->getParamTooltip(i));
+            motionParamAddress.push_back(dspFaustMotion->getParamAddress(i));
+        }
+    }
+    for (int i=0; i<motionParamNames.size(); i++) {
+        //printf("%i=%s",i,motionParamNames[i].c_str());
+        [_motionParamArray addObject:[NSString stringWithUTF8String:motionParamNames[i].c_str()]];
+        [_motionParamAddress addObject:[NSString stringWithUTF8String:motionParamAddress[i].c_str()]];
+    }
+    
+    paramsOn = new BOOL[_motionParamAddress.count];
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
         NSString *data = [NSString stringWithUTF8String:dspFaust->getParamAddress(i)];

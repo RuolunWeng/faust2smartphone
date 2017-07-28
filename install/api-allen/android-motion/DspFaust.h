@@ -457,22 +457,25 @@ private:
     float matrixB[3][3];
     float matrixC[3][3];
     
-    int paramsMotionNum = 74;
-    const char* paramsAddress[74];
-    bool paramsOn[74];
-    std::vector<std::string>paramsPaths;
+    int paramsMotionNum;
+    std::vector<std::string>paramsAddress;
+    std::vector<bool>paramsOn;
+    std::vector<std::string>paramsKeys;
     std::vector<std::string>paramsMotionGates;
+    std::vector<std::string>paramsMotionNames;
     
-    std::string paramsMotion[74] = {"sxp","syp","szp","sxn","syn","szn","ixp","iyp"
-        ,"izp","ixn","iyn","izn","pixp","piyp","pizp","pixn","piyn","pizn","axpn"
-        ,"aypn","azpn","axp","ayp","azp","axn","ayn","azn","totalaccel"
-        ,"gxpn","gypn","gzpn","gxp","gyp","gzp","gxn","gyn","gzn","totalgyro"
-        ,"brasG_cour","brasG_rear","brasG_jardin","brasG_front","brasG_down","brasG_up"
-        ,"pieds_cour","pieds_rear","pieds_jardin","pieds_front","pieds_down","pieds_up"
-        ,"dos_cour","dos_rear","dos_jardin","dos_front","dos_down","dos_up"
-        ,"brasD_cour","brasD_rear","brasD_jardin","brasD_front","brasD_down","brasD_up"
-        ,"tete_cour","tete_rear","tete_jardin","tete_front","tete_down","tete_up"
-        ,"ventre_cour","ventre_rear","ventre_jardin","ventre_front","ventre_down","ventre_up"};
+    /* LIST OF MOTION LIB IN ORDER
+     std::string paramsMotion[74] = {"sxp","syp","szp","sxn","syn","szn","ixp","iyp"
+     ,"izp","ixn","iyn","izn","pixp","piyp","pizp","pixn","piyn","pizn","axpn"
+     ,"aypn","azpn","axp","ayp","azp","axn","ayn","azn","totalaccel"
+     ,"gxpn","gypn","gzpn","gxp","gyp","gzp","gxn","gyn","gzn","totalgyro"
+     ,"brasG_cour","brasG_rear","brasG_jardin","brasG_front","brasG_down","brasG_up"
+     ,"pieds_cour","pieds_rear","pieds_jardin","pieds_front","pieds_down","pieds_up"
+     ,"dos_cour","dos_rear","dos_jardin","dos_front","dos_down","dos_up"
+     ,"brasD_cour","brasD_rear","brasD_jardin","brasD_front","brasD_down","brasD_up"
+     ,"tete_cour","tete_rear","tete_jardin","tete_front","tete_down","tete_up"
+     ,"ventre_cour","ventre_rear","ventre_jardin","ventre_front","ventre_down","ventre_up"};
+     */
     
 };
 

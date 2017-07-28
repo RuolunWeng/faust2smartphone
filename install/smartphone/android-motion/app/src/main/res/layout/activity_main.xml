@@ -151,7 +151,7 @@
         android:layout_alignStart="@+id/prevCue"
         android:layout_alignTop="@+id/initCue"
         android:layout_alignBottom="@+id/initCue"
-        android:id="@+id/scrollView2">
+        android:id="@+id/scrollView">
 
 
         <RadioGroup
@@ -162,197 +162,6 @@
             android:layout_alignTop="@+id/initCue"
             android:visibility="invisible">
 
-
-            <RadioButton
-                android:id="@+id/highPass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="highPass"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/shokThred"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="shokThred"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/antirebon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="antirebon"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/lowPass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="lowPass"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/accThred"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="accThred"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/accGain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="accGain"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/accEvUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="accEvUp"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/accEvDown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="accEvDown"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/gyrThred"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="gyrThred"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/gyrGain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="gyrGain"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/gyrEvUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="gyrEvUp"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/gyrEvDown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="gyrEvDown"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/osfproj"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="osfproj"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/shapeCour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="shapeCour"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/shapeRear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="shapeRear"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/shapeJardin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="shapeJardin"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/shapeFront"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="shapeFront"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/shapeDown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="shapeDown"
-                android:textColor="@android:color/white" />
-
-            <RadioButton
-                android:id="@+id/shapeUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/radioGroup"
-                android:layout_toEndOf="@+id/radioGroup"
-                android:checked="false"
-                android:text="shapeUp"
-                android:textColor="@android:color/white" />
-
         </RadioGroup>
 
     </ScrollView>
@@ -361,8 +170,8 @@
         android:id="@+id/SetParams"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/scrollView2"
-        android:layout_alignStart="@+id/scrollView2"
+        android:layout_alignEnd="@+id/scrollView"
+        android:layout_alignStart="@+id/scrollView"
         android:layout_below="@+id/prevCue"
         android:text="SetParams"
         android:textAlignment="textEnd"
@@ -374,17 +183,19 @@
         android:id="@+id/setMotion"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/scrollView2"
-        android:layout_toEndOf="@+id/scrollView2"
         android:text="Set"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_alignBaseline="@+id/defaultParams"
+        android:layout_alignBottom="@+id/defaultParams"
+        android:layout_toEndOf="@+id/scrollView"
+        android:layout_toStartOf="@+id/defaultParams" />
 
     <EditText
         android:id="@+id/paramValue"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/SetParams"
-        android:layout_toEndOf="@+id/scrollView2"
+        android:layout_toEndOf="@+id/scrollView"
         android:ems="10"
         android:inputType="number|numberDecimal"
         android:singleLine="false"
@@ -396,25 +207,25 @@
         android:id="@+id/defaultParams"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/initCue"
-        android:layout_toEndOf="@+id/setMotion"
         android:text="init"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_above="@+id/outputPort"
+        android:layout_alignEnd="@+id/appName" />
 
     <EditText
         android:id="@+id/ipAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/inputPort"
-        android:layout_alignBottom="@+id/inputPort"
-        android:layout_alignStart="@+id/scrollView2"
         android:ems="5"
         android:inputType="textUri"
         android:text="192.168.1.5"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textSize="14sp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_alignBaseline="@+id/inputPort"
+        android:layout_alignBottom="@+id/inputPort"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/inputPort"
