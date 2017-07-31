@@ -185,10 +185,8 @@
         android:layout_height="wrap_content"
         android:text="Set"
         android:visibility="invisible"
-        android:layout_alignBaseline="@+id/defaultParams"
-        android:layout_alignBottom="@+id/defaultParams"
-        android:layout_toEndOf="@+id/scrollView"
-        android:layout_toStartOf="@+id/defaultParams" />
+        android:layout_above="@+id/ipAddress"
+        android:layout_toEndOf="@+id/scrollView" />
 
     <EditText
         android:id="@+id/paramValue"
@@ -209,8 +207,8 @@
         android:layout_height="wrap_content"
         android:text="init"
         android:visibility="invisible"
-        android:layout_above="@+id/outputPort"
-        android:layout_alignEnd="@+id/appName" />
+        android:layout_above="@+id/inputPort"
+        android:layout_toEndOf="@+id/setMotion" />
 
     <EditText
         android:id="@+id/ipAddress"
@@ -225,21 +223,23 @@
         android:visibility="invisible"
         android:layout_alignBaseline="@+id/inputPort"
         android:layout_alignBottom="@+id/inputPort"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/inputPort" />
 
     <EditText
         android:id="@+id/inputPort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/initCue"
-        android:layout_toEndOf="@+id/ipAddress"
         android:ems="3"
         android:inputType="number"
         android:text="5510"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textSize="14sp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_alignBaseline="@+id/outputPort"
+        android:layout_alignBottom="@+id/outputPort"
+        android:layout_toStartOf="@+id/outputPort" />
 
     <EditText
         android:id="@+id/outputPort"
@@ -268,8 +268,8 @@
     <Button
         android:id="@+id/setRef"
         android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:layout_above="@+id/paramValue"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/scrollView"
         android:layout_below="@+id/nextCue"
         android:layout_toEndOf="@+id/prevCue"
         android:paddingBottom="1dp"
