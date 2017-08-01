@@ -79,8 +79,6 @@ do
 	elif [ $p = "-help" ]; then
 		echoHelp
 	  exit
-	  elif [[ -f "$p" ]]; then
-		FILE="$p"
     elif [ $p = "-android" ]; then
 		ANDROID=1
     elif [ $p = "-ios" ]; then
@@ -123,16 +121,17 @@ do
 			echoHelp
 			exit
 		fi
-    elif [ $p = "-nvoices" ]; then
+  elif [ $p = "-nvoices" ]; then
 		shift
 		NVOICES=$1
-    elif [ ${p:0:1} = "-" ]; then
+  elif [ [${p:0:1} = "-"] ]; then
         OPTIONS="$OPTIONS $p"
-    else
-		echo "$p wrong argument"
-		echoHelp
-		exit
-    fi
+	elif [[ -f "$p" ]]; then
+		  	FILE="$p"
+	else
+			  OPTIONS="$OPTIONS $p"
+	fi
+
 	shift
 done
 
@@ -327,14 +326,10 @@ fi
 if [ $ANDROID -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
 		echo "Adding DSP with no effect chain to the app" > $LOG
-		if [ -z $OPTIONS ]; then
-		faust2api_a -android -nodoc "$FILE" > $LOG
-		else
-		faust2api_a -android -nodoc "$OPTIONS" "$FILE" > $LOG
-		fi
+		faust2api_a $OPTIONS -android -nodoc "$FILE" > $LOG
 	else
 		echo "Adding DSP with effect chain to the app" > $LOG
-		faust2api_a -android -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
+		faust2api_a $OPTIONS -android -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
 	fi
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
@@ -345,11 +340,7 @@ if [ $ANDROID -eq 1 ]; then
 
 elif [ $ANDROIDMOTION -eq 1 ]; then
 	echo "Adding DSP with motion support to the app" > $LOG
-	if [ -z $OPTIONS ]; then
-		faust2api_a -androidmotion -nodoc "$FILE" > $LOG
-		else
-		faust2api_a -androidmotion -nodoc "$OPTIONS" "$FILE" > $LOG
-	fi
+		faust2api_a $OPTIONS -androidmotion -nodoc "$FILE" > $LOG
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
@@ -363,11 +354,7 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 
 elif [ $ANDROIDPLUGIN -eq 1 ]; then
 	echo "Adding DSP with motion support to the app" > $LOG
-	if [ -z $OPTIONS ]; then
-		faust2api_a -androidplugin -nodoc "$FILE" > $LOG
-		else
-		faust2api_a -androidplugin -nodoc "$OPTIONS" "$FILE" > $LOG
-	fi
+		faust2api_a $OPTIONS -androidplugin -nodoc "$FILE" > $LOG
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
@@ -378,28 +365,20 @@ elif [ $ANDROIDPLUGIN -eq 1 ]; then
 elif [ $IOS -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
 		echo "Adding DSP with no effect chain to the app" > $LOG
-		if [ -z $OPTIONS ]; then
-		faust2api_a -ios -nodoc "$FILE" > $LOG
-		else
-		faust2api_a -ios -nodoc "$OPTIONS" "$FILE" > $LOG
-		fi
+		faust2api_a $OPTIONS -ios -nodoc "$FILE" > $LOG
 	else
 		echo "Adding DSP with effect chain to the app" > $LOG
-		faust2api_a -ios -midi -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
+		faust2api_a $OPTIONS -ios -midi -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
 	fi
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
 	cp $BUILDDIR/dsp-faust/* "$APPFOLDER"
 	rm -r "$BUILDDIR/dsp-faust"
-	
+
 elif [ $IOSPLUGIN -eq 1 ]; then
 	echo "Adding DSP to the app" > $LOG
-	if [ -z $OPTIONS ]; then
-		faust2api_a -iosplugin -nodoc "$FILE" > $LOG
-	else
-		faust2api_a -iosplugin -nodoc "$OPTIONS" "$FILE" > $LOG
-	fi
+		faust2api_a $OPTIONS -iosplugin -nodoc "$FILE" > $LOG
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
@@ -408,11 +387,7 @@ elif [ $IOSPLUGIN -eq 1 ]; then
 
 elif [ $IOSMOTION -eq 1 ]; then
 	echo "Adding DSP with motion support to the app" > $LOG
-	if [ -z $OPTIONS ]; then
-		faust2api_a -iosmotion -nodoc "$FILE" > $LOG
-		else
-		faust2api_a -iosmotion -nodoc "$OPTIONS" "$FILE" > $LOG
-	fi
+		faust2api_a $OPTIONS -iosmotion -nodoc "$FILE" > $LOG
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
