@@ -140,7 +140,6 @@
     }
     
     if (cueIsOn) {
-        _touch.hidden=false;
         _cue.hidden=false;
         _cueNext.hidden=false;
         _init.hidden=false;
@@ -150,7 +149,6 @@
         _prevCue.hidden=false;
         _nextCue.hidden=false;
     } else {
-        _touch.hidden=true;
         _cue.hidden=true;
         _cueNext.hidden=true;
         _init.hidden=true;
@@ -159,6 +157,12 @@
         _tips.hidden=true;
         _prevCue.hidden=true;
         _nextCue.hidden=true;
+    }
+    
+    if (cueIsOn or touchGateIsOn or screenXIsOn or screenYIsOn) {
+        _touch.hidden=false;
+    } else {
+        _touch.hidden=true;
     }
     
     
@@ -406,15 +410,14 @@
     [_motionManager setDeviceMotionUpdateInterval:updateInterval];
     NSOperationQueue *motionQueue = [[NSOperationQueue alloc] init];
     [_motionManager startDeviceMotionUpdatesToQueue: motionQueue
-                                        withHandler:^(CMDeviceMotion* motion, NSError* error){
+        withHandler:^(CMDeviceMotion* motion, NSError* error){
                                             
-                                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                 
-                                                dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
+        dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
                                                 
-                                                
-                                            }];
-                                        }];
+        }];
+    }];
     
 }
 
@@ -439,7 +442,6 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading{
     
-    //NSLog(@"MagneticHeading:%0.2f", newHeading.magneticHeading);
     magnetic = newHeading.magneticHeading;
     
     if (magnetic-offset>0) {
@@ -454,139 +456,140 @@
         magneticNew = (360.00f - magneticNormal)/180.00f;
     }
     
-    if (touchGateIsOn) {
-        if (magneticHeadingIsOn) {
-            dspFaust->setParamValue(magneticHeadingAddress, magneticNew);
-            //NSLog(@"MagneticHeading:%0.2f", magneticNew);
-        }
+    if (magneticHeadingIsOn) {
+        dspFaust->setParamValue(magneticHeadingAddress, magneticNew);
     }
+    
     
 }
 
 - (void)startUpdateGUI
 {
-    
     _guiTimer = [NSTimer scheduledTimerWithTimeInterval:1./kGUIUpdateRate target:self
                                                selector:@selector(updateGUI) userInfo:nil repeats:YES];
-    
 }
 
 // Stop updating
 - (void)stopUpdateGUI
 {
-    
     [_guiTimer invalidate];
-    
-    
 }
 
 
 - (void)updateGUI
 {
-    
-    
 }
 
 - (void) touchesBegan:(NSSet *)touches
             withEvent:(UIEvent *)event {
     
-    //NSUInteger touchCount = [touches count];
-    
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self.view];
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
-    
-    CGFloat pointX = point.x/screenWidth;
-    CGFloat pointY = point.y/(screenHeight/2);
-    
-    if (cueIsOn) {
-        
+
         if (point.y < screenHeight/2) {
             
+            CGFloat pointX = point.x/screenWidth;
+            CGFloat pointY = point.y/(screenHeight/2);
+            
             if (touchGateIsOn) {
-                
                 dspFaust->setParamValue(touchGateAddress, 1);
+                _touch.alpha=1;
+            }
+            if (cueIsOn) {
                 [self counter];
                 _touch.alpha=1;
-                
-                if (magneticHeadingIsOn) {
-                    offset = magnetic;
-                }
             }
+                
+            if (magneticHeadingIsOn) {
+                offset = magnetic;
+            }
+            
             if (screenXIsOn) {
                 dspFaust->setParamValue(screenXAddress, pointX);
+                _touch.alpha=1;
             }
             if (screenYIsOn) {
-                dspFaust->setParamValue(screenYAddress, pointY);
+                dspFaust->setParamValue(screenYAddress, (1.f-pointY));
+                _touch.alpha=1;
             }
             
         }
-    }
+    
 }
 
 - (void) touchesMoved:(NSSet *)touches
             withEvent:(UIEvent *)event {
-    //NSUInteger touchCount = [touches count];
     
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self.view];
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
-    
-    CGFloat pointX = point.x/screenWidth;
-    CGFloat pointY = point.y/(screenHeight/2.0f);
-    
-    if (cueIsOn) {
         
         if (point.y < screenHeight/2) {
             
+            CGFloat pointX = point.x/screenWidth;
+            CGFloat pointY = point.y/(screenHeight/2);
+            
             if (screenXIsOn) {
-                dspFaust->setParamValue(screenXAddress, (float)pointX);
+                dspFaust->setParamValue(screenXAddress, pointX);
             }
             if (screenYIsOn) {
-                dspFaust->setParamValue(screenYAddress, pointY);
+                dspFaust->setParamValue(screenYAddress, (1.f-pointY));
             }
             
         }
-    }
+    
     
 }
 
 - (void) touchesEnded:(NSSet *)touches
             withEvent:(UIEvent *)event {
-    //NSUInteger touchCount = [touches count];
     
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self.view];
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
-    
-    CGFloat pointX = point.x/screenWidth;
-    CGFloat pointY = point.y/(screenHeight/2);
-    
-    if (cueIsOn) {
         
         if (point.y < screenHeight/2) {
+            
+            CGFloat pointX = point.x/screenWidth;
+            CGFloat pointY = point.y/(screenHeight/2);
+            
             if (touchGateIsOn) {
-                
                 dspFaust->setParamValue(touchGateAddress, 0);
                 _touch.alpha=0.1;
             }
             
-            if (point.y < screenHeight/2) {
-                if (screenXIsOn) {
-                    dspFaust->setParamValue(screenXAddress, pointX);
-                }
-                if (screenYIsOn) {
-                    dspFaust->setParamValue(screenYAddress, pointY);
-                }
+            if (screenXIsOn) {
+                dspFaust->setParamValue(screenXAddress, pointX);
+                _touch.alpha=0.1;
             }
+            
+            if (screenYIsOn) {
+                dspFaust->setParamValue(screenYAddress, (1.f-pointY));
+                _touch.alpha=0.1;
+            }
+        } else {
+            
+            if (touchGateIsOn) {
+                _touch.alpha=0.1;
+            }
+            
+            if (screenXIsOn) {
+                _touch.alpha=0.1;
+            }
+            
+            if (screenYIsOn) {
+                _touch.alpha=0.1;
+            }
+            
         }
-    }
+    
 }
 
 

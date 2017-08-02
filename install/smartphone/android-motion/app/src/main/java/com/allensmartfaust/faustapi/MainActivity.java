@@ -519,33 +519,37 @@ public class MainActivity extends AppCompatActivity {
                     float pointerIndex = event.getX(0);
                     float pointerIndey = event.getY(0);
                     if (pointerIndey <= scrHeight / 2) {
-                        if (cueIsOn) {
-                            
-                            if (touchGateIsOn) {
-                                touche.setVisibility(View.VISIBLE);
-                                dspFaust.setParamValue(touchGateAddress, 1);
-                                
-                                cueIndex = cueIndexNext;
-                                cue.setText(cueList.get(cueIndex));
-                                tips.setText(tipsList.get(cueIndexNext));
-                                
-                                dspFaust.setParamValue(cueAddress,Float.valueOf(cueList.get(cueIndex)));
-                                
-                                if (cueIndexNext < cueList.size() - 1) {
-                                    cueIndexNext++;
-                                    cueNext.setText(cueList.get(cueIndexNext));
-                                }
-                            }
-                            
-                            if (screenXIsOn) {
-                                dspFaust.setParamValue(screenXAddress, pointerIndex/scrWidth);
-                            }
-                            if (screenYIsOn) {
-                                dspFaust.setParamValue(screenYAddress, pointerIndey/scrHeight/2.0f);
-                            }
-                            
+
+                        float screenX = pointerIndex / scrWidth;
+                        float screenY = pointerIndey/(scrHeight/2);
+
+                        if (touchGateIsOn) {
+                            touche.setVisibility(View.VISIBLE);
+                            dspFaust.setParamValue(touchGateAddress, 1);
                         }
-                        
+                        if (cueIsOn) {
+                            touche.setVisibility(View.VISIBLE);
+                            cueIndex = cueIndexNext;
+                            cue.setText(cueList.get(cueIndex));
+                            tips.setText(tipsList.get(cueIndexNext));
+
+                            dspFaust.setParamValue(cueAddress,Float.valueOf(cueList.get(cueIndex)));
+                                
+                            if (cueIndexNext < cueList.size() - 1) {
+                                cueIndexNext++;
+                                cueNext.setText(cueList.get(cueIndexNext));
+                            }
+                        }
+                            
+                        if (screenXIsOn) {
+                            touche.setVisibility(View.VISIBLE);
+                            dspFaust.setParamValue(screenXAddress, screenX);
+                        }
+                        if (screenYIsOn) {
+                            touche.setVisibility(View.VISIBLE);
+                            dspFaust.setParamValue(screenYAddress, (1.f-screenY));
+                        }
+
                     }
                 }
                 
@@ -559,15 +563,15 @@ public class MainActivity extends AppCompatActivity {
                     float pointerIndey = event.getY(0);
                     
                     if (pointerIndey <= scrHeight / 2) {
-                        if (cueIsOn) {
-                            if (screenXIsOn) {
-                                dspFaust.setParamValue(screenXAddress, pointerIndex / scrWidth);
-                            }
-                            if (screenYIsOn) {
-                                dspFaust.setParamValue(screenYAddress, pointerIndey / scrHeight / 2.0f);
-                            }
+
+                        float screenX = pointerIndex / scrWidth;
+                        float screenY = pointerIndey/(scrHeight/2);
+                        if (screenXIsOn) {
+                            dspFaust.setParamValue(screenXAddress, screenX);
                         }
-                        
+                        if (screenYIsOn) {
+                            dspFaust.setParamValue(screenYAddress, (1.f-screenY));
+                        }
                     }
                 }
                 
@@ -591,20 +595,35 @@ public class MainActivity extends AppCompatActivity {
                     float pointerIndex = event.getX(0);
                     float pointerIndey = event.getY(0);
                     if (pointerIndey <= scrHeight / 2) {
-                        if (cueIsOn) {
-                            if (touchGateIsOn) {
-                                touche.setVisibility(View.INVISIBLE);
-                                dspFaust.setParamValue(touchGateAddress, 0);
-                            }
+
+                        float screenX = pointerIndex / scrWidth;
+                        float screenY = pointerIndey/(scrHeight/2);
+                        if (touchGateIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
+                            dspFaust.setParamValue(touchGateAddress, 0);
+                        }
                             
-                            if (screenXIsOn) {
-                                dspFaust.setParamValue(screenXAddress, pointerIndex / scrWidth);
-                            }
-                            if (screenYIsOn) {
-                                dspFaust.setParamValue(screenYAddress, pointerIndey / scrHeight / 2.0f);
-                            }
+                        if (screenXIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
+                            dspFaust.setParamValue(screenXAddress, screenX);
+                        }
+                        if (screenYIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
+                            dspFaust.setParamValue(screenYAddress, (1.f-screenY));
+                        }
+                    } else {
+                        if (touchGateIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (screenXIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
+                        }
+                        if (screenYIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
                         }
                     }
+
                 }
                 
                 break;
