@@ -72,9 +72,9 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
         // Active Touch Pad X,Y
 
-        touchX = hslider("touchx",0,0,1,0.01);
+        touchX = hslider("screenx",0,0,1,0.01);
 
-        touchY = hslider("touchy",0,0,1,0.01);
+        touchY = hslider("screeny",0,0,1,0.01);
 
 
     -------------------------------------------------------------
