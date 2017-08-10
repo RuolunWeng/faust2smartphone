@@ -17,19 +17,22 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __engine_motion__
-#define __engine_motion__
+#ifndef __api_motion__
+#define __api_motion__
+
 
 //===============API Reference==============
 //==========================================
 
-class FaustMotionEngine;
+class FaustPolyEngine;
+class OSCUI;
+class DspFaustMotion;
+class audio;
 
-
-class DspFaustMotion
+class DspFaust
 {
 public:
-    //--------------`DspFaustMotion(int SR, int BS)`----------------
+    //--------------`DspFaust(int SR, int BS)`----------------
     // Constructor.
     //
     // #### Arguments
@@ -37,8 +40,8 @@ public:
     // * `SR`: sampling rate
     // * `BS`: block size
     //--------------------------------------------------------
-    DspFaustMotion(int,int);
-    ~DspFaustMotion();
+    DspFaust(DspFaustMotion*,int,int);
+    ~DspFaust();
     
     //---------------------`bool start()`---------------------
     // Start the audio processing.
@@ -52,40 +55,81 @@ public:
     //--------------------------------------------------------
     void stop();
     
-    //-----------------'void render()'--------------------------
-    // Compute FAUST process
-    //----------------------------------------------------------
-    void render();
-    
-    //------------'void setInput(int ch, float val)'------------
-    // Set the value of input channel
-    //
-    // #### Arguments
-    //
-    // * `ch`: input channel
-    // * `val`: value
-    //----------------------------------------------------------
-    void setInput(int,float);
-    
-    //----------------'float getOutput(int ch)'-----------------
-    // Return the value of output channel
-    //
-    // #### Arguments
-    //
-    // * `ch`: output channel
-    //----------------------------------------------------------
-    float getOutput(int);
-    
-    //----'int getOutputChannelNum()/getInputChannelNum()'-----
-    // Return the numbers of input/output channel
-    //---------------------------------------------------------
-    int getOutputChannelNum();
-    int getInputChannelNum();
-    
     //---------------------`bool isRunning()`-----------------
     // Returns `true` if audio is running.
     //--------------------------------------------------------
     bool isRunning();
+    
+    //--------`long keyOn(int pitch, int velocity)`-----------
+    // Instantiate a new polyphonic voice. This method can
+    // only be used if the `[style:poly]` metadata is used in
+    // the Faust code or if the `-polyvoices` flag has been
+    // provided before compilation.
+    //
+    // `keyOn` will return 0 if the Faust object is not
+    // polyphonic or the address to the allocated voice as
+    // a `long` otherwise. This value can be used later with
+    // [`setVoiceParamValue`](#setvoiceparamvalue) or
+    // [`getVoiceParamValue`](#getvoiceparamvalue) to access
+    // the parameters of a specific voice.
+    //
+    // #### Arguments
+    //
+    // * `pitch`: MIDI note number (0-127)
+    // * `velocity`: MIDI velocity (0-127)
+    //--------------------------------------------------------
+    long keyOn(int, int);
+    
+    //----------------`int keyOff(int pitch)`-----------------
+    // De-instantiate a polyphonic voice. This method can
+    // only be used if the `[style:poly]` metadata is used in
+    // the Faust code or if the `-polyvoices` flag has been
+    // provided before compilation.
+    //
+    // `keyOff` will return 0 if the object is not polyphonic
+    // and 1 otherwise.
+    //
+    // #### Arguments
+    //
+    // * `pitch`: MIDI note number (0-127), should be the same
+    // as the one used for `keyOn`
+    //--------------------------------------------------------
+    int keyOff(int);
+    
+    //-------------------`long newVoice()`--------------------
+    // Instantiate a new polyphonic voice. This method can
+    // only be used if the `[style:poly]` metadata is used in
+    // the Faust code or if `-polyvoices` flag has been
+    // provided before compilation.
+    //
+    // `keyOn` will return 0 if the Faust object is not
+    // polyphonic or the address to the allocated voice as
+    // a `long` otherwise. This value can be used later with
+    // `setVoiceParamValue`, `getVoiceParamValue` or
+    // `deleteVoice` to access the parameters of a specific
+    // voice.
+    //--------------------------------------------------------
+    long newVoice();
+    
+    //---------`int deleteVoice(long voice)`------------------
+    // De-instantiate a polyphonic voice. This method can
+    // only be used if the `[style:poly]` metadata is used in
+    // the Faust code or if `-polyvoices` flag has been
+    // provided before compilation.
+    //
+    // `deleteVoice` will return 0 if the object is not polyphonic
+    // and 1 otherwise.
+    //
+    // #### Arguments
+    //
+    // * `voice`: the address of the voice given by `newVoice`
+    //--------------------------------------------------------
+    int deleteVoice(long);
+    
+    //-----------------`void allNotesOff()`----------------
+    // Gently terminates all the active voices.
+    //--------------------------------------------------------
+    void allNotesOff();
     
     //-----------------`const char* getJSONUI()`----------------
     // Returns the JSON description of the UI of the Faust object.
@@ -96,6 +140,12 @@ public:
     // Returns the JSON description of the metadata of the Faust object.
     //--------------------------------------------------------
     const char* getJSONMeta();
+    
+    //-----------------`const char* getMeta(const char*)`----------------
+    // Returns the JSON description of the metadata of the Faust object.
+    //--------------------------------------------------------
+    const char* getMeta(const char*);
+    
     
     //-----------------`int getParamsCount()`-----------------
     // Returns the number of parameters of the Faust object.
@@ -112,6 +162,21 @@ public:
     // * `value`: value of the parameter
     //--------------------------------------------------------
     void setParamValue(const char*, float);
+    
+    //----`void setOSCValue(const char* address, const char* address, const char* address)`------
+    // Set the value of OSC of the Faust
+    //
+    //
+    // #### Arguments
+    //
+    // * `address`: address of ip
+    // * `address`: address of inport
+    // * `address`: address of outport
+    //--------------------------------------------------------
+    void setOSCValue(const char*, const char*, const char*);
+    
+    // Android version
+    bool setOSCValue(const char*, int, int);
     
     //----`void setParamValue(int id, float value)`---
     // Set the value of one of the parameters of the Faust
@@ -144,6 +209,58 @@ public:
     //--------------------------------------------------------
     float getParamValue(int);
     
+    //----`void setVoiceParamValue(const char* address, long voice, float value)`-----
+    // Set the value of one of the parameters of the Faust
+    // object in function of its address (path) for a
+    // specific voice.
+    //
+    // #### Arguments
+    //
+    // * `address`: address (path) of the parameter
+    // * `voice`: address of the polyphonic voice (retrieved
+    // from `keyOn`
+    // * `value`: value of the parameter
+    //--------------------------------------------------------
+    void setVoiceParamValue(const char*, long, float);
+    
+    //----`void setVoiceValue(int id, long voice, float value)`-----
+    // Set the value of one of the parameters of the Faust
+    // object in function of its id for a
+    // specific voice.
+    //
+    // #### Arguments
+    //
+    // * `id`: id of the parameter
+    // * `voice`: address of the polyphonic voice (retrieved
+    // from `keyOn`
+    // * `value`: value of the parameter
+    //--------------------------------------------------------
+    void setVoiceParamValue(int, long, float);
+    
+    //----`float getVoiceParamValue(const char* address, long voice)`----
+    // Returns the value of a parameter in function of its
+    // address (path) for a specific voice.
+    //
+    // #### Arguments
+    //
+    // * `address`: address (path) of the parameter
+    // * `voice`: address of the polyphonic voice (retrieved
+    // from `keyOn`)
+    //--------------------------------------------------------
+    float getVoiceParamValue(const char*, long);
+    
+    //----`float getVoiceParamValue(int id, long voice)`----
+    // Returns the value of a parameter in function of its
+    // id for a specific voice.
+    //
+    // #### Arguments
+    //
+    // * `id`: id of the parameter
+    // * `voice`: address of the polyphonic voice (retrieved
+    // from `keyOn`)
+    //--------------------------------------------------------
+    float getVoiceParamValue(int, long);
+    
     //----`const char* getParamAddress(int id)`---------------
     // Returns the address (path) of a parameter in function
     // of its ID.
@@ -153,6 +270,18 @@ public:
     // * `id`: id of the parameter
     //--------------------------------------------------------
     const char* getParamAddress(int);
+    
+    //----`const char* getVoiceParamAddress(int id, long voice)`-----
+    // Returns the address (path) of a parameter in function
+    // of its ID.
+    //
+    // #### Arguments
+    //
+    // * `id`: id of the parameter
+    // * `voice`: address of the polyphonic voice (retrieved
+    // from `keyOn`)
+    //--------------------------------------------------------
+    const char* getVoiceParamAddress(int, long);
     
     //-------`float getParamMin(const char* address)`---------
     // Returns the minimum value of a parameter in function of
@@ -293,8 +422,65 @@ public:
     
     int getScreenColor();
     
+    //------------------`bool getOSCIsOn()`------------------
+    // Returns OSC is ON or OFF.
+    //--------------------------------------------------------
+    bool getOSCIsOn();
+    
+    //----`void motionRender(float m11, float m12, float m13, float m21, float m22, float m23, float m31, float m32, float m33)`-----
+    // Calul the Rotaiton matrix value
+    //
+    // #### Arguments
+    //
+    // * `float m..`: element of rotation matrix
+    //--------------------------------------------------------
+    void motionRender(float,float,float,float,float,float,float,float,float);
+    
+    //------------------`void initFrame()`------------------
+    // Set Reference Frame for Rotation matrix
+    //--------------------------------------------------------
+    void initFrame();
+    
+    //------------------`void sendMotion()`------------------
+    // Set motion value to controllers correspontants
+    //--------------------------------------------------------
+    void sendMotion();
+    
+    //------------------`void checkAdress()`------------------
+    // Active the process correspontant in motion engine
+    //--------------------------------------------------------
+    void checkAdress();
+    
 private:
-    FaustMotionEngine *fMotionEngine;
+    FaustPolyEngine *fPolyEngine;
+    OSCUI *fOSCUI;
+    DspFaustMotion *fDSPFAUSTMOTION;
+    
+    void init(audio* driver);
+    
+    float matrixA[3][3];
+    float matrixB[3][3];
+    float matrixC[3][3];
+    
+    int paramsMotionNum;
+    std::vector<std::string>paramsAddress;
+    std::vector<bool>paramsOn;
+    std::vector<std::string>paramsKeys;
+    std::vector<std::string>paramsMotionGates;
+    std::vector<std::string>paramsMotionNames;
+    
+    /* LIST OF MOTION LIB IN ORDER 
+    std::string paramsMotion[74] = {"sxp","syp","szp","sxn","syn","szn","ixp","iyp"
+        ,"izp","ixn","iyn","izn","pixp","piyp","pizp","pixn","piyn","pizn","axpn"
+        ,"aypn","azpn","axp","ayp","azp","axn","ayn","azn","totalaccel"
+        ,"gxpn","gypn","gzpn","gxp","gyp","gzp","gxn","gyn","gzn","totalgyro"
+        ,"brasG_cour","brasG_rear","brasG_jardin","brasG_front","brasG_down","brasG_up"
+        ,"pieds_cour","pieds_rear","pieds_jardin","pieds_front","pieds_down","pieds_up"
+        ,"dos_cour","dos_rear","dos_jardin","dos_front","dos_down","dos_up"
+        ,"brasD_cour","brasD_rear","brasD_jardin","brasD_front","brasD_down","brasD_up"
+        ,"tete_cour","tete_rear","tete_jardin","tete_front","tete_down","tete_up"
+        ,"ventre_cour","ventre_rear","ventre_jardin","ventre_front","ventre_down","ventre_up"};
+     */
     
 };
 

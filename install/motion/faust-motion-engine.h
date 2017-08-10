@@ -131,12 +131,12 @@ public:
     }
     
     /*
-     * sendInput(int,float)
+     * setInput(int,float)
      * connect motion input
      */
-    void sendInput(int channel,float value)
+    void setInput(int channel,float value)
     {
-        fDriver->sendInputValue(channel, value);
+        fDriver->setInputValue(channel, value);
     }
     
     /*

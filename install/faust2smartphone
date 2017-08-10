@@ -44,10 +44,10 @@ echoHelp ()
 	echo "Usage: faust2smartphone '-option' xxx.dsp"
 	echo "===================================="
 	echo "Option: -ios for Xcode simple project"
-	echo "Option: -soloios for Xcode project for smartSOLO"
+	echo "Option: -iosmotion for Xcode project for smartSOLO"
 	echo "Option: -iosplugin for Xcode project with faust plugin"
 	echo "Option: -android for Android Studio simple project"
-	echo "Option: -soloandroid for Android Studio project for smartSOLO"
+	echo "Option: -androidmotion for Android Studio project for smartSOLO"
 	echo "Option: -androidplugin for Android Studio with faust plugin"
 	echo "Option: -updatelib <.lib> for update motion library"
 	echo "Option: -osc for OSC support"
@@ -62,7 +62,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone -"
 	echo "===================================="
-	echo "- Version: 2.0 -"
+	echo "- Version: 2.5 -"
 	echo "===================================="
 }
 
@@ -83,9 +83,9 @@ do
 		ANDROID=1
     elif [ $p = "-ios" ]; then
 		IOS="1"
-	elif [ $p = "-soloios" ]; then
+	elif [ $p = "-iosmotion" ]; then
 		IOSMOTION="1"
-	elif [ $p = "-soloandroid" ]; then
+	elif [ $p = "-androidmotion" ]; then
 		ANDROIDMOTION="1"
 	elif [ $p = "-iosplugin" ]; then
 		IOSPLUGIN="1"
@@ -349,7 +349,7 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
-	faust -i -a $FAUSTLIB/api-allen/android-motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
+	faust -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	fi
 
 elif [ $ANDROIDPLUGIN -eq 1 ]; then
@@ -395,7 +395,7 @@ elif [ $IOSMOTION -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
-	faust -i -a $FAUSTLIB/api-allen/iOS-motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	faust -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	fi
 fi
 

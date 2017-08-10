@@ -2,6 +2,7 @@ set(OSCCTRL false)
 
 cmake_minimum_required(VERSION 3.4.1)
 add_library( dsp_faust SHARED src/main/cpp/java_interface_wrap.cpp src/main/cpp/DspFaust.cpp src/main/cpp/DspFaustMotion.cpp)
+add_definitions(-DANDROID_DRIVER)
 if(OSCCTRL)
 add_library( libOSCFaust SHARED IMPORTED )
 set_target_properties( libOSCFaust PROPERTIES IMPORTED_LOCATION /usr/local/share/faust/osclib/android/libs/${ANDROID_ABI}/libOSCFaust.so )

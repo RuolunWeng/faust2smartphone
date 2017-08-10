@@ -36,9 +36,9 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     "-osc" for OSC support
     
-    "-soloios" to generate a project with Motion support for iOS.
+    "-iosmotion" to generate a project with Motion support for iOS.
 
-    "-soloandroid" to generate a project with Motion support for Android.
+    "-iosandroid" to generate a project with Motion support for Android.
 
     [Motion.lib created by Christophe Lebreton].
 

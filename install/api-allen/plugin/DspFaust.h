@@ -17,19 +17,19 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __engine_motion__
-#define __engine_motion__
+#ifndef __api_plugin__
+#define __api_plugin__
 
 //===============API Reference==============
 //==========================================
 
 class FaustMotionEngine;
+class OSCUI;
 
-
-class DspFaustMotion
+class DspFaust
 {
 public:
-    //--------------`DspFaustMotion(int SR, int BS)`----------------
+    //--------------`DspFaust(int SR, int BS)`----------------
     // Constructor.
     //
     // #### Arguments
@@ -37,8 +37,8 @@ public:
     // * `SR`: sampling rate
     // * `BS`: block size
     //--------------------------------------------------------
-    DspFaustMotion(int,int);
-    ~DspFaustMotion();
+    DspFaust(int,int);
+    ~DspFaust();
     
     //---------------------`bool start()`---------------------
     // Start the audio processing.
@@ -295,7 +295,7 @@ public:
     
 private:
     FaustMotionEngine *fMotionEngine;
-    
+    OSCUI *fOSCUI;
 };
 
 #endif

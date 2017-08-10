@@ -15,32 +15,41 @@ help:
 	###############################################
 install:
 
-	##################################      
+	##################################
 	#### Install faust2smartphone ####
 	##################################
-	install faust2smartphone $(dest)	
+	install faust2smartphone $(dest)
 	rm -rf $(prefix)/share/faust/smartphone
 	cp -r smartphone $(prefix)/share/faust/
-	
-	##############################    
+
+	##############################
 	#### Install Motion Files ####
 	##############################
+	rm -rf $(prefix)/include/faust/audio/audio2
+	rm -rf $(prefix)/include/faust/audio/motion-audio.h
+	rm -rf $(prefix)/include/faust/dsp/faust-poly-engine_a.h
+	rm -rf $(prefix)/include/faust/dsp/faust-motion-engine.h
 	cp -r motion/audio2.h $(prefix)/include/faust/audio
 	cp -r motion/motion-audio.h $(prefix)/include/faust/audio
 	cp -r motion/faust-motion-engine.h $(prefix)/include/faust/dsp
 	cp -r motion/faust-poly-engine_a.h $(prefix)/include/faust/dsp
-	
+
 	########################################
 	#### Install faustapi version Allen ####
 	########################################
 	install faust2api_a $(dest)
+	rm -rf $(prefix)/share/faust/api-allen
 	cp -r api-allen $(prefix)/share/faust/
-	
+
 
 uninstall:
-	
+
 	#### Uninstall faust2smartphone ####
+	rm -rf $(prefix)/include/faust/audio/audio2
+	rm -rf $(prefix)/include/faust/audio/motion-audio.h
+	rm -rf $(prefix)/include/faust/dsp/faust-poly-engine_a.h
+	rm -rf $(prefix)/include/faust/dsp/faust-motion-engine.h
+	rm -rf $(prefix)/share/faust/api-allen
 	rm -rf $(prefix)/share/faust/smartphone
-	rm -f $(dest)/faust2api_a	
+	rm -f $(dest)/faust2api_a
 	rm -f $(dest)/faust2smartphone
-	

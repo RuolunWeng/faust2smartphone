@@ -136,7 +136,7 @@ public:
         printf("stop buffer\n");
     }
     
-    virtual void sendInputValue(int channel,float value)
+    virtual void setInputValue(int channel,float value)
     {
         if (fNumInputs2 > channel) {
             for (int frame = 0; frame < fBufferSize2; frame++) {

@@ -4041,7 +4041,7 @@ public:
     
     virtual float getCPULoad() { return 0.f; }
     
-    virtual void sendInputValue(int ch,float val)           = 0;
+    virtual void setInputValue(int ch,float val)           = 0;
     virtual float getOutputValue(int ch) { return 0.f; }
     
 };
@@ -5662,12 +5662,12 @@ public:
     }
     
     /*
-     * sendInput(int,float)
+     * setInput(int,float)
      * connect motion input
      */
-    void sendInput(int channel,float value)
+    void setInput(int channel,float value)
     {
-        fDriver->sendInputValue(channel, value);
+        fDriver->setInputValue(channel, value);
     }
     
     /*
@@ -6065,7 +6065,7 @@ public:
         printf("stop buffer\n");
     }
     
-    virtual void sendInputValue(int channel,float value)
+    virtual void setInputValue(int channel,float value)
     {
         if (fNumInputs2 > channel) {
             for (int frame = 0; frame < fBufferSize2; frame++) {
@@ -6152,9 +6152,9 @@ void DspFaustMotion::render(){
     fMotionEngine->render();
 }
 
-void DspFaustMotion::sendInput(int channel, float value) {
+void DspFaustMotion::setInput(int channel, float value) {
     
-    fMotionEngine->sendInput(channel, value);
+    fMotionEngine->setInput(channel, value);
 }
 
 float DspFaustMotion::getOutput(int channel) {

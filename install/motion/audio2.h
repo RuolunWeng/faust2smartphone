@@ -69,7 +69,7 @@ public:
     
     virtual float getCPULoad() { return 0.f; }
     
-    virtual void sendInputValue(int ch,float val)           = 0;
+    virtual void setInputValue(int ch,float val)           = 0;
     virtual float getOutputValue(int ch) { return 0.f; }
     
 };
