@@ -21,6 +21,8 @@ To turn a Faust code into an Android API, just run the following command:
 	faust2api_a -android yourFaustCode.dsp
 
     faust2api_a -androidmotion yourFaustCode.dsp (for motion.lib support)
+
+    faust2api_a -androidplugin yourFaustCode.dsp (for Faust plugin)
 	
 ### iOS Support
 
@@ -29,6 +31,8 @@ To turn a Faust code into an iOS API, just run the following command:
 	faust2api_a -ios yourFaustCode.dsp
 
     faust2api_a -iosmotion yourFaustCode.dsp (for motion.lib support)
+
+    faust2api_a -iosplugin yourFaustCode.dsp (for Faust plugin)
 
 ### Customizing the API
 

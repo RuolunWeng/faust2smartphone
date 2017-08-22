@@ -1,6 +1,6 @@
 //----------------------------------------------------------
 // name: "Faust Motion Library [Motion+RotationMatrix]"
-// version: "0.35"
+// version: "0.4"
 //
 // Code generated with Faust 0.10.2ec (http://faust.grame.fr)
 //----------------------------------------------------------
