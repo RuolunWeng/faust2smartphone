@@ -141,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
         
         
         if (dspFaustMotion == null) {
-            //dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
-            dspFaustMotion = new DspFaustMotion(SR, blockSize);
+            dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
+            //dspFaustMotion = new DspFaustMotion(SR, blockSize);
             
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
                 String Str = dspFaustMotion.getParamAddress(i);
                 if (Str.endsWith("_Param")) {
-                    motionParamArray.add(i-dspFaustMotion.getOutputChannelNum(),dspFaustMotion.getParamTooltip(i));
+                    motionParamArray.add(i-dspFaustMotion.getOutputChannelNum(),dspFaustMotion.getMetadata(i, "tooltip"));
                     motionParamAddress.add(i-dspFaustMotion.getOutputChannelNum(),dspFaustMotion.getParamAddress(i));
                 }
             }

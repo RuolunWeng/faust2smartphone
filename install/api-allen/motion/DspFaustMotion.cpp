@@ -168,12 +168,14 @@ float DspFaustMotion::getParamInit(int id){
     return fMotionEngine->getParamInit(id);
 }
 
-const char* DspFaustMotion::getParamTooltip(const char* address){
-    return fMotionEngine->getParamTooltip(address);
+const char* DspFaustMotion::getMetadata(const char* address, const char* key)
+{
+    return fMotionEngine->getMetadata(address, key);
 }
 
-const char* DspFaustMotion::getParamTooltip(int id){
-    return fMotionEngine->getParamTooltip(id);
+const char* DspFaustMotion::getMetadata(int id, const char* key)
+{
+    return fMotionEngine->getMetadata(id, key);
 }
 
 void DspFaustMotion::propagateAcc(int acc, float v){

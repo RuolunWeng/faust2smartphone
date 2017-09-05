@@ -317,22 +317,22 @@ public:
         }
 
         /*
-         * getParamTooltip(address)
-         * Returns the tooltip of a parameter.
+         * getMetadata(address, key)
+         * Returns the metadata of a parameter.
          */
-        const char* getParamTooltip(const char* address)
+        const char* getMetadata(const char* address, const char* key)
         {
             int id = fAPIUI.getParamIndex(address);
-            return (id >= 0) ? fAPIUI.getParamTooltip(id) : "";
+            return (id >= 0) ? fAPIUI.getMetadata(id, key) : "";
         }
-
+    
         /*
-         * getParamTooltip(id)
-         * Returns the tooltip of a parameter.
+         * getMetadata(id, key)
+         * Returns the metadata of a parameter.
          */
-        const char* getParamTooltip(int id)
+        const char* getMetadata(int id, const char* key)
         {
-            return fAPIUI.getParamTooltip(id);
+            return fAPIUI.getMetadata(id, key);
         }
 
         /*

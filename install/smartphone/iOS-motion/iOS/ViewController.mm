@@ -36,8 +36,8 @@
     // init faust motor
     ////////////////////
     
-    //dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
-    dspFaustMotion = new DspFaustMotion(SR, bufferSize);
+    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
+    //dspFaustMotion = new DspFaustMotion(SR, bufferSize);
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
@@ -62,12 +62,18 @@
     ///////////////////////
     //other Initialization
     ///////////////////////
+    //There are two methods to receive data from CMMotionManager: push and pull.
+    //Using push for now
     
     [self startMotion];
     
     [self startRotationMatrix];
     
-    [self startUpdate];
+    [self startAccelerometer];
+    
+    [self startGyroscope];
+    
+    //[self startUpdate];
     
     [self displayTitle];
     
@@ -265,7 +271,7 @@
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
         NSString *dataMotion = [NSString stringWithUTF8String:dspFaustMotion->getParamAddress(i)];
         if ([dataMotion hasSuffix:@"_Param"]) {
-            motionParamNames.push_back(dspFaustMotion->getParamTooltip(i));
+            motionParamNames.push_back(dspFaustMotion->getMetadata(i, "tooltip"));
             motionParamAddress.push_back(dspFaustMotion->getParamAddress(i));
         }
     }
@@ -300,32 +306,13 @@
     
 }
 
-- (void)startUpdate
-{
-    
-    _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1.f/(SR/bufferSize) target:self
-                                                  selector:@selector(updateMotion) userInfo:nil repeats:YES];
-    
-}
-
-// Stop updating
-- (void)stopUpdate
-{
-    
-    [_sensorTimer invalidate];
-    
-    
-}
-
-
-
 - (void)startMotion
 {
     if (_motionManager == nil)
     {
         _motionManager = [[CMMotionManager alloc] init];
-        [_motionManager startAccelerometerUpdates];
-        [_motionManager startGyroUpdates];
+        //[_motionManager startAccelerometerUpdates];
+        //[_motionManager startGyroUpdates];
     }
     
     if (magneticHeadingIsOn) {
@@ -367,12 +354,30 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
-    [self stopUpdate];
+    //[self stopUpdate];
     [self stopMotion];
     dspFaust->stop();
     dspFaustMotion->stop();
     delete dspFaust;
     delete dspFaustMotion;
+}
+
+/*
+- (void)startUpdate
+{
+    
+    _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1.f/(SR/bufferSize) target:self
+                                                  selector:@selector(updateMotion) userInfo:nil repeats:YES];
+    
+}
+
+// Stop updating
+- (void)stopUpdate
+{
+    
+    [_sensorTimer invalidate];
+    
+    
 }
 
 
@@ -395,6 +400,51 @@
     
     
 }
+*/
+
+- (void)startAccelerometer
+{
+    
+    CGFloat updateInterval = 1.f/(SR/bufferSize);
+    [_motionManager setAccelerometerUpdateInterval:updateInterval];
+    NSOperationQueue *AccelerometerQueue = [[NSOperationQueue alloc] init];
+    [_motionManager startAccelerometerUpdatesToQueue: AccelerometerQueue
+                                        withHandler:^(CMAccelerometerData *accelerometerData, NSError *error){
+                                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                
+                                                dspFaust->propagateAcc(0, accelerometerData.acceleration.x * ONE_G);
+                                                dspFaust->propagateAcc(1, accelerometerData.acceleration.y * ONE_G);
+                                                dspFaust->propagateAcc(2, accelerometerData.acceleration.z * ONE_G);
+                                                dspFaustMotion->propagateAcc(0, accelerometerData.acceleration.x * ONE_G);
+                                                dspFaustMotion->propagateAcc(1, accelerometerData.acceleration.y * ONE_G);
+                                                dspFaustMotion->propagateAcc(2, accelerometerData.acceleration.z * ONE_G);
+                                                
+                                            }];
+                                        }];
+    
+}
+
+- (void)startGyroscope
+{
+    
+    CGFloat updateInterval = 1.f/(SR/bufferSize);
+    [_motionManager setGyroUpdateInterval:updateInterval];
+    NSOperationQueue *GyroscopeQueue = [[NSOperationQueue alloc] init];
+    [_motionManager startGyroUpdatesToQueue: GyroscopeQueue
+                                         withHandler:^(CMGyroData *gyroData, NSError *error){
+                                             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                 
+                                                 dspFaust->propagateGyr(0, gyroData.rotationRate.x);
+                                                 dspFaust->propagateGyr(1, gyroData.rotationRate.y);
+                                                 dspFaust->propagateGyr(2, gyroData.rotationRate.z);
+                                                 dspFaustMotion->propagateGyr(0, gyroData.rotationRate.x);
+                                                 dspFaustMotion->propagateGyr(1, gyroData.rotationRate.y);
+                                                 dspFaustMotion->propagateGyr(2, gyroData.rotationRate.z);
+                                                 
+                                             }];
+                                         }];
+    
+}
 
 
 - (void)startRotationMatrix
@@ -408,8 +458,8 @@
         [self initFrame];
     });
     [_motionManager setDeviceMotionUpdateInterval:updateInterval];
-    NSOperationQueue *motionQueue = [[NSOperationQueue alloc] init];
-    [_motionManager startDeviceMotionUpdatesToQueue: motionQueue
+    NSOperationQueue *rotationMatrixQueue = [[NSOperationQueue alloc] init];
+    [_motionManager startDeviceMotionUpdatesToQueue: rotationMatrixQueue
         withHandler:^(CMDeviceMotion* motion, NSError* error){
                                             
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{

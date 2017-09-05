@@ -147,12 +147,12 @@ public class DspFaust {
     return dsp_faustJNI.DspFaust_getParamInit__SWIG_1(swigCPtr, this, arg0);
   }
 
-  public String getParamTooltip(String arg0) {
-    return dsp_faustJNI.DspFaust_getParamTooltip__SWIG_0(swigCPtr, this, arg0);
+  public String getMetadata(String arg0, String arg1) {
+    return dsp_faustJNI.DspFaust_getMetadata__SWIG_0(swigCPtr, this, arg0, arg1);
   }
 
-  public String getParamTooltip(int arg0) {
-    return dsp_faustJNI.DspFaust_getParamTooltip__SWIG_1(swigCPtr, this, arg0);
+  public String getMetadata(int arg0, String arg1) {
+    return dsp_faustJNI.DspFaust_getMetadata__SWIG_1(swigCPtr, this, arg0, arg1);
   }
 
   public void propagateAcc(int arg0, float arg1) {

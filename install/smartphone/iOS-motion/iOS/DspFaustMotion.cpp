@@ -2,7 +2,7 @@
 // name: "Faust Motion Library [Motion+RotationMatrix]"
 // version: "0.4"
 //
-// Code generated with Faust 0.10.2ec (http://faust.grame.fr)
+// Code generated with Faust 0.10.7ec (http://faust.grame.fr)
 //----------------------------------------------------------
 
 /* link with  */
@@ -326,7 +326,7 @@ class dsp {
         virtual dsp* clone() = 0;
     
         /**
-         * Trigger the Meta* parameter with instance specific calls to 'declare' (key, value metadata).
+         * Trigger the Meta* parameter with instance specific calls to 'declare' (key, value) metadata.
          *
          * @param m - the Meta* meta user
          */
@@ -380,7 +380,7 @@ class decorator_dsp : public dsp {
         virtual void instanceResetUserInterface() { fDSP->instanceResetUserInterface(); }
         virtual void instanceClear() { fDSP->instanceClear(); }
         virtual decorator_dsp* clone() { return new decorator_dsp(fDSP->clone()); }
-        virtual void metadata(Meta* m) { return fDSP->metadata(m); }
+        virtual void metadata(Meta* m) { fDSP->metadata(m); }
         // Beware: subclasses usually have to overload the two 'compute' methods
         virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { fDSP->compute(count, inputs, outputs); }
         virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { fDSP->compute(date_usec, count, inputs, outputs); }
@@ -1684,130 +1684,137 @@ class mydsp2 : public dsp {
 	float 	fRec94[2];
 	float 	fTempPerm115;
 	float 	fTempPerm116;
-	float 	fRec95[2];
 	float 	fTempPerm117;
-	float 	fRec96[2];
+	float 	fRec95[2];
 	float 	fTempPerm118;
-	float 	fRec97[2];
+	float 	fRec96[2];
 	float 	fTempPerm119;
-	float 	fRec98[2];
+	float 	fRec97[2];
 	float 	fTempPerm120;
-	float 	fRec99[2];
 	float 	fTempPerm121;
-	FAUSTFLOAT 	fcheckbox50;
+	float 	fRec98[2];
 	float 	fTempPerm122;
+	float 	fRec99[2];
+	float 	fTempPerm123;
+	FAUSTFLOAT 	fcheckbox50;
+	float 	fTempPerm124;
 	FAUSTFLOAT 	fcheckbox51;
 	FAUSTFLOAT 	fcheckbox52;
 	FAUSTFLOAT 	fcheckbox53;
 	FAUSTFLOAT 	fcheckbox54;
 	FAUSTFLOAT 	fcheckbox55;
-	float 	fTempPerm123;
-	float 	fTempPerm124;
 	float 	fTempPerm125;
 	float 	fTempPerm126;
-	float 	fRec100[2];
 	float 	fTempPerm127;
 	float 	fTempPerm128;
+	float 	fRec100[2];
 	float 	fTempPerm129;
-	float 	fRec101[2];
 	float 	fTempPerm130;
-	float 	fRec102[2];
 	float 	fTempPerm131;
-	float 	fRec103[2];
+	float 	fRec101[2];
 	float 	fTempPerm132;
+	float 	fRec102[2];
 	float 	fTempPerm133;
-	float 	fRec104[2];
+	float 	fRec103[2];
 	float 	fTempPerm134;
-	float 	fRec105[2];
 	float 	fTempPerm135;
-	FAUSTFLOAT 	fcheckbox56;
+	float 	fRec104[2];
 	float 	fTempPerm136;
+	float 	fRec105[2];
+	float 	fTempPerm137;
+	FAUSTFLOAT 	fcheckbox56;
+	float 	fTempPerm138;
 	FAUSTFLOAT 	fcheckbox57;
 	FAUSTFLOAT 	fcheckbox58;
 	FAUSTFLOAT 	fcheckbox59;
 	FAUSTFLOAT 	fcheckbox60;
 	FAUSTFLOAT 	fcheckbox61;
-	float 	fTempPerm137;
-	float 	fTempPerm138;
 	float 	fTempPerm139;
 	float 	fTempPerm140;
-	float 	fRec106[2];
 	float 	fTempPerm141;
 	float 	fTempPerm142;
+	float 	fRec106[2];
 	float 	fTempPerm143;
-	float 	fRec107[2];
 	float 	fTempPerm144;
-	float 	fRec108[2];
 	float 	fTempPerm145;
-	float 	fRec109[2];
+	float 	fRec107[2];
 	float 	fTempPerm146;
+	float 	fRec108[2];
 	float 	fTempPerm147;
-	float 	fRec110[2];
+	float 	fRec109[2];
 	float 	fTempPerm148;
-	float 	fRec111[2];
 	float 	fTempPerm149;
-	FAUSTFLOAT 	fcheckbox62;
+	float 	fRec110[2];
 	float 	fTempPerm150;
+	float 	fRec111[2];
+	float 	fTempPerm151;
+	FAUSTFLOAT 	fcheckbox62;
+	float 	fTempPerm152;
 	FAUSTFLOAT 	fcheckbox63;
 	FAUSTFLOAT 	fcheckbox64;
 	FAUSTFLOAT 	fcheckbox65;
 	FAUSTFLOAT 	fcheckbox66;
 	FAUSTFLOAT 	fcheckbox67;
-	float 	fTempPerm151;
-	float 	fTempPerm152;
 	float 	fTempPerm153;
 	float 	fTempPerm154;
-	float 	fRec112[2];
 	float 	fTempPerm155;
 	float 	fTempPerm156;
+	float 	fRec112[2];
 	float 	fTempPerm157;
-	float 	fRec113[2];
 	float 	fTempPerm158;
-	float 	fRec114[2];
 	float 	fTempPerm159;
-	float 	fRec115[2];
+	float 	fRec113[2];
 	float 	fTempPerm160;
+	float 	fRec114[2];
 	float 	fTempPerm161;
-	float 	fRec116[2];
+	float 	fRec115[2];
 	float 	fTempPerm162;
-	float 	fRec117[2];
 	float 	fTempPerm163;
-	FAUSTFLOAT 	fcheckbox68;
+	float 	fRec116[2];
 	float 	fTempPerm164;
+	float 	fRec117[2];
+	float 	fTempPerm165;
+	FAUSTFLOAT 	fcheckbox68;
+	float 	fTempPerm166;
 	FAUSTFLOAT 	fcheckbox69;
 	FAUSTFLOAT 	fcheckbox70;
 	FAUSTFLOAT 	fcheckbox71;
 	FAUSTFLOAT 	fcheckbox72;
 	FAUSTFLOAT 	fcheckbox73;
-	float 	fTempPerm165;
-	float 	fTempPerm166;
 	float 	fTempPerm167;
 	float 	fTempPerm168;
-	float 	fRec118[2];
 	float 	fTempPerm169;
 	float 	fTempPerm170;
+	float 	fRec118[2];
 	float 	fTempPerm171;
-	float 	fRec119[2];
 	float 	fTempPerm172;
-	float 	fRec120[2];
 	float 	fTempPerm173;
-	float 	fRec121[2];
+	float 	fRec119[2];
 	float 	fTempPerm174;
+	float 	fRec120[2];
 	float 	fTempPerm175;
-	float 	fRec122[2];
+	float 	fRec121[2];
 	float 	fTempPerm176;
-	float 	fRec123[2];
 	float 	fTempPerm177;
+	float 	fRec122[2];
+	float 	fTempPerm178;
+	float 	fRec123[2];
+	float 	fTempPerm179;
 	int fSamplingFreq;
 
   public:
 	virtual void metadata(Meta* m) { 
 		m->declare("name", "Faust Motion Library [Motion+RotationMatrix]");
-		m->declare("version", "0.35");
-		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
-		m->declare("vaeffects.lib/version", "0.0");
+		m->declare("version", "0.4");
 		m->declare("analyzers.lib/name", "Faust Analyzer Library");
 		m->declare("analyzers.lib/version", "0.0");
+		m->declare("envelopes.lib/name", "Faust Envelope Library");
+		m->declare("envelopes.lib/version", "0.0");
+		m->declare("envelopes.lib/author", "GRAME");
+		m->declare("envelopes.lib/copyright", "GRAME");
+		m->declare("envelopes.lib/license", "LGPL with exception");
+		m->declare("filters.lib/name", "Faust Filters Library");
+		m->declare("filters.lib/version", "0.0");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "0.0");
 		m->declare("compressors.lib/name", "Faust Compressor Effect Library");
@@ -1818,19 +1825,12 @@ class mydsp2 : public dsp {
 		m->declare("hoa.lib/author", "Pierre Guillot");
 		m->declare("hoa.lib/copyright", "2012-2013 Guillot, Paris, Colafrancesco, CICM labex art H2H, U. Paris 8");
 		m->declare("maths.lib/name", "Faust Math Library");
-		m->declare("maths.lib/version", "2.0");
+		m->declare("maths.lib/version", "2.1");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("misceffects.lib/name", "Faust Math Library");
 		m->declare("misceffects.lib/version", "2.0");
-		m->declare("envelopes.lib/name", "Faust Envelope Library");
-		m->declare("envelopes.lib/version", "0.0");
-		m->declare("envelopes.lib/author", "GRAME");
-		m->declare("envelopes.lib/copyright", "GRAME");
-		m->declare("envelopes.lib/license", "LGPL with exception");
-		m->declare("filters.lib/name", "Faust Filters Library");
-		m->declare("filters.lib/version", "0.0");
 		m->declare("oscillators.lib/name", "Faust Oscillator Library");
 		m->declare("oscillators.lib/version", "0.0");
 		m->declare("noises.lib/name", "Faust Noise Generator Library");
@@ -1847,6 +1847,8 @@ class mydsp2 : public dsp {
 		m->declare("signals.lib/version", "0.0");
 		m->declare("synths.lib/name", "Faust Synthesizer Library");
 		m->declare("synths.lib/version", "0.0");
+		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
+		m->declare("vaeffects.lib/version", "0.0");
 	}
 
 	virtual int getNumInputs() { return 18; }
@@ -1855,7 +1857,7 @@ class mydsp2 : public dsp {
 	}
 	virtual void instanceConstants(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fConst0 = min(1.92e+05f, max(1e+03f, (float)fSamplingFreq));
+		fConst0 = min(1.92e+05f, max(1.0f, (float)fSamplingFreq));
 		fConst1 = (3.1415927f / fConst0);
 		iTempPerm0 = 0;
 		fConst2 = (1.0f / fConst0);
@@ -2042,6 +2044,8 @@ class mydsp2 : public dsp {
 		fTempPerm175 = 0;
 		fTempPerm176 = 0;
 		fTempPerm177 = 0;
+		fTempPerm178 = 0;
+		fTempPerm179 = 0;
 	}
 	virtual void instanceResetUserInterface() {
 		fcheckbox0 = 0.0;
@@ -2389,27 +2393,27 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox25, "20", "");
 		ui_interface->declare(&fcheckbox25, "tooltip", "azpn");
 		ui_interface->addCheckButton("azpnOn", &fcheckbox25);
-		ui_interface->declare(&fcheckbox21, "21", "");
-		ui_interface->declare(&fcheckbox21, "tooltip", "axp");
-		ui_interface->addCheckButton("axpOn", &fcheckbox21);
-		ui_interface->declare(&fcheckbox24, "22", "");
-		ui_interface->declare(&fcheckbox24, "tooltip", "ayp");
-		ui_interface->addCheckButton("aypOn", &fcheckbox24);
+		ui_interface->declare(&fcheckbox19, "21", "");
+		ui_interface->declare(&fcheckbox19, "tooltip", "axp");
+		ui_interface->addCheckButton("axpOn", &fcheckbox19);
+		ui_interface->declare(&fcheckbox23, "22", "");
+		ui_interface->declare(&fcheckbox23, "tooltip", "ayp");
+		ui_interface->addCheckButton("aypOn", &fcheckbox23);
 		ui_interface->declare(&fcheckbox26, "23", "");
 		ui_interface->declare(&fcheckbox26, "tooltip", "azp");
 		ui_interface->addCheckButton("azpOn", &fcheckbox26);
 		ui_interface->declare(&fcheckbox20, "24", "");
 		ui_interface->declare(&fcheckbox20, "tooltip", "axn");
 		ui_interface->addCheckButton("axnOn", &fcheckbox20);
-		ui_interface->declare(&fcheckbox23, "25", "");
-		ui_interface->declare(&fcheckbox23, "tooltip", "ayn");
-		ui_interface->addCheckButton("aynOn", &fcheckbox23);
+		ui_interface->declare(&fcheckbox24, "25", "");
+		ui_interface->declare(&fcheckbox24, "tooltip", "ayn");
+		ui_interface->addCheckButton("aynOn", &fcheckbox24);
 		ui_interface->declare(&fcheckbox27, "26", "");
 		ui_interface->declare(&fcheckbox27, "tooltip", "azn");
 		ui_interface->addCheckButton("aznOn", &fcheckbox27);
-		ui_interface->declare(&fcheckbox19, "27", "");
-		ui_interface->declare(&fcheckbox19, "tooltip", "totalaccel");
-		ui_interface->addCheckButton("totalaccelOn", &fcheckbox19);
+		ui_interface->declare(&fcheckbox21, "27", "");
+		ui_interface->declare(&fcheckbox21, "tooltip", "totalaccel");
+		ui_interface->addCheckButton("totalaccelOn", &fcheckbox21);
 		ui_interface->declare(&fcheckbox28, "28", "");
 		ui_interface->declare(&fcheckbox28, "tooltip", "gxpn");
 		ui_interface->addCheckButton("gxpnOn", &fcheckbox28);
@@ -2419,78 +2423,78 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox35, "30", "");
 		ui_interface->declare(&fcheckbox35, "tooltip", "gzpn");
 		ui_interface->addCheckButton("gzpnOn", &fcheckbox35);
-		ui_interface->declare(&fcheckbox31, "31", "");
-		ui_interface->declare(&fcheckbox31, "tooltip", "gxp");
-		ui_interface->addCheckButton("gxpOn", &fcheckbox31);
-		ui_interface->declare(&fcheckbox34, "32", "");
-		ui_interface->declare(&fcheckbox34, "tooltip", "gyp");
-		ui_interface->addCheckButton("gypOn", &fcheckbox34);
-		ui_interface->declare(&fcheckbox37, "33", "");
-		ui_interface->declare(&fcheckbox37, "tooltip", "gzp");
-		ui_interface->addCheckButton("gzpOn", &fcheckbox37);
-		ui_interface->declare(&fcheckbox29, "34", "");
-		ui_interface->declare(&fcheckbox29, "tooltip", "gxn");
-		ui_interface->addCheckButton("gxnOn", &fcheckbox29);
-		ui_interface->declare(&fcheckbox33, "35", "");
-		ui_interface->declare(&fcheckbox33, "tooltip", "gyn");
-		ui_interface->addCheckButton("gynOn", &fcheckbox33);
-		ui_interface->declare(&fcheckbox36, "36", "");
-		ui_interface->declare(&fcheckbox36, "tooltip", "gzn");
-		ui_interface->addCheckButton("gznOn", &fcheckbox36);
-		ui_interface->declare(&fcheckbox30, "37", "");
-		ui_interface->declare(&fcheckbox30, "tooltip", "totalgyro");
-		ui_interface->addCheckButton("totalgyroOn", &fcheckbox30);
+		ui_interface->declare(&fcheckbox29, "31", "");
+		ui_interface->declare(&fcheckbox29, "tooltip", "gxp");
+		ui_interface->addCheckButton("gxpOn", &fcheckbox29);
+		ui_interface->declare(&fcheckbox33, "32", "");
+		ui_interface->declare(&fcheckbox33, "tooltip", "gyp");
+		ui_interface->addCheckButton("gypOn", &fcheckbox33);
+		ui_interface->declare(&fcheckbox36, "33", "");
+		ui_interface->declare(&fcheckbox36, "tooltip", "gzp");
+		ui_interface->addCheckButton("gzpOn", &fcheckbox36);
+		ui_interface->declare(&fcheckbox30, "34", "");
+		ui_interface->declare(&fcheckbox30, "tooltip", "gxn");
+		ui_interface->addCheckButton("gxnOn", &fcheckbox30);
+		ui_interface->declare(&fcheckbox34, "35", "");
+		ui_interface->declare(&fcheckbox34, "tooltip", "gyn");
+		ui_interface->addCheckButton("gynOn", &fcheckbox34);
+		ui_interface->declare(&fcheckbox37, "36", "");
+		ui_interface->declare(&fcheckbox37, "tooltip", "gzn");
+		ui_interface->addCheckButton("gznOn", &fcheckbox37);
+		ui_interface->declare(&fcheckbox31, "37", "");
+		ui_interface->declare(&fcheckbox31, "tooltip", "totalgyro");
+		ui_interface->addCheckButton("totalgyroOn", &fcheckbox31);
 		ui_interface->declare(&fcheckbox38, "38", "");
 		ui_interface->declare(&fcheckbox38, "tooltip", "brasG_cour");
 		ui_interface->addCheckButton("brasG_courOn", &fcheckbox38);
-		ui_interface->declare(&fcheckbox40, "39", "");
-		ui_interface->declare(&fcheckbox40, "tooltip", "brasG_rear");
-		ui_interface->addCheckButton("brasG_rearOn", &fcheckbox40);
-		ui_interface->declare(&fcheckbox41, "40", "");
-		ui_interface->declare(&fcheckbox41, "tooltip", "brasG_jardin");
-		ui_interface->addCheckButton("brasG_jardinOn", &fcheckbox41);
-		ui_interface->declare(&fcheckbox42, "41", "");
-		ui_interface->declare(&fcheckbox42, "tooltip", "brasG_front");
-		ui_interface->addCheckButton("brasG_frontOn", &fcheckbox42);
-		ui_interface->declare(&fcheckbox39, "42", "");
-		ui_interface->declare(&fcheckbox39, "tooltip", "brasG_down");
-		ui_interface->addCheckButton("brasG_downOn", &fcheckbox39);
-		ui_interface->declare(&fcheckbox43, "43", "");
-		ui_interface->declare(&fcheckbox43, "tooltip", "brasG_up");
-		ui_interface->addCheckButton("brasG_upOn", &fcheckbox43);
+		ui_interface->declare(&fcheckbox43, "39", "");
+		ui_interface->declare(&fcheckbox43, "tooltip", "brasG_rear");
+		ui_interface->addCheckButton("brasG_rearOn", &fcheckbox43);
+		ui_interface->declare(&fcheckbox39, "40", "");
+		ui_interface->declare(&fcheckbox39, "tooltip", "brasG_jardin");
+		ui_interface->addCheckButton("brasG_jardinOn", &fcheckbox39);
+		ui_interface->declare(&fcheckbox40, "41", "");
+		ui_interface->declare(&fcheckbox40, "tooltip", "brasG_front");
+		ui_interface->addCheckButton("brasG_frontOn", &fcheckbox40);
+		ui_interface->declare(&fcheckbox41, "42", "");
+		ui_interface->declare(&fcheckbox41, "tooltip", "brasG_down");
+		ui_interface->addCheckButton("brasG_downOn", &fcheckbox41);
+		ui_interface->declare(&fcheckbox42, "43", "");
+		ui_interface->declare(&fcheckbox42, "tooltip", "brasG_up");
+		ui_interface->addCheckButton("brasG_upOn", &fcheckbox42);
 		ui_interface->declare(&fcheckbox44, "44", "");
 		ui_interface->declare(&fcheckbox44, "tooltip", "pieds_cour");
 		ui_interface->addCheckButton("pieds_courOn", &fcheckbox44);
-		ui_interface->declare(&fcheckbox49, "45", "");
-		ui_interface->declare(&fcheckbox49, "tooltip", "pieds_rear");
-		ui_interface->addCheckButton("pieds_rearOn", &fcheckbox49);
-		ui_interface->declare(&fcheckbox48, "46", "");
-		ui_interface->declare(&fcheckbox48, "tooltip", "pieds_jardin");
-		ui_interface->addCheckButton("pieds_jardinOn", &fcheckbox48);
-		ui_interface->declare(&fcheckbox45, "47", "");
-		ui_interface->declare(&fcheckbox45, "tooltip", "pieds_front");
-		ui_interface->addCheckButton("pieds_frontOn", &fcheckbox45);
-		ui_interface->declare(&fcheckbox46, "48", "");
-		ui_interface->declare(&fcheckbox46, "tooltip", "pieds_down");
-		ui_interface->addCheckButton("pieds_downOn", &fcheckbox46);
-		ui_interface->declare(&fcheckbox47, "49", "");
-		ui_interface->declare(&fcheckbox47, "tooltip", "pieds_up");
-		ui_interface->addCheckButton("pieds_upOn", &fcheckbox47);
+		ui_interface->declare(&fcheckbox45, "45", "");
+		ui_interface->declare(&fcheckbox45, "tooltip", "pieds_rear");
+		ui_interface->addCheckButton("pieds_rearOn", &fcheckbox45);
+		ui_interface->declare(&fcheckbox46, "46", "");
+		ui_interface->declare(&fcheckbox46, "tooltip", "pieds_jardin");
+		ui_interface->addCheckButton("pieds_jardinOn", &fcheckbox46);
+		ui_interface->declare(&fcheckbox47, "47", "");
+		ui_interface->declare(&fcheckbox47, "tooltip", "pieds_front");
+		ui_interface->addCheckButton("pieds_frontOn", &fcheckbox47);
+		ui_interface->declare(&fcheckbox48, "48", "");
+		ui_interface->declare(&fcheckbox48, "tooltip", "pieds_down");
+		ui_interface->addCheckButton("pieds_downOn", &fcheckbox48);
+		ui_interface->declare(&fcheckbox49, "49", "");
+		ui_interface->declare(&fcheckbox49, "tooltip", "pieds_up");
+		ui_interface->addCheckButton("pieds_upOn", &fcheckbox49);
 		ui_interface->declare(&fcheckbox50, "50", "");
 		ui_interface->declare(&fcheckbox50, "tooltip", "dos_cour");
 		ui_interface->addCheckButton("dos_courOn", &fcheckbox50);
-		ui_interface->declare(&fcheckbox52, "51", "");
-		ui_interface->declare(&fcheckbox52, "tooltip", "dos_rear");
-		ui_interface->addCheckButton("dos_rearOn", &fcheckbox52);
-		ui_interface->declare(&fcheckbox53, "52", "");
-		ui_interface->declare(&fcheckbox53, "tooltip", "dos_jardin");
-		ui_interface->addCheckButton("dos_jardinOn", &fcheckbox53);
-		ui_interface->declare(&fcheckbox54, "53", "");
-		ui_interface->declare(&fcheckbox54, "tooltip", "dos_front");
-		ui_interface->addCheckButton("dos_frontOn", &fcheckbox54);
-		ui_interface->declare(&fcheckbox51, "54", "");
-		ui_interface->declare(&fcheckbox51, "tooltip", "dos_down");
-		ui_interface->addCheckButton("dos_downOn", &fcheckbox51);
+		ui_interface->declare(&fcheckbox51, "51", "");
+		ui_interface->declare(&fcheckbox51, "tooltip", "dos_rear");
+		ui_interface->addCheckButton("dos_rearOn", &fcheckbox51);
+		ui_interface->declare(&fcheckbox52, "52", "");
+		ui_interface->declare(&fcheckbox52, "tooltip", "dos_jardin");
+		ui_interface->addCheckButton("dos_jardinOn", &fcheckbox52);
+		ui_interface->declare(&fcheckbox53, "53", "");
+		ui_interface->declare(&fcheckbox53, "tooltip", "dos_front");
+		ui_interface->addCheckButton("dos_frontOn", &fcheckbox53);
+		ui_interface->declare(&fcheckbox54, "54", "");
+		ui_interface->declare(&fcheckbox54, "tooltip", "dos_down");
+		ui_interface->addCheckButton("dos_downOn", &fcheckbox54);
 		ui_interface->declare(&fcheckbox55, "55", "");
 		ui_interface->declare(&fcheckbox55, "tooltip", "dos_up");
 		ui_interface->addCheckButton("dos_upOn", &fcheckbox55);
@@ -2500,27 +2504,27 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox57, "57", "");
 		ui_interface->declare(&fcheckbox57, "tooltip", "brasD_rear");
 		ui_interface->addCheckButton("brasD_rearOn", &fcheckbox57);
-		ui_interface->declare(&fcheckbox60, "58", "");
-		ui_interface->declare(&fcheckbox60, "tooltip", "brasD_jardin");
-		ui_interface->addCheckButton("brasD_jardinOn", &fcheckbox60);
-		ui_interface->declare(&fcheckbox61, "59", "");
-		ui_interface->declare(&fcheckbox61, "tooltip", "brasD_front");
-		ui_interface->addCheckButton("brasD_frontOn", &fcheckbox61);
-		ui_interface->declare(&fcheckbox58, "60", "");
-		ui_interface->declare(&fcheckbox58, "tooltip", "brasD_down");
-		ui_interface->addCheckButton("brasD_downOn", &fcheckbox58);
-		ui_interface->declare(&fcheckbox59, "61", "");
-		ui_interface->declare(&fcheckbox59, "tooltip", "brasD_up");
-		ui_interface->addCheckButton("brasD_upOn", &fcheckbox59);
+		ui_interface->declare(&fcheckbox58, "58", "");
+		ui_interface->declare(&fcheckbox58, "tooltip", "brasD_jardin");
+		ui_interface->addCheckButton("brasD_jardinOn", &fcheckbox58);
+		ui_interface->declare(&fcheckbox59, "59", "");
+		ui_interface->declare(&fcheckbox59, "tooltip", "brasD_front");
+		ui_interface->addCheckButton("brasD_frontOn", &fcheckbox59);
+		ui_interface->declare(&fcheckbox60, "60", "");
+		ui_interface->declare(&fcheckbox60, "tooltip", "brasD_down");
+		ui_interface->addCheckButton("brasD_downOn", &fcheckbox60);
+		ui_interface->declare(&fcheckbox61, "61", "");
+		ui_interface->declare(&fcheckbox61, "tooltip", "brasD_up");
+		ui_interface->addCheckButton("brasD_upOn", &fcheckbox61);
 		ui_interface->declare(&fcheckbox62, "62", "");
 		ui_interface->declare(&fcheckbox62, "tooltip", "tete_cour");
 		ui_interface->addCheckButton("tete_courOn", &fcheckbox62);
-		ui_interface->declare(&fcheckbox64, "63", "");
-		ui_interface->declare(&fcheckbox64, "tooltip", "tete_rear");
-		ui_interface->addCheckButton("tete_rearOn", &fcheckbox64);
-		ui_interface->declare(&fcheckbox63, "64", "");
-		ui_interface->declare(&fcheckbox63, "tooltip", "tete_jardin");
-		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox63);
+		ui_interface->declare(&fcheckbox63, "63", "");
+		ui_interface->declare(&fcheckbox63, "tooltip", "tete_rear");
+		ui_interface->addCheckButton("tete_rearOn", &fcheckbox63);
+		ui_interface->declare(&fcheckbox64, "64", "");
+		ui_interface->declare(&fcheckbox64, "tooltip", "tete_jardin");
+		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox64);
 		ui_interface->declare(&fcheckbox65, "65", "");
 		ui_interface->declare(&fcheckbox65, "tooltip", "tete_front");
 		ui_interface->addCheckButton("tete_frontOn", &fcheckbox65);
@@ -2536,18 +2540,18 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox69, "71", "");
 		ui_interface->declare(&fcheckbox69, "tooltip", "ventre_rear");
 		ui_interface->addCheckButton("ventre_rearOn", &fcheckbox69);
-		ui_interface->declare(&fcheckbox71, "72", "");
-		ui_interface->declare(&fcheckbox71, "tooltip", "ventre_jardin");
-		ui_interface->addCheckButton("ventre_jardinOn", &fcheckbox71);
-		ui_interface->declare(&fcheckbox72, "73", "");
-		ui_interface->declare(&fcheckbox72, "tooltip", "ventre_front");
-		ui_interface->addCheckButton("ventre_frontOn", &fcheckbox72);
-		ui_interface->declare(&fcheckbox73, "74", "");
-		ui_interface->declare(&fcheckbox73, "tooltip", "ventre_down");
-		ui_interface->addCheckButton("ventre_downOn", &fcheckbox73);
-		ui_interface->declare(&fcheckbox70, "75", "");
-		ui_interface->declare(&fcheckbox70, "tooltip", "ventre_up");
-		ui_interface->addCheckButton("ventre_upOn", &fcheckbox70);
+		ui_interface->declare(&fcheckbox70, "72", "");
+		ui_interface->declare(&fcheckbox70, "tooltip", "ventre_jardin");
+		ui_interface->addCheckButton("ventre_jardinOn", &fcheckbox70);
+		ui_interface->declare(&fcheckbox71, "73", "");
+		ui_interface->declare(&fcheckbox71, "tooltip", "ventre_front");
+		ui_interface->addCheckButton("ventre_frontOn", &fcheckbox71);
+		ui_interface->declare(&fcheckbox72, "74", "");
+		ui_interface->declare(&fcheckbox72, "tooltip", "ventre_down");
+		ui_interface->addCheckButton("ventre_downOn", &fcheckbox72);
+		ui_interface->declare(&fcheckbox73, "75", "");
+		ui_interface->declare(&fcheckbox73, "tooltip", "ventre_up");
+		ui_interface->addCheckButton("ventre_upOn", &fcheckbox73);
 		ui_interface->declare(&fslider0, "80", "");
 		ui_interface->declare(&fslider0, "tooltip", "highPass");
 		ui_interface->addHorizontalSlider("hp_Param", &fslider0, 5e+01f, 1.0f, 5e+01f, 0.01f);
@@ -3141,7 +3145,7 @@ class mydsp2 : public dsp {
 				fTempPerm35 = (fSlow71 * min((float)1, max((float)0, (fSlow57 * max((float)0, ((0.5f * ((0.63661975f * asinf(min((float)1, max((float)-1, fRec41[0])))) + 1)) - fSlow56))))));
 			}
 			output17[i] = (FAUSTFLOAT)fTempPerm35;
-			if (iSlow79 || iSlow81 || iSlow75 || iSlow83) {
+			if (iSlow75 || iSlow79 || iSlow81 || iSlow83) {
 				fVec24[0] = fSlow77;
 				fRec44[0] = (fConst4 * ((fSlow77 - fVec24[1]) + (fConst5 * fRec44[1])));
 			}
@@ -3153,7 +3157,7 @@ class mydsp2 : public dsp {
 				fTempPerm38 = (fSlow74 * fRec42[0]);
 			}
 			output18[i] = (FAUSTFLOAT)fTempPerm38;
-			if (iSlow79 || iSlow91 || iSlow88 || iSlow93) {
+			if (iSlow88 || iSlow91 || iSlow93 || iSlow83) {
 				fVec25[0] = fSlow89;
 				fRec47[0] = (fConst4 * ((fSlow89 - fVec25[1]) + (fConst5 * fRec47[1])));
 			}
@@ -3165,7 +3169,7 @@ class mydsp2 : public dsp {
 				fTempPerm41 = (fSlow87 * fRec45[0]);
 			}
 			output19[i] = (FAUSTFLOAT)fTempPerm41;
-			if (iSlow79 || iSlow98 || iSlow100 || iSlow95) {
+			if (iSlow95 || iSlow98 || iSlow100 || iSlow83) {
 				fVec26[0] = fSlow96;
 				fRec50[0] = (fConst4 * ((fSlow96 - fVec26[1]) + (fConst5 * fRec50[1])));
 			}
@@ -3177,20 +3181,20 @@ class mydsp2 : public dsp {
 				fTempPerm44 = (fSlow94 * fRec48[0]);
 			}
 			output20[i] = (FAUSTFLOAT)fTempPerm44;
-			if (iSlow83) {
+			if (iSlow79) {
 				fTempPerm45 = fabsf(min((float)1, (fSlow76 * max((float)0, (fRec44[0] - fSlow84)))));
 				fTempPerm46 = ((int((fRec51[1] > fTempPerm45)))?fSlow85:fSlow86);
 				fRec52[0] = ((fRec52[1] * fTempPerm46) + (fTempPerm45 * (1.0f - fTempPerm46)));
 				fRec51[0] = fRec52[0];
-				fTempPerm47 = (fSlow82 * fRec51[0]);
+				fTempPerm47 = (fSlow78 * fRec51[0]);
 			}
 			output21[i] = (FAUSTFLOAT)fTempPerm47;
-			if (iSlow93) {
+			if (iSlow91) {
 				fTempPerm48 = fabsf(min((float)1, (fSlow76 * max((float)0, (fRec47[0] - fSlow84)))));
 				fTempPerm49 = ((int((fRec53[1] > fTempPerm48)))?fSlow85:fSlow86);
 				fRec54[0] = ((fRec54[1] * fTempPerm49) + (fTempPerm48 * (1.0f - fTempPerm49)));
 				fRec53[0] = fRec54[0];
-				fTempPerm50 = (fSlow92 * fRec53[0]);
+				fTempPerm50 = (fSlow90 * fRec53[0]);
 			}
 			output22[i] = (FAUSTFLOAT)fTempPerm50;
 			if (iSlow98) {
@@ -3209,12 +3213,12 @@ class mydsp2 : public dsp {
 				fTempPerm56 = (fSlow80 * fRec57[0]);
 			}
 			output24[i] = (FAUSTFLOAT)fTempPerm56;
-			if (iSlow91) {
+			if (iSlow93) {
 				fTempPerm57 = fabsf(min((float)1, (fSlow76 * max((float)0, (0 - (fSlow84 + fRec47[0]))))));
 				fTempPerm58 = ((int((fRec59[1] > fTempPerm57)))?fSlow85:fSlow86);
 				fRec60[0] = ((fRec60[1] * fTempPerm58) + (fTempPerm57 * (1.0f - fTempPerm58)));
 				fRec59[0] = fRec60[0];
-				fTempPerm59 = (fSlow90 * fRec59[0]);
+				fTempPerm59 = (fSlow92 * fRec59[0]);
 			}
 			output25[i] = (FAUSTFLOAT)fTempPerm59;
 			if (iSlow100) {
@@ -3225,12 +3229,12 @@ class mydsp2 : public dsp {
 				fTempPerm62 = (fSlow99 * fRec61[0]);
 			}
 			output26[i] = (FAUSTFLOAT)fTempPerm62;
-			if (iSlow79) {
+			if (iSlow83) {
 				fTempPerm63 = fabsf(min((float)1, (fSlow76 * max((float)0, (sqrtf(((faustpower<2>(fRec44[0]) + faustpower<2>(fRec47[0])) + faustpower<2>(fRec50[0]))) - fSlow84)))));
 				fTempPerm64 = ((int((fRec63[1] > fTempPerm63)))?fSlow85:fSlow86);
 				fRec64[0] = ((fRec64[1] * fTempPerm64) + (fTempPerm63 * (1.0f - fTempPerm64)));
 				fRec63[0] = fRec64[0];
-				fTempPerm65 = (fSlow78 * fRec63[0]);
+				fTempPerm65 = (fSlow82 * fRec63[0]);
 			}
 			output27[i] = (FAUSTFLOAT)fTempPerm65;
 			if (iSlow102 || iSlow106 || iSlow108 || iSlow110) {
@@ -3244,7 +3248,7 @@ class mydsp2 : public dsp {
 				fTempPerm68 = (fSlow101 * fRec65[0]);
 			}
 			output28[i] = (FAUSTFLOAT)fTempPerm68;
-			if (iSlow115 || iSlow118 || iSlow108 || iSlow120) {
+			if (iSlow115 || iSlow118 || iSlow120 || iSlow110) {
 				fRec70[0] = (fSlow116 + (0.999f * fRec70[1]));
 			}
 			if (iSlow115) {
@@ -3255,7 +3259,7 @@ class mydsp2 : public dsp {
 				fTempPerm71 = (fSlow114 * fRec68[0]);
 			}
 			output29[i] = (FAUSTFLOAT)fTempPerm71;
-			if (iSlow122 || iSlow125 || iSlow108 || iSlow127) {
+			if (iSlow122 || iSlow125 || iSlow127 || iSlow110) {
 				fRec73[0] = (fSlow123 + (0.999f * fRec73[1]));
 			}
 			if (iSlow122) {
@@ -3266,73 +3270,73 @@ class mydsp2 : public dsp {
 				fTempPerm74 = (fSlow121 * fRec71[0]);
 			}
 			output30[i] = (FAUSTFLOAT)fTempPerm74;
-			if (iSlow110) {
+			if (iSlow106) {
 				fTempPerm75 = fabsf(min((float)1, (fSlow103 * max((float)0, (fRec67[0] - fSlow111)))));
 				fTempPerm76 = ((int((fRec74[1] > fTempPerm75)))?fSlow112:fSlow113);
 				fRec75[0] = ((fRec75[1] * fTempPerm76) + (fTempPerm75 * (1.0f - fTempPerm76)));
 				fRec74[0] = fRec75[0];
-				fTempPerm77 = (fSlow109 * fRec74[0]);
+				fTempPerm77 = (fSlow105 * fRec74[0]);
 			}
 			output31[i] = (FAUSTFLOAT)fTempPerm77;
-			if (iSlow120) {
+			if (iSlow118) {
 				fTempPerm78 = fabsf(min((float)1, (fSlow103 * max((float)0, (fRec70[0] - fSlow111)))));
 				fTempPerm79 = ((int((fRec76[1] > fTempPerm78)))?fSlow112:fSlow113);
 				fRec77[0] = ((fRec77[1] * fTempPerm79) + (fTempPerm78 * (1.0f - fTempPerm79)));
 				fRec76[0] = fRec77[0];
-				fTempPerm80 = (fSlow119 * fRec76[0]);
+				fTempPerm80 = (fSlow117 * fRec76[0]);
 			}
 			output32[i] = (FAUSTFLOAT)fTempPerm80;
-			if (iSlow127) {
+			if (iSlow125) {
 				fTempPerm81 = fabsf(min((float)1, (fSlow103 * max((float)0, (fRec73[0] - fSlow111)))));
 				fTempPerm82 = ((int((fRec78[1] > fTempPerm81)))?fSlow112:fSlow113);
 				fRec79[0] = ((fRec79[1] * fTempPerm82) + (fTempPerm81 * (1.0f - fTempPerm82)));
 				fRec78[0] = fRec79[0];
-				fTempPerm83 = (fSlow126 * fRec78[0]);
+				fTempPerm83 = (fSlow124 * fRec78[0]);
 			}
 			output33[i] = (FAUSTFLOAT)fTempPerm83;
-			if (iSlow106) {
+			if (iSlow108) {
 				fTempPerm84 = fabsf(min((float)1, (fSlow103 * max((float)0, (0 - (fSlow111 + fRec67[0]))))));
 				fTempPerm85 = ((int((fRec80[1] > fTempPerm84)))?fSlow112:fSlow113);
 				fRec81[0] = ((fRec81[1] * fTempPerm85) + (fTempPerm84 * (1.0f - fTempPerm85)));
 				fRec80[0] = fRec81[0];
-				fTempPerm86 = (fSlow105 * fRec80[0]);
+				fTempPerm86 = (fSlow107 * fRec80[0]);
 			}
 			output34[i] = (FAUSTFLOAT)fTempPerm86;
-			if (iSlow118) {
+			if (iSlow120) {
 				fTempPerm87 = fabsf(min((float)1, (fSlow103 * max((float)0, (0 - (fSlow111 + fRec70[0]))))));
 				fTempPerm88 = ((int((fRec82[1] > fTempPerm87)))?fSlow112:fSlow113);
 				fRec83[0] = ((fRec83[1] * fTempPerm88) + (fTempPerm87 * (1.0f - fTempPerm88)));
 				fRec82[0] = fRec83[0];
-				fTempPerm89 = (fSlow117 * fRec82[0]);
+				fTempPerm89 = (fSlow119 * fRec82[0]);
 			}
 			output35[i] = (FAUSTFLOAT)fTempPerm89;
-			if (iSlow125) {
+			if (iSlow127) {
 				fTempPerm90 = fabsf(min((float)1, (fSlow103 * max((float)0, (0 - (fSlow111 + fRec73[0]))))));
 				fTempPerm91 = ((int((fRec84[1] > fTempPerm90)))?fSlow112:fSlow113);
 				fRec85[0] = ((fRec85[1] * fTempPerm91) + (fTempPerm90 * (1.0f - fTempPerm91)));
 				fRec84[0] = fRec85[0];
-				fTempPerm92 = (fSlow124 * fRec84[0]);
+				fTempPerm92 = (fSlow126 * fRec84[0]);
 			}
 			output36[i] = (FAUSTFLOAT)fTempPerm92;
-			if (iSlow108) {
+			if (iSlow110) {
 				fTempPerm93 = fabsf(min((float)1, (fSlow103 * max((float)0, (sqrtf(((faustpower<2>(fRec67[0]) + faustpower<2>(fRec70[0])) + faustpower<2>(fRec73[0]))) - fSlow111)))));
 				fTempPerm94 = ((int((fRec86[1] > fTempPerm93)))?fSlow112:fSlow113);
 				fRec87[0] = ((fRec87[1] * fTempPerm94) + (fTempPerm93 * (1.0f - fTempPerm94)));
 				fRec86[0] = fRec87[0];
-				fTempPerm95 = (fSlow107 * fRec86[0]);
+				fTempPerm95 = (fSlow109 * fRec86[0]);
 			}
 			output37[i] = (FAUSTFLOAT)fTempPerm95;
-			if (iSlow132 || iSlow129 || iSlow134 || iSlow136 || iSlow138 || iSlow140) {
+			if (iSlow132 || iSlow134 || iSlow136 || iSlow138 || iSlow129 || iSlow140) {
 				fTempPerm96 = (float)input0[i];
 				fTempPerm97 = (float)input1[i];
 			}
-			if (iSlow132 || iSlow129 || iSlow136 || iSlow140) {
+			if (iSlow132 || iSlow136 || iSlow138 || iSlow129) {
 				fTempPerm98 = faustpower<2>(fTempPerm97);
 			}
-			if (iSlow132 || iSlow129 || iSlow134 || iSlow136 || iSlow138 || iSlow140) {
+			if (iSlow132 || iSlow134 || iSlow136 || iSlow138 || iSlow129 || iSlow140) {
 				fTempPerm99 = (float)input2[i];
 			}
-			if (iSlow129 || iSlow134 || iSlow136 || iSlow138) {
+			if (iSlow132 || iSlow134 || iSlow129 || iSlow140) {
 				fTempPerm100 = faustpower<2>(fTempPerm99);
 			}
 			if (iSlow129) {
@@ -3340,51 +3344,51 @@ class mydsp2 : public dsp {
 				fTempPerm101 = (fSlow128 * fRec88[0]);
 			}
 			output38[i] = (FAUSTFLOAT)fTempPerm101;
-			if (iSlow132 || iSlow134 || iSlow138 || iSlow140) {
+			if (iSlow134 || iSlow136 || iSlow138 || iSlow140) {
 				fTempPerm102 = faustpower<2>(fTempPerm96);
 			}
-			if (iSlow134 || iSlow138) {
+			if (iSlow134 || iSlow140) {
 				fTempPerm103 = (fTempPerm100 + fTempPerm102);
 			}
-			if (iSlow134) {
+			if (iSlow140) {
 				fRec89[0] = ((fConst7 * fRec89[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm97 + 1)) + fTempPerm103)))))));
-				fTempPerm104 = (fSlow133 * fRec89[0]);
+				fTempPerm104 = (fSlow139 * fRec89[0]);
 			}
 			output39[i] = (FAUSTFLOAT)fTempPerm104;
-			if (iSlow136) {
+			if (iSlow132) {
 				fRec90[0] = ((fConst7 * fRec90[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm96 + -1.0f)) + (fTempPerm98 + fTempPerm100))))))));
-				fTempPerm105 = (fSlow135 * fRec90[0]);
+				fTempPerm105 = (fSlow131 * fRec90[0]);
 			}
 			output40[i] = (FAUSTFLOAT)fTempPerm105;
-			if (iSlow138) {
+			if (iSlow134) {
 				fRec91[0] = ((fConst7 * fRec91[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm103 + faustpower<2>((fTempPerm97 + -1.0f)))))))));
-				fTempPerm106 = (fSlow137 * fRec91[0]);
+				fTempPerm106 = (fSlow133 * fRec91[0]);
 			}
 			output41[i] = (FAUSTFLOAT)fTempPerm106;
-			if (iSlow132 || iSlow140) {
+			if (iSlow136 || iSlow138) {
 				fTempPerm107 = (fTempPerm98 + fTempPerm102);
 			}
-			if (iSlow132) {
+			if (iSlow136) {
 				fRec92[0] = ((fConst7 * fRec92[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm107 + faustpower<2>((fTempPerm99 + 1.0f)))))))));
-				fTempPerm108 = (fSlow131 * fRec92[0]);
+				fTempPerm108 = (fSlow135 * fRec92[0]);
 			}
 			output42[i] = (FAUSTFLOAT)fTempPerm108;
-			if (iSlow140) {
+			if (iSlow138) {
 				fRec93[0] = ((fConst7 * fRec93[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm107 + faustpower<2>((fTempPerm99 + -1.0f)))))))));
-				fTempPerm109 = (fSlow139 * fRec93[0]);
+				fTempPerm109 = (fSlow137 * fRec93[0]);
 			}
 			output43[i] = (FAUSTFLOAT)fTempPerm109;
-			if (iSlow149 || iSlow151 || iSlow153 || iSlow155 || iSlow147 || iSlow157) {
+			if (iSlow147 || iSlow149 || iSlow151 || iSlow153 || iSlow155 || iSlow157) {
 				fTempPerm110 = (float)input3[i];
 				fTempPerm111 = (float)input4[i];
 			}
-			if (iSlow151 || iSlow153 || iSlow155 || iSlow147) {
+			if (iSlow147 || iSlow151 || iSlow155 || iSlow157) {
 				fTempPerm112 = faustpower<2>(fTempPerm111);
 			}
-			if (iSlow149 || iSlow151 || iSlow153 || iSlow155 || iSlow147 || iSlow157) {
+			if (iSlow147 || iSlow149 || iSlow151 || iSlow153 || iSlow155 || iSlow157) {
 				fTempPerm113 = (float)input5[i];
 			}
-			if (iSlow149 || iSlow155 || iSlow147 || iSlow157) {
+			if (iSlow147 || iSlow149 || iSlow151 || iSlow153) {
 				fTempPerm114 = faustpower<2>(fTempPerm113);
 			}
 			if (iSlow147) {
@@ -3392,253 +3396,259 @@ class mydsp2 : public dsp {
 				fTempPerm115 = (fSlow146 * fRec94[0]);
 			}
 			output44[i] = (FAUSTFLOAT)fTempPerm115;
-			if (iSlow149 || iSlow151 || iSlow153 || iSlow157) {
+			if (iSlow149 || iSlow153 || iSlow155 || iSlow157) {
 				fTempPerm116 = faustpower<2>(fTempPerm110);
 			}
-			if (iSlow157) {
-				fRec95[0] = ((fConst7 * fRec95[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm111 + 1)) + (fTempPerm114 + fTempPerm116))))))));
-				fTempPerm117 = (fSlow156 * fRec95[0]);
+			if (iSlow149 || iSlow153) {
+				fTempPerm117 = (fTempPerm114 + fTempPerm116);
 			}
-			output45[i] = (FAUSTFLOAT)fTempPerm117;
-			if (iSlow155) {
-				fRec96[0] = ((fConst7 * fRec96[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm110 + -1.0f)) + (fTempPerm112 + fTempPerm114))))))));
-				fTempPerm118 = (fSlow154 * fRec96[0]);
-			}
-			output46[i] = (FAUSTFLOAT)fTempPerm118;
 			if (iSlow149) {
-				fRec97[0] = ((fConst7 * fRec97[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf(((faustpower<2>((fTempPerm111 + -1.0f)) + fTempPerm114) + fTempPerm116)))))));
-				fTempPerm119 = (fSlow148 * fRec97[0]);
+				fRec95[0] = ((fConst7 * fRec95[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm111 + 1)) + fTempPerm117)))))));
+				fTempPerm118 = (fSlow148 * fRec95[0]);
 			}
-			output47[i] = (FAUSTFLOAT)fTempPerm119;
+			output45[i] = (FAUSTFLOAT)fTempPerm118;
 			if (iSlow151) {
-				fRec98[0] = ((fConst7 * fRec98[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf(((faustpower<2>((fTempPerm113 + 1.0f)) + fTempPerm112) + fTempPerm116)))))));
-				fTempPerm120 = (fSlow150 * fRec98[0]);
+				fRec96[0] = ((fConst7 * fRec96[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm110 + -1.0f)) + (fTempPerm112 + fTempPerm114))))))));
+				fTempPerm119 = (fSlow150 * fRec96[0]);
 			}
-			output48[i] = (FAUSTFLOAT)fTempPerm120;
+			output46[i] = (FAUSTFLOAT)fTempPerm119;
 			if (iSlow153) {
-				fRec99[0] = ((fConst7 * fRec99[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf(((faustpower<2>((fTempPerm113 + -1.0f)) + fTempPerm112) + fTempPerm116)))))));
-				fTempPerm121 = (fSlow152 * fRec99[0]);
+				fRec97[0] = ((fConst7 * fRec97[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm117 + faustpower<2>((fTempPerm111 + -1.0f)))))))));
+				fTempPerm120 = (fSlow152 * fRec97[0]);
 			}
-			output49[i] = (FAUSTFLOAT)fTempPerm121;
-			if (iSlow161 || iSlow159 || iSlow163 || iSlow165 || iSlow167 || iSlow169) {
-				fTempPerm122 = (float)input6[i];
-				fTempPerm123 = (float)input7[i];
+			output47[i] = (FAUSTFLOAT)fTempPerm120;
+			if (iSlow155 || iSlow157) {
+				fTempPerm121 = (fTempPerm112 + fTempPerm116);
 			}
-			if (iSlow161 || iSlow159 || iSlow165 || iSlow169) {
-				fTempPerm124 = faustpower<2>(fTempPerm123);
+			if (iSlow155) {
+				fRec98[0] = ((fConst7 * fRec98[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm121 + faustpower<2>((fTempPerm113 + 1.0f)))))))));
+				fTempPerm122 = (fSlow154 * fRec98[0]);
 			}
-			if (iSlow161 || iSlow159 || iSlow163 || iSlow165 || iSlow167 || iSlow169) {
-				fTempPerm125 = (float)input8[i];
+			output48[i] = (FAUSTFLOAT)fTempPerm122;
+			if (iSlow157) {
+				fRec99[0] = ((fConst7 * fRec99[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm121 + faustpower<2>((fTempPerm113 + -1.0f)))))))));
+				fTempPerm123 = (fSlow156 * fRec99[0]);
 			}
-			if (iSlow159 || iSlow163 || iSlow165 || iSlow167) {
+			output49[i] = (FAUSTFLOAT)fTempPerm123;
+			if (iSlow159 || iSlow161 || iSlow163 || iSlow165 || iSlow167 || iSlow169) {
+				fTempPerm124 = (float)input6[i];
+				fTempPerm125 = (float)input7[i];
+			}
+			if (iSlow159 || iSlow163 || iSlow167 || iSlow169) {
 				fTempPerm126 = faustpower<2>(fTempPerm125);
 			}
+			if (iSlow159 || iSlow161 || iSlow163 || iSlow165 || iSlow167 || iSlow169) {
+				fTempPerm127 = (float)input8[i];
+			}
+			if (iSlow159 || iSlow161 || iSlow163 || iSlow165) {
+				fTempPerm128 = faustpower<2>(fTempPerm127);
+			}
 			if (iSlow159) {
-				fRec100[0] = ((fConst7 * fRec100[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm122 + 1.0f)) + fTempPerm124) + fTempPerm126)))))));
-				fTempPerm127 = (fSlow158 * fRec100[0]);
+				fRec100[0] = ((fConst7 * fRec100[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm124 + 1.0f)) + fTempPerm126) + fTempPerm128)))))));
+				fTempPerm129 = (fSlow158 * fRec100[0]);
 			}
-			output50[i] = (FAUSTFLOAT)fTempPerm127;
-			if (iSlow161 || iSlow163 || iSlow167 || iSlow169) {
-				fTempPerm128 = faustpower<2>(fTempPerm122);
+			output50[i] = (FAUSTFLOAT)fTempPerm129;
+			if (iSlow161 || iSlow165 || iSlow167 || iSlow169) {
+				fTempPerm130 = faustpower<2>(fTempPerm124);
 			}
-			if (iSlow163 || iSlow167) {
-				fTempPerm129 = (fTempPerm126 + fTempPerm128);
-			}
-			if (iSlow163) {
-				fRec101[0] = ((fConst7 * fRec101[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm123 + 1)) + fTempPerm129)))))));
-				fTempPerm130 = (fSlow162 * fRec101[0]);
-			}
-			output51[i] = (FAUSTFLOAT)fTempPerm130;
-			if (iSlow165) {
-				fRec102[0] = ((fConst7 * fRec102[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm122 + -1.0f)) + (fTempPerm124 + fTempPerm126))))))));
-				fTempPerm131 = (fSlow164 * fRec102[0]);
-			}
-			output52[i] = (FAUSTFLOAT)fTempPerm131;
-			if (iSlow167) {
-				fRec103[0] = ((fConst7 * fRec103[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm129 + faustpower<2>((fTempPerm123 + -1.0f)))))))));
-				fTempPerm132 = (fSlow166 * fRec103[0]);
-			}
-			output53[i] = (FAUSTFLOAT)fTempPerm132;
-			if (iSlow161 || iSlow169) {
-				fTempPerm133 = (fTempPerm124 + fTempPerm128);
+			if (iSlow161 || iSlow165) {
+				fTempPerm131 = (fTempPerm128 + fTempPerm130);
 			}
 			if (iSlow161) {
-				fRec104[0] = ((fConst7 * fRec104[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm133 + faustpower<2>((fTempPerm125 + 1.0f)))))))));
-				fTempPerm134 = (fSlow160 * fRec104[0]);
+				fRec101[0] = ((fConst7 * fRec101[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm125 + 1)) + fTempPerm131)))))));
+				fTempPerm132 = (fSlow160 * fRec101[0]);
 			}
-			output54[i] = (FAUSTFLOAT)fTempPerm134;
+			output51[i] = (FAUSTFLOAT)fTempPerm132;
+			if (iSlow163) {
+				fRec102[0] = ((fConst7 * fRec102[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm124 + -1.0f)) + (fTempPerm126 + fTempPerm128))))))));
+				fTempPerm133 = (fSlow162 * fRec102[0]);
+			}
+			output52[i] = (FAUSTFLOAT)fTempPerm133;
+			if (iSlow165) {
+				fRec103[0] = ((fConst7 * fRec103[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm131 + faustpower<2>((fTempPerm125 + -1.0f)))))))));
+				fTempPerm134 = (fSlow164 * fRec103[0]);
+			}
+			output53[i] = (FAUSTFLOAT)fTempPerm134;
+			if (iSlow167 || iSlow169) {
+				fTempPerm135 = (fTempPerm126 + fTempPerm130);
+			}
+			if (iSlow167) {
+				fRec104[0] = ((fConst7 * fRec104[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm135 + faustpower<2>((fTempPerm127 + 1.0f)))))))));
+				fTempPerm136 = (fSlow166 * fRec104[0]);
+			}
+			output54[i] = (FAUSTFLOAT)fTempPerm136;
 			if (iSlow169) {
-				fRec105[0] = ((fConst7 * fRec105[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm133 + faustpower<2>((fTempPerm125 + -1.0f)))))))));
-				fTempPerm135 = (fSlow168 * fRec105[0]);
+				fRec105[0] = ((fConst7 * fRec105[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm135 + faustpower<2>((fTempPerm127 + -1.0f)))))))));
+				fTempPerm137 = (fSlow168 * fRec105[0]);
 			}
-			output55[i] = (FAUSTFLOAT)fTempPerm135;
+			output55[i] = (FAUSTFLOAT)fTempPerm137;
 			if (iSlow171 || iSlow173 || iSlow175 || iSlow177 || iSlow179 || iSlow181) {
-				fTempPerm136 = (float)input9[i];
-				fTempPerm137 = (float)input10[i];
+				fTempPerm138 = (float)input9[i];
+				fTempPerm139 = (float)input10[i];
 			}
-			if (iSlow171 || iSlow175 || iSlow177 || iSlow179) {
-				fTempPerm138 = faustpower<2>(fTempPerm137);
-			}
-			if (iSlow171 || iSlow173 || iSlow175 || iSlow177 || iSlow179 || iSlow181) {
-				fTempPerm139 = (float)input11[i];
-			}
-			if (iSlow171 || iSlow173 || iSlow179 || iSlow181) {
+			if (iSlow171 || iSlow175 || iSlow179 || iSlow181) {
 				fTempPerm140 = faustpower<2>(fTempPerm139);
 			}
+			if (iSlow171 || iSlow173 || iSlow175 || iSlow177 || iSlow179 || iSlow181) {
+				fTempPerm141 = (float)input11[i];
+			}
+			if (iSlow171 || iSlow173 || iSlow175 || iSlow177) {
+				fTempPerm142 = faustpower<2>(fTempPerm141);
+			}
 			if (iSlow171) {
-				fRec106[0] = ((fConst7 * fRec106[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm136 + 1.0f)) + fTempPerm138) + fTempPerm140)))))));
-				fTempPerm141 = (fSlow170 * fRec106[0]);
+				fRec106[0] = ((fConst7 * fRec106[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm138 + 1.0f)) + fTempPerm140) + fTempPerm142)))))));
+				fTempPerm143 = (fSlow170 * fRec106[0]);
 			}
-			output56[i] = (FAUSTFLOAT)fTempPerm141;
-			if (iSlow173 || iSlow175 || iSlow177 || iSlow181) {
-				fTempPerm142 = faustpower<2>(fTempPerm136);
+			output56[i] = (FAUSTFLOAT)fTempPerm143;
+			if (iSlow173 || iSlow177 || iSlow179 || iSlow181) {
+				fTempPerm144 = faustpower<2>(fTempPerm138);
 			}
-			if (iSlow173 || iSlow181) {
-				fTempPerm143 = (fTempPerm140 + fTempPerm142);
+			if (iSlow173 || iSlow177) {
+				fTempPerm145 = (fTempPerm142 + fTempPerm144);
 			}
 			if (iSlow173) {
-				fRec107[0] = ((fConst7 * fRec107[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm137 + 1)) + fTempPerm143)))))));
-				fTempPerm144 = (fSlow172 * fRec107[0]);
+				fRec107[0] = ((fConst7 * fRec107[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm139 + 1)) + fTempPerm145)))))));
+				fTempPerm146 = (fSlow172 * fRec107[0]);
 			}
-			output57[i] = (FAUSTFLOAT)fTempPerm144;
-			if (iSlow179) {
-				fRec108[0] = ((fConst7 * fRec108[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm136 + -1.0f)) + (fTempPerm138 + fTempPerm140))))))));
-				fTempPerm145 = (fSlow178 * fRec108[0]);
-			}
-			output58[i] = (FAUSTFLOAT)fTempPerm145;
-			if (iSlow181) {
-				fRec109[0] = ((fConst7 * fRec109[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm143 + faustpower<2>((fTempPerm137 + -1.0f)))))))));
-				fTempPerm146 = (fSlow180 * fRec109[0]);
-			}
-			output59[i] = (FAUSTFLOAT)fTempPerm146;
-			if (iSlow175 || iSlow177) {
-				fTempPerm147 = (fTempPerm138 + fTempPerm142);
-			}
+			output57[i] = (FAUSTFLOAT)fTempPerm146;
 			if (iSlow175) {
-				fRec110[0] = ((fConst7 * fRec110[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm147 + faustpower<2>((fTempPerm139 + 1.0f)))))))));
-				fTempPerm148 = (fSlow174 * fRec110[0]);
+				fRec108[0] = ((fConst7 * fRec108[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm138 + -1.0f)) + (fTempPerm140 + fTempPerm142))))))));
+				fTempPerm147 = (fSlow174 * fRec108[0]);
 			}
-			output60[i] = (FAUSTFLOAT)fTempPerm148;
+			output58[i] = (FAUSTFLOAT)fTempPerm147;
 			if (iSlow177) {
-				fRec111[0] = ((fConst7 * fRec111[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm147 + faustpower<2>((fTempPerm139 + -1.0f)))))))));
-				fTempPerm149 = (fSlow176 * fRec111[0]);
+				fRec109[0] = ((fConst7 * fRec109[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm145 + faustpower<2>((fTempPerm139 + -1.0f)))))))));
+				fTempPerm148 = (fSlow176 * fRec109[0]);
 			}
-			output61[i] = (FAUSTFLOAT)fTempPerm149;
-			if (iSlow185 || iSlow187 || iSlow183 || iSlow189 || iSlow191 || iSlow193) {
-				fTempPerm150 = (float)input12[i];
-				fTempPerm151 = (float)input13[i];
+			output59[i] = (FAUSTFLOAT)fTempPerm148;
+			if (iSlow179 || iSlow181) {
+				fTempPerm149 = (fTempPerm140 + fTempPerm144);
 			}
-			if (iSlow185 || iSlow183 || iSlow191 || iSlow193) {
-				fTempPerm152 = faustpower<2>(fTempPerm151);
+			if (iSlow179) {
+				fRec110[0] = ((fConst7 * fRec110[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm149 + faustpower<2>((fTempPerm141 + 1.0f)))))))));
+				fTempPerm150 = (fSlow178 * fRec110[0]);
 			}
-			if (iSlow185 || iSlow187 || iSlow183 || iSlow189 || iSlow191 || iSlow193) {
-				fTempPerm153 = (float)input14[i];
+			output60[i] = (FAUSTFLOAT)fTempPerm150;
+			if (iSlow181) {
+				fRec111[0] = ((fConst7 * fRec111[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm149 + faustpower<2>((fTempPerm141 + -1.0f)))))))));
+				fTempPerm151 = (fSlow180 * fRec111[0]);
 			}
-			if (iSlow185 || iSlow187 || iSlow183 || iSlow189) {
+			output61[i] = (FAUSTFLOAT)fTempPerm151;
+			if (iSlow183 || iSlow185 || iSlow187 || iSlow189 || iSlow191 || iSlow193) {
+				fTempPerm152 = (float)input12[i];
+				fTempPerm153 = (float)input13[i];
+			}
+			if (iSlow183 || iSlow187 || iSlow191 || iSlow193) {
 				fTempPerm154 = faustpower<2>(fTempPerm153);
 			}
+			if (iSlow183 || iSlow185 || iSlow187 || iSlow189 || iSlow191 || iSlow193) {
+				fTempPerm155 = (float)input14[i];
+			}
+			if (iSlow183 || iSlow185 || iSlow187 || iSlow189) {
+				fTempPerm156 = faustpower<2>(fTempPerm155);
+			}
 			if (iSlow183) {
-				fRec112[0] = ((fConst7 * fRec112[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm150 + 1.0f)) + fTempPerm152) + fTempPerm154)))))));
-				fTempPerm155 = (fSlow182 * fRec112[0]);
+				fRec112[0] = ((fConst7 * fRec112[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm152 + 1.0f)) + fTempPerm154) + fTempPerm156)))))));
+				fTempPerm157 = (fSlow182 * fRec112[0]);
 			}
-			output62[i] = (FAUSTFLOAT)fTempPerm155;
-			if (iSlow187 || iSlow189 || iSlow191 || iSlow193) {
-				fTempPerm156 = faustpower<2>(fTempPerm150);
+			output62[i] = (FAUSTFLOAT)fTempPerm157;
+			if (iSlow185 || iSlow189 || iSlow191 || iSlow193) {
+				fTempPerm158 = faustpower<2>(fTempPerm152);
 			}
-			if (iSlow187 || iSlow189) {
-				fTempPerm157 = (fTempPerm154 + fTempPerm156);
+			if (iSlow185 || iSlow189) {
+				fTempPerm159 = (fTempPerm156 + fTempPerm158);
 			}
-			if (iSlow187) {
-				fRec113[0] = ((fConst7 * fRec113[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm151 + 1)) + fTempPerm157)))))));
-				fTempPerm158 = (fSlow186 * fRec113[0]);
-			}
-			output63[i] = (FAUSTFLOAT)fTempPerm158;
 			if (iSlow185) {
-				fRec114[0] = ((fConst7 * fRec114[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm150 + -1.0f)) + (fTempPerm152 + fTempPerm154))))))));
-				fTempPerm159 = (fSlow184 * fRec114[0]);
+				fRec113[0] = ((fConst7 * fRec113[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm153 + 1)) + fTempPerm159)))))));
+				fTempPerm160 = (fSlow184 * fRec113[0]);
 			}
-			output64[i] = (FAUSTFLOAT)fTempPerm159;
+			output63[i] = (FAUSTFLOAT)fTempPerm160;
+			if (iSlow187) {
+				fRec114[0] = ((fConst7 * fRec114[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm152 + -1.0f)) + (fTempPerm154 + fTempPerm156))))))));
+				fTempPerm161 = (fSlow186 * fRec114[0]);
+			}
+			output64[i] = (FAUSTFLOAT)fTempPerm161;
 			if (iSlow189) {
-				fRec115[0] = ((fConst7 * fRec115[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm157 + faustpower<2>((fTempPerm151 + -1.0f)))))))));
-				fTempPerm160 = (fSlow188 * fRec115[0]);
+				fRec115[0] = ((fConst7 * fRec115[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm159 + faustpower<2>((fTempPerm153 + -1.0f)))))))));
+				fTempPerm162 = (fSlow188 * fRec115[0]);
 			}
-			output65[i] = (FAUSTFLOAT)fTempPerm160;
+			output65[i] = (FAUSTFLOAT)fTempPerm162;
 			if (iSlow191 || iSlow193) {
-				fTempPerm161 = (fTempPerm152 + fTempPerm156);
+				fTempPerm163 = (fTempPerm154 + fTempPerm158);
 			}
 			if (iSlow191) {
-				fRec116[0] = ((fConst7 * fRec116[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm161 + faustpower<2>((fTempPerm153 + 1.0f)))))))));
-				fTempPerm162 = (fSlow190 * fRec116[0]);
+				fRec116[0] = ((fConst7 * fRec116[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm163 + faustpower<2>((fTempPerm155 + 1.0f)))))))));
+				fTempPerm164 = (fSlow190 * fRec116[0]);
 			}
-			output66[i] = (FAUSTFLOAT)fTempPerm162;
+			output66[i] = (FAUSTFLOAT)fTempPerm164;
 			if (iSlow193) {
-				fRec117[0] = ((fConst7 * fRec117[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm161 + faustpower<2>((fTempPerm153 + -1.0f)))))))));
-				fTempPerm163 = (fSlow192 * fRec117[0]);
+				fRec117[0] = ((fConst7 * fRec117[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm163 + faustpower<2>((fTempPerm155 + -1.0f)))))))));
+				fTempPerm165 = (fSlow192 * fRec117[0]);
 			}
-			output67[i] = (FAUSTFLOAT)fTempPerm163;
-			if (iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow195 || iSlow205) {
-				fTempPerm164 = (float)input15[i];
-				fTempPerm165 = (float)input16[i];
+			output67[i] = (FAUSTFLOAT)fTempPerm165;
+			if (iSlow195 || iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow205) {
+				fTempPerm166 = (float)input15[i];
+				fTempPerm167 = (float)input16[i];
 			}
-			if (iSlow199 || iSlow201 || iSlow195 || iSlow205) {
-				fTempPerm166 = faustpower<2>(fTempPerm165);
-			}
-			if (iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow195 || iSlow205) {
-				fTempPerm167 = (float)input17[i];
-			}
-			if (iSlow197 || iSlow201 || iSlow203 || iSlow195) {
+			if (iSlow195 || iSlow199 || iSlow203 || iSlow205) {
 				fTempPerm168 = faustpower<2>(fTempPerm167);
 			}
+			if (iSlow195 || iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow205) {
+				fTempPerm169 = (float)input17[i];
+			}
+			if (iSlow195 || iSlow197 || iSlow199 || iSlow201) {
+				fTempPerm170 = faustpower<2>(fTempPerm169);
+			}
 			if (iSlow195) {
-				fRec118[0] = ((fConst7 * fRec118[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm164 + 1.0f)) + fTempPerm166) + fTempPerm168)))))));
-				fTempPerm169 = (fSlow194 * fRec118[0]);
+				fRec118[0] = ((fConst7 * fRec118[1]) + (fConst8 * max(0.0f, (1 - (fSlow130 * sqrtf(((faustpower<2>((fTempPerm166 + 1.0f)) + fTempPerm168) + fTempPerm170)))))));
+				fTempPerm171 = (fSlow194 * fRec118[0]);
 			}
-			output68[i] = (FAUSTFLOAT)fTempPerm169;
-			if (iSlow197 || iSlow199 || iSlow203 || iSlow205) {
-				fTempPerm170 = faustpower<2>(fTempPerm164);
+			output68[i] = (FAUSTFLOAT)fTempPerm171;
+			if (iSlow197 || iSlow201 || iSlow203 || iSlow205) {
+				fTempPerm172 = faustpower<2>(fTempPerm166);
 			}
-			if (iSlow197 || iSlow203) {
-				fTempPerm171 = (fTempPerm168 + fTempPerm170);
+			if (iSlow197 || iSlow201) {
+				fTempPerm173 = (fTempPerm170 + fTempPerm172);
 			}
 			if (iSlow197) {
-				fRec119[0] = ((fConst7 * fRec119[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm165 + 1)) + fTempPerm171)))))));
-				fTempPerm172 = (fSlow196 * fRec119[0]);
+				fRec119[0] = ((fConst7 * fRec119[1]) + (fConst8 * max(0.0f, (1 - (fSlow141 * sqrtf((faustpower<2>((fTempPerm167 + 1)) + fTempPerm173)))))));
+				fTempPerm174 = (fSlow196 * fRec119[0]);
 			}
-			output69[i] = (FAUSTFLOAT)fTempPerm172;
+			output69[i] = (FAUSTFLOAT)fTempPerm174;
+			if (iSlow199) {
+				fRec120[0] = ((fConst7 * fRec120[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm166 + -1.0f)) + (fTempPerm168 + fTempPerm170))))))));
+				fTempPerm175 = (fSlow198 * fRec120[0]);
+			}
+			output70[i] = (FAUSTFLOAT)fTempPerm175;
 			if (iSlow201) {
-				fRec120[0] = ((fConst7 * fRec120[1]) + (fConst8 * max(0.0f, (1 - (fSlow142 * sqrtf((faustpower<2>((fTempPerm164 + -1.0f)) + (fTempPerm166 + fTempPerm168))))))));
-				fTempPerm173 = (fSlow200 * fRec120[0]);
+				fRec121[0] = ((fConst7 * fRec121[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm173 + faustpower<2>((fTempPerm167 + -1.0f)))))))));
+				fTempPerm176 = (fSlow200 * fRec121[0]);
 			}
-			output70[i] = (FAUSTFLOAT)fTempPerm173;
+			output71[i] = (FAUSTFLOAT)fTempPerm176;
+			if (iSlow203 || iSlow205) {
+				fTempPerm177 = (fTempPerm168 + fTempPerm172);
+			}
 			if (iSlow203) {
-				fRec121[0] = ((fConst7 * fRec121[1]) + (fConst8 * max(0.0f, (1 - (fSlow143 * sqrtf((fTempPerm171 + faustpower<2>((fTempPerm165 + -1.0f)))))))));
-				fTempPerm174 = (fSlow202 * fRec121[0]);
+				fRec122[0] = ((fConst7 * fRec122[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm177 + faustpower<2>((fTempPerm169 + 1.0f)))))))));
+				fTempPerm178 = (fSlow202 * fRec122[0]);
 			}
-			output71[i] = (FAUSTFLOAT)fTempPerm174;
-			if (iSlow199 || iSlow205) {
-				fTempPerm175 = (fTempPerm166 + fTempPerm170);
-			}
+			output72[i] = (FAUSTFLOAT)fTempPerm178;
 			if (iSlow205) {
-				fRec122[0] = ((fConst7 * fRec122[1]) + (fConst8 * max(0.0f, (1 - (fSlow144 * sqrtf((fTempPerm175 + faustpower<2>((fTempPerm167 + 1.0f)))))))));
-				fTempPerm176 = (fSlow204 * fRec122[0]);
+				fRec123[0] = ((fConst7 * fRec123[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm177 + faustpower<2>((fTempPerm169 + -1.0f)))))))));
+				fTempPerm179 = (fSlow204 * fRec123[0]);
 			}
-			output72[i] = (FAUSTFLOAT)fTempPerm176;
-			if (iSlow199) {
-				fRec123[0] = ((fConst7 * fRec123[1]) + (fConst8 * max(0.0f, (1 - (fSlow145 * sqrtf((fTempPerm175 + faustpower<2>((fTempPerm167 + -1.0f)))))))));
-				fTempPerm177 = (fSlow198 * fRec123[0]);
-			}
-			output73[i] = (FAUSTFLOAT)fTempPerm177;
+			output73[i] = (FAUSTFLOAT)fTempPerm179;
 			// post processing
-			if (iSlow199) {
+			if (iSlow205) {
 				fRec123[1] = fRec123[0];
 			}
-			if (iSlow205) {
+			if (iSlow203) {
 				fRec122[1] = fRec122[0];
 			}
-			if (iSlow203) {
+			if (iSlow201) {
 				fRec121[1] = fRec121[0];
 			}
-			if (iSlow201) {
+			if (iSlow199) {
 				fRec120[1] = fRec120[0];
 			}
 			if (iSlow197) {
@@ -3656,25 +3666,25 @@ class mydsp2 : public dsp {
 			if (iSlow189) {
 				fRec115[1] = fRec115[0];
 			}
-			if (iSlow185) {
+			if (iSlow187) {
 				fRec114[1] = fRec114[0];
 			}
-			if (iSlow187) {
+			if (iSlow185) {
 				fRec113[1] = fRec113[0];
 			}
 			if (iSlow183) {
 				fRec112[1] = fRec112[0];
 			}
-			if (iSlow177) {
+			if (iSlow181) {
 				fRec111[1] = fRec111[0];
 			}
-			if (iSlow175) {
+			if (iSlow179) {
 				fRec110[1] = fRec110[0];
 			}
-			if (iSlow181) {
+			if (iSlow177) {
 				fRec109[1] = fRec109[0];
 			}
-			if (iSlow179) {
+			if (iSlow175) {
 				fRec108[1] = fRec108[0];
 			}
 			if (iSlow173) {
@@ -3686,82 +3696,82 @@ class mydsp2 : public dsp {
 			if (iSlow169) {
 				fRec105[1] = fRec105[0];
 			}
-			if (iSlow161) {
+			if (iSlow167) {
 				fRec104[1] = fRec104[0];
 			}
-			if (iSlow167) {
+			if (iSlow165) {
 				fRec103[1] = fRec103[0];
 			}
-			if (iSlow165) {
+			if (iSlow163) {
 				fRec102[1] = fRec102[0];
 			}
-			if (iSlow163) {
+			if (iSlow161) {
 				fRec101[1] = fRec101[0];
 			}
 			if (iSlow159) {
 				fRec100[1] = fRec100[0];
 			}
-			if (iSlow153) {
+			if (iSlow157) {
 				fRec99[1] = fRec99[0];
 			}
-			if (iSlow151) {
+			if (iSlow155) {
 				fRec98[1] = fRec98[0];
 			}
-			if (iSlow149) {
+			if (iSlow153) {
 				fRec97[1] = fRec97[0];
 			}
-			if (iSlow155) {
+			if (iSlow151) {
 				fRec96[1] = fRec96[0];
 			}
-			if (iSlow157) {
+			if (iSlow149) {
 				fRec95[1] = fRec95[0];
 			}
 			if (iSlow147) {
 				fRec94[1] = fRec94[0];
 			}
-			if (iSlow140) {
+			if (iSlow138) {
 				fRec93[1] = fRec93[0];
 			}
-			if (iSlow132) {
+			if (iSlow136) {
 				fRec92[1] = fRec92[0];
 			}
-			if (iSlow138) {
+			if (iSlow134) {
 				fRec91[1] = fRec91[0];
 			}
-			if (iSlow136) {
+			if (iSlow132) {
 				fRec90[1] = fRec90[0];
 			}
-			if (iSlow134) {
+			if (iSlow140) {
 				fRec89[1] = fRec89[0];
 			}
 			if (iSlow129) {
 				fRec88[1] = fRec88[0];
 			}
-			if (iSlow108) {
+			if (iSlow110) {
 				fRec86[1] = fRec86[0];
 				fRec87[1] = fRec87[0];
 			}
-			if (iSlow125) {
+			if (iSlow127) {
 				fRec84[1] = fRec84[0];
 				fRec85[1] = fRec85[0];
 			}
-			if (iSlow118) {
+			if (iSlow120) {
 				fRec82[1] = fRec82[0];
 				fRec83[1] = fRec83[0];
 			}
-			if (iSlow106) {
+			if (iSlow108) {
 				fRec80[1] = fRec80[0];
 				fRec81[1] = fRec81[0];
 			}
-			if (iSlow127) {
+			if (iSlow125) {
 				fRec78[1] = fRec78[0];
 				fRec79[1] = fRec79[0];
 			}
-			if (iSlow120) {
+			if (iSlow118) {
 				fRec76[1] = fRec76[0];
 				fRec77[1] = fRec77[0];
 			}
-			if (iSlow110) {
+			if (iSlow106) {
 				fRec74[1] = fRec74[0];
 				fRec75[1] = fRec75[0];
 			}
@@ -3769,14 +3779,14 @@ class mydsp2 : public dsp {
 				fRec71[1] = fRec71[0];
 				fRec72[1] = fRec72[0];
 			}
-			if (iSlow122 || iSlow125 || iSlow108 || iSlow127) {
+			if (iSlow122 || iSlow125 || iSlow127 || iSlow110) {
 				fRec73[1] = fRec73[0];
 			}
 			if (iSlow115) {
 				fRec68[1] = fRec68[0];
 				fRec69[1] = fRec69[0];
 			}
-			if (iSlow115 || iSlow118 || iSlow108 || iSlow120) {
+			if (iSlow115 || iSlow118 || iSlow120 || iSlow110) {
 				fRec70[1] = fRec70[0];
 			}
 			if (iSlow102) {
@@ -3786,7 +3796,7 @@ class mydsp2 : public dsp {
 			if (iSlow102 || iSlow106 || iSlow108 || iSlow110) {
 				fRec67[1] = fRec67[0];
 			}
-			if (iSlow79) {
+			if (iSlow83) {
 				fRec63[1] = fRec63[0];
 				fRec64[1] = fRec64[0];
 			}
@@ -3794,7 +3804,7 @@ class mydsp2 : public dsp {
 				fRec61[1] = fRec61[0];
 				fRec62[1] = fRec62[0];
 			}
-			if (iSlow91) {
+			if (iSlow93) {
 				fRec59[1] = fRec59[0];
 				fRec60[1] = fRec60[0];
 			}
@@ -3806,11 +3816,11 @@ class mydsp2 : public dsp {
 				fRec55[1] = fRec55[0];
 				fRec56[1] = fRec56[0];
 			}
-			if (iSlow93) {
+			if (iSlow91) {
 				fRec53[1] = fRec53[0];
 				fRec54[1] = fRec54[0];
 			}
-			if (iSlow83) {
+			if (iSlow79) {
 				fRec51[1] = fRec51[0];
 				fRec52[1] = fRec52[0];
 			}
@@ -3818,7 +3828,7 @@ class mydsp2 : public dsp {
 				fRec48[1] = fRec48[0];
 				fRec49[1] = fRec49[0];
 			}
-			if (iSlow79 || iSlow98 || iSlow100 || iSlow95) {
+			if (iSlow95 || iSlow98 || iSlow100 || iSlow83) {
 				fRec50[1] = fRec50[0];
 				fVec26[1] = fVec26[0];
 			}
@@ -3826,7 +3836,7 @@ class mydsp2 : public dsp {
 				fRec45[1] = fRec45[0];
 				fRec46[1] = fRec46[0];
 			}
-			if (iSlow79 || iSlow91 || iSlow88 || iSlow93) {
+			if (iSlow88 || iSlow91 || iSlow93 || iSlow83) {
 				fRec47[1] = fRec47[0];
 				fVec25[1] = fVec25[0];
 			}
@@ -3834,7 +3844,7 @@ class mydsp2 : public dsp {
 				fRec42[1] = fRec42[0];
 				fRec43[1] = fRec43[0];
 			}
-			if (iSlow79 || iSlow81 || iSlow75 || iSlow83) {
+			if (iSlow75 || iSlow79 || iSlow81 || iSlow83) {
 				fRec44[1] = fRec44[0];
 				fVec24[1] = fVec24[0];
 			}
@@ -4158,9 +4168,13 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
         std::stringstream fUI;
         std::stringstream fMeta;
         std::vector<std::pair <std::string, std::string> > fMetaAux;
+        std::string fVersion;
+        std::string fOptions;
         std::string fName;
         std::string fExpandedCode;
         std::string fSHAKey;
+        std::string fDSPSize;
+        std::map<std::string, int> fPathTable;
     
         char fCloseUIPar;
         char fCloseMetaPar;
@@ -4190,27 +4204,8 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
                 fMetaAux.clear();
             }
         }
-        
-        void init(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code)
-        {
-            fTab = 1;
-            
-            // Start Meta generation
-            tab(fTab, fMeta); fMeta << "\"meta\": [";
-            fCloseMetaPar = ' ';
-            
-            // Start UI generation
-            tab(fTab, fUI); fUI << "\"ui\": [";
-            fCloseUIPar = ' ';
-            fTab += 1;
-            
-            fName = name;
-            fInputs = inputs;
-            fOutputs = outputs;
-            fExpandedCode = dsp_code;
-            fSHAKey = sha_key;
-        }
-        
+    
+        // Add escape (that is  '\') for internal strings
         inline std::string flatten(const std::string& src)
         {
             std::stringstream dst;
@@ -4230,34 +4225,87 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
             }
             return dst.str();
         }
+    
+        inline std::string getAddressIndex(const std::string& path)
+        {
+            if (fPathTable.find(path) != fPathTable.end()) {
+                std::stringstream num; num << fPathTable[path];
+                return num.str();
+            } else {
+                return "-1";
+            }
+        }
       
      public:
      
-        JSONUIAux(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code)
+        JSONUIAux(const std::string& name,
+                  int inputs,
+                  int outputs,
+                  const std::string& sha_key,
+                  const std::string& dsp_code,
+                  const std::string& version,
+                  const std::string& options,
+                  const std::string& size,
+                  const std::map<std::string, int>& path_table)
         {
-            init(name, inputs, outputs, sha_key, dsp_code);
+            init(name, inputs, outputs, sha_key, dsp_code,  version, options, size, path_table);
         }
 
         JSONUIAux(const std::string& name, int inputs, int outputs)
         {
-            init(name, inputs, outputs, "", "");
+            init(name, inputs, outputs, "", "", "", "", "", std::map<std::string, int>());
         }
 
         JSONUIAux(int inputs, int outputs)
         {
-            init("", inputs, outputs, "", "");
+            init("", inputs, outputs, "", "","", "", "", std::map<std::string, int>());
         }
         
         JSONUIAux()
         {
-            init("", -1, -1, "", "");
+            init("", -1, -1, "", "", "", "", "", std::map<std::string, int>());
         }
  
         virtual ~JSONUIAux() {}
         
         void setInputs(int inputs) { fInputs = inputs; }
         void setOutputs(int outputs) { fOutputs = outputs; }
-
+    
+        // Init may be called multiple times so fMeta and fUI are reinitialized
+        void init(const std::string& name,
+                  int inputs,
+                  int outputs,
+                  const std::string& sha_key,
+                  const std::string& dsp_code,
+                  const std::string& version,
+                  const std::string& options,
+                  const std::string& size,
+                  const std::map<std::string, int>& path_table)
+        {
+            fTab = 1;
+            
+            // Start Meta generation
+            fMeta.str("");
+            tab(fTab, fMeta); fMeta << "\"meta\": [";
+            fCloseMetaPar = ' ';
+            
+            // Start UI generation
+            fUI.str("");
+            tab(fTab, fUI); fUI << "\"ui\": [";
+            fCloseUIPar = ' ';
+            fTab += 1;
+            
+            fName = name;
+            fInputs = inputs;
+            fOutputs = outputs;
+            fExpandedCode = dsp_code;
+            fSHAKey = sha_key;
+            fDSPSize = size;
+            fPathTable = path_table;
+            fVersion = version;
+            fOptions = options;
+        }
+   
         // -- widget's layouts
     
         virtual void openGenericGroup(const char* label, const char* name)
@@ -4303,11 +4351,19 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
     
         virtual void addGenericButton(const char* label, const char* name)
         {
+            std::string path = buildPath(label);
+            std::string index = getAddressIndex(path);
+            
             fUI << fCloseUIPar;
             tab(fTab, fUI); fUI << "{";
             tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
             tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
-            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ((fMetaAux.size() > 0) ? "," : "");
+            tab(fTab + 1, fUI); fUI << "\"address\": \"" << path << "\"" << ",";
+            if (fPathTable.size() > 0) {
+                tab(fTab + 1, fUI); fUI << "\"index\": \"" << index << "\"" << ((fMetaAux.size() > 0) ? "," : "");
+            } else {
+                tab(fTab + 1, fUI); fUI << ((fMetaAux.size() > 0) ? "," : "");
+            }
             addMeta(fTab + 1, false);
             tab(fTab, fUI); fUI << "}";
             fCloseUIPar = ',';
@@ -4325,11 +4381,17 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
 
         virtual void addGenericEntry(const char* label, const char* name, REAL init, REAL min, REAL max, REAL step)
         {
+            std::string path = buildPath(label);
+            std::string index = getAddressIndex(path);
+            
             fUI << fCloseUIPar;
             tab(fTab, fUI); fUI << "{";
             tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
             tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
-            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ",";
+            tab(fTab + 1, fUI); fUI << "\"address\": \"" << path << "\"" << ",";
+            if (fPathTable.size() > 0) {
+                tab(fTab + 1, fUI); fUI << "\"index\": \"" << index << "\"" << ",";
+            }
             addMeta(fTab + 1);
             tab(fTab + 1, fUI); fUI << "\"init\": \"" << init << "\",";
             tab(fTab + 1, fUI); fUI << "\"min\": \"" << min << "\",";
@@ -4358,11 +4420,17 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
     
         virtual void addGenericBargraph(const char* label, const char* name, REAL min, REAL max) 
         {
+            std::string path = buildPath(label);
+            std::string index = getAddressIndex(path);
+            
             fUI << fCloseUIPar;
             tab(fTab, fUI); fUI << "{";
             tab(fTab + 1, fUI); fUI << "\"type\": \"" << name << "\",";
             tab(fTab + 1, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
-            tab(fTab + 1, fUI); fUI << "\"address\": \"" << buildPath(label) << "\"" << ",";
+            tab(fTab + 1, fUI); fUI << "\"address\": \"" << path << "\"" << ",";
+            if (fPathTable.size() > 0) {
+                tab(fTab + 1, fUI); fUI << "\"index\": \"" << index << "\"" << ",";
+            }
             addMeta(fTab + 1);
             tab(fTab + 1, fUI); fUI << "\"min\": \"" << min << "\",";
             tab(fTab + 1, fUI); fUI << "\"max\": \"" << max << "\"";
@@ -4402,6 +4470,9 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
             fJSON << "{";
             fTab += 1;
             tab(fTab, fJSON); fJSON << "\"name\": \"" << fName << "\",";
+            if (fVersion != "") { tab(fTab, fJSON); fJSON << "\"version\": \"" << fVersion << "\","; }
+            if (fOptions != "") { tab(fTab, fJSON); fJSON << "\"options\": \"" << fOptions << "\","; }
+            if (fDSPSize != "") { tab(fTab, fJSON); fJSON << "\"size\": \"" << fDSPSize << "\","; }
             if (fSHAKey != "") { tab(fTab, fJSON); fJSON << "\"sha_key\": \"" << fSHAKey << "\","; }
             if (fExpandedCode != "") { tab(fTab, fJSON); fJSON << "\"code\": \"" << fExpandedCode << "\","; }
             tab(fTab, fJSON); fJSON << "\"inputs\": \"" << fInputs << "\","; 
@@ -4414,7 +4485,7 @@ class JSONUIAux : public PathBuilder, public Meta, public UI
             } else {
                 fJSON << fUI.str();
             }
-            tab(fTab, fJSON); fJSON << "}" << std::endl;
+            tab(fTab, fJSON); fJSON << "}";
             return (flat) ? flatten(fJSON.str()) : fJSON.str();
         }
     
@@ -4426,8 +4497,16 @@ class JSONUI : public JSONUIAux<FAUSTFLOAT>
 {
     public :
     
-        JSONUI(const std::string& name, int inputs, int outputs, const std::string& sha_key, const std::string& dsp_code):
-        JSONUIAux<FAUSTFLOAT>(name, inputs, outputs, sha_key, dsp_code)
+        JSONUI(const std::string& name,
+               int inputs,
+               int outputs,
+               const std::string& sha_key,
+               const std::string& dsp_code,
+               const std::string& version,
+               const std::string& options,
+               const std::string& size,
+               const std::map<std::string, int>& path_table):
+        JSONUIAux<FAUSTFLOAT>(name, inputs, outputs, sha_key, dsp_code, version, options, size, path_table)
         {}
         
         JSONUI(const std::string& name, int inputs, int outputs):
@@ -4992,7 +5071,8 @@ class ZoneReader
 
         virtual ~ZoneReader() {}
 
-        int getValue() {
+        int getValue()
+        {
             if (fZone != 0) {
                 return (int)fInterpolator(*fZone);
             } else {
@@ -5025,9 +5105,8 @@ class APIUI : public PathBuilder, public Meta, public UI
         std::vector<FAUSTFLOAT> fMin;
         std::vector<FAUSTFLOAT> fMax;
         std::vector<FAUSTFLOAT> fStep;
-        std::vector<std::string> fUnit;
         std::vector<ItemType> fItemType;
-        std::vector<std::string> fTooltip;
+        std::vector<std::map<std::string, std::string> > fMetaData;
         std::vector<ZoneControl*> fAcc[3];
         std::vector<ZoneControl*> fGyr[3];
 
@@ -5065,20 +5144,30 @@ class APIUI : public PathBuilder, public Meta, public UI
             fMax.push_back(max);
             fStep.push_back(step);
             fItemType.push_back(type);
+            
+            std::map<std::string, std::string> metadata;
 
             //handle unit metadata
-            fUnit.push_back(fCurrentUnit);
+            metadata["unit"] = fCurrentUnit;
             fCurrentUnit = "";
             
             //handle tooltip metadata
-            fTooltip.push_back(fCurrentTooltip);
+            metadata["tooltip"] = fCurrentTooltip;
             fCurrentTooltip = "";
 
             //handle scale metadata
             switch (fCurrentScale) {
-                case kLin : fConversion.push_back(new LinearValueConverter(0, 1, min, max)); break;
-                case kLog : fConversion.push_back(new LogValueConverter(0, 1, min, max)); break;
-                case kExp : fConversion.push_back(new ExpValueConverter(0, 1, min, max)); break;
+                case kLin:
+                    fConversion.push_back(new LinearValueConverter(0, 1, min, max));
+                    metadata["scale"] = "lin";
+                    break;
+                case kLog:
+                    fConversion.push_back(new LogValueConverter(0, 1, min, max));
+                    metadata["scale"] = "log";
+                    break;
+                case kExp: fConversion.push_back(new ExpValueConverter(0, 1, min, max));
+                    metadata["scale"] = "exp";
+                    break;
             }
             fCurrentScale = kLin;
             
@@ -5101,6 +5190,7 @@ class APIUI : public PathBuilder, public Meta, public UI
                 } else {
                     std::cerr << "incorrect acc metadata : " << fCurrentAcc << std::endl;
                 }
+                metadata["acc"] = fCurrentAcc;
                 fCurrentAcc = "";
             }
        
@@ -5119,10 +5209,11 @@ class APIUI : public PathBuilder, public Meta, public UI
                 } else {
                     std::cerr << "incorrect gyr metadata : " << fCurrentGyr << std::endl;
                 }
+                metadata["gyr"] = fCurrentAcc;
                 fCurrentGyr = "";
             }
         
-            // handle screencolor metadata "...[screencolor:red|green|blue]..."
+            // handle screencolor metadata "...[screencolor:red|green|blue|white]..."
             if (fCurrentColor.size() > 0) {
                 if ((fCurrentColor == "red") && (fRedReader == 0)) {
                     fRedReader = new ZoneReader(zone, min, max);
@@ -5142,7 +5233,10 @@ class APIUI : public PathBuilder, public Meta, public UI
                     std::cerr << "incorrect screencolor metadata : " << fCurrentColor << std::endl;
                 }
             }
+            metadata["screencolor"] = fCurrentColor;
             fCurrentColor = "";
+            
+            fMetaData.push_back(metadata);
         }
 
         int getZoneIndex(std::vector<ZoneControl*>* table, int p, int val)
@@ -5302,7 +5396,7 @@ class APIUI : public PathBuilder, public Meta, public UI
 			} else if (strcmp(key, "gyr") == 0) {
 				fCurrentGyr = val;
 			} else if (strcmp(key, "screencolor") == 0) {
-                fCurrentColor = val; // val = "red", "green" or "blue"
+                fCurrentColor = val; // val = "red", "green", "blue" or "white"
             } else if (strcmp(key, "tooltip") == 0) {
                 fCurrentTooltip = val;
             }
@@ -5327,8 +5421,21 @@ class APIUI : public PathBuilder, public Meta, public UI
         }
         const char* getParamAddress(int p)	{ return fPaths[p].c_str(); }
         const char* getParamLabel(int p)	{ return fLabels[p].c_str(); }
-        const char* getParamUnit(int p)		{ return fUnit[p].c_str(); }
-        const char* getParamTooltip(int p)	{ return fTooltip[p].c_str(); }
+        std::map<const char*, const char*> getMetadata(int p)
+        {
+            std::map<const char*, const char*> res;
+            std::map<std::string, std::string> metadata = fMetaData[p];
+            std::map<std::string, std::string>::iterator it;
+            for (it = metadata.begin(); it != metadata.end(); ++it) {
+                res[(*it).first.c_str()] = (*it).second.c_str();
+            }
+            return res;
+        }
+
+        const char* getMetadata(int p, const char* key)
+        {
+            return (fMetaData[p].find(key) != fMetaData[p].end()) ? fMetaData[p][key].c_str() : "";
+        }
         FAUSTFLOAT getParamMin(int p)		{ return fMin[p]; }
         FAUSTFLOAT getParamMax(int p)		{ return fMax[p]; }
         FAUSTFLOAT getParamStep(int p)		{ return fStep[p]; }
@@ -5527,7 +5634,7 @@ extern "C" {
     
     bool isRunning(void*);
 
-    long keyOn(void*, int, int);
+    unsigned long keyOn(void*, int, int);
     int keyOff(void*, int);
     
     void propagateMidi(void*, int, double, int, int, int, int);
@@ -5543,8 +5650,8 @@ extern "C" {
     void setParamIdValue(void*, int, float);
     float getParamIdValue(void*, int);
 
-    void setVoiceParamValue(void*, const char*, long, float);
-    float getVoiceParamValue(void*, const char*, long);
+    void setVoiceParamValue(void*, const char*, unsigned long, float);
+    float getVoiceParamValue(void*, const char*, unsigned long);
 
     const char* getParamAddress(void*, int);
 
@@ -5847,24 +5954,25 @@ public:
             return fAPIUI.getParamInit(id);
         }
 
-        /*
-         * getParamTooltip(address)
-         * Returns the tooltip of a parameter.
-         */
-        const char* getParamTooltip(const char* address)
-        {
-            int id = fAPIUI.getParamIndex(address);
-            return (id >= 0) ? fAPIUI.getParamTooltip(id) : "";
-        }
+    /*
+     * getMetadata(address, key)
+     * Returns the metadata of a parameter.
+     */
+    const char* getMetadata(const char* address, const char* key)
+    {
+        int id = fAPIUI.getParamIndex(address);
+        return (id >= 0) ? fAPIUI.getMetadata(id, key) : "";
+    }
+    
+    /*
+     * getMetadata(id, key)
+     * Returns the metadata of a parameter.
+     */
+    const char* getMetadata(int id, const char* key)
+    {
+        return fAPIUI.getMetadata(id, key);
+    }
 
-        /*
-         * getParamTooltip(id)
-         * Returns the tooltip of a parameter.
-         */
-        const char* getParamTooltip(int id)
-        {
-            return fAPIUI.getParamTooltip(id);
-        }
 
         /*
          * propagateAcc(int acc, float v)
@@ -6235,12 +6343,14 @@ float DspFaustMotion::getParamInit(int id){
     return fMotionEngine->getParamInit(id);
 }
 
-const char* DspFaustMotion::getParamTooltip(const char* address){
-    return fMotionEngine->getParamTooltip(address);
+const char* DspFaustMotion::getMetadata(const char* address, const char* key)
+{
+    return fMotionEngine->getMetadata(address, key);
 }
 
-const char* DspFaustMotion::getParamTooltip(int id){
-    return fMotionEngine->getParamTooltip(id);
+const char* DspFaustMotion::getMetadata(int id, const char* key)
+{
+    return fMotionEngine->getMetadata(id, key);
 }
 
 void DspFaustMotion::propagateAcc(int acc, float v){

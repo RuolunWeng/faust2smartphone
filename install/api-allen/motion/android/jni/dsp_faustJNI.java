@@ -51,8 +51,8 @@ public class dsp_faustJNI {
   public final static native float DspFaust_getParamMax__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2);
   public final static native float DspFaust_getParamInit__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2);
   public final static native float DspFaust_getParamInit__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2);
-  public final static native String DspFaust_getParamTooltip__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2);
-  public final static native String DspFaust_getParamTooltip__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2);
+  public final static native String DspFaust_getMetadata__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2, String jarg3);
+  public final static native String DspFaust_getMetadata__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2, String jarg3);
   public final static native void DspFaust_propagateAcc(long jarg1, DspFaust jarg1_, int jarg2, float jarg3);
   public final static native void DspFaust_setAccConverter(long jarg1, DspFaust jarg1_, int jarg2, int jarg3, int jarg4, float jarg5, float jarg6, float jarg7);
   public final static native void DspFaust_propagateGyr(long jarg1, DspFaust jarg1_, int jarg2, float jarg3);
@@ -88,8 +88,8 @@ public class dsp_faustJNI {
   public final static native float DspFaustMotion_getParamMax__SWIG_1(long jarg1, DspFaustMotion jarg1_, int jarg2);
   public final static native float DspFaustMotion_getParamInit__SWIG_0(long jarg1, DspFaustMotion jarg1_, String jarg2);
   public final static native float DspFaustMotion_getParamInit__SWIG_1(long jarg1, DspFaustMotion jarg1_, int jarg2);
-  public final static native String DspFaustMotion_getParamTooltip__SWIG_0(long jarg1, DspFaustMotion jarg1_, String jarg2);
-  public final static native String DspFaustMotion_getParamTooltip__SWIG_1(long jarg1, DspFaustMotion jarg1_, int jarg2);
+  public final static native String DspFaustMotion_getMetadata__SWIG_0(long jarg1, DspFaustMotion jarg1_, String jarg2, String jarg3);
+  public final static native String DspFaustMotion_getMetadata__SWIG_1(long jarg1, DspFaustMotion jarg1_, int jarg2, String jarg3);
   public final static native void DspFaustMotion_propagateAcc(long jarg1, DspFaustMotion jarg1_, int jarg2, float jarg3);
   public final static native void DspFaustMotion_setAccConverter(long jarg1, DspFaustMotion jarg1_, int jarg2, int jarg3, int jarg4, float jarg5, float jarg6, float jarg7);
   public final static native void DspFaustMotion_propagateGyr(long jarg1, DspFaustMotion jarg1_, int jarg2, float jarg3);

@@ -80,7 +80,7 @@ DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_s
     init(driver);
     
     fDSPFAUSTMOTION = dspFaustMotion;
-
+    
 }
 
 void DspFaust::init(audio* driver){
@@ -281,12 +281,14 @@ float DspFaust::getParamInit(int id){
     return fPolyEngine->getParamInit(id);
 }
 
-const char* DspFaust::getParamTooltip(const char* address){
-    return fPolyEngine->getParamTooltip(address);
+const char* DspFaust::getMetadata(const char* address, const char* key)
+{
+    return fPolyEngine->getMetadata(address, key);
 }
 
-const char* DspFaust::getParamTooltip(int id){
-    return fPolyEngine->getParamTooltip(id);
+const char* DspFaust::getMetadata(int id, const char* key)
+{
+    return fPolyEngine->getMetadata(id, key);
 }
 
 void DspFaust::propagateAcc(int acc, float v){
@@ -360,7 +362,7 @@ void DspFaust::checkAdress() {
         const char* data = fDSPFAUSTMOTION->getParamAddress(i);
         if (endsWith(data,"On")) {
             paramsMotionGates.push_back(data);
-            paramsMotionNames.push_back(fDSPFAUSTMOTION->getParamTooltip(i));
+            paramsMotionNames.push_back(fDSPFAUSTMOTION->getMetadata(i, "tooltip"));
             paramsKeys.push_back("/" + paramsMotionNames[i]);
             paramsOn.push_back(false);
             paramsAddress.push_back("");

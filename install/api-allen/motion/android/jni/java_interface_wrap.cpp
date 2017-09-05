@@ -823,10 +823,11 @@ SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getParamInit
 }
 
 
-SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getParamTooltip_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getMetadata_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3) {
   jstring jresult = 0 ;
   DspFaust *arg1 = (DspFaust *) 0 ;
   char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
   char *result = 0 ;
   
   (void)jenv;
@@ -838,17 +839,24 @@ SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getParamToo
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  result = (char *)(arg1)->getParamTooltip((char const *)arg2);
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (char *)(arg1)->getMetadata((char const *)arg2,(char const *)arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
   return jresult;
 }
 
 
-SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getParamTooltip_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getMetadata_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jstring jarg3) {
   jstring jresult = 0 ;
   DspFaust *arg1 = (DspFaust *) 0 ;
   int arg2 ;
+  char *arg3 = (char *) 0 ;
   char *result = 0 ;
   
   (void)jenv;
@@ -856,8 +864,14 @@ SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getParamToo
   (void)jarg1_;
   arg1 = *(DspFaust **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = (char *)(arg1)->getParamTooltip(arg2);
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (char *)(arg1)->getMetadata(arg2,(char const *)arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
   return jresult;
 }
 
@@ -1438,10 +1452,11 @@ SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getPar
 }
 
 
-SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamTooltip_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getMetadata_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3) {
   jstring jresult = 0 ;
   DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
   char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
   char *result = 0 ;
   
   (void)jenv;
@@ -1453,17 +1468,24 @@ SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getPa
     arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
     if (!arg2) return 0;
   }
-  result = (char *)(arg1)->getParamTooltip((char const *)arg2);
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (char *)(arg1)->getMetadata((char const *)arg2,(char const *)arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
   return jresult;
 }
 
 
-SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getParamTooltip_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getMetadata_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jstring jarg3) {
   jstring jresult = 0 ;
   DspFaustMotion *arg1 = (DspFaustMotion *) 0 ;
   int arg2 ;
+  char *arg3 = (char *) 0 ;
   char *result = 0 ;
   
   (void)jenv;
@@ -1471,8 +1493,14 @@ SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaustMotion_1getPa
   (void)jarg1_;
   arg1 = *(DspFaustMotion **)&jarg1; 
   arg2 = (int)jarg2; 
-  result = (char *)(arg1)->getParamTooltip(arg2);
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (char *)(arg1)->getMetadata(arg2,(char const *)arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
   return jresult;
 }
 

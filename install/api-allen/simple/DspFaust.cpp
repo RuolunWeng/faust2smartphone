@@ -252,12 +252,14 @@ float DspFaust::getParamInit(int id){
     return fPolyEngine->getParamInit(id);
 }
       
-const char* DspFaust::getParamTooltip(const char* address){
-    return fPolyEngine->getParamTooltip(address);
+const char* DspFaust::getMetadata(const char* address, const char* key)
+{
+    return fPolyEngine->getMetadata(address, key);
 }
-      
-const char* DspFaust::getParamTooltip(int id){
-    return fPolyEngine->getParamTooltip(id);
+
+const char* DspFaust::getMetadata(int id, const char* key)
+{
+    return fPolyEngine->getMetadata(id, key);
 }
 
 void DspFaust::propagateAcc(int acc, float v){

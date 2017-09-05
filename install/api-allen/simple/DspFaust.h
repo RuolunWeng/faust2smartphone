@@ -322,25 +322,25 @@ public:
     //--------------------------------------------------------
     float getParamInit(int);
     
-    //-----`const char* getParamTooltip(const char* address)`-----
-    // Returns the tooltip (description) of a parameter in function of
-    // its address (path).
+    //-----`const char* getMetadata(const char* address, const char* key)`-----
+    // Returns the metadataof a parameter in function of
+    // its address (path) and the metadata key.
     //
     // #### Arguments
     //
     // * `address`: address (path) of the parameter
     //--------------------------------------------------------
-    const char* getParamTooltip(const char*);
+    const char* getMetadata(const char*, const char*);
     
-    //----`const char* getParamTooltip(int id)`---------------
-    // Returns the tooltip (description) of a parameter in function
-    // of its ID.
+    //----`const char* getMetadata(int id, const char* key)`---------------
+    // Returns the metadataof a parameter in function of
+    // its iD and the metadata key.
     //
     // #### Arguments
     //
     // * `id`: id of the parameter
     //--------------------------------------------------------
-    const char* getParamTooltip(int);
+    const char* getMetadata(int, const char*);
 	
 	//----`void propagateAcc(int acc, float v)`---------------
 	// Propagate the RAW value of a specific accelerometer

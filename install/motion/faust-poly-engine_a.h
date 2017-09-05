@@ -467,22 +467,22 @@ class FaustPolyEngine {
         }
     
         /*
-         * getParamTooltip(address)
-         * Returns the tooltip of a parameter.
+         * getMetadata(address, key)
+         * Returns the metadata of a parameter.
          */
-        const char* getParamTooltip(const char* address)
+        const char* getMetadata(const char* address, const char* key)
         {
             int id = fAPIUI.getParamIndex(address);
-            return (id >= 0) ? fAPIUI.getParamTooltip(id) : "";
+            return (id >= 0) ? fAPIUI.getMetadata(id, key) : "";
         }
     
         /*
-         * getParamTooltip(id)
-         * Returns the tooltip of a parameter.
+         * getMetadata(id, key)
+        * Returns the metadata of a parameter.
          */
-        const char* getParamTooltip(int id)
+        const char* getMetadata(int id, const char* key)
         {
-            return fAPIUI.getParamTooltip(id);
+            return fAPIUI.getMetadata(id, key);
         }
 
         /*
@@ -549,39 +549,39 @@ extern "C" {
 #endif
     
     void destroy(void* dsp) { delete reinterpret_cast<FaustPolyEngine*>(dsp); }
-
+    
     bool start(void* dsp) { return reinterpret_cast<FaustPolyEngine*>(dsp)->start(); }
     void stop(void* dsp) { reinterpret_cast<FaustPolyEngine*>(dsp)->stop(); }
     
     bool isRunning(void* dsp) { return reinterpret_cast<FaustPolyEngine*>(dsp)->isRunning(); }
-
-    long keyOn(void* dsp, int pitch, int velocity) { return (long)reinterpret_cast<FaustPolyEngine*>(dsp)->keyOn(pitch, velocity); }
+    
+    unsigned long keyOn(void* dsp, int pitch, int velocity) { return (unsigned long)reinterpret_cast<FaustPolyEngine*>(dsp)->keyOn(pitch, velocity); }
     int keyOff(void* dsp, int pitch) { return reinterpret_cast<FaustPolyEngine*>(dsp)->keyOff(pitch); }
     
     void propagateMidi(void* dsp, int count, double time, int type, int channel, int data1, int data2)
     {
         reinterpret_cast<FaustPolyEngine*>(dsp)->propagateMidi(count, time, type, channel, data1, data2);
     }
-
+    
     const char* getJSONUI(void* dsp) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getJSONUI(); }
     const char* getJSONMeta(void* dsp) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getJSONMeta(); }
-
+    
     int getParamsCount(void* dsp) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getParamsCount(); }
     
     void setParamValue(void* dsp, const char* address, float value) { reinterpret_cast<FaustPolyEngine*>(dsp)->setParamValue(address, value); }
     float getParamValue(void* dsp, const char* address) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getParamValue(address); }
-   
+    
     void setParamIdValue(void* dsp, int id, float value) { reinterpret_cast<FaustPolyEngine*>(dsp)->setParamValue(id, value); }
     float getParamIdValue(void* dsp, int id) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getParamValue(id); }
     
-    void setVoiceParamValue(void* dsp, const char* address, long voice, float value)
+    void setVoiceParamValue(void* dsp, const char* address, unsigned long voice, float value)
     {
         reinterpret_cast<FaustPolyEngine*>(dsp)->setVoiceParamValue(address, voice, value);
     }
-    float getVoiceParamValue(void* dsp, const char* address, long voice) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getVoiceParamValue(address, voice); }
+    float getVoiceParamValue(void* dsp, const char* address, unsigned long voice) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getVoiceParamValue(address, voice); }
     
     const char* getParamAddress(void* dsp, int id) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getParamAddress(id); }
-
+    
     void propagateAcc(void* dsp, int acc, float v)  { reinterpret_cast<FaustPolyEngine*>(dsp)->propagateAcc(acc, v); }
     void setAccConverter(void* dsp, int p, int acc, int curve, float amin, float amid, float amax)
     {
@@ -592,7 +592,7 @@ extern "C" {
     {
         reinterpret_cast<FaustPolyEngine*>(dsp)->setGyrConverter(p, gyr, curve, amin, amid, amax);
     }
-
+    
     float getCPULoad(void* dsp) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getCPULoad(); }
     int getScreenColor(void* dsp) { return reinterpret_cast<FaustPolyEngine*>(dsp)->getScreenColor(); }
     
