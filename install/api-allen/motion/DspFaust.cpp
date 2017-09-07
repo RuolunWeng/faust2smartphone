@@ -358,23 +358,23 @@ void DspFaust::checkAdress() {
     
     paramsMotionNum = fDSPFAUSTMOTION->getOutputChannelNum();
     
+    
     for(int i=0; i<fDSPFAUSTMOTION->getParamsCount(); i++){
-        const char* data = fDSPFAUSTMOTION->getParamAddress(i);
-        if (endsWith(data,"On")) {
-            paramsMotionGates.push_back(data);
-            paramsMotionNames.push_back(fDSPFAUSTMOTION->getMetadata(i, "tooltip"));
-            paramsKeys.push_back("/" + paramsMotionNames[i]);
+        const char* data = fDSPFAUSTMOTION->getMetadata(i, "motionName");
+        if (strcmp(data, "") != 0) {
+            paramsMotionGates.push_back(fDSPFAUSTMOTION->getParamAddress(i));
+            paramsKeys.push_back(data);
             paramsOn.push_back(false);
-            paramsAddress.push_back("");
+            paramsAddressList.push_back(AddressInit);
         }
     }
     
     for(int i=0; i<getParamsCount(); i++){
-        const char* data = getParamAddress(i);
+        const char* data = getMetadata(i, "motion");
         for (int p=0; p< paramsMotionNum; p++) {
             if (endsWith(data,paramsKeys[p])) {
                 paramsOn[p] = true;
-                paramsAddress[p]= data;
+                paramsAddressList[p].push_back(getParamAddress(i));
                 fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
             }
         }
@@ -387,7 +387,10 @@ void  DspFaust::sendMotion()  {
     
     for (int i=0; i< paramsMotionNum; i++) {
         if (paramsOn[i]) {
-            setParamValue(paramsAddress[i].c_str(), fDSPFAUSTMOTION->getOutput(i));
+            for (int j=0; j< paramsAddressList[i].size(); j++) {
+                setParamValue(paramsAddressList[i][j].c_str(), fDSPFAUSTMOTION->getOutput(i));
+            }
+            
         }
     }
     

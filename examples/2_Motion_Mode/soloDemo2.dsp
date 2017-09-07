@@ -1,5 +1,5 @@
 declare name 		"SoloDemo2";
-declare version 		"1.0";
+declare version 		"2.0";
 declare author 		"Grame";
 
 
@@ -9,8 +9,8 @@ process = rainGen :>_,_ ;
 
 
 // declare connection UI
-volume = hslider("brasG_front",0,0,1,0.01);//hslider("screenx",0,0,1,0.01);
-param = hslider("brasG_front",0,0,1,0.01);
+volume = hslider("volume[motion:brasG_front]",0,0,1,0.01);//hslider("screenx",0,0,1,0.01);
+param = hslider("param[motion:brasG_front]",0,0,1,0.01);
 
 
 //----------------------`rain`--------------------------

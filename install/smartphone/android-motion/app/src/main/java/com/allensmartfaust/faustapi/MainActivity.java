@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     int scrWidth = 0,scrHeight= 0;
     
     int SR = 44100;
-    int blockSize = 512;
+    int blockSize = 256;
     long lastDate=0;
     int updateInterval = (int)(1000.f/(SR/blockSize));
     
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
         
         System.out.println(cueList);
         System.out.println(tipsList);
-
+        
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        );
+                                             );
         
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
                                               {
@@ -426,57 +426,55 @@ public class MainActivity extends AppCompatActivity {
     
     
     public void checkAddress() {
-
-            for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
-                String Str = dspFaustMotion.getParamAddress(i);
-                if (Str.endsWith("_Param")) {
-                    motionParamArray.add(i-dspFaustMotion.getOutputChannelNum(),dspFaustMotion.getMetadata(i, "tooltip"));
-                    motionParamAddress.add(i-dspFaustMotion.getOutputChannelNum(),dspFaustMotion.getParamAddress(i));
-                }
-            }
-
-            System.out.println(motionParamArray);
-            System.out.println(motionParamAddress);
-
-            paramsOn = new boolean[motionParamArray.size()];
-
-            for(int i = 0; i < motionParamArray.size(); i++) {
-                RadioButton rdbtn = new RadioButton(this);
-                rdbtn.setId(i);
-                rdbtn.setTextColor(Color.WHITE);
-                rdbtn.setText(motionParamArray.get(i));
-                radioGroup.addView(rdbtn);
-            }
-
-            // PRINT ALL PARAMETRE ADDRESS
-            for (int i = 0; i < dspFaust.getParamsCount(); i++) {
-                System.out.println(dspFaust.getParamAddress(i));
-                
-                String Str = dspFaust.getParamAddress(i);
-                
-                if (Str.endsWith("/touchgate")) {
-                    touchGateIsOn = true;
-                    touchGateAddress = dspFaust.getParamAddress(i);
-                } else if (Str.endsWith("/screenx")) {
-                    screenXIsOn = true;
-                    screenXAddress = dspFaust.getParamAddress(i);
-                } else if (Str.endsWith("/screeny")) {
-                    screenYIsOn = true;
-                    screenYAddress = dspFaust.getParamAddress(i);
-                } else if (Str.endsWith("/compass")) {
-                    magneticHeadingIsOn = true;
-                    magneticHeadingAddress = dspFaust.getParamAddress(i);
-                } else if (Str.endsWith("/cue")) {
-                    cueIsOn = true;
-                    cueAddress = dspFaust.getParamAddress(i);
-                } else if (Str.endsWith("/tip")) {
-                    tipIsOn = true;
-                    tipAddress = dspFaust.getParamAddress(i);
-                }
-                
-            }
-
         
+        for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
+            String Str = dspFaustMotion.getMetadata(i, "showName");
+            if (!Str.equals("")){
+                motionParamArray.add(Str);
+                motionParamAddress.add(dspFaustMotion.getParamAddress(i));
+            }
+        }
+        
+        System.out.println(motionParamArray);
+        System.out.println(motionParamAddress);
+        
+        paramsOn = new boolean[motionParamArray.size()];
+        
+        for(int i = 0; i < motionParamArray.size(); i++) {
+            RadioButton rdbtn = new RadioButton(this);
+            rdbtn.setId(i);
+            rdbtn.setTextColor(Color.WHITE);
+            rdbtn.setText(motionParamArray.get(i));
+            radioGroup.addView(rdbtn);
+        }
+        
+        // PRINT ALL PARAMETRE ADDRESS
+        for (int i = 0; i < dspFaust.getParamsCount(); i++) {
+            System.out.println(dspFaust.getParamAddress(i));
+            
+            String Str = dspFaust.getParamAddress(i);
+            
+            if (Str.endsWith("/touchgate")) {
+                touchGateIsOn = true;
+                touchGateAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/screenx")) {
+                screenXIsOn = true;
+                screenXAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/screeny")) {
+                screenYIsOn = true;
+                screenYAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/compass")) {
+                magneticHeadingIsOn = true;
+                magneticHeadingAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/cue")) {
+                cueIsOn = true;
+                cueAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/tip")) {
+                tipIsOn = true;
+                tipAddress = dspFaust.getParamAddress(i);
+            }
+            
+        }
         
         if(cueIsOn) {
             nextCue.setVisibility(View.VISIBLE);
@@ -519,10 +517,10 @@ public class MainActivity extends AppCompatActivity {
                     float pointerIndex = event.getX(0);
                     float pointerIndey = event.getY(0);
                     if (pointerIndey <= scrHeight / 2) {
-
+                        
                         float screenX = pointerIndex / scrWidth;
                         float screenY = pointerIndey/(scrHeight/2);
-
+                        
                         if (touchGateIsOn) {
                             touche.setVisibility(View.VISIBLE);
                             dspFaust.setParamValue(touchGateAddress, 1);
@@ -532,15 +530,15 @@ public class MainActivity extends AppCompatActivity {
                             cueIndex = cueIndexNext;
                             cue.setText(cueList.get(cueIndex));
                             tips.setText(tipsList.get(cueIndexNext));
-
+                            
                             dspFaust.setParamValue(cueAddress,Float.valueOf(cueList.get(cueIndex)));
-                                
+                            
                             if (cueIndexNext < cueList.size() - 1) {
                                 cueIndexNext++;
                                 cueNext.setText(cueList.get(cueIndexNext));
                             }
                         }
-                            
+                        
                         if (screenXIsOn) {
                             touche.setVisibility(View.VISIBLE);
                             dspFaust.setParamValue(screenXAddress, screenX);
@@ -549,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
                             touche.setVisibility(View.VISIBLE);
                             dspFaust.setParamValue(screenYAddress, (1.f-screenY));
                         }
-
+                        
                     }
                 }
                 
@@ -563,7 +561,7 @@ public class MainActivity extends AppCompatActivity {
                     float pointerIndey = event.getY(0);
                     
                     if (pointerIndey <= scrHeight / 2) {
-
+                        
                         float screenX = pointerIndex / scrWidth;
                         float screenY = pointerIndey/(scrHeight/2);
                         if (screenXIsOn) {
@@ -595,14 +593,14 @@ public class MainActivity extends AppCompatActivity {
                     float pointerIndex = event.getX(0);
                     float pointerIndey = event.getY(0);
                     if (pointerIndey <= scrHeight / 2) {
-
+                        
                         float screenX = pointerIndex / scrWidth;
                         float screenY = pointerIndey/(scrHeight/2);
                         if (touchGateIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                             dspFaust.setParamValue(touchGateAddress, 0);
                         }
-                            
+                        
                         if (screenXIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                             dspFaust.setParamValue(screenXAddress, screenX);
@@ -615,7 +613,7 @@ public class MainActivity extends AppCompatActivity {
                         if (touchGateIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                         }
-
+                        
                         if (screenXIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                         }
@@ -623,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
                             touche.setVisibility(View.INVISIBLE);
                         }
                     }
-
+                    
                 }
                 
                 break;

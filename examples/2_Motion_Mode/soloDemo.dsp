@@ -13,7 +13,7 @@ process = rainGen, windGen, sinusGen :>_,_ ;
 cueNum = nentry("cue",0,0,3,1);
 touchGate = checkbox("touchgate");
 volume = hslider("screenx",0,0,1,0.01);
-param = hslider("ixp",0,0,1,0.01);
+param = hslider("param[motion:ixp]",0,0,1,0.01);
 
 
 //----------------------`rain`--------------------------
@@ -45,7 +45,7 @@ rainGen  = 	rain (
 				//hslider("v:rain/density", 300, 0, 1000, 1) / 1000,
 				//hslider("v:rain/volume", 0.5, 0, 1, 0.01)
 			);
-			
+
 
 //----------------------`wind`--------------------------
 // A very simple wind simulator, based on a filtered white noise
@@ -83,8 +83,3 @@ vol 			= volume * (cueNum == 3) * touchGate : si.smoo ;//hslider("volume [unit:d
 freq 			= param*880+440; //hslider("freq [unit:Hz]", 1000, 20, 24000, 1);
 
 sinusGen 		= os.osc(freq) <: _* vol, _* vol;
-
-
-
-
-

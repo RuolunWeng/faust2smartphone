@@ -12,7 +12,7 @@
 #define kGUIUpdateRate 30
 
 #define SR 44100
-#define bufferSize 512
+#define bufferSize 256
 
 
 @interface ViewController ()
@@ -269,9 +269,9 @@
     _motionParamAddress = [[NSMutableArray alloc] init];
     
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
-        NSString *dataMotion = [NSString stringWithUTF8String:dspFaustMotion->getParamAddress(i)];
-        if ([dataMotion hasSuffix:@"_Param"]) {
-            motionParamNames.push_back(dspFaustMotion->getMetadata(i, "tooltip"));
+        const char *dataParamMotion = dspFaustMotion->getMetadata(i, "showName");
+        if (strcmp(dataParamMotion,"") != 0) {
+            motionParamNames.push_back(dataParamMotion);
             motionParamAddress.push_back(dspFaustMotion->getParamAddress(i));
         }
     }

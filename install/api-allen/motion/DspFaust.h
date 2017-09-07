@@ -464,11 +464,11 @@ private:
     float matrixC[3][3];
     
     int paramsMotionNum;
-    std::vector<std::string>paramsAddress;
+    std::vector<std::string>AddressInit;
+    std::vector< std::vector<std::string> >paramsAddressList;
     std::vector<bool>paramsOn;
     std::vector<std::string>paramsKeys;
     std::vector<std::string>paramsMotionGates;
-    std::vector<std::string>paramsMotionNames;
     
     /* LIST OF MOTION LIB IN ORDER 
     std::string paramsMotion[74] = {"sxp","syp","szp","sxn","syn","szn","ixp","iyp"
