@@ -52,11 +52,11 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
         // Active Motion controller
 
-        titi = hslider("ixp",0,0,1,0.01);
+        titi = hslider("titi[motion:ixp]",0,0,1,0.01);
 
-        toto = hslider("brasG_cours",0,0,1,0.01);
+        toto = hslider("toto[motion:brasG_cours]",0,0,1,0.01);
 
-        tata = hslider("ventre_front",0,0,1,0.01);
+        tata = hslider("tata[motion:ventre_front]",0,0,1,0.01);
         
            **********************************
            ** motion support + cue manager **
