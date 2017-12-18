@@ -62,7 +62,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone -"
 	echo "===================================="
-	echo "- Version: 3.0 -"
+	echo "- Version: 4.0 -"
 	echo "===================================="
 }
 
@@ -349,7 +349,7 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
-	faust -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
+	faust -lang ocpp -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	fi
 
 elif [ $ANDROIDPLUGIN -eq 1 ]; then
@@ -395,7 +395,7 @@ elif [ $IOSMOTION -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
-	faust -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	faust -lang ocpp -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	fi
 fi
 

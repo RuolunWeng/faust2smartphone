@@ -84,7 +84,7 @@ DspFaust::DspFaust(int sample_rate, int buffer_size)
 }
 
 void DspFaust::init(audio* driver){
-	fPolyEngine = new FaustPolyEngine(driver);
+	fPolyEngine = new FaustPolyEngine(NULL,driver);
 
 #if IOS_MIDI_SUPPORT
     fMidiUI = new MidiUI(new rt_midi());
