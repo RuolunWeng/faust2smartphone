@@ -75,6 +75,12 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
         touchX = hslider("screenx",0,0,1,0.01);
 
         touchY = hslider("screeny",0,0,1,0.01);
+        
+        // Active State + Init
+        
+        state = hbargraph("state",0,6);
+        
+        init = button("init");
 
 
     -------------------------------------------------------------
