@@ -36,8 +36,8 @@
     // init faust motor
     ////////////////////
     
-    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
-    //dspFaustMotion = new DspFaustMotion(SR, bufferSize);
+    //dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
+    dspFaustMotion = new DspFaustMotion(SR, bufferSize);
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
@@ -73,7 +73,7 @@
     
     [self startGyroscope];
     
-    //[self startUpdate];
+    [self startUpdateGUI];
     
     [self displayTitle];
     
@@ -148,19 +148,19 @@
     if (cueIsOn) {
         _cue.hidden=false;
         _cueNext.hidden=false;
-        _init.hidden=false;
+        
         _cueText.hidden=false;
         _nextCueText.hidden=false;
-        _tips.hidden=false;
+        
         _prevCue.hidden=false;
         _nextCue.hidden=false;
     } else {
         _cue.hidden=true;
         _cueNext.hidden=true;
-        _init.hidden=true;
+        
         _cueText.hidden=true;
         _nextCueText.hidden=true;
-        _tips.hidden=true;
+        
         _prevCue.hidden=true;
         _nextCue.hidden=true;
     }
@@ -169,6 +169,14 @@
         _touch.hidden=false;
     } else {
         _touch.hidden=true;
+    }
+    
+    if (cueIsOn or stateIsOn) {
+        _init.hidden=false;
+        _tips.hidden=false;
+    } else {
+        _init.hidden=true;
+        _tips.hidden=true;
     }
     
     
@@ -300,6 +308,11 @@
         } else if ([data hasSuffix:@"/cue"]) {
             cueIsOn = true;
             cueAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/state"]) {
+            stateIsOn = true;
+            stateAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/init"]) {
+            initAddress = dspFaust->getParamAddress(i);
         }
         
     }
@@ -528,6 +541,10 @@
 
 - (void)updateGUI
 {
+    if (stateIsOn) {
+        _tips.text = [NSString stringWithFormat:@"State = %1.f", dspFaust->getParamValue(stateAddress)];
+    }
+    
 }
 
 - (void) touchesBegan:(NSSet *)touches
@@ -711,17 +728,27 @@
 
 - (IBAction)initCue:(id)sender {
     
+    if (cueIsOn) {
     cueIndex = 0;
     cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
     _cue.text= [NSString stringWithFormat:@"%ld",(long)cueNum];
     cueIndexNext = 1;
     cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
     _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-    if (cueIsOn) {
-        dspFaust->setParamValue(cueAddress, cueNum);
-    }
-    _tips.text = [myCueTipsArrary objectAtIndex:0];
     
+        dspFaust->setParamValue(cueAddress, cueNum);
+    
+    _tips.text = [myCueTipsArrary objectAtIndex:0];
+    }
+    
+    if (stateIsOn) {
+        dspFaust->setParamValue(initAddress, 1);
+        // delay pour init
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            dspFaust->setParamValue(initAddress, 0);
+        });
+    }
 }
 
 
@@ -909,7 +936,5 @@
 -(BOOL)prefersStatusBarHidden{
     return YES;
 }
-
-
 
 @end

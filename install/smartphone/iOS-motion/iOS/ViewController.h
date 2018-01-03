@@ -39,6 +39,8 @@
     const char* magneticHeadingAddress;
     
     const char* cueAddress;
+    const char* stateAddress;
+    const char* initAddress;
     
     BOOL touchGateIsOn;
     BOOL screenXIsOn;
@@ -46,6 +48,7 @@
     BOOL magneticHeadingIsOn;
     
     BOOL cueIsOn;
+    BOOL stateIsOn;
     
     NSMutableArray *_motionParamArray;
     NSMutableArray *_motionParamAddress;
