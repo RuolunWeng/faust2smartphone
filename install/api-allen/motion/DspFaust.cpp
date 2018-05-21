@@ -1,6 +1,6 @@
 /************************************************************************
  ************************************************************************
- FAUST API Architecture File 
+ FAUST API Architecture File
  Copyright (C) 2017 GRAME, Allen Weng, SHCM
  Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
@@ -32,6 +32,17 @@
 
 #include <math.h>
 #include <cmath>
+
+
+//**************************************************************
+// Soundfile handling
+//**************************************************************
+
+// Must be done before <<includeclass>> otherwise the 'Soundfile' type is not known
+
+#if SOUNDFILE
+#include "faust/gui/SoundUI.h"
+#endif
 
 //**************************************************************
 // Intrinsic
@@ -76,16 +87,16 @@ DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_s
 #elif ANDROID_DRIVER
     audio* driver = new androidaudio(sample_rate, buffer_size);
 #endif
-    
+
     init(driver);
-    
+
     fDSPFAUSTMOTION = dspFaustMotion;
-    
+
 }
 
 void DspFaust::init(audio* driver){
     fPolyEngine = new FaustPolyEngine(driver);
-    
+
 #if OSCCTRL
     const char* argv[9];
     argv[0] = "FAUST";
@@ -100,36 +111,45 @@ void DspFaust::init(audio* driver){
     fOSCUI = new OSCUI("FAUST", 9, (char**)argv);
     fPolyEngine->buildUserInterface(fOSCUI);
 #endif
-    
+
+#if SOUNDFILE
+    // Use bundle path
+    fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
+    fPolyEngine->buildUserInterface(fSoundInterface);
+#endif
+
 }
 
 
 
 DspFaust::~DspFaust(){
     delete fPolyEngine;
-    
+
 #if OSCCTRL
     delete fOSCUI;
 #endif
-    
-    
+
+#if SOUNDFILE
+    delete fSoundInterface;
+#endif
+
 }
 
 bool DspFaust::start(){
-    
+
 #if OSCCTRL
     fOSCUI->run();
 #endif
-    
+
     return fPolyEngine->start();
 }
 
 void DspFaust::stop(){
-    
+
 #if OSCCTRL
     fOSCUI->stop();
 #endif
-    
+
     fPolyEngine->stop();
 }
 
@@ -184,7 +204,7 @@ void DspFaust::setParamValue(int id, float value){
 }
 
 void DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
-    
+
 #if OSCCTRL
     delete fOSCUI;
     const char* argv[9];
@@ -201,14 +221,14 @@ void DspFaust::setOSCValue(const char* address, const char* inPort, const char* 
     fPolyEngine->buildUserInterface(fOSCUI);
     fOSCUI->run();
 #endif
-    
-    
+
+
 }
 
 bool DspFaust::setOSCValue(const char* address, int inPort, int outPort){
-    
+
 #if OSCCTRL
-    
+
     if (isRunning()) {
         return false;
     } else {
@@ -217,11 +237,11 @@ bool DspFaust::setOSCValue(const char* address, int inPort, int outPort){
         fOSCUI->setDestAddress(address);
         return true;
     }
-    
+
 #else
     return false;
 #endif
-    
+
 }
 
 
@@ -325,7 +345,7 @@ bool DspFaust::getOSCIsOn() {
 
 
 void DspFaust::initFrame(){
-    
+
     // inverse matrix the matrix reference
     float a11 = matrixA[0][0];
     float a12 = matrixA[0][1];
@@ -336,29 +356,29 @@ void DspFaust::initFrame(){
     float a31 = matrixA[2][0];
     float a32 = matrixA[2][1];
     float a33 = matrixA[2][2];
-    
+
     float detA=a11*a22*a33+a21*a32*a13+a31*a12*a23-a11*a32*a23-a31*a22*a13-a21*a12*a33;
-    
+
     matrixB[0][0] =(1/detA)*(a22*a33-a23*a32);
     matrixB[0][1] =(1/detA)*(a13*a32-a12*a33);
     matrixB[0][2] =(1/detA)*(a12*a23-a13*a22);
-    
+
     matrixB[1][0] =(1/detA)*(a23*a31-a21*a33);
     matrixB[1][1] =(1/detA)*(a11*a33-a13*a31);
     matrixB[1][2] =(1/detA)*(a13*a21-a11*a23);
-    
+
     matrixB[2][0] =(1/detA)*(a21*a32-a22*a31);
     matrixB[2][1] =(1/detA)*(a12*a31-a11*a32);
     matrixB[2][2] =(1/detA)*(a11*a22-a12*a21);
-    
+
 }
 
 
 void DspFaust::checkAdress() {
-    
+
     paramsMotionNum = fDSPFAUSTMOTION->getOutputChannelNum();
-    
-    
+
+
     for(int i=0; i<fDSPFAUSTMOTION->getParamsCount(); i++){
         const char* data = fDSPFAUSTMOTION->getMetadata(i, "motionName");
         if (strcmp(data, "") != 0) {
@@ -368,7 +388,7 @@ void DspFaust::checkAdress() {
             paramsAddressList.push_back(AddressInit);
         }
     }
-    
+
     for(int i=0; i<getParamsCount(); i++){
         const char* data = getMetadata(i, "motion");
         for (int p=0; p< paramsMotionNum; p++) {
@@ -378,27 +398,27 @@ void DspFaust::checkAdress() {
                 fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
             }
         }
-        
+
     }
 }
 
 
 void  DspFaust::sendMotion()  {
-    
+
     for (int i=0; i< paramsMotionNum; i++) {
         if (paramsOn[i]) {
             for (int j=0; j< paramsAddressList[i].size(); j++) {
                 setParamValue(paramsAddressList[i][j].c_str(), fDSPFAUSTMOTION->getOutput(i));
             }
-            
+
         }
     }
-    
+
 }
 
 
 void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m6,float m7,float m8,float m9){
-    
+
     matrixA[0][0] = m1;
     matrixA[0][1] = m2;
     matrixA[0][2] = m3;
@@ -408,7 +428,7 @@ void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m
     matrixA[2][0] = m7;
     matrixA[2][1] = m8;
     matrixA[2][2] = m9;
-    
+
     // Initializing elements of matrix mult to 0.
     // Multiplication de matrix
     for(int i = 0; i < 3; i++)
@@ -418,7 +438,7 @@ void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m
             matrixC[i][j] = 0;
         }
     }
-    
+
     for(int i = 0; i < 3; i++) {
         for(int j = 0; j < 3; j++) {
             for(int k = 0; k < 3; k++){
@@ -426,7 +446,7 @@ void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m
             }
         }
     }
-    
+
     // brasG
     fDSPFAUSTMOTION->setInput(0, matrixC[0][0]);
     fDSPFAUSTMOTION->setInput(1, matrixC[0][1]);
@@ -451,11 +471,11 @@ void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m
     fDSPFAUSTMOTION->setInput(15, matrixC[2][0]);
     fDSPFAUSTMOTION->setInput(16, matrixC[2][1]);
     fDSPFAUSTMOTION->setInput(17, matrixC[2][2]);
-    
+
     fDSPFAUSTMOTION->render();
-    
+
     sendMotion();
-    
+
     GUI::updateAllGuis();
-    
+
 }

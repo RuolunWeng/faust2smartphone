@@ -47,82 +47,82 @@ import static android.R.color.white;
 public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
     DspFaustMotion dspFaustMotion;
-    
+
     private SensorManager sensorManager;
-    
+
     private SharedPreferences mSharedPref;
-    
+
     private TextView cue,cueNext,cueText, cueNextText, tips, appName;
     private EditText paramsValue, ipAddress, inputPort, outputPort;
-    
+
     private ImageView touche;
     private Button prevCue, nextCue, initCue, setMotion , defaultParams, setOSC, setRef;
-    
-    
+
+
     private CheckBox setParams;
     private RadioGroup radioGroup;
-    
+
     int scrWidth = 0,scrHeight= 0;
-    
+
     int SR = 44100;
     int blockSize = 256;
     long lastDate=0;
     int updateInterval = (int)(1000.f/(SR/blockSize));
-    
+
     ArrayList<String> cueList = new ArrayList<String>();
     ArrayList<String> tipsList = new ArrayList<String>();
-    
+
     ArrayList<String>  motionParamArray = new ArrayList<String>();
     ArrayList<String>  motionParamAddress = new ArrayList<String>();
-    
+
     int cueIndex,cueIndexNext;
-    
+
     float[] rotationMatrix = new float[9];
-    
+
     String oscAddress;
     int oscInPort;
     int oscOutPort;
-    
+
     String touchGateAddress;
     String screenXAddress;
     String screenYAddress;
     String magneticHeadingAddress;
-    
+
     String cueAddress;
     String tipAddress;
-    
+
     boolean[] paramsOn;
     boolean touchGateIsOn;
     boolean screenXIsOn;
     boolean screenYIsOn;
     boolean magneticHeadingIsOn;
-    
+
     boolean cueIsOn;
     boolean tipIsOn;
-    
+
     public static final int RequestPermissionCode = 1;
-    
+
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO,Manifest.permission.INTERNET,Manifest.permission.ACCESS_NETWORK_STATE};
-    
+
     private void requestPermission() {
-        
+
         ActivityCompat.requestPermissions(this, permissions,RequestPermissionCode);
-        
+
     }
-    
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-                
+
             case RequestPermissionCode:
-                
+
                 if (grantResults.length > 0) {
-                    
+
                     boolean AudioPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean InternetPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean NetworkPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
-                    
+
                     permissionToRecordAccepted = AudioPermission && InternetPermission && NetworkPermission;
                     if (permissionToRecordAccepted) {
                         createFaust();
@@ -131,59 +131,59 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                     }
                 }
-                
+
                 break;
         }
     }
-    
-    
+
+
     private void createFaust() {
-        
-        
+
+
         if (dspFaustMotion == null) {
             dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
             //dspFaustMotion = new DspFaustMotion(SR, blockSize);
-            
+
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
                 System.out.println(dspFaustMotion.getParamAddress(i));
             }
-            
+
         }
-        
+
         if (dspFaust == null) {
-            
+
             dspFaust = new DspFaust(dspFaustMotion,SR, blockSize);
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaust.getParamsCount(); i++) {
                 System.out.println(dspFaust.getParamAddress(i));
             }
-            
+
         }
-        
-        
+
+
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        
+
         if (Build.VERSION.SDK_INT >= 23) {
             requestPermission();
         } else {
             permissionToRecordAccepted = true;
             createFaust();
         }
-        
+
         try {
             InputStream stream = getAssets().open("cuenums.txt");
-            
+
             if (stream != null) {
                 // prepare the file for reading
                 InputStreamReader input = new InputStreamReader(stream);
@@ -197,15 +197,15 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 System.out.println("It's the assests");
             }
-            
-            
+
+
         } catch (IOException x) {
             System.err.println(x);
         }
-        
+
         try {
             InputStream stream = getAssets().open("cuetips.txt");
-            
+
             if (stream != null) {
                 // prepare the file for reading
                 InputStreamReader input = new InputStreamReader(stream);
@@ -219,29 +219,29 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 System.out.println("It's the assests");
             }
-            
+
         } catch (IOException x) {
             System.err.println(x);
         }
-        
+
         System.out.println(cueList);
         System.out.println(tipsList);
-        
+
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
-        
+
         scrWidth  = getWindowManager().getDefaultDisplay().getWidth();
         scrHeight = getWindowManager().getDefaultDisplay().getHeight();
-        
+
         float density  = getResources().getDisplayMetrics().density;
         float dpHeight = outMetrics.heightPixels / density;
         float dpWidth  = outMetrics.widthPixels / density;
-        
+
         if (sensorManager == null) {
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         }
-        
+
         nextCue = (Button) findViewById(R.id.nextCue);
         prevCue = (Button) findViewById(R.id.prevCue);
         initCue = (Button) findViewById(R.id.initCue);
@@ -253,12 +253,12 @@ public class MainActivity extends AppCompatActivity {
         cueIndexNext = 1;
         tips = (TextView) findViewById(R.id.tips);
         appName = (TextView) findViewById(R.id.appName);
-        
+
         cue.setText(cueList.get(cueIndex));
         cueNext.setText(cueList.get(cueIndexNext));
         tips.setText(tipsList.get(cueIndex));
         appName.setText(getApplicationContext().getPackageName().replace("com.allensmartfaust."," ").concat(" | Grame"));
-        
+
         nextCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (cueIndexNext < cueList.size() -1) {
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        
+
         prevCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (cueIndexNext > 0) {
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        
+
         initCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 cueIndex = 0;
@@ -286,29 +286,29 @@ public class MainActivity extends AppCompatActivity {
                 cue.setText(cueList.get(cueIndex));
                 cueNext.setText(cueList.get(cueIndexNext));
                 tips.setText(tipsList.get(cueIndex));
-                
+
             }
         });
-        
+
         setOSC = (Button) findViewById(R.id.setOSC);
         ipAddress = (EditText) findViewById(R.id.ipAddress);
         inputPort = (EditText) findViewById(R.id.inputPort);
         outputPort = (EditText) findViewById(R.id.outputPort);
-        
+
         setParams = (CheckBox) findViewById(R.id.SetParams);
         radioGroup=(RadioGroup)findViewById(R.id.radioGroup);
         paramsValue = (EditText) findViewById(R.id.paramValue);
         setMotion = (Button) findViewById(R.id.setMotion);
         defaultParams =(Button) findViewById(R.id.defaultParams);
         setRef =(Button) findViewById(R.id.setRef);
-        
+
         setParams.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            
+
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                
+
                 if (isChecked) {
-                    
+
                     radioGroup.setVisibility(View.VISIBLE);
                     paramsValue.setVisibility(View.VISIBLE);
                     setMotion.setVisibility(View.VISIBLE);
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
                         setOSC.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    
+
                     radioGroup.setVisibility(View.INVISIBLE);
                     paramsValue.setVisibility(View.INVISIBLE);
                     setMotion.setVisibility(View.INVISIBLE);
@@ -338,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
                                              );
-        
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
                                               {
             public void onCheckedChanged(RadioGroup group, int checkedId)
@@ -353,80 +353,80 @@ public class MainActivity extends AppCompatActivity {
                     }
                     paramsOn[checkedId]=true;
                     paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue(motionParamAddress.get(checkedId))));
-                    
+
                 }
             }
         });
-        
-        
+
+
         setMotion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                
+
                 for (int i=0; i< motionParamArray.size(); i++) {
                     if (paramsOn[i]){
                         dspFaustMotion.setParamValue(motionParamAddress.get(i), Float.valueOf(paramsValue.getText().toString()));
                         SharedPreWriteFloat(motionParamArray.get(i),Float.valueOf(paramsValue.getText().toString()));
                     }
-                    
+
                 }
-                
+
             }
         });
-        
-        
-        
+
+
+
         defaultParams.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                
+
                 for (int i=0; i<dspFaustMotion.getParamsCount(); i++) {
                     dspFaustMotion.setParamValue(i, dspFaustMotion.getParamInit(i));
                 }
-                
+
                 paramsValue.setText("Done");
                 Toast.makeText(MainActivity.this, "Reset Defaults(restart to use new OSC)", Toast.LENGTH_LONG).show();
                 checkAddress();
                 dspFaust.checkAdress();
-                
+
                 resetParams();
-                
+
             }
         });
-        
-        
+
+
         setOSC.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                
+
                 dspFaust.setOSCValue(ipAddress.getText().toString(),
                                      Integer.parseInt(inputPort.getText().toString()),
                                      Integer.parseInt(outputPort.getText().toString()));
                 SharedPrefWriteString("oscAddress",ipAddress.getText().toString());
                 SharedPrefWriteString("oscInPort",inputPort.getText().toString());
                 SharedPrefWriteString("oscOutPort",outputPort.getText().toString());
-                
+
                 Toast.makeText(MainActivity.this, "Restart to use new OSC", Toast.LENGTH_LONG).show();
-                
+
             }
         });
-        
+
         setRef.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 initFrame();
                 Toast.makeText(MainActivity.this, "Reset Frame", Toast.LENGTH_LONG).show();
             }
         });
-        
+
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 initFrame();
             }
         }, 2000);
-        
+
     }
-    
-    
+
+
     public void checkAddress() {
-        
+
         for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
             String Str = dspFaustMotion.getMetadata(i, "showName");
             if (!Str.equals("")){
@@ -434,12 +434,12 @@ public class MainActivity extends AppCompatActivity {
                 motionParamAddress.add(dspFaustMotion.getParamAddress(i));
             }
         }
-        
+
         System.out.println(motionParamArray);
         System.out.println(motionParamAddress);
-        
+
         paramsOn = new boolean[motionParamArray.size()];
-        
+
         for(int i = 0; i < motionParamArray.size(); i++) {
             RadioButton rdbtn = new RadioButton(this);
             rdbtn.setId(i);
@@ -447,13 +447,13 @@ public class MainActivity extends AppCompatActivity {
             rdbtn.setText(motionParamArray.get(i));
             radioGroup.addView(rdbtn);
         }
-        
+
         // PRINT ALL PARAMETRE ADDRESS
         for (int i = 0; i < dspFaust.getParamsCount(); i++) {
             System.out.println(dspFaust.getParamAddress(i));
-            
+
             String Str = dspFaust.getParamAddress(i);
-            
+
             if (Str.endsWith("/touchgate")) {
                 touchGateIsOn = true;
                 touchGateAddress = dspFaust.getParamAddress(i);
@@ -473,9 +473,9 @@ public class MainActivity extends AppCompatActivity {
                 tipIsOn = true;
                 tipAddress = dspFaust.getParamAddress(i);
             }
-            
+
         }
-        
+
         if(cueIsOn) {
             nextCue.setVisibility(View.VISIBLE);
             prevCue.setVisibility(View.VISIBLE);
@@ -495,32 +495,32 @@ public class MainActivity extends AppCompatActivity {
             cueNextText.setVisibility(View.INVISIBLE);
             tips.setVisibility(View.INVISIBLE);
         }
-        
-        
+
+
     }
-    
-    
+
+
     @Override
-    
+
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
         int touchCounter = event.getPointerCount();
         touche = (ImageView) findViewById(R.id.touche);
-        
-        
+
+
         switch(action) {
-                
+
             case MotionEvent.ACTION_DOWN: {
-                
-                
+
+
                 if (touchCounter == 1) {
                     float pointerIndex = event.getX(0);
                     float pointerIndey = event.getY(0);
                     if (pointerIndey <= scrHeight / 2) {
-                        
+
                         float screenX = pointerIndex / scrWidth;
                         float screenY = pointerIndey/(scrHeight/2);
-                        
+
                         if (touchGateIsOn) {
                             touche.setVisibility(View.VISIBLE);
                             dspFaust.setParamValue(touchGateAddress, 1);
@@ -530,15 +530,15 @@ public class MainActivity extends AppCompatActivity {
                             cueIndex = cueIndexNext;
                             cue.setText(cueList.get(cueIndex));
                             tips.setText(tipsList.get(cueIndexNext));
-                            
+
                             dspFaust.setParamValue(cueAddress,Float.valueOf(cueList.get(cueIndex)));
-                            
+
                             if (cueIndexNext < cueList.size() - 1) {
                                 cueIndexNext++;
                                 cueNext.setText(cueList.get(cueIndexNext));
                             }
                         }
-                        
+
                         if (screenXIsOn) {
                             touche.setVisibility(View.VISIBLE);
                             dspFaust.setParamValue(screenXAddress, screenX);
@@ -547,21 +547,21 @@ public class MainActivity extends AppCompatActivity {
                             touche.setVisibility(View.VISIBLE);
                             dspFaust.setParamValue(screenYAddress, (1.f-screenY));
                         }
-                        
+
                     }
                 }
-                
+
                 break;
             }
-                
+
             case MotionEvent.ACTION_MOVE: {
-                
+
                 if (touchCounter == 1) {
                     float pointerIndex = event.getX(0);
                     float pointerIndey = event.getY(0);
-                    
+
                     if (pointerIndey <= scrHeight / 2) {
-                        
+
                         float screenX = pointerIndex / scrWidth;
                         float screenY = pointerIndey/(scrHeight/2);
                         if (screenXIsOn) {
@@ -572,35 +572,35 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-                
+
                 break;
             }
-                
+
             case MotionEvent.ACTION_POINTER_DOWN: {
-                
+
                 break;
             }
-                
+
             case MotionEvent.ACTION_POINTER_UP: {
-                
+
                 break;
             }
-                
+
             case MotionEvent.ACTION_UP: {
-                
+
                 if (touchCounter == 1) {
-                    
+
                     float pointerIndex = event.getX(0);
                     float pointerIndey = event.getY(0);
                     if (pointerIndey <= scrHeight / 2) {
-                        
+
                         float screenX = pointerIndex / scrWidth;
                         float screenY = pointerIndey/(scrHeight/2);
                         if (touchGateIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                             dspFaust.setParamValue(touchGateAddress, 0);
                         }
-                        
+
                         if (screenXIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                             dspFaust.setParamValue(screenXAddress, screenX);
@@ -613,7 +613,7 @@ public class MainActivity extends AppCompatActivity {
                         if (touchGateIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                         }
-                        
+
                         if (screenXIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                         }
@@ -621,71 +621,71 @@ public class MainActivity extends AppCompatActivity {
                             touche.setVisibility(View.INVISIBLE);
                         }
                     }
-                    
+
                 }
-                
+
                 break;
-                
+
             }
         }
         return true;
     }
-    
-    
+
+
     private final SensorEventListener mSensorListener = new SensorEventListener() {
-    
+
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
-    
+
     public void onSensorChanged(SensorEvent event) {
-    
-    
-    long currentTime= System.currentTimeMillis();
-    
-    if ((currentTime-lastDate) > updateInterval) {
-        
+
+
+    //long currentTime= System.currentTimeMillis();
+
+    //if ((currentTime-lastDate) > updateInterval) {
+
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Update acc at sensor rate
-            
+
             dspFaust.propagateAcc(0, -event.values[0]);
             dspFaust.propagateAcc(1, -event.values[1]);
             dspFaust.propagateAcc(2, event.values[2]);
-            
+
             dspFaustMotion.propagateAcc(0, -event.values[0]);
             dspFaustMotion.propagateAcc(1, -event.values[1]);
             dspFaustMotion.propagateAcc(2, -event.values[2]);
-            
+
         }
-        
+
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             // Update gyr at sensor rate
-            
+
             dspFaust.propagateGyr(0, -event.values[0]);
             dspFaust.propagateGyr(1, -event.values[1]);
             dspFaust.propagateGyr(2, -event.values[2]);
-            
+
             dspFaustMotion.propagateGyr(0, -event.values[0]);
             dspFaustMotion.propagateGyr(1, -event.values[1]);
             dspFaustMotion.propagateGyr(2, -event.values[2]);
-            
+
         }
-        
-        
+
+
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
             // Update rotation matrix at sensor rate
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
-            
+
             dspFaust.motionRender(rotationMatrix[0], rotationMatrix[3], rotationMatrix[6],
                                   rotationMatrix[1], rotationMatrix[4], rotationMatrix[7],
                                   rotationMatrix[2], rotationMatrix[5], rotationMatrix[8]);
-            
+
         }
-        
-        lastDate = currentTime;
-        
+
+        //lastDate = currentTime;
+
     }
-    
-}
+
+//}
 };
 
 

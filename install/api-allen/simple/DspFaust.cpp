@@ -1,6 +1,6 @@
 /************************************************************************
  ************************************************************************
- FAUST API Architecture File 
+ FAUST API Architecture File
  Copyright (C) 2017 GRAME, Allen Weng, SHCM
  Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
@@ -28,6 +28,16 @@
 
 #if OSCCTRL
 #include "faust/gui/OSCUI.h"
+#endif
+
+//**************************************************************
+// Soundfile handling
+//**************************************************************
+
+// Must be done before <<includeclass>> otherwise the 'Soundfile' type is not known
+
+#if SOUNDFILE
+#include "faust/gui/SoundUI.h"
 #endif
 
 #include <math.h>
@@ -79,7 +89,7 @@ DspFaust::DspFaust(int sample_rate, int buffer_size)
 #elif ANDROID_DRIVER
     audio* driver = new androidaudio(sample_rate, buffer_size);
 #endif
-    
+
     init(driver);
 }
 
@@ -109,11 +119,17 @@ void DspFaust::init(audio* driver){
     argv[8] = "5511";
     fOSCUI = new OSCUI("Faust", 9, (char**)argv);
     fPolyEngine->buildUserInterface(fOSCUI);
-    
+
+#endif
+
+#if SOUNDFILE
+    // Use bundle path
+    fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
+    fPolyEngine->buildUserInterface(fSoundInterface);
 #endif
 
 }
-   
+
 
 DspFaust::~DspFaust(){
 	delete fPolyEngine;
@@ -122,7 +138,11 @@ DspFaust::~DspFaust(){
 #endif
 
 #if OSCCTRL
-    delete fOSCUI; 
+    delete fOSCUI;
+#endif
+
+#if SOUNDFILE
+    delete fSoundInterface;
 #endif
 
 
@@ -134,7 +154,7 @@ bool DspFaust::start(){
 #endif
 
 #if OSCCTRL
-    fOSCUI->run(); 
+    fOSCUI->run();
 #endif
 
 	return fPolyEngine->start();
@@ -146,7 +166,7 @@ void DspFaust::stop(){
 #endif
 
 #if OSCCTRL
-    fOSCUI->stop(); 
+    fOSCUI->stop();
 #endif
 
 	fPolyEngine->stop();
@@ -231,27 +251,27 @@ const char* DspFaust::getVoiceParamAddress(int id, long voice){
 float DspFaust::getParamMin(const char* address){
     return fPolyEngine->getParamMin(address);
 }
-      
+
 float DspFaust::getParamMin(int id){
     return fPolyEngine->getParamMin(id);
 }
-      
+
 float DspFaust::getParamMax(const char* address){
     return fPolyEngine->getParamMax(address);
 }
-      
+
 float DspFaust::getParamMax(int id){
     return fPolyEngine->getParamMax(id);
 }
-      
+
 float DspFaust::getParamInit(const char* address){
     return fPolyEngine->getParamInit(address);
 }
-      
+
 float DspFaust::getParamInit(int id){
     return fPolyEngine->getParamInit(id);
 }
-      
+
 const char* DspFaust::getMetadata(const char* address, const char* key)
 {
     return fPolyEngine->getMetadata(address, key);
@@ -285,4 +305,3 @@ float DspFaust::getCPULoad(){
 int DspFaust::getScreenColor(){
 	return fPolyEngine->getScreenColor();
 }
-

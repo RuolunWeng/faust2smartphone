@@ -34,6 +34,17 @@
 #include <cmath>
 
 //**************************************************************
+// Soundfile handling
+//**************************************************************
+
+// Must be done before <<includeclass>> otherwise the 'Soundfile' type is not known
+
+#if SOUNDFILE
+#include "faust/gui/SoundUI.h"
+#endif
+
+
+//**************************************************************
 // Intrinsic
 //**************************************************************
 
@@ -66,11 +77,11 @@ ztimedmap GUI::gTimedZoneMap;
 
 DspFaust::DspFaust(int sample_rate, int buffer_size){
     fMotionEngine = new FaustMotionEngine(new motion_audio(sample_rate, buffer_size, 0, false, false));
-    
+
     //**************************************************************
     // OSC TEST ALLEN
     //**************************************************************
-    
+
     // OSC
 #if OSCCTRL
     const char* argv[9];
@@ -85,64 +96,74 @@ DspFaust::DspFaust(int sample_rate, int buffer_size){
     argv[8] = "5511";
     fOSCUI = new OSCUI("FAUST", 9, (char**)argv);
     fMotionEngine->buildUserInterface(fOSCUI);
-    
+
 #endif
-    
+
+#if SOUNDFILE
+    // Use bundle path
+    fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
+    fPolyEngine->buildUserInterface(fSoundInterface);
+#endif
+
 }
 
 
 DspFaust::~DspFaust(){
     delete fMotionEngine;
-    
+
 #if OSCCTRL
     delete fOSCUI;
+#endif
+
+#if SOUNDFILE
+    delete fSoundInterface;
 #endif
 }
 
 bool DspFaust::start(){
-    
+
 #if OSCCTRL
     fOSCUI->run();
 #endif
-    
+
     return fMotionEngine->start();
 }
 
 void DspFaust::stop(){
-    
+
 #if OSCCTRL
     fOSCUI->stop();
 #endif
-    
+
     fMotionEngine->stop();
 }
 
 
 void DspFaust::render(){
-    
+
     fMotionEngine->render();
 }
 
 void DspFaust::setInput(int channel, float value) {
-    
+
     fMotionEngine->setInput(channel, value);
 }
 
 float DspFaust::getOutput(int channel) {
-    
+
     return fMotionEngine->getOutput(channel);
-    
+
 }
 
 int DspFaust::getOutputChannelNum() {
-    
+
     return fMotionEngine->getOutputChannelNum();
 }
 
 int DspFaust::getInputChannelNum() {
-    
+
     return fMotionEngine->getInputChannelNum();
-    
+
 }
 
 bool DspFaust::isRunning(){

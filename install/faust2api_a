@@ -30,6 +30,7 @@ EFFECT=""
 OPTIONS=""
 
 OSCCTRL="0"
+SOUNDFILE="0"
 
 
 echoHelp ()
@@ -54,6 +55,7 @@ echoHelp ()
     echo "IOS-SPECIFIC OPTIONS "
     echo "   -midi : add built-in RtMidi support to the API."
     echo "   -osc : add osc support to the API."
+    echo "   -soundfile : add soundfile support to the API."
     echo "   -iosmotion : generate app with motion support."
     echo "   -iosplugin : generate faustplugin support."
 }
@@ -67,6 +69,8 @@ do
 	     echoHelp
   elif [ "$PACKAGENAME" = "-1" ]; then
 		PACKAGENAME="$p"
+  elif [ "$p" = "-soundfile" ]; then
+    SOUNDFILE="1"
 	elif [ $p = "-osc" ]; then
         OSCCTRL="1"
   elif [ $p = "-android" ]; then
@@ -204,13 +208,20 @@ elif [ $IOS -eq 1 ]; then
     if [ "$MIDI" = "1" ]; then
 	echo "#define IOS_MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
+
     if [ "$OSCCTRL" = "1" ]; then
-    faust -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+    faust -lang ocpp -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$SOUNDFILE" = "1" ]; then
+  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     else
-    faust -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+      faust -lang ocpp -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$SOUNDFILE" = "1" ]; then
+  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     fi
 
 elif [ $IOSMOTION -eq 1 ]; then
@@ -219,22 +230,36 @@ elif [ $IOSMOTION -eq 1 ]; then
     echo "#include <string>" | cat - "$APIFOLDER/DspFaust.h" > temp && mv temp "$APIFOLDER/DspFaust.h"
     echo "#include <vector>" | cat - "$APIFOLDER/DspFaust.h" > temp && mv temp "$APIFOLDER/DspFaust.h"
     if [ "$OSCCTRL" = "1" ]; then
-    faust -i -a api-allen/motion/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+    faust -lang ocpp -i -a api-allen/motion/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$SOUNDFILE" = "1" ]; then
+  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     else
-    faust -i -a api-allen/motion/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+      faust -lang ocpp -i -a api-allen/motion/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$SOUNDFILE" = "1" ]; then
+  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     fi
 
 elif [ $IOSPLUGIN -eq 1 ]; then
     echo "Your dsp-faust.zip API package for iOS-PLUGIN is being created"
     cp -r /usr/local/share/faust/api-allen/plugin/DspFaust.h $APIFOLDER
     if [ "$OSCCTRL" = "1" ]; then
-    faust -i -a api-allen/plugin/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+    faust -lang ocpp -i -a api-allen/plugin/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$SOUNDFILE" = "1" ]; then
+  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     else
-    faust -i -a api-allen/plugin/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+      faust -lang ocpp -i -a api-allen/plugin/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
+    echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$SOUNDFILE" = "1" ]; then
+  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     fi
 else
     echoHelp
@@ -283,6 +308,9 @@ if [ $NODOC -eq 0 ]; then
 	if [ "$NVOICES" -gt "0" ]; then
 		echo "#define NVOICES $NVOICES" | cat - "$PPFILE" > temp && mv temp "$PPFILE"
 	fi
+  if [ "$SOUNDFILE" = "1" ]; then
+      echo "#define SOUNDFILE 1" | cat - "$PPFILE"  > temp && mv temp "$PPFILE"
+  fi
 
 	# compile c++ to binary
 	(

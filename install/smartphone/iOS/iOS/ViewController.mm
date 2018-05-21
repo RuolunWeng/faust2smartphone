@@ -44,7 +44,7 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     dspFaust->start();
     
-    #error FIXME: fix now! and comment me!
+    //#error FIXME: fix now! and comment me!
     //////////////////////////////////////////////
     //Change the parameter address and value to initialize
     //////////////////////////////////////////////
@@ -61,10 +61,6 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
-    [self stopMotion];
-    [self stopUpdate];
-    dspFaust->stop();
-    delete dspFaust;
 }
 
 
@@ -119,7 +115,7 @@
 
 - (void)updateGUI
 {
-    #error FIXME: fix now! and comment me!
+    //#error FIXME: fix now! and comment me!
     //////////////////////////////////////////////
     //Change the parameter address and value to update UI
     //////////////////////////////////////////////
@@ -148,7 +144,7 @@
 
 
 
-#error FIXME: fix now! and comment me!
+//#error FIXME: fix now! and comment me!
 //////////////////////////////////////////////
 //Bulid your own interface
 //(Main.storyboard / viewController.h)

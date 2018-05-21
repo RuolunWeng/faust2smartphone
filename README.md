@@ -36,6 +36,8 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     "-osc" for OSC support
     
+    "-soundfile" for build-in soundfile support [iOS only for now].
+    
     "-iosmotion" to generate a project with Motion support for iOS.
 
     "-androidmotion" to generate a project with Motion support for Android.

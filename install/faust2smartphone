@@ -34,6 +34,7 @@ OPTIONS=""
 LIBMOTION=""
 CHANGELIB=0
 CUEMANAGER=0
+SOUNDFILE="0"
 
 echoHelp ()
 {
@@ -51,6 +52,7 @@ echoHelp ()
 	echo "Option: -androidplugin for Android Studio with faust plugin"
 	echo "Option: -updatelib <.lib> for update motion library"
 	echo "Option: -osc for OSC support"
+	echo "Option: -soundfile for soundfile support"
 	echo "Option: -cuemanager for using Cue Maneger system"
 	echo "Option: -reuse for Uptade the project"
 	echo "Option: -help for Help"
@@ -62,7 +64,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone -"
 	echo "===================================="
-	echo "- Version: 4.1 -"
+	echo "- Version: 4.5 -"
 	echo "===================================="
 }
 
@@ -91,6 +93,8 @@ do
 		IOSPLUGIN="1"
 	elif [ $p = "-androidplugin" ]; then
 		ANDROIDPLUGIN="1"
+	elif [ $p = "-soundfile" ]; then
+		SOUNDFILE="1"
 	elif [ $p = "-reuse" ]; then
 		REUSE=1
 	elif [ $p = "-source" ]; then
@@ -364,8 +368,13 @@ elif [ $ANDROIDPLUGIN -eq 1 ]; then
 
 elif [ $IOS -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
-		echo "Adding DSP with no effect chain to the app" > $LOG
-		faust2api_a $OPTIONS -ios -nodoc "$FILE" > $LOG
+	  if [ "$SOUNDFILE" = "1" ]; then
+		  echo "Adding DSP with soundfile support to the app" > $LOG
+		  faust2api_a $OPTIONS -ios -soundfile -nodoc "$FILE" > $LOG
+	  else
+			echo "Adding DSP with no effect chain to the app" > $LOG
+			faust2api_a $OPTIONS -ios -nodoc "$FILE" > $LOG
+		fi
 	else
 		echo "Adding DSP with effect chain to the app" > $LOG
 		faust2api_a $OPTIONS -ios -midi -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
@@ -377,8 +386,13 @@ elif [ $IOS -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 
 elif [ $IOSPLUGIN -eq 1 ]; then
-	echo "Adding DSP to the app" > $LOG
+	if [ "$SOUNDFILE" = "1" ]; then
+		echo "Adding DSP with soundfile support to the plugin support app" > $LOG
+		faust2api_a $OPTIONS -iosplugin -soundfile -nodoc "$FILE" > $LOG
+	else
+		echo "Adding DSP to the plugin support app" > $LOG
 		faust2api_a $OPTIONS -iosplugin -nodoc "$FILE" > $LOG
+	fi
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
@@ -386,8 +400,13 @@ elif [ $IOSPLUGIN -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 
 elif [ $IOSMOTION -eq 1 ]; then
-	echo "Adding DSP with motion support to the app" > $LOG
+	if [ "$SOUNDFILE" = "1" ]; then
+		echo "Adding DSP with soundfile support to the motion support app" > $LOG
+		faust2api_a $OPTIONS -iosmotion -soundfile -nodoc "$FILE" > $LOG
+	else
+		echo "Adding DSP to the plugin support app" > $LOG
 		faust2api_a $OPTIONS -iosmotion -nodoc "$FILE" > $LOG
+	fi
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
@@ -411,5 +430,9 @@ else
 	echo "========================================================"
 	echo "An app project $BUILDDIR was created or updated"
 	echo "A compile file was created. [Compile APP after edit the project]"
+	if [ "$SOUNDFILE" = "1" ]; then
+	echo "=============!!Warning!!============="
+	echo "you have to manually add the needed soundfiles in the project"
+	fi
 	echo "========================================================"
 fi

@@ -36,8 +36,8 @@
     // init faust motor
     ////////////////////
     
-    //dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
-    dspFaustMotion = new DspFaustMotion(SR, bufferSize);
+    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
+    //dspFaustMotion = new DspFaustMotion(SR, bufferSize);
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
@@ -367,12 +367,6 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
-    //[self stopUpdate];
-    [self stopMotion];
-    dspFaust->stop();
-    dspFaustMotion->stop();
-    delete dspFaust;
-    delete dspFaustMotion;
 }
 
 /*
@@ -847,10 +841,29 @@
 - (IBAction)motionParamSend:(id)sender {
     
     [_motionParam resignFirstResponder];
-    
+    /*
     for (int i=0; i< _motionParamArray.count; i++) {
         if (paramsOn[i]) {
             dspFaustMotion->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
+            [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
+        }
+    }
+    */
+    // Find the label index of the edited parameter
+    int i = -1;
+    for (i=0; i<_motionParamArray.count; i++) {
+        if (paramsOn[i]) {
+            break;
+        }
+    }
+    
+    // Find the label of the edited parameter using its index
+    std::string param = [_motionParamArray[i] UTF8String];
+    
+    // Change value of all addresses with the same label
+    for (int i=0; i<_motionParamArray.count; i++) {
+        if ([_motionParamArray[i] UTF8String] ==  param) {
+            dspFaust->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
             [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
         }
     }
