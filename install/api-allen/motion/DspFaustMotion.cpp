@@ -40,6 +40,7 @@
 // Polyphony
 //**************************************************************
 
+#include "faust/dsp/faust-poly-engine.h"
 #include "faust/dsp/faust-motion-engine.h"
 
 //**************************************************************
@@ -58,53 +59,53 @@
 
 
 DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
-    fMotionEngine = new FaustMotionEngine(new motion_audio(sample_rate, buffer_size, 0, false, false));
-    
+    fMotionEngine = new FaustMotionEngine(NULL,new motion_audio(sample_rate, buffer_size, 0, false, false));
+
 }
 
 
 
 DspFaustMotion::~DspFaustMotion(){
     delete fMotionEngine;
-    
+
 }
 
 bool DspFaustMotion::start(){
-    
+
     return fMotionEngine->start();
 }
 
 void DspFaustMotion::stop(){
-    
+
     fMotionEngine->stop();
 }
 
 
 void DspFaustMotion::render(){
-    
+
     fMotionEngine->render();
 }
 
 void DspFaustMotion::setInput(int channel, float value) {
-    
+
     fMotionEngine->setInput(channel, value);
 }
 
 float DspFaustMotion::getOutput(int channel) {
-    
+
     return fMotionEngine->getOutput(channel);
-    
+
 }
 
 int DspFaustMotion::getOutputChannelNum() {
-    
+
     return fMotionEngine->getOutputChannelNum();
 }
 
 int DspFaustMotion::getInputChannelNum() {
-    
+
     return fMotionEngine->getInputChannelNum();
-    
+
 }
 
 bool DspFaustMotion::isRunning(){

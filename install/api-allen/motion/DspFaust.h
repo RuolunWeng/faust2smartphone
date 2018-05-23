@@ -24,7 +24,7 @@
 //===============API Reference==============
 //==========================================
 
-class FaustPolyEngine;
+class MyFaustPolyEngine;
 class OSCUI;
 class SoundUI;
 class DspFaustMotion;
@@ -454,7 +454,7 @@ public:
     void checkAdress();
 
 private:
-    FaustPolyEngine *fPolyEngine;
+    MyFaustPolyEngine *fPolyEngine;
     OSCUI *fOSCUI;
     SoundUI* fSoundInterface;
     DspFaustMotion *fDSPFAUSTMOTION;

@@ -17,87 +17,48 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __faust_motion_engine_m__
-#define __faust_motion_engine_m__
-
-
-#include "faust/audio/audio_m.h"
+#ifndef __faust_poly_engine_m__
+#define __faust_poly_engine_m__
 
 
 //**************************************************************
-// Motion "audio" DSP engine modified from faust_poly_engine
+// audio DSP engine modified from faust-poly-engine.h
 //**************************************************************
 
 using namespace std;
 
-
-class FaustMotionEngine : public FaustPolyEngine
+class MyFaustPolyEngine : public FaustPolyEngine
 {
 
 public:
 
-    myaudio* fDriver;
+    MY_Meta metadata;
 
-    FaustMotionEngine(dsp* mono_dsp, myaudio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
+    MyFaustPolyEngine(dsp* mono_dsp, audio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
     {
         init(((mono_dsp) ? mono_dsp : new mydsp()), driver, NULL);
-        fDriver = driver;
     }
 
-    virtual ~FaustMotionEngine()
+    virtual ~MyFaustPolyEngine()
     {
         delete fDriver;
         delete fFinalDSP;
     }
 
+        const char* getMeta(const char* name)
+        {
 
-    /*
-     * render()
-     * Render motion dsp buffer
-     */
+            if ((*metadata.find(name)) != *metadata.end()) {
+                return (*metadata.find(name)).second;
+            } else {
 
-    void render()
-    {
+                return NULL;
 
-        fDriver->render();
-    }
-
-    /*
-     * setInput(int,float)
-     * connect motion input
-     */
-    void setInput(int channel,float value)
-    {
-        fDriver->setInputValue(channel, value);
-    }
-
-    /*
-     * getOutput(int)
-     * get motion output
-     */
-    float getOutput(int channel)
-    {
-        return fDriver->getOutputValue(channel);
-    }
-
-    /*
-     * getOutputChannelNum()
-     * get motion output num
-     */
-    float getOutputChannelNum()
-    {
-        return fDriver->getNumOutputs();
-    }
-
-    /*
-     * getInputChannelNum()
-     * get motion output
-     */
-    float getInputChannelNum()
-    {
-        return fDriver->getNumInputs();
-    }
+            }
+        }
 
 };
 
-#endif // __faust_motion_engine__
+
+
+#endif // __faust_poly_engine_m__

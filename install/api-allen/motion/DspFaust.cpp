@@ -56,7 +56,8 @@
 // Polyphony
 //**************************************************************
 
-#include "faust/dsp/faust-poly-engine_a.h"
+#include "faust/dsp/faust-poly-engine.h"
+#include "faust/dsp/faust-poly-engine_m.h"
 
 //**************************************************************
 // IOS Coreaudio / Android audio
@@ -95,7 +96,7 @@ DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_s
 }
 
 void DspFaust::init(audio* driver){
-    fPolyEngine = new FaustPolyEngine(driver);
+    fPolyEngine = new MyFaustPolyEngine(new mydsp(),driver);
 
 #if OSCCTRL
     const char* argv[9];

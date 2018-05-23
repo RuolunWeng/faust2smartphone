@@ -33,45 +33,32 @@
 
  ************************************************************************
  ************************************************************************/
- 
+
 /******************************************************************************
 *******************************************************************************
 
-						An abstraction layer over audio2 layer
+						An abstraction layer over myaudio layer
 
 *******************************************************************************
 *******************************************************************************/
 
-#ifndef __audio2__
-#define __audio2__
+#ifndef __myaudio__
+#define __myaudio__
 
-class dsp;
+#include "faust/audio/audio.h"
 
-typedef void (* shutdown_callback)(const char* message, void* arg);
+class myaudio : public audio
+{
 
-class audio2 {
-    
 public:
-			 audio2() {}
-    virtual ~audio2() {}
+
     
-    virtual bool init(const char* name, dsp*)               = 0;
-    virtual bool start()                                    = 0;
-    virtual void stop()                                     = 0;
-    virtual void render()                                   = 0;
-    virtual void shutdown(shutdown_callback cb, void* arg)  {}
-    
-    virtual int getBufferSize() = 0;
-    virtual int getSampleRate() = 0;
-    
-    virtual int getNumInputs() { return -1; }
-    virtual int getNumOutputs() { return -1; }
-    
-    virtual float getCPULoad() { return 0.f; }
-    
+    virtual void render()                                  = 0;
+
     virtual void setInputValue(int ch,float val)           = 0;
     virtual float getOutputValue(int ch) { return 0.f; }
     
+
 };
-					
+
 #endif

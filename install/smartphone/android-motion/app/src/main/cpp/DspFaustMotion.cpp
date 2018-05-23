@@ -2522,9 +2522,9 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox28, "20", "");
 		ui_interface->declare(&fcheckbox28, "motionName", "azpn");
 		ui_interface->addCheckButton("azpnOn", &fcheckbox28);
-		ui_interface->declare(&fcheckbox23, "21", "");
-		ui_interface->declare(&fcheckbox23, "motionName", "axp");
-		ui_interface->addCheckButton("axpOn", &fcheckbox23);
+		ui_interface->declare(&fcheckbox22, "21", "");
+		ui_interface->declare(&fcheckbox22, "motionName", "axp");
+		ui_interface->addCheckButton("axpOn", &fcheckbox22);
 		ui_interface->declare(&fcheckbox26, "22", "");
 		ui_interface->declare(&fcheckbox26, "motionName", "ayp");
 		ui_interface->addCheckButton("aypOn", &fcheckbox26);
@@ -2540,9 +2540,9 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox29, "26", "");
 		ui_interface->declare(&fcheckbox29, "motionName", "azn");
 		ui_interface->addCheckButton("aznOn", &fcheckbox29);
-		ui_interface->declare(&fcheckbox22, "27", "");
-		ui_interface->declare(&fcheckbox22, "motionName", "totalaccel");
-		ui_interface->addCheckButton("totalaccelOn", &fcheckbox22);
+		ui_interface->declare(&fcheckbox23, "27", "");
+		ui_interface->declare(&fcheckbox23, "motionName", "totalaccel");
+		ui_interface->addCheckButton("totalaccelOn", &fcheckbox23);
 		ui_interface->declare(&fcheckbox31, "28", "");
 		ui_interface->declare(&fcheckbox31, "motionName", "gxpn");
 		ui_interface->addCheckButton("gxpnOn", &fcheckbox31);
@@ -2612,57 +2612,57 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox53, "50", "");
 		ui_interface->declare(&fcheckbox53, "motionName", "dos_cour");
 		ui_interface->addCheckButton("dos_courOn", &fcheckbox53);
-		ui_interface->declare(&fcheckbox54, "51", "");
-		ui_interface->declare(&fcheckbox54, "motionName", "dos_rear");
-		ui_interface->addCheckButton("dos_rearOn", &fcheckbox54);
-		ui_interface->declare(&fcheckbox55, "52", "");
-		ui_interface->declare(&fcheckbox55, "motionName", "dos_jardin");
-		ui_interface->addCheckButton("dos_jardinOn", &fcheckbox55);
-		ui_interface->declare(&fcheckbox56, "53", "");
-		ui_interface->declare(&fcheckbox56, "motionName", "dos_front");
-		ui_interface->addCheckButton("dos_frontOn", &fcheckbox56);
-		ui_interface->declare(&fcheckbox57, "54", "");
-		ui_interface->declare(&fcheckbox57, "motionName", "dos_down");
-		ui_interface->addCheckButton("dos_downOn", &fcheckbox57);
-		ui_interface->declare(&fcheckbox58, "55", "");
-		ui_interface->declare(&fcheckbox58, "motionName", "dos_up");
-		ui_interface->addCheckButton("dos_upOn", &fcheckbox58);
+		ui_interface->declare(&fcheckbox58, "51", "");
+		ui_interface->declare(&fcheckbox58, "motionName", "dos_rear");
+		ui_interface->addCheckButton("dos_rearOn", &fcheckbox58);
+		ui_interface->declare(&fcheckbox54, "52", "");
+		ui_interface->declare(&fcheckbox54, "motionName", "dos_jardin");
+		ui_interface->addCheckButton("dos_jardinOn", &fcheckbox54);
+		ui_interface->declare(&fcheckbox55, "53", "");
+		ui_interface->declare(&fcheckbox55, "motionName", "dos_front");
+		ui_interface->addCheckButton("dos_frontOn", &fcheckbox55);
+		ui_interface->declare(&fcheckbox56, "54", "");
+		ui_interface->declare(&fcheckbox56, "motionName", "dos_down");
+		ui_interface->addCheckButton("dos_downOn", &fcheckbox56);
+		ui_interface->declare(&fcheckbox57, "55", "");
+		ui_interface->declare(&fcheckbox57, "motionName", "dos_up");
+		ui_interface->addCheckButton("dos_upOn", &fcheckbox57);
 		ui_interface->declare(&fcheckbox59, "56", "");
 		ui_interface->declare(&fcheckbox59, "motionName", "brasD_cour");
 		ui_interface->addCheckButton("brasD_courOn", &fcheckbox59);
-		ui_interface->declare(&fcheckbox60, "57", "");
-		ui_interface->declare(&fcheckbox60, "motionName", "brasD_rear");
-		ui_interface->addCheckButton("brasD_rearOn", &fcheckbox60);
-		ui_interface->declare(&fcheckbox61, "58", "");
-		ui_interface->declare(&fcheckbox61, "motionName", "brasD_jardin");
-		ui_interface->addCheckButton("brasD_jardinOn", &fcheckbox61);
-		ui_interface->declare(&fcheckbox62, "59", "");
-		ui_interface->declare(&fcheckbox62, "motionName", "brasD_front");
-		ui_interface->addCheckButton("brasD_frontOn", &fcheckbox62);
-		ui_interface->declare(&fcheckbox63, "60", "");
-		ui_interface->declare(&fcheckbox63, "motionName", "brasD_down");
-		ui_interface->addCheckButton("brasD_downOn", &fcheckbox63);
-		ui_interface->declare(&fcheckbox64, "61", "");
-		ui_interface->declare(&fcheckbox64, "motionName", "brasD_up");
-		ui_interface->addCheckButton("brasD_upOn", &fcheckbox64);
+		ui_interface->declare(&fcheckbox61, "57", "");
+		ui_interface->declare(&fcheckbox61, "motionName", "brasD_rear");
+		ui_interface->addCheckButton("brasD_rearOn", &fcheckbox61);
+		ui_interface->declare(&fcheckbox62, "58", "");
+		ui_interface->declare(&fcheckbox62, "motionName", "brasD_jardin");
+		ui_interface->addCheckButton("brasD_jardinOn", &fcheckbox62);
+		ui_interface->declare(&fcheckbox63, "59", "");
+		ui_interface->declare(&fcheckbox63, "motionName", "brasD_front");
+		ui_interface->addCheckButton("brasD_frontOn", &fcheckbox63);
+		ui_interface->declare(&fcheckbox64, "60", "");
+		ui_interface->declare(&fcheckbox64, "motionName", "brasD_down");
+		ui_interface->addCheckButton("brasD_downOn", &fcheckbox64);
+		ui_interface->declare(&fcheckbox60, "61", "");
+		ui_interface->declare(&fcheckbox60, "motionName", "brasD_up");
+		ui_interface->addCheckButton("brasD_upOn", &fcheckbox60);
 		ui_interface->declare(&fcheckbox65, "62", "");
 		ui_interface->declare(&fcheckbox65, "motionName", "tete_cour");
 		ui_interface->addCheckButton("tete_courOn", &fcheckbox65);
 		ui_interface->declare(&fcheckbox66, "63", "");
 		ui_interface->declare(&fcheckbox66, "motionName", "tete_rear");
 		ui_interface->addCheckButton("tete_rearOn", &fcheckbox66);
-		ui_interface->declare(&fcheckbox68, "64", "");
-		ui_interface->declare(&fcheckbox68, "motionName", "tete_jardin");
-		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox68);
-		ui_interface->declare(&fcheckbox69, "65", "");
-		ui_interface->declare(&fcheckbox69, "motionName", "tete_front");
-		ui_interface->addCheckButton("tete_frontOn", &fcheckbox69);
-		ui_interface->declare(&fcheckbox70, "66", "");
-		ui_interface->declare(&fcheckbox70, "motionName", "tete_down");
-		ui_interface->addCheckButton("tete_downOn", &fcheckbox70);
-		ui_interface->declare(&fcheckbox67, "67", "");
-		ui_interface->declare(&fcheckbox67, "motionName", "tete_up");
-		ui_interface->addCheckButton("tete_upOn", &fcheckbox67);
+		ui_interface->declare(&fcheckbox69, "64", "");
+		ui_interface->declare(&fcheckbox69, "motionName", "tete_jardin");
+		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox69);
+		ui_interface->declare(&fcheckbox70, "65", "");
+		ui_interface->declare(&fcheckbox70, "motionName", "tete_front");
+		ui_interface->addCheckButton("tete_frontOn", &fcheckbox70);
+		ui_interface->declare(&fcheckbox67, "66", "");
+		ui_interface->declare(&fcheckbox67, "motionName", "tete_down");
+		ui_interface->addCheckButton("tete_downOn", &fcheckbox67);
+		ui_interface->declare(&fcheckbox68, "67", "");
+		ui_interface->declare(&fcheckbox68, "motionName", "tete_up");
+		ui_interface->addCheckButton("tete_upOn", &fcheckbox68);
 		ui_interface->declare(&fcheckbox71, "68", "");
 		ui_interface->declare(&fcheckbox71, "motionName", "ventre_cour");
 		ui_interface->addCheckButton("ventre_courOn", &fcheckbox71);
@@ -3082,7 +3082,7 @@ class mydsp2 : public dsp {
 				fVec0[0] = fSlow7;
 				fRec3[0] = ((fSlow5 * fRec3[1]) + (fSlow6 * (fSlow8 + (fSlow9 * fVec0[1]))));
 				iTempPerm0 = ((int(iRec1[1]))?(fRec3[0] > fSlow10):1);
-				fRec4[0] = (iTempPerm0 * (fConst2 + fRec4[1]));
+				fRec4[0] = ((fConst2 + fRec4[1]) * iTempPerm0);
 				iTempPerm1 = (iTempPerm0 * ((1000 * fRec4[0]) < fSlow11));
 				iRec1[0] = (iTempPerm1 == 0);
 				int 	iRec2 = iTempPerm1;
@@ -3224,7 +3224,7 @@ class mydsp2 : public dsp {
 			output12[i] = (FAUSTFLOAT)fTempPerm36;
 			if (iSlow66) {
 				fVec19[0] = fSlow67;
-				fRec37[0] = ((fSlow37 * (fSlow67 + fVec19[1])) + (fSlow36 * fRec37[1]));
+				fRec37[0] = ((fSlow36 * fRec37[1]) + (fSlow37 * (fSlow67 + fVec19[1])));
 				fTempPerm37 = (fSlow65 * min((float)1, max((float)0, (fSlow63 * max((float)0, ((0.5f * ((0.63661977236758138f * asinf(min((float)1, max((float)-1, fRec37[0])))) + 1)) - fSlow62))))));
 			}
 			output13[i] = (FAUSTFLOAT)fTempPerm37;
@@ -3252,7 +3252,7 @@ class mydsp2 : public dsp {
 				fTempPerm41 = (fSlow77 * min((float)1, max((float)0, (fSlow63 * max((float)0, ((0.5f * ((0.63661977236758138f * asinf(min((float)1, max((float)-1, fRec41[0])))) + 1)) - fSlow62))))));
 			}
 			output17[i] = (FAUSTFLOAT)fTempPerm41;
-			if (iSlow85 || iSlow81 || iSlow87 || iSlow89) {
+			if (iSlow81 || iSlow85 || iSlow87 || iSlow89) {
 				fVec24[0] = fSlow83;
 				fRec44[0] = (fConst4 * ((fSlow83 - fVec24[1]) + (fConst5 * fRec44[1])));
 			}
@@ -3264,7 +3264,7 @@ class mydsp2 : public dsp {
 				fTempPerm44 = (fSlow80 * fRec42[0]);
 			}
 			output18[i] = (FAUSTFLOAT)fTempPerm44;
-			if (iSlow85 || iSlow94 || iSlow97 || iSlow99) {
+			if (iSlow94 || iSlow97 || iSlow99 || iSlow87) {
 				fVec25[0] = fSlow95;
 				fRec47[0] = (fConst4 * ((fSlow95 - fVec25[1]) + (fConst5 * fRec47[1])));
 			}
@@ -3276,7 +3276,7 @@ class mydsp2 : public dsp {
 				fTempPerm47 = (fSlow93 * fRec45[0]);
 			}
 			output19[i] = (FAUSTFLOAT)fTempPerm47;
-			if (iSlow104 || iSlow85 || iSlow101 || iSlow106) {
+			if (iSlow101 || iSlow104 || iSlow87 || iSlow106) {
 				fVec26[0] = fSlow102;
 				fRec50[0] = (fConst4 * ((fSlow102 - fVec26[1]) + (fConst5 * fRec50[1])));
 			}
@@ -3288,12 +3288,12 @@ class mydsp2 : public dsp {
 				fTempPerm50 = (fSlow100 * fRec48[0]);
 			}
 			output20[i] = (FAUSTFLOAT)fTempPerm50;
-			if (iSlow87) {
+			if (iSlow85) {
 				fTempPerm51 = fabsf(min((float)1, (fSlow82 * max((float)0, (fRec44[0] - fSlow90)))));
 				fTempPerm52 = ((int((fRec51[1] > fTempPerm51)))?fSlow91:fSlow92);
 				fRec52[0] = ((fRec52[1] * fTempPerm52) + (fTempPerm51 * (1.0f - fTempPerm52)));
 				fRec51[0] = fRec52[0];
-				fTempPerm53 = (fSlow86 * fRec51[0]);
+				fTempPerm53 = (fSlow84 * fRec51[0]);
 			}
 			output21[i] = (FAUSTFLOAT)fTempPerm53;
 			if (iSlow97) {
@@ -3323,7 +3323,7 @@ class mydsp2 : public dsp {
 			if (iSlow99) {
 				fTempPerm63 = fabsf(min((float)1, (fSlow82 * max((float)0, (0 - (fSlow90 + fRec47[0]))))));
 				fTempPerm64 = ((int((fRec59[1] > fTempPerm63)))?fSlow91:fSlow92);
-				fRec60[0] = ((fRec60[1] * fTempPerm64) + (fTempPerm63 * (1.0f - fTempPerm64)));
+				fRec60[0] = ((fTempPerm64 * fRec60[1]) + (fTempPerm63 * (1.0f - fTempPerm64)));
 				fRec59[0] = fRec60[0];
 				fTempPerm65 = (fSlow98 * fRec59[0]);
 			}
@@ -3336,12 +3336,12 @@ class mydsp2 : public dsp {
 				fTempPerm68 = (fSlow103 * fRec61[0]);
 			}
 			output26[i] = (FAUSTFLOAT)fTempPerm68;
-			if (iSlow85) {
+			if (iSlow87) {
 				fTempPerm69 = fabsf(min((float)1, (fSlow82 * max((float)0, (sqrtf(((faustpower<2>(fRec44[0]) + faustpower<2>(fRec47[0])) + faustpower<2>(fRec50[0]))) - fSlow90)))));
 				fTempPerm70 = ((int((fRec63[1] > fTempPerm69)))?fSlow91:fSlow92);
 				fRec64[0] = ((fRec64[1] * fTempPerm70) + (fTempPerm69 * (1.0f - fTempPerm70)));
 				fRec63[0] = fRec64[0];
-				fTempPerm71 = (fSlow84 * fRec63[0]);
+				fTempPerm71 = (fSlow86 * fRec63[0]);
 			}
 			output27[i] = (FAUSTFLOAT)fTempPerm71;
 			if (iSlow108 || iSlow112 || iSlow114 || iSlow116) {
@@ -3355,7 +3355,7 @@ class mydsp2 : public dsp {
 				fTempPerm74 = (fSlow107 * fRec65[0]);
 			}
 			output28[i] = (FAUSTFLOAT)fTempPerm74;
-			if (iSlow121 || iSlow124 || iSlow126 || iSlow116) {
+			if (iSlow121 || iSlow124 || iSlow116 || iSlow126) {
 				fRec70[0] = (fSlow122 + (0.999f * fRec70[1]));
 			}
 			if (iSlow121) {
@@ -3537,17 +3537,17 @@ class mydsp2 : public dsp {
 				fTempPerm129 = (fSlow162 * fRec99[0]);
 			}
 			output49[i] = (FAUSTFLOAT)fTempPerm129;
-			if (iSlow167 || iSlow169 || iSlow171 || iSlow173 || iSlow175 || iSlow165) {
+			if (iSlow167 || iSlow169 || iSlow171 || iSlow173 || iSlow165 || iSlow175) {
 				fTempPerm130 = (float)input6[i];
 				fTempPerm131 = (float)input7[i];
 			}
-			if (iSlow169 || iSlow173 || iSlow175 || iSlow165) {
+			if (iSlow167 || iSlow171 || iSlow173 || iSlow165) {
 				fTempPerm132 = faustpower<2>(fTempPerm131);
 			}
-			if (iSlow167 || iSlow169 || iSlow171 || iSlow173 || iSlow175 || iSlow165) {
+			if (iSlow167 || iSlow169 || iSlow171 || iSlow173 || iSlow165 || iSlow175) {
 				fTempPerm133 = (float)input8[i];
 			}
-			if (iSlow167 || iSlow169 || iSlow171 || iSlow165) {
+			if (iSlow167 || iSlow169 || iSlow165 || iSlow175) {
 				fTempPerm134 = faustpower<2>(fTempPerm133);
 			}
 			if (iSlow165) {
@@ -3555,51 +3555,51 @@ class mydsp2 : public dsp {
 				fTempPerm135 = (fSlow164 * fRec100[0]);
 			}
 			output50[i] = (FAUSTFLOAT)fTempPerm135;
-			if (iSlow167 || iSlow171 || iSlow173 || iSlow175) {
+			if (iSlow169 || iSlow171 || iSlow173 || iSlow175) {
 				fTempPerm136 = faustpower<2>(fTempPerm130);
 			}
-			if (iSlow167 || iSlow171) {
+			if (iSlow169 || iSlow175) {
 				fTempPerm137 = (fTempPerm134 + fTempPerm136);
 			}
-			if (iSlow167) {
+			if (iSlow175) {
 				fRec101[0] = ((fConst7 * fRec101[1]) + (fConst8 * max(0.0f, (1 - (fSlow147 * sqrtf((faustpower<2>((fTempPerm131 + 1)) + fTempPerm137)))))));
-				fTempPerm138 = (fSlow166 * fRec101[0]);
+				fTempPerm138 = (fSlow174 * fRec101[0]);
 			}
 			output51[i] = (FAUSTFLOAT)fTempPerm138;
-			if (iSlow169) {
+			if (iSlow167) {
 				fRec102[0] = ((fConst7 * fRec102[1]) + (fConst8 * max(0.0f, (1 - (fSlow148 * sqrtf((faustpower<2>((fTempPerm130 + -1.0f)) + (fTempPerm132 + fTempPerm134))))))));
-				fTempPerm139 = (fSlow168 * fRec102[0]);
+				fTempPerm139 = (fSlow166 * fRec102[0]);
 			}
 			output52[i] = (FAUSTFLOAT)fTempPerm139;
-			if (iSlow171) {
+			if (iSlow169) {
 				fRec103[0] = ((fConst7 * fRec103[1]) + (fConst8 * max(0.0f, (1 - (fSlow149 * sqrtf((fTempPerm137 + faustpower<2>((fTempPerm131 + -1.0f)))))))));
-				fTempPerm140 = (fSlow170 * fRec103[0]);
+				fTempPerm140 = (fSlow168 * fRec103[0]);
 			}
 			output53[i] = (FAUSTFLOAT)fTempPerm140;
-			if (iSlow173 || iSlow175) {
+			if (iSlow171 || iSlow173) {
 				fTempPerm141 = (fTempPerm132 + fTempPerm136);
 			}
-			if (iSlow173) {
+			if (iSlow171) {
 				fRec104[0] = ((fConst7 * fRec104[1]) + (fConst8 * max(0.0f, (1 - (fSlow150 * sqrtf((fTempPerm141 + faustpower<2>((fTempPerm133 + 1.0f)))))))));
-				fTempPerm142 = (fSlow172 * fRec104[0]);
+				fTempPerm142 = (fSlow170 * fRec104[0]);
 			}
 			output54[i] = (FAUSTFLOAT)fTempPerm142;
-			if (iSlow175) {
+			if (iSlow173) {
 				fRec105[0] = ((fConst7 * fRec105[1]) + (fConst8 * max(0.0f, (1 - (fSlow151 * sqrtf((fTempPerm141 + faustpower<2>((fTempPerm133 + -1.0f)))))))));
-				fTempPerm143 = (fSlow174 * fRec105[0]);
+				fTempPerm143 = (fSlow172 * fRec105[0]);
 			}
 			output55[i] = (FAUSTFLOAT)fTempPerm143;
 			if (iSlow177 || iSlow179 || iSlow181 || iSlow183 || iSlow185 || iSlow187) {
 				fTempPerm144 = (float)input9[i];
 				fTempPerm145 = (float)input10[i];
 			}
-			if (iSlow177 || iSlow181 || iSlow185 || iSlow187) {
+			if (iSlow177 || iSlow179 || iSlow183 || iSlow187) {
 				fTempPerm146 = faustpower<2>(fTempPerm145);
 			}
 			if (iSlow177 || iSlow179 || iSlow181 || iSlow183 || iSlow185 || iSlow187) {
 				fTempPerm147 = (float)input11[i];
 			}
-			if (iSlow177 || iSlow179 || iSlow181 || iSlow183) {
+			if (iSlow177 || iSlow181 || iSlow183 || iSlow185) {
 				fTempPerm148 = faustpower<2>(fTempPerm147);
 			}
 			if (iSlow177) {
@@ -3607,51 +3607,51 @@ class mydsp2 : public dsp {
 				fTempPerm149 = (fSlow176 * fRec106[0]);
 			}
 			output56[i] = (FAUSTFLOAT)fTempPerm149;
-			if (iSlow179 || iSlow183 || iSlow185 || iSlow187) {
+			if (iSlow179 || iSlow181 || iSlow185 || iSlow187) {
 				fTempPerm150 = faustpower<2>(fTempPerm144);
 			}
-			if (iSlow179 || iSlow183) {
+			if (iSlow181 || iSlow185) {
 				fTempPerm151 = (fTempPerm148 + fTempPerm150);
 			}
-			if (iSlow179) {
+			if (iSlow181) {
 				fRec107[0] = ((fConst7 * fRec107[1]) + (fConst8 * max(0.0f, (1 - (fSlow147 * sqrtf((faustpower<2>((fTempPerm145 + 1)) + fTempPerm151)))))));
-				fTempPerm152 = (fSlow178 * fRec107[0]);
+				fTempPerm152 = (fSlow180 * fRec107[0]);
 			}
 			output57[i] = (FAUSTFLOAT)fTempPerm152;
-			if (iSlow181) {
+			if (iSlow183) {
 				fRec108[0] = ((fConst7 * fRec108[1]) + (fConst8 * max(0.0f, (1 - (fSlow148 * sqrtf((faustpower<2>((fTempPerm144 + -1.0f)) + (fTempPerm146 + fTempPerm148))))))));
-				fTempPerm153 = (fSlow180 * fRec108[0]);
+				fTempPerm153 = (fSlow182 * fRec108[0]);
 			}
 			output58[i] = (FAUSTFLOAT)fTempPerm153;
-			if (iSlow183) {
+			if (iSlow185) {
 				fRec109[0] = ((fConst7 * fRec109[1]) + (fConst8 * max(0.0f, (1 - (fSlow149 * sqrtf((fTempPerm151 + faustpower<2>((fTempPerm145 + -1.0f)))))))));
-				fTempPerm154 = (fSlow182 * fRec109[0]);
+				fTempPerm154 = (fSlow184 * fRec109[0]);
 			}
 			output59[i] = (FAUSTFLOAT)fTempPerm154;
-			if (iSlow185 || iSlow187) {
+			if (iSlow179 || iSlow187) {
 				fTempPerm155 = (fTempPerm146 + fTempPerm150);
 			}
-			if (iSlow185) {
+			if (iSlow187) {
 				fRec110[0] = ((fConst7 * fRec110[1]) + (fConst8 * max(0.0f, (1 - (fSlow150 * sqrtf((fTempPerm155 + faustpower<2>((fTempPerm147 + 1.0f)))))))));
-				fTempPerm156 = (fSlow184 * fRec110[0]);
+				fTempPerm156 = (fSlow186 * fRec110[0]);
 			}
 			output60[i] = (FAUSTFLOAT)fTempPerm156;
-			if (iSlow187) {
+			if (iSlow179) {
 				fRec111[0] = ((fConst7 * fRec111[1]) + (fConst8 * max(0.0f, (1 - (fSlow151 * sqrtf((fTempPerm155 + faustpower<2>((fTempPerm147 + -1.0f)))))))));
-				fTempPerm157 = (fSlow186 * fRec111[0]);
+				fTempPerm157 = (fSlow178 * fRec111[0]);
 			}
 			output61[i] = (FAUSTFLOAT)fTempPerm157;
 			if (iSlow189 || iSlow191 || iSlow193 || iSlow195 || iSlow197 || iSlow199) {
 				fTempPerm158 = (float)input12[i];
 				fTempPerm159 = (float)input13[i];
 			}
-			if (iSlow189 || iSlow193 || iSlow195 || iSlow199) {
+			if (iSlow189 || iSlow193 || iSlow195 || iSlow197) {
 				fTempPerm160 = faustpower<2>(fTempPerm159);
 			}
 			if (iSlow189 || iSlow191 || iSlow193 || iSlow195 || iSlow197 || iSlow199) {
 				fTempPerm161 = (float)input14[i];
 			}
-			if (iSlow189 || iSlow191 || iSlow195 || iSlow197) {
+			if (iSlow189 || iSlow191 || iSlow197 || iSlow199) {
 				fTempPerm162 = faustpower<2>(fTempPerm161);
 			}
 			if (iSlow189) {
@@ -3659,10 +3659,10 @@ class mydsp2 : public dsp {
 				fTempPerm163 = (fSlow188 * fRec112[0]);
 			}
 			output62[i] = (FAUSTFLOAT)fTempPerm163;
-			if (iSlow191 || iSlow193 || iSlow197 || iSlow199) {
+			if (iSlow191 || iSlow193 || iSlow195 || iSlow199) {
 				fTempPerm164 = faustpower<2>(fTempPerm158);
 			}
-			if (iSlow191 || iSlow197) {
+			if (iSlow191 || iSlow199) {
 				fTempPerm165 = (fTempPerm162 + fTempPerm164);
 			}
 			if (iSlow191) {
@@ -3670,40 +3670,40 @@ class mydsp2 : public dsp {
 				fTempPerm166 = (fSlow190 * fRec113[0]);
 			}
 			output63[i] = (FAUSTFLOAT)fTempPerm166;
-			if (iSlow195) {
+			if (iSlow197) {
 				fRec114[0] = ((fConst7 * fRec114[1]) + (fConst8 * max(0.0f, (1 - (fSlow148 * sqrtf((faustpower<2>((fTempPerm158 + -1.0f)) + (fTempPerm160 + fTempPerm162))))))));
-				fTempPerm167 = (fSlow194 * fRec114[0]);
+				fTempPerm167 = (fSlow196 * fRec114[0]);
 			}
 			output64[i] = (FAUSTFLOAT)fTempPerm167;
-			if (iSlow197) {
+			if (iSlow199) {
 				fRec115[0] = ((fConst7 * fRec115[1]) + (fConst8 * max(0.0f, (1 - (fSlow149 * sqrtf((fTempPerm165 + faustpower<2>((fTempPerm159 + -1.0f)))))))));
-				fTempPerm168 = (fSlow196 * fRec115[0]);
+				fTempPerm168 = (fSlow198 * fRec115[0]);
 			}
 			output65[i] = (FAUSTFLOAT)fTempPerm168;
-			if (iSlow193 || iSlow199) {
+			if (iSlow193 || iSlow195) {
 				fTempPerm169 = (fTempPerm160 + fTempPerm164);
 			}
-			if (iSlow199) {
+			if (iSlow193) {
 				fRec116[0] = ((fConst7 * fRec116[1]) + (fConst8 * max(0.0f, (1 - (fSlow150 * sqrtf((fTempPerm169 + faustpower<2>((fTempPerm161 + 1.0f)))))))));
-				fTempPerm170 = (fSlow198 * fRec116[0]);
+				fTempPerm170 = (fSlow192 * fRec116[0]);
 			}
 			output66[i] = (FAUSTFLOAT)fTempPerm170;
-			if (iSlow193) {
+			if (iSlow195) {
 				fRec117[0] = ((fConst7 * fRec117[1]) + (fConst8 * max(0.0f, (1 - (fSlow151 * sqrtf((fTempPerm169 + faustpower<2>((fTempPerm161 + -1.0f)))))))));
-				fTempPerm171 = (fSlow192 * fRec117[0]);
+				fTempPerm171 = (fSlow194 * fRec117[0]);
 			}
 			output67[i] = (FAUSTFLOAT)fTempPerm171;
-			if (iSlow203 || iSlow205 || iSlow201 || iSlow207 || iSlow209 || iSlow211) {
+			if (iSlow201 || iSlow203 || iSlow205 || iSlow207 || iSlow209 || iSlow211) {
 				fTempPerm172 = (float)input15[i];
 				fTempPerm173 = (float)input16[i];
 			}
-			if (iSlow205 || iSlow201 || iSlow209 || iSlow211) {
+			if (iSlow201 || iSlow205 || iSlow209 || iSlow211) {
 				fTempPerm174 = faustpower<2>(fTempPerm173);
 			}
-			if (iSlow203 || iSlow205 || iSlow201 || iSlow207 || iSlow209 || iSlow211) {
+			if (iSlow201 || iSlow203 || iSlow205 || iSlow207 || iSlow209 || iSlow211) {
 				fTempPerm175 = (float)input17[i];
 			}
-			if (iSlow203 || iSlow205 || iSlow201 || iSlow207) {
+			if (iSlow201 || iSlow203 || iSlow205 || iSlow207) {
 				fTempPerm176 = faustpower<2>(fTempPerm175);
 			}
 			if (iSlow201) {
@@ -3776,16 +3776,16 @@ class mydsp2 : public dsp {
 			if (iSlow201) {
 				fRec118[1] = fRec118[0];
 			}
-			if (iSlow193) {
+			if (iSlow195) {
 				fRec117[1] = fRec117[0];
 			}
-			if (iSlow199) {
+			if (iSlow193) {
 				fRec116[1] = fRec116[0];
 			}
-			if (iSlow197) {
+			if (iSlow199) {
 				fRec115[1] = fRec115[0];
 			}
-			if (iSlow195) {
+			if (iSlow197) {
 				fRec114[1] = fRec114[0];
 			}
 			if (iSlow191) {
@@ -3794,37 +3794,37 @@ class mydsp2 : public dsp {
 			if (iSlow189) {
 				fRec112[1] = fRec112[0];
 			}
-			if (iSlow187) {
+			if (iSlow179) {
 				fRec111[1] = fRec111[0];
 			}
-			if (iSlow185) {
+			if (iSlow187) {
 				fRec110[1] = fRec110[0];
 			}
-			if (iSlow183) {
+			if (iSlow185) {
 				fRec109[1] = fRec109[0];
 			}
-			if (iSlow181) {
+			if (iSlow183) {
 				fRec108[1] = fRec108[0];
 			}
-			if (iSlow179) {
+			if (iSlow181) {
 				fRec107[1] = fRec107[0];
 			}
 			if (iSlow177) {
 				fRec106[1] = fRec106[0];
 			}
-			if (iSlow175) {
+			if (iSlow173) {
 				fRec105[1] = fRec105[0];
 			}
-			if (iSlow173) {
+			if (iSlow171) {
 				fRec104[1] = fRec104[0];
 			}
-			if (iSlow171) {
+			if (iSlow169) {
 				fRec103[1] = fRec103[0];
 			}
-			if (iSlow169) {
+			if (iSlow167) {
 				fRec102[1] = fRec102[0];
 			}
-			if (iSlow167) {
+			if (iSlow175) {
 				fRec101[1] = fRec101[0];
 			}
 			if (iSlow165) {
@@ -3905,7 +3905,7 @@ class mydsp2 : public dsp {
 				fRec68[1] = fRec68[0];
 				fRec69[1] = fRec69[0];
 			}
-			if (iSlow121 || iSlow124 || iSlow126 || iSlow116) {
+			if (iSlow121 || iSlow124 || iSlow116 || iSlow126) {
 				fRec70[1] = fRec70[0];
 			}
 			if (iSlow108) {
@@ -3915,7 +3915,7 @@ class mydsp2 : public dsp {
 			if (iSlow108 || iSlow112 || iSlow114 || iSlow116) {
 				fRec67[1] = fRec67[0];
 			}
-			if (iSlow85) {
+			if (iSlow87) {
 				fRec63[1] = fRec63[0];
 				fRec64[1] = fRec64[0];
 			}
@@ -3939,7 +3939,7 @@ class mydsp2 : public dsp {
 				fRec53[1] = fRec53[0];
 				fRec54[1] = fRec54[0];
 			}
-			if (iSlow87) {
+			if (iSlow85) {
 				fRec51[1] = fRec51[0];
 				fRec52[1] = fRec52[0];
 			}
@@ -3947,7 +3947,7 @@ class mydsp2 : public dsp {
 				fRec48[1] = fRec48[0];
 				fRec49[1] = fRec49[0];
 			}
-			if (iSlow104 || iSlow85 || iSlow101 || iSlow106) {
+			if (iSlow101 || iSlow104 || iSlow87 || iSlow106) {
 				fRec50[1] = fRec50[0];
 				fVec26[1] = fVec26[0];
 			}
@@ -3955,7 +3955,7 @@ class mydsp2 : public dsp {
 				fRec45[1] = fRec45[0];
 				fRec46[1] = fRec46[0];
 			}
-			if (iSlow85 || iSlow94 || iSlow97 || iSlow99) {
+			if (iSlow94 || iSlow97 || iSlow99 || iSlow87) {
 				fRec47[1] = fRec47[0];
 				fVec25[1] = fVec25[0];
 			}
@@ -3963,7 +3963,7 @@ class mydsp2 : public dsp {
 				fRec42[1] = fRec42[0];
 				fRec43[1] = fRec43[0];
 			}
-			if (iSlow85 || iSlow81 || iSlow87 || iSlow89) {
+			if (iSlow81 || iSlow85 || iSlow87 || iSlow89) {
 				fRec44[1] = fRec44[0];
 				fVec24[1] = fVec24[0];
 			}
@@ -4074,105 +4074,85 @@ class mydsp2 : public dsp {
 //**************************************************************
 
 /************************************************************************
- ************************************************************************
- FAUST Polyphonic Architecture File
- Copyright (C) 2017 GRAME, Allen Weng, SHCM
- Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
+ FAUST Architecture File
+ Copyright (C) 2013 GRAME, Romain Michon, CCRMA - Stanford University
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
-
- This is sample code. This file is provided as an example of minimal
- FAUST architecture file. Redistribution and use in source and binary
- forms, with or without modification, in part or in full are permitted.
- In particular you can create a derived work of this FAUST architecture
- and distribute that work under terms of your choice.
-
- This sample code is distributed in the hope that it will be useful,
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- ************************************************************************
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
  ************************************************************************/
 
-#ifndef __faust_motion_engine__
-#define __faust_motion_engine__
+#ifndef __faust_poly_engine__
+#define __faust_poly_engine__
 
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 
 /************************************************************************
-	IMPORTANT NOTE : this file contains two clearly delimited sections :
-	the ARCHITECTURE section (in two parts) and the USER section. Each section
-	is governed by its own copyright and license. Please check individually
-	each section for license and copyright information.
-*************************************************************************/
-
-/*******************BEGIN ARCHITECTURE SECTION (part 1/2)****************/
-
-/************************************************************************
-    FAUST Architecture File
-    Copyright (C) 2017 GRAME, Allen Weng, SHCM
-    Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
-    ---------------------------------------------------------------------
-    This Architecture section is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 3 of
-    the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; If not, see <http://www.gnu.org/licenses/>.
-
-    EXCEPTION : As a special exception, you may create a larger work
-    that contains this FAUST architecture section and distribute
-    that work under terms of your choice, so long as this FAUST
-    architecture section is not modified.
-
-
- ************************************************************************
- ************************************************************************/
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
  
-/******************************************************************************
-*******************************************************************************
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
 
-						An abstraction layer over audio2 layer
-
-*******************************************************************************
-*******************************************************************************/
-
-#ifndef __audio2__
-#define __audio2__
+#ifndef __audio__
+#define __audio__
 
 class dsp;
 
 typedef void (* shutdown_callback)(const char* message, void* arg);
 
-class audio2 {
+class audio {
     
-public:
-			 audio2() {}
-    virtual ~audio2() {}
+    public:
     
-    virtual bool init(const char* name, dsp*)               = 0;
-    virtual bool start()                                    = 0;
-    virtual void stop()                                     = 0;
-    virtual void render()                                   = 0;
-    virtual void shutdown(shutdown_callback cb, void* arg)  {}
-    
-    virtual int getBufferSize() = 0;
-    virtual int getSampleRate() = 0;
-    
-    virtual int getNumInputs() { return -1; }
-    virtual int getNumOutputs() { return -1; }
-    
-    virtual float getCPULoad() { return 0.f; }
-    
-    virtual void setInputValue(int ch,float val)           = 0;
-    virtual float getOutputValue(int ch) { return 0.f; }
-    
+        audio() {}
+        virtual ~audio() {}
+
+        virtual bool init(const char* name, dsp* dsp) = 0;
+        virtual bool start() = 0;
+        virtual void stop() = 0;
+        virtual void shutdown(shutdown_callback cb, void* arg) {}
+
+        virtual int getBufferSize() = 0;
+        virtual int getSampleRate() = 0;
+
+        virtual int getNumInputs() = 0;
+        virtual int getNumOutputs() = 0;
+
+        virtual float getCPULoad() { return 0.f; }
 };
 					
 #endif
@@ -5742,6 +5722,2591 @@ class APIUI : public PathBuilder, public Meta, public UI
 #endif
 /************************************************************************
  FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef FAUST_MIDIUI_H
+#define FAUST_MIDIUI_H
+
+#include <vector>
+#include <string>
+#include <utility>
+#include <iostream>
+
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __midi__
+#define __midi__
+
+#include <vector>
+#include <string>
+#include <algorithm>
+
+class MapUI;
+
+//----------------------------------------------------------------
+//  MIDI processor definition
+//----------------------------------------------------------------
+
+class midi {
+
+    public:
+
+        midi() {}
+        virtual ~midi() {}
+
+        // Additional time-stamped API for MIDI input
+        virtual MapUI* keyOn(double, int channel, int pitch, int velocity)
+        {
+            return keyOn(channel, pitch, velocity);
+        }
+        
+        virtual void keyOff(double, int channel, int pitch, int velocity = 127)
+        {
+            keyOff(channel, pitch, velocity);
+        }
+        
+        virtual void pitchWheel(double, int channel, int wheel)
+        {
+            pitchWheel(channel, wheel);
+        }
+           
+        virtual void ctrlChange(double, int channel, int ctrl, int value)
+        {
+            ctrlChange(channel, ctrl, value);
+        }
+       
+        virtual void progChange(double, int channel, int pgm)
+        {
+            progChange(channel, pgm);
+        }
+        
+        virtual void keyPress(double, int channel, int pitch, int press)
+        {
+            keyPress(channel, pitch, press);
+        }
+        
+        virtual void chanPress(double date, int channel, int press)
+        {
+            chanPress(channel, press);
+        }
+       
+        virtual void ctrlChange14bits(double, int channel, int ctrl, int value)
+        {
+            ctrlChange14bits(channel, ctrl, value);
+        }
+
+        // MIDI sync
+        virtual void start_sync(double date)  {}
+        virtual void stop_sync(double date)   {}
+        virtual void clock(double date)  {}
+
+        // Standard MIDI API
+        virtual MapUI* keyOn(int channel, int pitch, int velocity)      { return 0; }
+        virtual void keyOff(int channel, int pitch, int velocity)       {}
+        virtual void keyPress(int channel, int pitch, int press)        {}
+        virtual void chanPress(int channel, int press)                  {}
+        virtual void ctrlChange(int channel, int ctrl, int value)       {}
+        virtual void ctrlChange14bits(int channel, int ctrl, int value) {}
+        virtual void pitchWheel(int channel, int wheel)                 {}
+        virtual void progChange(int channel, int pgm)                   {}
+
+        enum MidiStatus {
+
+            // channel voice messages
+            MIDI_NOTE_OFF = 0x80,
+            MIDI_NOTE_ON = 0x90,
+            MIDI_CONTROL_CHANGE = 0xB0,
+            MIDI_PROGRAM_CHANGE = 0xC0,
+            MIDI_PITCH_BEND = 0xE0,
+            MIDI_AFTERTOUCH = 0xD0,         // aka channel pressure
+            MIDI_POLY_AFTERTOUCH = 0xA0,    // aka key pressure
+            MIDI_CLOCK = 0xF8,
+            MIDI_START = 0xFA,
+            MIDI_STOP = 0xFC
+
+        };
+
+        enum MidiCtrl {
+
+            ALL_NOTES_OFF = 123,
+            ALL_SOUND_OFF = 120
+
+        };
+};
+
+//----------------------------------------------------------------
+//  Base class for MIDI API handling
+//----------------------------------------------------------------
+
+class midi_handler : public midi {
+
+    protected:
+
+        std::vector<midi*> fMidiInputs;
+        std::string fName;
+
+    public:
+
+        midi_handler(const std::string& name = "MIDIHandler"):fName(name) {}
+        virtual ~midi_handler() {}
+
+        void addMidiIn(midi* midi_dsp) { if (midi_dsp) fMidiInputs.push_back(midi_dsp); }
+        void removeMidiIn(midi* midi_dsp)
+        {
+            std::vector<midi*>::iterator it = std::find(fMidiInputs.begin(), fMidiInputs.end(), midi_dsp);
+            if (it != fMidiInputs.end()) {
+                fMidiInputs.erase(it);
+            }
+        }
+
+        virtual bool start_midi() { return true; }
+        virtual void stop_midi() {}
+    
+        void setName(const std::string& name) { fName = name; }
+        std::string getName() { return fName; }
+        
+        void handleSync(double time, int type)
+        {
+            if (type == MIDI_CLOCK) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->clock(time);
+                }
+            } else if (type == MIDI_START) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->start_sync(time);
+                }
+            } else if (type == MIDI_STOP) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->stop_sync(time);
+                }
+            }
+        }
+
+        void handleData1(double time, int type, int channel, int data1)
+        {
+            if (type == MIDI_PROGRAM_CHANGE) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->progChange(time, channel, data1);
+                }
+            } else if (type == MIDI_AFTERTOUCH) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->chanPress(time, channel, data1);
+                }
+            }
+        }
+
+        void handleData2(double time, int type, int channel, int data1, int data2)
+        {
+            if (type == MIDI_NOTE_OFF || ((type == MIDI_NOTE_ON) && (data2 == 0))) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->keyOff(time, channel, data1, data2);
+                }
+            } else if (type == MIDI_NOTE_ON) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->keyOn(time, channel, data1, data2);
+                }
+            } else if (type == MIDI_CONTROL_CHANGE) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->ctrlChange(time, channel, data1, data2);
+                }
+            } else if (type == MIDI_PITCH_BEND) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->pitchWheel(time, channel, (data2 * 128.0) + data1);
+                }
+            } else if (type == MIDI_POLY_AFTERTOUCH) {
+                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                    fMidiInputs[i]->keyPress(time, channel, data1, data2);
+                }
+            }
+        }
+
+};
+
+#endif // __midi__
+
+#ifdef _MSC_VER
+#define gsscanf sscanf_s
+#else
+#define gsscanf sscanf
+#endif
+
+/*****************************************************************************
+* Helper code for MIDI meta and polyphonic 'nvoices' parsing
+******************************************************************************/
+
+struct MidiMeta : public Meta, public std::map<std::string, std::string>
+{
+    void declare(const char* key, const char* value)
+    {
+        (*this)[key] = value;
+    }
+    
+    const std::string get(const char* key, const char* def)
+    {
+        if (this->find(key) != this->end()) {
+            return (*this)[key];
+        } else {
+            return def;
+        }
+    }
+    
+    static void analyse(dsp* tmp_dsp, bool& midi_sync, int& nvoices)
+    {
+        JSONUI jsonui;
+        tmp_dsp->buildUserInterface(&jsonui);
+        std::string json = jsonui.JSON();
+        midi_sync = ((json.find("midi") != std::string::npos) &&
+                     ((json.find("start") != std::string::npos) ||
+                      (json.find("stop") != std::string::npos) ||
+                      (json.find("clock") != std::string::npos)));
+    
+    #if defined(NVOICES) && NVOICES!=NUM_VOICES
+        nvoices = NVOICES;
+    #else
+        MidiMeta meta;
+        tmp_dsp->metadata(&meta);
+        std::string numVoices = meta.get("nvoices", "0");
+        nvoices = atoi(numVoices.c_str());
+        if (nvoices < 0) nvoices = 0;
+    #endif
+    }
+};
+
+/*******************************************************************************
+ * MidiUI : Faust User Interface
+ * This class decodes MIDI meta data and maps incoming MIDI messages to them.
+ * Currently ctrl, keyon/keyoff, keypress, pgm, chanpress, pitchwheel/pitchbend
+ * start/stop/clock meta data is handled.
+ ******************************************************************************/
+
+class uiMidi {
+    
+    protected:
+        
+        midi* fMidiOut;
+        bool fInputCtrl;
+        
+    public:
+        
+        uiMidi(midi* midi_out, bool input):fMidiOut(midi_out), fInputCtrl(input)
+        {}
+        virtual ~uiMidi()
+        {}
+    
+};
+
+class uiMidiItem : public uiMidi, public uiItem {
+    
+    public:
+        
+        uiMidiItem(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidi(midi_out, input), uiItem(ui, zone)
+        {}
+        virtual ~uiMidiItem()
+        {}
+    
+        virtual void reflectZone() {}
+    
+};
+
+class uiMidiTimedItem : public uiMidi, public uiTimedItem {
+    
+    public:
+        
+        uiMidiTimedItem(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidi(midi_out, input), uiTimedItem(ui, zone)
+        {}
+        virtual ~uiMidiTimedItem()
+        {}
+    
+        virtual void reflectZone() {}
+    
+};
+
+// MIDI sync
+
+class uiMidiStart : public uiMidiTimedItem
+{
+  
+    public:
+    
+        uiMidiStart(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidiTimedItem(midi_out, ui, zone, input)
+        {}
+        virtual ~uiMidiStart()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            if (v != FAUSTFLOAT(0)) {
+                fMidiOut->start_sync(0);
+            }
+        }
+        
+};
+
+class uiMidiStop : public uiMidiTimedItem
+{
+  
+    public:
+    
+        uiMidiStop(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidiTimedItem(midi_out, ui, zone, input)
+        {}
+        virtual ~uiMidiStop()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            if (v != FAUSTFLOAT(1)) {
+                fMidiOut->stop_sync(0);
+            }
+        }
+};
+
+class uiMidiClock : public uiMidiTimedItem
+{
+
+    private:
+        
+        bool fState;
+  
+    public:
+    
+        uiMidiClock(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidiTimedItem(midi_out, ui, zone, input), fState(false)
+        {}
+        virtual ~uiMidiClock()
+        {}
+    
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            fMidiOut->clock(0);
+        }
+    
+        void modifyZone(double date, FAUSTFLOAT v)
+        {
+            if (fInputCtrl) {
+                fState = !fState;
+                uiMidiTimedItem::modifyZone(date, FAUSTFLOAT(fState));
+            }
+        }
+
+};
+
+class uiMidiProgChange : public uiMidiItem
+{
+    
+    private:
+        
+        int fPgm;
+  
+    public:
+    
+        uiMidiProgChange(midi* midi_out, int pgm, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidiItem(midi_out, ui, zone, input), fPgm(pgm)
+        {}
+        virtual ~uiMidiProgChange()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            if (v != FAUSTFLOAT(0)) {
+                fMidiOut->progChange(0, fPgm);
+            }
+        }
+        
+};
+
+class uiMidiChanPress : public uiMidiItem
+{
+    private:
+        
+        int fPress;
+  
+    public:
+    
+        uiMidiChanPress(midi* midi_out, int press, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidiItem(midi_out, ui, zone, input), fPress(press)
+        {}
+        virtual ~uiMidiChanPress()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            if (v != FAUSTFLOAT(0)) {
+                fMidiOut->chanPress(0, fPress);
+            }
+        }
+        
+};
+
+class uiMidiCtrlChange : public uiMidiItem
+{
+    private:
+    
+        int fCtrl;
+        LinearValueConverter fConverter;
+ 
+    public:
+    
+        uiMidiCtrlChange(midi* midi_out, int ctrl, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
+            :uiMidiItem(midi_out, ui, zone, input), fCtrl(ctrl), fConverter(0., 127., double(min), double(max))
+        {}
+        virtual ~uiMidiCtrlChange()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            fMidiOut->ctrlChange(0, fCtrl, fConverter.faust2ui(v));
+        }
+        
+        void modifyZone(int v) 	
+        { 
+            if (fInputCtrl) {
+                uiItem::modifyZone(FAUSTFLOAT(fConverter.ui2faust(v)));
+            }
+        }
+ 
+};
+
+class uiMidiPitchWheel : public uiMidiItem
+{
+
+    private:
+    	
+		// currently, the range is of pitchwheel if fixed (-2/2 semitones)
+        FAUSTFLOAT wheel2bend(float v)
+        {
+            return pow(2.0,(v/16383.0*4-2)/12);
+        }
+
+        int bend2wheel(float v)
+        {
+            return (int)((12*log(v)/log(2)+2)/4*16383);
+        }
+ 
+    public:
+    
+        uiMidiPitchWheel(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
+            :uiMidiItem(midi_out, ui, zone, input)
+        {}
+        virtual ~uiMidiPitchWheel()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            fMidiOut->pitchWheel(0, bend2wheel(v));
+        }
+        
+        void modifyZone(int v) 	
+        { 
+            if (fInputCtrl) {
+                uiItem::modifyZone(wheel2bend(v));
+            }
+        }
+ 
+};
+
+class uiMidiKeyOn : public uiMidiItem
+{
+
+    private:
+        
+        int fKeyOn;
+        LinearValueConverter fConverter;
+  
+    public:
+    
+        uiMidiKeyOn(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
+            :uiMidiItem(midi_out, ui, zone, input), fKeyOn(key), fConverter(0., 127., double(min), double(max))
+        {}
+        virtual ~uiMidiKeyOn()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            fMidiOut->keyOn(0, fKeyOn, fConverter.faust2ui(v));
+        }
+        
+        void modifyZone(int v) 	
+        { 
+            if (fInputCtrl) {
+                uiItem::modifyZone(FAUSTFLOAT(fConverter.ui2faust(v)));
+            }
+        }
+        
+};
+
+class uiMidiKeyOff : public uiMidiItem
+{
+
+    private:
+        
+        int fKeyOff;
+        LinearValueConverter fConverter;
+  
+    public:
+    
+        uiMidiKeyOff(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
+            :uiMidiItem(midi_out, ui, zone, input), fKeyOff(key), fConverter(0., 127., double(min), double(max))
+        {}
+        virtual ~uiMidiKeyOff()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            fMidiOut->keyOff(0, fKeyOff, fConverter.faust2ui(v));
+        }
+        
+        void modifyZone(int v) 	
+        { 
+            if (fInputCtrl) {
+                uiItem::modifyZone(FAUSTFLOAT(fConverter.ui2faust(v)));
+            }
+        }
+        
+};
+
+
+class uiMidiKeyPress : public uiMidiItem
+{
+
+    private:
+    
+        int fKey;
+        LinearValueConverter fConverter;
+  
+    public:
+    
+        uiMidiKeyPress(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
+            :uiMidiItem(midi_out, ui, zone, input), fKey(key), fConverter(0., 127., double(min), double(max))
+        {}
+        virtual ~uiMidiKeyPress()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            fMidiOut->keyPress(0, fKey, fConverter.faust2ui(v));
+        }
+        
+        void modifyZone(int v) 	
+        { 
+            if (fInputCtrl) {
+                uiItem::modifyZone(FAUSTFLOAT(fConverter.ui2faust(v)));
+            }
+        }
+        
+};
+
+class MapUI;
+
+class MidiUI : public GUI, public midi
+{
+
+    protected:
+    
+        std::map <int, std::vector<uiMidiCtrlChange*> > fCtrlChangeTable;
+        std::map <int, std::vector<uiMidiProgChange*> > fProgChangeTable;
+        std::map <int, std::vector<uiMidiChanPress*> >  fChanPressTable;
+        std::map <int, std::vector<uiMidiKeyOn*> >      fKeyOnTable;
+        std::map <int, std::vector<uiMidiKeyOff*> >     fKeyOffTable;
+        std::map <int, std::vector<uiMidiKeyOn*> >      fKeyTable;
+        std::map <int, std::vector<uiMidiKeyPress*> >   fKeyPressTable;
+        std::vector<uiMidiPitchWheel*>                  fPitchWheelTable;
+        
+        std::vector<uiMidiStart*>   fStartTable;
+        std::vector<uiMidiStop*>    fStopTable;
+        std::vector<uiMidiClock*>   fClockTable;
+        
+        std::vector<std::pair <std::string, std::string> > fMetaAux;
+        
+        midi_handler* fMidiHandler;
+        bool fDelete;
+    
+        void addGenericZone(FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
+        {
+            if (fMetaAux.size() > 0) {
+                for (size_t i = 0; i < fMetaAux.size(); i++) {
+                    unsigned num;
+                    if (fMetaAux[i].first == "midi") {
+                        if (gsscanf(fMetaAux[i].second.c_str(), "ctrl %u", &num) == 1) {
+                            fCtrlChangeTable[num].push_back(new uiMidiCtrlChange(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyon %u", &num) == 1) {
+                            fKeyOnTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyoff %u", &num) == 1) {
+                            fKeyOffTable[num].push_back(new uiMidiKeyOff(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "key %u", &num) == 1) {
+                            fKeyTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keypress %u", &num) == 1) {
+                            fKeyPressTable[num].push_back(new uiMidiKeyPress(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "pgm %u", &num) == 1) {
+                            fProgChangeTable[num].push_back(new uiMidiProgChange(fMidiHandler, num, this, zone, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "chanpress %u", &num) == 1) {
+                            fChanPressTable[num].push_back(new uiMidiChanPress(fMidiHandler, num, this, zone, input));
+                        } else if (strcmp(fMetaAux[i].second.c_str(), "pitchwheel") == 0 
+                            || strcmp(fMetaAux[i].second.c_str(), "pitchbend") == 0) {
+                            fPitchWheelTable.push_back(new uiMidiPitchWheel(fMidiHandler, this, zone, input));
+                        // MIDI sync
+                        } else if (strcmp(fMetaAux[i].second.c_str(), "start") == 0) {
+                            fStartTable.push_back(new uiMidiStart(fMidiHandler, this, zone, input));
+                        } else if (strcmp(fMetaAux[i].second.c_str(), "stop") == 0) {
+                            fStopTable.push_back(new uiMidiStop(fMidiHandler, this, zone, input));
+                        } else if (strcmp(fMetaAux[i].second.c_str(), "clock") == 0) {
+                            fClockTable.push_back(new uiMidiClock(fMidiHandler, this, zone, input));
+                        }
+                    }
+                }
+            }
+            fMetaAux.clear();
+        }
+
+    public:
+    
+        MidiUI():fMidiHandler(NULL), fDelete(false)
+        {}
+
+        MidiUI(midi_handler* midi_handler, bool delete_handler = false)
+        {
+            fMidiHandler = midi_handler;
+            fMidiHandler->addMidiIn(this);
+            fDelete = delete_handler;
+        }
+ 
+        virtual ~MidiUI() 
+        { 
+            fMidiHandler->removeMidiIn(this);
+            if (fDelete) delete fMidiHandler;
+        }
+        
+        bool run() { return fMidiHandler->start_midi(); }
+        void stop() { fMidiHandler->stop_midi(); }
+        
+        void addMidiIn(midi* midi_dsp) { fMidiHandler->addMidiIn(midi_dsp); }
+        void removeMidiIn(midi* midi_dsp) { fMidiHandler->removeMidiIn(midi_dsp); }
+      
+        // -- active widgets
+        
+        virtual void addButton(const char* label, FAUSTFLOAT* zone)
+        {
+            addGenericZone(zone, FAUSTFLOAT(0), FAUSTFLOAT(1));
+        }
+        virtual void addCheckButton(const char* label, FAUSTFLOAT* zone)
+        {
+            addGenericZone(zone, FAUSTFLOAT(0), FAUSTFLOAT(1));
+        }
+        
+        virtual void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            addGenericZone(zone, min, max);
+        }
+        virtual void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            addGenericZone(zone, min, max);
+        }
+        virtual void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            addGenericZone(zone, min, max);
+        }
+
+        // -- passive widgets
+
+        virtual void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max) 
+        {
+            addGenericZone(zone, min, max, false);
+        }
+        virtual void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max)
+        {
+            addGenericZone(zone, min, max, false);
+        }
+
+        // -- metadata declarations
+
+        virtual void declare(FAUSTFLOAT* zone, const char* key, const char* val)
+        {
+            fMetaAux.push_back(std::make_pair(key, val));
+        }
+        
+        // -- MIDI API 
+        
+        MapUI* keyOn(double date, int channel, int note, int velocity)
+        {
+            if (fKeyOnTable.find(note) != fKeyOnTable.end()) {
+                for (unsigned int i = 0; i < fKeyOnTable[note].size(); i++) {
+                    fKeyOnTable[note][i]->modifyZone(FAUSTFLOAT(velocity));
+                }
+            }
+            // If note is in fKeyTable, handle it as a keyOn
+            if (fKeyTable.find(note) != fKeyTable.end()) {
+                for (unsigned int i = 0; i < fKeyTable[note].size(); i++) {
+                    fKeyTable[note][i]->modifyZone(FAUSTFLOAT(velocity));
+                }
+            }
+            return 0;
+        }
+        
+        void keyOff(double date, int channel, int note, int velocity)
+        {
+            if (fKeyOffTable.find(note) != fKeyOffTable.end()) {
+                for (unsigned int i = 0; i < fKeyOffTable[note].size(); i++) {
+                    fKeyOffTable[note][i]->modifyZone(FAUSTFLOAT(velocity));
+                }
+            }
+            // If note is in fKeyTable, handle it as a keyOff with a 0 velocity
+            if (fKeyTable.find(note) != fKeyTable.end()) {
+                for (unsigned int i = 0; i < fKeyTable[note].size(); i++) {
+                    fKeyTable[note][i]->modifyZone(0);
+                }
+            }
+        }
+           
+        void ctrlChange(double date, int channel, int ctrl, int value)
+        {
+            if (fCtrlChangeTable.find(ctrl) != fCtrlChangeTable.end()) {
+                for (unsigned int i = 0; i < fCtrlChangeTable[ctrl].size(); i++) {
+                    fCtrlChangeTable[ctrl][i]->modifyZone(FAUSTFLOAT(value));
+                }
+            } 
+        }
+        
+        void progChange(double date, int channel, int pgm)
+        {
+            if (fProgChangeTable.find(pgm) != fProgChangeTable.end()) {
+                for (unsigned int i = 0; i < fProgChangeTable[pgm].size(); i++) {
+                    fProgChangeTable[pgm][i]->modifyZone(FAUSTFLOAT(1));
+                }
+            } 
+        }
+        
+        void pitchWheel(double date, int channel, int wheel) 
+        {
+            for (unsigned int i = 0; i < fPitchWheelTable.size(); i++) {
+                fPitchWheelTable[i]->modifyZone(FAUSTFLOAT(wheel));
+            }
+        }
+        
+        void keyPress(double date, int channel, int pitch, int press) 
+        {
+            if (fKeyPressTable.find(pitch) != fKeyPressTable.end()) {
+                for (unsigned int i = 0; i < fKeyPressTable[pitch].size(); i++) {
+                    fKeyPressTable[pitch][i]->modifyZone(FAUSTFLOAT(press));
+                }
+            } 
+        }
+        
+        void chanPress(double date, int channel, int press)
+        {
+            if (fChanPressTable.find(press) != fChanPressTable.end()) {
+                for (unsigned int i = 0; i < fChanPressTable[press].size(); i++) {
+                    fChanPressTable[press][i]->modifyZone(FAUSTFLOAT(1));
+                }
+            } 
+        }
+        
+        void ctrlChange14bits(double date, int channel, int ctrl, int value) {}
+        
+        // MIDI sync
+        
+        void start_sync(double date)
+        {
+            for (unsigned int i = 0; i < fStartTable.size(); i++) {
+                fStartTable[i]->modifyZone(date, FAUSTFLOAT(1));
+            }
+        }
+        
+        void stop_sync(double date)
+        {
+            for (unsigned int i = 0; i < fStopTable.size(); i++) {
+                fStopTable[i]->modifyZone(date, FAUSTFLOAT(0));
+            }
+        }
+        
+        void clock(double date)
+        {
+            for (unsigned int i = 0; i < fClockTable.size(); i++) {
+                fClockTable[i]->modifyZone(date, FAUSTFLOAT(1));
+            }
+        }
+};
+
+#endif // FAUST_MIDIUI_H
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __poly_dsp__
+#define __poly_dsp__
+
+#include <stdio.h>
+#include <string>
+#include <math.h>
+#include <float.h>
+#include <algorithm>
+#include <ostream>
+#include <sstream>
+#include <vector>
+#include <limits.h>
+
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef FAUST_MAPUI_H
+#define FAUST_MAPUI_H
+
+#include <vector>
+#include <map>
+#include <string>
+
+
+/*******************************************************************************
+ * MapUI : Faust User Interface
+ * This class creates a map of complete hierarchical path and zones for each UI items.
+ ******************************************************************************/
+
+class MapUI : public UI, public PathBuilder
+{
+    
+    protected:
+    
+        // Complete path map
+        std::map<std::string, FAUSTFLOAT*> fPathZoneMap;
+    
+        // Label zone map
+        std::map<std::string, FAUSTFLOAT*> fLabelZoneMap;
+    
+    public:
+        
+        MapUI() {};
+        virtual ~MapUI() {};
+        
+        // -- widget's layouts
+        void openTabBox(const char* label)
+        {
+            fControlsLevel.push_back(label);
+        }
+        void openHorizontalBox(const char* label)
+        {
+            fControlsLevel.push_back(label);
+        }
+        void openVerticalBox(const char* label)
+        {
+            fControlsLevel.push_back(label);
+        }
+        void closeBox()
+        {
+            fControlsLevel.pop_back();
+        }
+        
+        // -- active widgets
+        void addButton(const char* label, FAUSTFLOAT* zone)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addCheckButton(const char* label, FAUSTFLOAT* zone)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        
+        // -- passive widgets
+        void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+    
+        // -- soundfiles
+        virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone) {}
+        
+        // -- metadata declarations
+        void declare(FAUSTFLOAT* zone, const char* key, const char* val)
+        {}
+        
+        // set/get
+        void setParamValue(const std::string& path, FAUSTFLOAT value)
+        {
+            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
+                *fPathZoneMap[path] = value;
+            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
+                *fLabelZoneMap[path] = value;
+            }
+        }
+        
+        FAUSTFLOAT getParamValue(const std::string& path)
+        {
+            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
+                return *fPathZoneMap[path];
+            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
+                return *fLabelZoneMap[path];
+            } else {
+                return FAUSTFLOAT(0);
+            }
+        }
+    
+        // map access 
+        std::map<std::string, FAUSTFLOAT*>& getMap() { return fPathZoneMap; }
+        
+        int getParamsCount() { return int(fPathZoneMap.size()); }
+        
+        std::string getParamAddress(int index)
+        { 
+            std::map<std::string, FAUSTFLOAT*>::iterator it = fPathZoneMap.begin();
+            while (index-- > 0 && it++ != fPathZoneMap.end()) {}
+            return (*it).first;
+        }
+    
+        std::string getParamAddress(FAUSTFLOAT* zone)
+        {
+            std::map<std::string, FAUSTFLOAT*>::iterator it = fPathZoneMap.begin();
+            do {
+                if ((*it).second == zone) return (*it).first;
+            }
+            while (it++ != fPathZoneMap.end());
+            return "";
+        }
+};
+
+#endif // FAUST_MAPUI_H
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __proxy_dsp__
+#define __proxy_dsp__
+
+#include <vector>
+#include <map>
+
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __JSONUIDecoder__
+#define __JSONUIDecoder__
+
+#include <vector>
+#include <map>
+#include <utility>
+#include <assert.h>
+
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef SIMPLEPARSER_H
+#define SIMPLEPARSER_H
+
+// ---------------------------------------------------------------------
+//                          Simple Parser
+// A parser returns true if it was able to parse what it is
+// supposed to parse and advance the pointer. Otherwise it returns false
+// and the pointer is not advanced so that another parser can be tried.
+// ---------------------------------------------------------------------
+
+#include <vector>
+#include <map>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <ctype.h>
+
+#ifndef _WIN32
+# pragma GCC diagnostic ignored "-Wunused-function"
+#endif
+
+using namespace std;
+
+struct itemInfo {
+    std::string type;
+    std::string label;
+    std::string address;
+    std::string index;
+    std::string init;
+    std::string min;
+    std::string max;
+    std::string step;
+    std::vector<std::pair<std::string, std::string> > meta;
+};
+
+bool parseMenuList(const char*& p, vector<string>& names, vector<double>& values);
+bool parseMenuItem(const char*& p, string& name, double& value);
+
+void skipBlank(const char*& p);
+bool parseChar(const char*& p, char x);
+bool parseWord(const char*& p, const char* w);
+bool parseString(const char*& p, char quote, string& s);
+bool parseSQString(const char*& p, string& s);
+bool parseDQString(const char*& p, string& s);
+bool parseDouble(const char*& p, double& x);
+
+// ---------------------------------------------------------------------
+//
+//                          IMPLEMENTATION
+// 
+// ---------------------------------------------------------------------
+
+/**
+ * @brief parseMenuList, parse a menu list {'low' : 440.0; 'mid' : 880.0; 'hi' : 1760.0}...
+ * @param p the string to parse, then the remaining string
+ * @param names the vector of names found
+ * @param values the vector of values found
+ * @return true if a menu list was found
+ */
+inline bool parseMenuList(const char*& p, vector<string>& names, vector<double>& values)
+{
+    vector<string> tmpnames;
+    vector<double> tmpvalues;
+
+    const char* saved = p;
+
+    if (parseChar(p, '{')) {
+        do {
+            string n;
+            double v;
+            if (parseMenuItem(p, n, v)) {
+                tmpnames.push_back(n);
+                tmpvalues.push_back(v);
+            } else {
+                p = saved;
+                return false;
+            }
+        } while (parseChar(p, ';'));
+        if (parseChar(p, '}')) {
+            // we suceeded
+            names = tmpnames;
+            values = tmpvalues;
+            return true;
+        }
+    }
+    p = saved;
+    return false;
+}
+
+/**
+ * @brief parseMenuItem, parse a menu item ...'low':440.0...
+ * @param p the string to parse, then the remaining string
+ * @param name the name found
+ * @param value the value found
+ * @return true if a nemu item was found
+ */
+inline bool parseMenuItem(const char*& p, string& name, double& value)
+{
+    const char* saved = p;
+    if (parseSQString(p, name) && parseChar(p, ':') && parseDouble(p, value)) {
+        return true;
+    } else {
+        p = saved;
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------------
+//                          Elementary parsers
+// ---------------------------------------------------------------------
+
+// Report a parsing error
+static bool parseError(const char*& p, const char* errmsg)
+{
+    std::cerr << "Parse error : " << errmsg << " here : " << p << std::endl;
+    return true;
+}
+
+// Parse character x, but don't report error if fails
+static bool tryChar(const char*& p, char x)
+{
+    skipBlank(p);
+    if (x == *p) {
+        p++;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * @brief skipBlank : advance pointer p to the first non blank character
+ * @param p the string to parse, then the remaining string
+ */
+inline void skipBlank(const char*& p)
+{
+    while (isspace(*p)) { p++; }
+}
+
+/**
+ * @brief parseChar : parse a specific character x
+ * @param p the string to parse, then the remaining string
+ * @param x the character to recognize
+ * @return true if x was found at the begin of p
+ */
+inline bool parseChar(const char*& p, char x)
+{
+    skipBlank(p);
+    if (x == *p) {
+        p++;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * @brief parseWord : parse a specific string w
+ * @param p the string to parse, then the remaining string
+ * @param w the string to recognize
+ * @return true if string w was found at the begin of p
+ */
+inline bool parseWord(const char*& p, const char* w)
+{
+    skipBlank(p);
+    const char* saved = p;
+    while ((*w == *p) && (*w)) {++w; ++p;}
+    if (*w) {
+        p = saved;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+/**
+ * @brief parseDouble : parse number [s]dddd[.dddd] and store the result in x
+ * @param p the string to parse, then the remaining string
+ * @param x the float number found if any
+ * @return true if a float number was found at the begin of p
+ */
+inline bool parseDouble(const char*& p, double& x)
+{
+    double sign = +1.0;    // sign of the number
+    double ipart = 0;      // integral part of the number
+    double dpart = 0;      // decimal part of the number before division
+    double dcoef = 1.0;    // division factor for the decimal part
+
+    bool valid = false;   // true if the number contains at least one digit
+    skipBlank(p);
+    const char* saved = p;  // to restore position if we fail
+
+    if (parseChar(p, '+')) {
+        sign = 1.0;
+    } else if (parseChar(p, '-')) {
+        sign = -1.0;
+    }
+    while (isdigit(*p)) {
+        valid = true;
+        ipart = ipart*10 + (*p - '0');
+        p++;
+    }
+    if (parseChar(p, '.')) {
+        while (isdigit(*p)) {
+            valid = true;
+            dpart = dpart*10 + (*p - '0');
+            dcoef *= 10.0;
+            p++;
+        }
+    }
+    if (valid)  {
+        x = sign*(ipart + dpart/dcoef);
+    } else {
+        p = saved;
+    }
+    return valid;
+}
+
+/**
+ * @brief parseString, parse an arbitrary quoted string q...q and store the result in s
+ * @param p the string to parse, then the remaining string
+ * @param quote the character used to quote the string
+ * @param s the (unquoted) string found if any
+ * @return true if a string was found at the begin of p
+ */
+inline bool parseString(const char*& p, char quote, string& s)
+{
+    string str;
+    skipBlank(p);
+ 
+    const char* saved = p;
+    if (*p++ == quote) {
+        while ((*p != 0) && (*p != quote)) {
+            str += *p++;
+        }
+        if (*p++ == quote) {
+            s = str;
+            return true;
+        }
+    }
+    p = saved;
+    return false;
+}
+
+/**
+ * @brief parseSQString, parse a single quoted string '...' and store the result in s
+ * @param p the string to parse, then the remaining string
+ * @param s the (unquoted) string found if any
+ * @return true if a string was found at the begin of p
+ */
+inline bool parseSQString(const char*& p, string& s)
+{
+    return parseString(p, '\'', s);
+}
+
+/**
+ * @brief parseDQString, parse a double quoted string "..." and store the result in s
+ * @param p the string to parse, then the remaining string
+ * @param s the (unquoted) string found if any
+ * @return true if a string was found at the begin of p
+ */
+inline bool parseDQString(const char*& p, string& s)
+{
+    return parseString(p, '"', s);
+}
+
+static bool parseMetaData(const char*& p, std::map<std::string, std::string>& metadatas)
+{
+    std::string metaKey, metaValue;
+    if (parseChar(p, ':') && parseChar(p, '[')) {
+        do { 
+            if (parseChar(p, '{') && parseDQString(p, metaKey) && parseChar(p, ':') && parseDQString(p, metaValue) && parseChar(p, '}')) {
+                metadatas[metaKey] = metaValue;
+            }
+        } while (tryChar(p, ','));
+        return parseChar(p, ']');
+    } else {
+        return false;
+    }
+}
+
+static bool parseItemMetaData(const char*& p, std::vector<std::pair<std::string, std::string> >& metadatas)
+{
+    std::string metaKey, metaValue;
+    if (parseChar(p, ':') && parseChar(p, '[')) {
+        do { 
+            if (parseChar(p, '{') && parseDQString(p, metaKey) && parseChar(p, ':') && parseDQString(p, metaValue) && parseChar(p, '}')) {
+                metadatas.push_back(std::make_pair(metaKey, metaValue));
+            }
+        } while (tryChar(p, ','));
+        return parseChar(p, ']');
+    } else {
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Parse metadatas of the interface:
+// "name" : "...", "inputs" : "...", "outputs" : "...", ...
+// and store the result as key/value
+//
+static bool parseGlobalMetaData(const char*& p, std::string& key, std::string& value, std::map<std::string, std::string>& metadatas)
+{
+    if (parseDQString(p, key)) {
+        if (key == "meta") {
+            return parseMetaData(p, metadatas);
+        } else {
+            return parseChar(p, ':') && parseDQString(p, value);
+        }
+    } else {
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Parse gui:
+// "type" : "...", "label" : "...", "address" : "...", ...
+// and store the result in uiItems Vector
+//
+static bool parseUI(const char*& p, std::vector<itemInfo*>& uiItems, int& numItems)
+{
+    if (parseChar(p, '{')) {
+        
+        std::string label;
+        std::string value;
+        
+        do {
+            if (parseDQString(p, label)) {
+                if (label == "type") {
+                    if (uiItems.size() != 0) {
+                        numItems++;
+                    }
+                    if (parseChar(p, ':') && parseDQString(p, value)) {   
+                        itemInfo* item = new itemInfo;
+                        item->type = value;
+                        uiItems.push_back(item);
+                    }
+                }
+                
+                else if (label == "label") {
+                    if (parseChar(p, ':') && parseDQString(p, value)) {
+                        itemInfo* item = uiItems[numItems];
+                        item->label = value;
+                    }
+                }
+                
+                else if (label == "address") {
+                    if (parseChar(p, ':') && parseDQString(p, value)) {
+                        itemInfo* item = uiItems[numItems];
+                        item->address = value;
+                    }
+                }
+                
+                else if (label == "index") {
+                    if (parseChar(p, ':') && parseDQString(p, value)) {
+                        itemInfo* item = uiItems[numItems];
+                        item->index = value;
+                    }
+                }
+                
+                else if (label == "meta") {
+                    itemInfo* item = uiItems[numItems];
+                    if (!parseItemMetaData(p, item->meta)) {
+                        return false;
+                    }
+                }
+                
+                else if (label == "init") {
+                    if (parseChar(p, ':') && parseDQString(p, value)) {
+                        itemInfo* item = uiItems[numItems];
+                        item->init = value;
+                    }
+                }
+                
+                else if (label == "min") {
+                    if (parseChar(p, ':') && parseDQString(p, value)) {
+                        itemInfo* item = uiItems[numItems];
+                        item->min = value;
+                    }
+                }
+                
+                else if (label == "max") {
+                    if (parseChar(p, ':') && parseDQString(p, value)) {
+                        itemInfo* item = uiItems[numItems];
+                        item->max = value;
+                    }
+                }
+                
+                else if (label == "step"){
+                    if (parseChar(p, ':') && parseDQString(p, value)) {
+                        itemInfo* item = uiItems[numItems];
+                        item->step = value;
+                    }
+                }
+                
+                else if (label == "items") {
+                    if (parseChar(p, ':') && parseChar(p, '[')) {
+                        do { 
+                            if (!parseUI(p, uiItems, numItems)) {
+                                return false;
+                            }
+                        } while (tryChar(p, ','));
+                        if (parseChar(p, ']')) {
+                            itemInfo* item = new itemInfo;
+                            item->type = "close";
+                            uiItems.push_back(item);
+                            numItems++;
+                        }
+                    }
+                }
+            } else {
+                return false;
+            }
+            
+        } while (tryChar(p, ','));
+        
+        return parseChar(p, '}');
+    } else {
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Parse full JSON record describing a JSON/Faust interface :
+// {"metadatas": "...", "ui": [{ "type": "...", "label": "...", "items": [...], "address": "...","init": "...", "min": "...", "max": "...","step": "..."}]}
+//
+// and store the result in map Metadatas and vector containing the items of the interface. Returns true if parsing was successfull.
+//
+
+inline bool parseJson(const char*& p, std::map<std::string, std::string>& metadatas, std::vector<itemInfo*>& uiItems)
+{
+    parseChar(p, '{');
+    
+    do {
+        std::string key;
+        std::string value;
+        if (parseGlobalMetaData(p, key, value, metadatas)) {
+            if (key != "meta") {
+                // keep "name", "inputs", "outputs" key/value pairs
+                metadatas[key] = value;
+            }
+        } else if (key == "ui") {
+            int numItems = 0;
+            parseChar(p, '[') && parseUI(p, uiItems, numItems);
+        }
+    } while (tryChar(p, ','));
+    
+    return parseChar(p, '}');
+}
+
+#endif // SIMPLEPARSER_H
+
+#ifdef _WIN32
+#include <windows.h>
+#define snprintf _snprintf
+#endif
+
+inline FAUSTFLOAT STR2REAL(const std::string& s) { return (strtod(s.c_str(), NULL)); }
+
+//-------------------------------------------------------------------
+//  Decode a dsp JSON description and implement 'buildUserInterface'
+//-------------------------------------------------------------------
+
+typedef std::map<std::string, pair <int, FAUSTFLOAT*> > controlMap;
+
+struct JSONUIDecoder {
+
+    std::string fName;
+    std::string fFileName;
+    
+    std::map<std::string, std::string> fMetadatas; 
+    std::vector<itemInfo*> fUiItems;     
+    
+    FAUSTFLOAT* fInControl;
+    FAUSTFLOAT* fOutControl;
+    
+    std::string fJSON;
+    
+    int fNumInputs, fNumOutputs; 
+    int fInputItems, fOutputItems;
+    
+    std::string fVersion;
+    std::string fOptions;
+    
+    int fDSPSize;
+    
+    controlMap fPathInputTable;     // [path, <index, zone>]
+    controlMap fPathOutputTable;    // [path, <index, zone>]
+    
+    bool isInput(const string& type) { return (type == "vslider" || type == "hslider" || type == "nentry" || type == "button" || type == "checkbox"); }
+    bool isOutput(const string& type) { return (type == "hbargraph" || type == "vbargraph"); }
+
+    JSONUIDecoder(const std::string& json) 
+    {
+        fJSON = json;
+        const char* p = fJSON.c_str();
+        parseJson(p, fMetadatas, fUiItems);
+        
+        // fMetadatas will contain the "meta" section as well as <name : val>, <inputs : val>, <ouputs : val> pairs
+        if (fMetadatas.find("name") != fMetadatas.end()) {
+            fName = fMetadatas["name"];
+            fMetadatas.erase("name");
+        } else {
+            fName = "";
+        }
+        
+        if (fMetadatas.find("filename") != fMetadatas.end()) {
+            fFileName = fMetadatas["filename"];
+            fMetadatas.erase("filename");
+        } else {
+            fName = "";
+        }
+     
+        if (fMetadatas.find("version") != fMetadatas.end()) {
+            fVersion = fMetadatas["version"];
+            fMetadatas.erase("version");
+        } else {
+            fVersion = "";
+        }
+        
+        if (fMetadatas.find("options") != fMetadatas.end()) {
+            fOptions = fMetadatas["options"];
+            fMetadatas.erase("options");
+        } else {
+            fOptions = "";
+        }
+        
+        if (fMetadatas.find("size") != fMetadatas.end()) {
+            fDSPSize = atoi(fMetadatas["size"].c_str());
+            fMetadatas.erase("size");
+        } else {
+            fDSPSize = -1;
+        }
+         
+        if (fMetadatas.find("inputs") != fMetadatas.end()) {
+            fNumInputs = atoi(fMetadatas["inputs"].c_str());
+            fMetadatas.erase("inputs");
+        } else {
+            fNumInputs = -1;
+        }
+        
+        if (fMetadatas.find("outputs") != fMetadatas.end()) {
+            fNumOutputs = atoi(fMetadatas["outputs"].c_str());
+            fMetadatas.erase("outputs");
+        } else {
+            fNumOutputs = -1;
+        }
+       
+        fInputItems = 0;
+        fOutputItems = 0;
+        
+        vector<itemInfo*>::iterator it;
+        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
+            string type = (*it)->type;
+            if (isInput(type)) {
+                fInputItems++;
+            } else if (isOutput(type)) {
+                fOutputItems++;          
+            }
+        }
+        
+        fInControl = new FAUSTFLOAT[fInputItems];
+        fOutControl = new FAUSTFLOAT[fOutputItems];
+        
+        int counterIn = 0;
+        int counterOut = 0;
+        
+        // Prepare the fPathTable and init zone
+        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
+            string type = (*it)->type;
+            // Meta data declaration for input items
+            if (isInput(type)) {
+                if ((*it)->address != "") {
+                    fPathInputTable[(*it)->address] = make_pair(atoi((*it)->index.c_str()), &fInControl[counterIn]);
+                }
+                fInControl[counterIn] = STR2REAL((*it)->init);
+                counterIn++;
+            }
+            // Meta data declaration for output items
+            else if (isOutput(type)) {
+                if ((*it)->address != "") {
+                    fPathOutputTable[(*it)->address] = make_pair(atoi((*it)->index.c_str()), &fOutControl[counterOut]);
+                }
+                fOutControl[counterOut] = FAUSTFLOAT(0);
+                counterOut++;
+            }
+        }
+    }
+    
+    virtual ~JSONUIDecoder() 
+    {
+        vector<itemInfo*>::iterator it;
+        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
+            delete(*it);
+        }
+        delete [] fInControl;
+        delete [] fOutControl;
+    }
+    
+    void metadata(Meta* m)
+    {
+        std::map<std::string, std::string>::iterator it;
+        for (it = fMetadatas.begin(); it != fMetadatas.end(); it++) {
+            m->declare((*it).first.c_str(), (*it).second.c_str());
+        }
+    }
+    
+    void resetUserInterface()
+    {
+        vector<itemInfo*>::iterator it;
+        int item = 0;
+        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
+            if (isInput((*it)->type)) {
+                fInControl[item++] = STR2REAL((*it)->init);
+            }
+        }
+    }
+   
+    void buildUserInterface(UI* ui)
+    {
+        // To be sure the floats are correctly encoded
+        char* tmp_local = setlocale(LC_ALL, NULL);
+        setlocale(LC_ALL, "C");
+
+        int counterIn = 0;
+        int counterOut = 0;
+        vector<itemInfo*>::iterator it;
+        
+        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
+            
+            bool isInItem = false;
+            bool isOutItem = false;
+            string type = (*it)->type;
+            
+            FAUSTFLOAT init = STR2REAL((*it)->init);
+            FAUSTFLOAT min = STR2REAL((*it)->min);
+            FAUSTFLOAT max = STR2REAL((*it)->max);
+            FAUSTFLOAT step = STR2REAL((*it)->step);
+            
+            if (isInput(type)) {
+                isInItem = true;
+            } else if (isOutput(type)) {
+                isOutItem = true;
+            }
+            
+            // Meta data declaration for input items
+            if (isInput(type)) {
+                fInControl[counterIn] = init;
+                for (size_t i = 0; i < (*it)->meta.size(); i++) {
+                    ui->declare(&fInControl[counterIn], (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                }
+            }
+            // Meta data declaration for output items
+            else if (isOutput(type)) {
+                fOutControl[counterOut] = init;
+                for (size_t i = 0; i < (*it)->meta.size(); i++) {
+                    ui->declare(&fOutControl[counterOut], (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                }
+            }
+            // Meta data declaration for group opening or closing
+            else {
+                for (size_t i = 0; i < (*it)->meta.size(); i++) {
+                    ui->declare(0, (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                }
+            }
+            
+            if (type == "hgroup") {
+                ui->openHorizontalBox((*it)->label.c_str());
+            } else if (type == "vgroup") { 
+                ui->openVerticalBox((*it)->label.c_str());
+            } else if (type == "tgroup") {
+                ui->openTabBox((*it)->label.c_str());
+            } else if (type == "vslider") {
+                ui->addVerticalSlider((*it)->label.c_str(), &fInControl[counterIn], init, min, max, step);
+            } else if (type == "hslider") {
+                ui->addHorizontalSlider((*it)->label.c_str(), &fInControl[counterIn], init, min, max, step);            
+            } else if (type == "checkbox") {
+                ui->addCheckButton((*it)->label.c_str(), &fInControl[counterIn]);
+            } else if (type == "hbargraph") {
+                ui->addHorizontalBargraph((*it)->label.c_str(), &fOutControl[counterOut], min, max);
+            } else if (type == "vbargraph") {
+                ui->addVerticalBargraph((*it)->label.c_str(), &fOutControl[counterOut], min, max);
+            } else if (type == "nentry") {
+                ui->addNumEntry((*it)->label.c_str(), &fInControl[counterIn], init, min, max, step);
+            } else if (type == "button") {
+                ui->addButton((*it)->label.c_str(), &fInControl[counterIn]);
+            } else if (type == "close") {
+                ui->closeBox();
+            }
+                
+            if (isInItem) {
+                counterIn++;
+            }
+                
+            if (isOutItem) {
+                counterOut++;
+            }
+        }
+        
+        setlocale(LC_ALL, tmp_local);
+    }
+    
+};
+
+
+#endif
+
+//----------------------------------------------------------------
+//  Proxy dsp definition created from the DSP JSON description
+//  This class allows a 'proxy' dsp to control a real dsp 
+//  possibly running somewhere else.
+//----------------------------------------------------------------
+
+class proxy_dsp : public dsp {
+
+    private:
+    
+        int fSamplingFreq;
+        JSONUIDecoder* fDecoder;
+        
+    public:
+    
+        proxy_dsp(const string& json)
+        {
+            fDecoder = new JSONUIDecoder(json);
+            fSamplingFreq = -1;
+        }
+          
+        proxy_dsp(dsp* dsp)
+        {
+            JSONUI builder(dsp->getNumInputs(), dsp->getNumOutputs());
+            dsp->metadata(&builder);
+            dsp->buildUserInterface(&builder);
+            fSamplingFreq = dsp->getSampleRate();
+            fDecoder = new JSONUIDecoder(builder.JSON());
+        }
+      
+        virtual ~proxy_dsp()
+        {
+            delete fDecoder;
+        }
+       
+        virtual int getNumInputs() 	{ return fDecoder->fNumInputs; }
+        virtual int getNumOutputs() { return fDecoder->fNumOutputs; }
+        
+        virtual void buildUserInterface(UI* ui) { fDecoder->buildUserInterface(ui); }
+        
+        // To possibly implement in a concrete proxy dsp 
+        virtual void init(int samplingFreq)
+        {
+            instanceInit(samplingFreq);
+        }
+        virtual void instanceInit(int samplingFreq)
+        {
+            instanceConstants(samplingFreq);
+            instanceResetUserInterface();
+            instanceClear();
+        }
+        virtual void instanceConstants(int samplingRate) { fSamplingFreq = samplingRate; }
+        virtual void instanceResetUserInterface() { fDecoder->resetUserInterface(); }
+        virtual void instanceClear() {}
+    
+        virtual int getSampleRate() { return fSamplingFreq; }
+    
+        virtual proxy_dsp* clone() { return new proxy_dsp(fDecoder->fJSON); }
+        virtual void metadata(Meta* m) { fDecoder->metadata(m); }
+    
+        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {}
+        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {} 
+        
+};
+
+#endif
+
+#define kActiveVoice      0
+#define kFreeVoice        -1
+#define kReleaseVoice     -2
+#define kNoVoice          -3
+
+#define VOICE_STOP_LEVEL  0.001
+#define MIX_BUFFER_SIZE   16384
+
+#define FLOAT_MAX(a, b) (((a) < (b)) ? (b) : (a))
+
+// endsWith(<str>,<end>) : returns true if <str> ends with <end>
+
+static inline bool endsWith(std::string const& str, std::string const& end)
+{
+    size_t l1 = str.length();
+    size_t l2 = end.length();
+    return (l1 >= l2) && (0 == str.compare(l1 - l2, l2, end));
+}
+
+static inline double midiToFreq(double note)
+{
+    return 440.0 * pow(2.0, (note-69.0)/12.0);
+}
+
+/**
+ * Allows to control zones in a grouped manner.
+ */
+
+class GroupUI : public GUI, public PathBuilder
+{
+
+    private:
+
+        std::map<std::string, uiGroupItem*> fLabelZoneMap;
+
+        void insertMap(std::string label, FAUSTFLOAT* zone)
+        {
+            if (!endsWith(label, "/gate")
+                && !endsWith(label, "/freq")
+                && !endsWith(label, "/gain")) {
+
+                // Groups all controller except 'freq', 'gate', and 'gain'
+                if (fLabelZoneMap.find(label) != fLabelZoneMap.end()) {
+                    fLabelZoneMap[label]->addZone(zone);
+                } else {
+                    fLabelZoneMap[label] = new uiGroupItem(this, zone);
+                }
+            }
+        }
+
+        uiCallbackItem* fPanic;
+
+    public:
+
+        GroupUI(FAUSTFLOAT* zone, uiCallback cb, void* arg)
+        {
+            fPanic = new uiCallbackItem(this, zone, cb, arg);
+        }
+    
+        virtual ~GroupUI()
+        {
+            // 'fPanic' is kept and deleted in GUI, so do not delete here
+        }
+
+        // -- widget's layouts
+        void openTabBox(const char* label)
+        {
+            fControlsLevel.push_back(label);
+        }
+        void openHorizontalBox(const char* label)
+        {
+            fControlsLevel.push_back(label);
+        }
+        void openVerticalBox(const char* label)
+        {
+            fControlsLevel.push_back(label);
+        }
+        void closeBox()
+        {
+            fControlsLevel.pop_back();
+        }
+
+        // -- active widgets
+        void addButton(const char* label, FAUSTFLOAT* zone)
+        {
+            insertMap(buildPath(label), zone);
+        }
+        void addCheckButton(const char* label, FAUSTFLOAT* zone)
+        {
+            insertMap(buildPath(label), zone);
+        }
+        void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            insertMap(buildPath(label), zone);
+        }
+        void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            insertMap(buildPath(label), zone);
+        }
+        void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            insertMap(buildPath(label), zone);
+        }
+
+        // -- passive widgets
+        void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
+        {
+            insertMap(buildPath(label), zone);
+        }
+        void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
+        {
+            insertMap(buildPath(label), zone);
+        }
+
+};
+
+/**
+ * One voice of polyphony.
+ */
+
+struct dsp_voice : public MapUI, public decorator_dsp {
+
+    int fNote;              // Playing note actual pitch
+    int fDate;              // KeyOn date
+    bool fTrigger;          // True if stolen note and need for envelop trigger
+    FAUSTFLOAT fLevel;      // Last audio block level
+    std::string fGatePath;  // Path of 'gate' control
+    std::string fGainPath;  // Path of 'gain' control
+    std::string fFreqPath;  // Path of 'freq' control
+
+    dsp_voice(dsp* dsp):decorator_dsp(dsp)
+    {
+        dsp->buildUserInterface(this);
+        fNote = kFreeVoice;
+        fLevel = FAUSTFLOAT(0);
+        fDate = 0;
+        fTrigger = false;
+        extractPaths(fGatePath, fFreqPath, fGainPath);
+    }
+
+    void extractPaths(std::string& gate, std::string& freq, std::string& gain)
+    {
+        // Keep gain, freq and gate labels
+        std::map<std::string, FAUSTFLOAT*>::iterator it;
+        for (it = getMap().begin(); it != getMap().end(); it++) {
+            std::string path = (*it).first;
+            if (endsWith(path, "/gate")) {
+                gate = path;
+            } else if (endsWith(path, "/freq")) {
+                freq = path;
+            } else if (endsWith(path, "/gain")) {
+                gain = path;
+            }
+        }
+    }
+
+    // MIDI velocity [0..127]
+    void keyOn(int pitch, int velocity)
+    {
+        setParamValue(fFreqPath, midiToFreq(pitch));
+        setParamValue(fGainPath, float(velocity)/127.f);
+        fNote = pitch;
+    }
+
+    // Normalized MIDI velocity [0..1]
+    void keyOn(int pitch, float velocity)
+    {
+        setParamValue(fFreqPath, midiToFreq(pitch));
+        setParamValue(fGainPath, velocity);
+        fNote = pitch;
+    }
+
+    void keyOff(bool hard = false)
+    {
+        // No use of velocity for now...
+        setParamValue(fGatePath, FAUSTFLOAT(0));
+        
+        if (hard) {
+            // Stop immediately
+            fNote = kFreeVoice;
+            fTrigger = false;
+        } else {
+            // Release voice
+            fNote = kReleaseVoice;
+        }
+    }
+
+    void play(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+    {
+        if (fTrigger) {
+            // New note, so trigger it
+            trigger(count, inputs, outputs);
+        } else {
+            // Compute the voice
+            compute(count, inputs, outputs);
+        }
+    }
+
+    void trigger(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+    {
+        setParamValue(fGatePath, FAUSTFLOAT(0));
+        computeSlice(0, 1, inputs, outputs);
+        setParamValue(fGatePath, FAUSTFLOAT(1));
+        computeSlice(1, count - 1, inputs, outputs);
+        fTrigger = false;
+    }
+
+    void computeSlice(int offset, int slice, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+    {
+        if (slice > 0) {
+            FAUSTFLOAT** inputs_slice = (FAUSTFLOAT**)alloca(getNumInputs() * sizeof(FAUSTFLOAT*));
+            for (int chan = 0; chan < getNumInputs(); chan++) {
+                inputs_slice[chan] = &(inputs[chan][offset]);
+            }
+
+            FAUSTFLOAT** outputs_slice = (FAUSTFLOAT**)alloca(getNumOutputs() * sizeof(FAUSTFLOAT*));
+            for (int chan = 0; chan < getNumOutputs(); chan++) {
+                outputs_slice[chan] = &(outputs[chan][offset]);
+            }
+
+            compute(slice, inputs_slice, outputs_slice);
+        }
+    }
+
+};
+
+/**
+ * A group of voices.
+ */
+
+struct dsp_voice_group {
+
+    GroupUI fGroups;
+
+    std::vector<dsp_voice*> fVoiceTable; // Individual voices
+    dsp* fVoiceGroup;                    // Voices group to be used for GUI grouped control
+
+    FAUSTFLOAT fPanic;
+
+    bool fVoiceControl;
+    bool fGroupControl;
+
+    dsp_voice_group(uiCallback cb, void* arg, bool control, bool group)
+        :fGroups(&fPanic, cb, arg),
+        fVoiceGroup(0), fPanic(FAUSTFLOAT(0)),
+        fVoiceControl(control), fGroupControl(group)
+    {}
+
+    virtual ~dsp_voice_group()
+    {
+        for (size_t i = 0; i < fVoiceTable.size(); i++) {
+            delete fVoiceTable[i];
+        }
+        delete fVoiceGroup;
+    }
+
+    void addVoice(dsp_voice* voice)
+    {
+        fVoiceTable.push_back(voice);
+    }
+
+    void clearVoices()
+    {
+        fVoiceTable.clear();
+    }
+
+    void init()
+    {
+        // Groups all uiItem for a given path
+        fVoiceGroup = new proxy_dsp(fVoiceTable[0]);
+        fVoiceGroup->buildUserInterface(&fGroups);
+        for (size_t i = 0; i < fVoiceTable.size(); i++) {
+            fVoiceTable[i]->buildUserInterface(&fGroups);
+        }
+    }
+
+    void buildUserInterface(UI* ui_interface)
+    {
+        if (fVoiceTable.size() > 1) {
+            ui_interface->openTabBox("Polyphonic");
+
+            // Grouped voices UI
+            ui_interface->openVerticalBox("Voices");
+            ui_interface->addButton("Panic", &fPanic);
+            fVoiceGroup->buildUserInterface(ui_interface);
+            ui_interface->closeBox();
+
+            // If not grouped, also add individual voices UI
+            if (!fGroupControl) {
+                for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                    char buffer[32];
+                    snprintf(buffer, 32, ((fVoiceTable.size() < 8) ? "Voice%ld" : "V%ld"), i+1);
+                    ui_interface->openHorizontalBox(buffer);
+                    fVoiceTable[i]->buildUserInterface(ui_interface);
+                    ui_interface->closeBox();
+                }
+            }
+
+            ui_interface->closeBox();
+        } else {
+            fVoiceTable[0]->buildUserInterface(ui_interface);
+        }
+    }
+
+};
+
+/**
+ * Base class for Polyphonic DSP.
+ */
+class dsp_poly : public decorator_dsp, public midi {
+
+    public:
+    
+        dsp_poly(dsp* dsp):decorator_dsp(dsp)
+        {}
+    
+        virtual ~dsp_poly() {}
+};
+
+/**
+ * Polyphonic DSP : group a set of DSP to be played together or triggered by MIDI.
+ */
+
+class mydsp2_poly : public dsp_voice_group, public dsp_poly {
+
+    private:
+
+        FAUSTFLOAT** fMixBuffer;
+        int fDate;
+
+        inline FAUSTFLOAT mixVoice(int count, FAUSTFLOAT** outputBuffer, FAUSTFLOAT** mixBuffer)
+        {
+            FAUSTFLOAT level = 0;
+            for (int i = 0; i < getNumOutputs(); i++) {
+                FAUSTFLOAT* mixChannel = mixBuffer[i];
+                FAUSTFLOAT* outChannel = outputBuffer[i];
+                for (int j = 0; j < count; j++) {
+                    level = FLOAT_MAX(level, (FAUSTFLOAT)fabs(outChannel[j]));
+                    mixChannel[j] += outChannel[j];
+                }
+            }
+            return level;
+        }
+
+        inline void clearOutput(int count, FAUSTFLOAT** mixBuffer)
+        {
+            for (int i = 0; i < getNumOutputs(); i++) {
+                memset(mixBuffer[i], 0, count * sizeof(FAUSTFLOAT));
+            }
+        }
+    
+        inline int getPlayingVoice(int pitch)
+        {
+            int voice_playing = kNoVoice;
+            int oldest_date_playing = INT_MAX;
+            
+            for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                if (fVoiceTable[i]->fNote == pitch) {
+                    // Keeps oldest playing voice
+                    if (fVoiceTable[i]->fDate < oldest_date_playing) {
+                        oldest_date_playing = fVoiceTable[i]->fDate;
+                        voice_playing = i;
+                    }
+                }
+            }
+            
+            return voice_playing;
+        }
+    
+        // Always returns a voice
+        inline int getFreeVoice()
+        {
+            int voice = kNoVoice;
+            
+            // Looks for the first available voice
+            for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                if (fVoiceTable[i]->fNote == kFreeVoice) {
+                    voice = i;
+                    goto result;
+                }
+            }
+
+            {
+                // Otherwise steal one
+                int voice_release = kNoVoice;
+                int voice_playing = kNoVoice;
+                
+                int oldest_date_release = INT_MAX;
+                int oldest_date_playing = INT_MAX;
+
+                // Scan all voices
+                for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                    if (fVoiceTable[i]->fNote == kReleaseVoice) {
+                        // Keeps oldest release voice
+                        if (fVoiceTable[i]->fDate < oldest_date_release) {
+                            oldest_date_release = fVoiceTable[i]->fDate;
+                            voice_release = i;
+                        }
+                    } else {
+                        // Otherwise keeps oldest playing voice
+                        if (fVoiceTable[i]->fDate < oldest_date_playing) {
+                            oldest_date_playing = fVoiceTable[i]->fDate;
+                            voice_playing = i;
+                        }
+                    }
+                }
+            
+                // Then decide which one to steal
+                if (oldest_date_release != INT_MAX) {
+                    std::cout << "Steal release voice : voice_date " << fVoiceTable[voice_release]->fDate << " cur_date = " << fDate << " voice = " << voice_release << std::endl;
+                    voice = voice_release;
+                    goto result;
+                } else if (oldest_date_playing != INT_MAX) {
+                    std::cout << "Steal playing voice : voice_date " << fVoiceTable[voice_playing]->fDate << " cur_date = " << fDate << " voice = " << voice_playing << std::endl;
+                    voice = voice_playing;
+                    goto result;
+                } else {
+                    assert(false);
+                    return kNoVoice;
+                }
+            }
+            
+        result:
+            fVoiceTable[voice]->fDate = fDate++;
+            fVoiceTable[voice]->fTrigger = true;    // So that envelop is always re-initialized
+            fVoiceTable[voice]->fNote = kActiveVoice;
+            return voice;
+        }
+
+        static void panic(FAUSTFLOAT val, void* arg)
+        {
+            if (val == FAUSTFLOAT(1)) {
+                static_cast<mydsp2_poly*>(arg)->allNotesOff(true);
+            }
+        }
+
+        inline bool checkPolyphony()
+        {
+            if (fVoiceTable.size() > 0) {
+                return true;
+            } else {
+                std::cout << "DSP is not polyphonic...\n";
+                return false;
+            }
+        }
+
+    public:
+    
+        /**
+         * Constructor.
+         *
+         * @param dsp - the dsp to be used for one voice. Beware: mydsp2_poly will use and finally delete the pointer.
+         * @param nvoices - number of polyphony voices
+         * @param control - whether voices will be dynamically allocated and controlled (typically by a MIDI controler).
+         *                If false all voices are always running.
+         * @param group - if true, voices are not individually accessible, a global "Voices" tab will automatically dispatch
+         *                a given control on all voices, assuming GUI::updateAllGuis() is called.
+         *                If false, all voices can be individually controlled.
+         *
+         */
+        mydsp2_poly(dsp* dsp,
+                   int nvoices,
+                   bool control = false,
+                   bool group = true)
+        : dsp_voice_group(panic, this, control, group), dsp_poly(dsp)
+        {
+            fDate = 0;
+
+            // Create voices
+            for (int i = 0; i < nvoices; i++) {
+                addVoice(new dsp_voice(dsp->clone()));
+            }
+
+            // Init audio output buffers
+            fMixBuffer = new FAUSTFLOAT*[getNumOutputs()];
+            for (int i = 0; i < getNumOutputs(); i++) {
+                fMixBuffer[i] = new FAUSTFLOAT[MIX_BUFFER_SIZE];
+            }
+
+            dsp_voice_group::init();
+        }
+
+        virtual ~mydsp2_poly()
+        {
+            for (int i = 0; i < getNumOutputs(); i++) {
+                delete[] fMixBuffer[i];
+            }
+            delete[] fMixBuffer;
+        }
+
+        // DSP API
+    
+        void buildUserInterface(UI* ui_interface)
+        {
+            dsp_voice_group::buildUserInterface(ui_interface);
+        }
+
+        void init(int samplingRate)
+        {
+            decorator_dsp::init(samplingRate);
+            fVoiceGroup->init(samplingRate);
+            fPanic = FAUSTFLOAT(0);
+            
+            // Init voices
+            for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                fVoiceTable[i]->init(samplingRate);
+            }
+        }
+    
+        void instanceInit(int samplingFreq)
+        {
+            instanceConstants(samplingFreq);
+            instanceResetUserInterface();
+            instanceClear();
+        }
+
+        void instanceConstants(int samplingRate)
+        {
+            decorator_dsp::instanceConstants(samplingRate);
+            fVoiceGroup->instanceConstants(samplingRate);
+            
+            // Init voices
+            for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                fVoiceTable[i]->instanceConstants(samplingRate);
+            }
+        }
+
+        void instanceResetUserInterface()
+        {
+            decorator_dsp::instanceResetUserInterface();
+            fVoiceGroup->instanceResetUserInterface();
+            fPanic = FAUSTFLOAT(0);
+            
+            for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                fVoiceTable[i]->instanceResetUserInterface();
+            }
+        }
+
+        void instanceClear()
+        {
+            decorator_dsp::instanceClear();
+            fVoiceGroup->instanceClear();
+            
+            for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                fVoiceTable[i]->instanceClear();
+            }
+        }
+
+        virtual mydsp2_poly* clone()
+        {
+            return new mydsp2_poly(fDSP->clone(), int(fVoiceTable.size()), fVoiceControl, fGroupControl);
+        }
+
+        void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            assert(count < MIX_BUFFER_SIZE);
+
+            // First clear the outputs
+            clearOutput(count, outputs);
+
+            if (fVoiceControl) {
+                // Mix all playing voices
+                for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                    dsp_voice* voice = fVoiceTable[i];
+                    if (voice->fNote != kFreeVoice) {
+                        voice->play(count, inputs, fMixBuffer);
+                        // Mix it in result
+                        voice->fLevel = mixVoice(count, fMixBuffer, outputs);
+                        // Check the level to possibly set the voice in kFreeVoice again
+                        if ((voice->fLevel < VOICE_STOP_LEVEL) && (voice->fNote == kReleaseVoice)) {
+                            voice->fNote = kFreeVoice;
+                        }
+                    }
+                }
+            } else {
+                // Mix all voices
+                for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                    fVoiceTable[i]->compute(count, inputs, fMixBuffer);
+                    mixVoice(count, fMixBuffer, outputs);
+                }
+            }
+        }
+
+        void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            compute(count, inputs, outputs);
+        }
+
+        // Additional polyphonic API
+        MapUI* newVoice()
+        {
+            return fVoiceTable[getFreeVoice()];
+        }
+
+        void deleteVoice(MapUI* voice)
+        {
+            std::vector<dsp_voice*>::iterator it = find(fVoiceTable.begin(), fVoiceTable.end(), reinterpret_cast<dsp_voice*>(voice));
+            if (it != fVoiceTable.end()) {
+                (*it)->keyOff();
+            } else {
+                std::cout << "Voice not found\n";
+            }
+        }
+
+        // MIDI API
+        MapUI* keyOn(int channel, int pitch, int velocity)
+        {
+            if (checkPolyphony()) {
+                int voice = getFreeVoice();
+                fVoiceTable[voice]->keyOn(pitch, velocity);
+                return fVoiceTable[voice];
+            } else {
+                return 0;
+            }
+        }
+
+        void keyOff(int channel, int pitch, int velocity = 127)
+        {
+            if (checkPolyphony()) {
+                int voice = getPlayingVoice(pitch);
+                if (voice != kNoVoice) {
+                    fVoiceTable[voice]->keyOff();
+                } else {
+                    std::cout << "Playing pitch = " << pitch << " not found\n";
+                }
+            }
+        }
+
+        void pitchWheel(int channel, int wheel)
+        {}
+
+        void ctrlChange(int channel, int ctrl, int value)
+        {
+            if (ctrl == ALL_NOTES_OFF || ctrl == ALL_SOUND_OFF) {
+                allNotesOff();
+            }
+        }
+
+        void progChange(int channel, int pgm)
+        {}
+
+        void keyPress(int channel, int pitch, int press)
+        {}
+
+        void chanPress(int channel, int press)
+        {}
+
+        void ctrlChange14bits(int channel, int ctrl, int value)
+        {}
+
+        // Terminate all active voices, gently or immediately (depending of 'hard' value)
+        void allNotesOff(bool hard = false)
+        {
+            for (size_t i = 0; i < fVoiceTable.size(); i++) {
+                fVoiceTable[i]->keyOff(hard);
+            }
+        }
+
+};
+
+#endif // __poly_dsp__
+/************************************************************************
+ FAUST Architecture File
  Copyright (C) 2013 GRAME, Romain Michon, CCRMA - Stanford University
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
@@ -5814,141 +8379,473 @@ extern "C" {
 #endif
 
 #endif // __faust_engine__
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __dsp_combiner__
+#define __dsp_combiner__
+
+#include <string.h>
+#include <assert.h>
+
+
+// Combine two DSP in sequence
+
+class dsp_sequencer : public dsp {
+    
+    private:
+        
+        dsp* fDSP1;
+        dsp* fDSP2;
+        FAUSTFLOAT** fSeqBuffer;
+         
+    public:
+        
+        dsp_sequencer(dsp* dsp1, dsp* dsp2, int buffer_size = 4096)
+            :fDSP1(dsp1), fDSP2(dsp2)
+        {
+            assert(fDSP1->getNumOutputs() == fDSP2->getNumInputs());
+            fSeqBuffer = new FAUSTFLOAT*[fDSP1->getNumOutputs()];
+            for (int i = 0; i < fDSP1->getNumOutputs(); i++) {
+                fSeqBuffer[i] = new FAUSTFLOAT[buffer_size];
+            }
+        }
+        
+        virtual ~dsp_sequencer()
+        {
+            for (int i = 0; i < fDSP1->getNumOutputs(); i++) {
+               delete [] fSeqBuffer[i];
+            }
+            
+            delete [] fSeqBuffer;
+            delete fDSP1;
+            delete fDSP2;
+        }
+               
+        virtual int getNumInputs() { return fDSP1->getNumInputs(); }
+        virtual int getNumOutputs() { return fDSP2->getNumOutputs(); }
+    
+        virtual void buildUserInterface(UI* ui_interface)
+        {
+            ui_interface->openTabBox("Sequencer");
+            ui_interface->openVerticalBox("DSP1");
+            fDSP1->buildUserInterface(ui_interface);
+            ui_interface->closeBox();
+            ui_interface->openVerticalBox("DSP2");
+            fDSP2->buildUserInterface(ui_interface);
+            ui_interface->closeBox();
+            ui_interface->closeBox();
+        }
+        
+        virtual int getSampleRate()
+        {
+            return fDSP1->getSampleRate();
+        }
+    
+        virtual void init(int samplingRate)
+        {
+            fDSP1->init(samplingRate);
+            fDSP2->init(samplingRate);
+        }
+    
+        virtual void instanceInit(int samplingRate)
+        {
+            fDSP1->instanceInit(samplingRate);
+            fDSP2->instanceInit(samplingRate);
+        }
+    
+        virtual void instanceConstants(int samplingRate)
+        {
+            fDSP1->instanceConstants(samplingRate);
+            fDSP2->instanceConstants(samplingRate);
+        }
+    
+        virtual void instanceResetUserInterface()
+        {
+            fDSP1->instanceResetUserInterface();
+            fDSP2->instanceResetUserInterface();
+        }
+    
+        virtual void instanceClear()
+        {
+            fDSP1->instanceClear();
+            fDSP2->instanceClear();
+        }
+        
+        virtual dsp* clone()
+        {
+            return new dsp_sequencer(fDSP1->clone(), fDSP2->clone());
+        }
+    
+        virtual void metadata(Meta* m)
+        {
+            fDSP1->metadata(m);
+            fDSP2->metadata(m);
+        }
+ 
+        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            fDSP1->compute(count, inputs, fSeqBuffer);
+            fDSP2->compute(count, fSeqBuffer, outputs);
+        }
+        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { compute(count, inputs, outputs); }
+};
+
+// Combine two DSP in parallel
+
+class dsp_parallelizer : public dsp {
+    
+    private:
+        
+        dsp* fDSP1;
+        dsp* fDSP2;
+         
+    public:
+        
+        dsp_parallelizer(dsp* dsp1, dsp* dsp2, int buffer_size = 4096)
+            :fDSP1(dsp1), fDSP2(dsp2)
+        {}
+        
+        virtual ~dsp_parallelizer()
+        {
+            delete fDSP1;
+            delete fDSP2;
+        }
+               
+        virtual int getNumInputs() { return fDSP1->getNumInputs() + fDSP2->getNumInputs(); }
+        virtual int getNumOutputs() { return fDSP1->getNumOutputs() + fDSP2->getNumOutputs(); }
+    
+        virtual void buildUserInterface(UI* ui_interface)
+        {
+            ui_interface->openTabBox("Parallelizer");
+            ui_interface->openVerticalBox("DSP1");
+            fDSP1->buildUserInterface(ui_interface);
+            ui_interface->closeBox();
+            ui_interface->openVerticalBox("DSP2");
+            fDSP2->buildUserInterface(ui_interface);
+            ui_interface->closeBox();
+            ui_interface->closeBox();
+        }
+        
+        virtual int getSampleRate()
+        {
+            return fDSP1->getSampleRate();
+        }
+    
+        virtual void init(int samplingRate)
+        {
+            fDSP1->init(samplingRate);
+            fDSP2->init(samplingRate);
+        }
+    
+        virtual void instanceInit(int samplingRate)
+        {
+            fDSP1->instanceInit(samplingRate);
+            fDSP2->instanceInit(samplingRate);
+        }
+    
+        virtual void instanceConstants(int samplingRate)
+        {
+            fDSP1->instanceConstants(samplingRate);
+            fDSP2->instanceConstants(samplingRate);
+        }
+        
+        virtual void instanceResetUserInterface()
+        {
+            fDSP1->instanceResetUserInterface();
+            fDSP2->instanceResetUserInterface();
+        }
+
+        virtual void instanceClear()
+        {
+            fDSP1->instanceClear();
+            fDSP2->instanceClear();
+        }
+        
+        virtual dsp* clone()
+        {
+            return new dsp_parallelizer(fDSP1->clone(), fDSP2->clone());
+        }
+
+        virtual void metadata(Meta* m)
+        {
+            fDSP1->metadata(m);
+            fDSP2->metadata(m);
+        }
+    
+        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            fDSP1->compute(count, inputs, outputs);
+            
+            // Shift inputs/outputs channels for fDSP2
+            FAUSTFLOAT** inputs_dsp2 = (FAUSTFLOAT**)alloca(fDSP2->getNumInputs() * sizeof(FAUSTFLOAT*));
+            for (int chan = 0; chan < fDSP2->getNumInputs(); chan++) {
+                inputs_dsp2[chan] = inputs[fDSP1->getNumInputs() + chan];
+            }
+            
+            FAUSTFLOAT** outputs_dsp2 = (FAUSTFLOAT**)alloca(fDSP2->getNumOutputs() * sizeof(FAUSTFLOAT*));
+            for (int chan = 0; chan < fDSP2->getNumOutputs(); chan++) {
+                outputs_dsp2[chan] = outputs[fDSP1->getNumOutputs() + chan];
+            }
+            
+            fDSP2->compute(count, inputs_dsp2, outputs_dsp2);
+        }
+        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { compute(count, inputs, outputs); }
+};
+
+#endif
 
 //**************************************************************
-// Motion "audio" DSP engine
+// Mono or polyphonic audio DSP engine
 //**************************************************************
 
 using namespace std;
 
+class FaustPolyEngine {
+        
+    protected:
 
-class FaustMotionEngine {
+        mydsp2_poly* fPolyDSP;     // the polyphonic Faust object
+        dsp* fFinalDSP;           // the "final" dsp object submitted to the audio driver
     
-protected:
+        APIUI fAPIUI;             // the UI description
+
+        string fJSONUI;
+        string fJSONMeta;
+        bool fRunning;
+        audio* fDriver;
     
-    dsp* fFinalDSP;           // the "final" dsp object submitted to the audio driver
+        midi_handler fMidiHandler;
+        MidiUI fMidiUI;
     
-    APIUI fAPIUI;             // the UI description
-    
-    string fJSONUI;
-    string fJSONMeta;
-    bool fRunning;
-    audio2* fDriver;
-    
-    
-    
-public:
-    
-    FaustMotionEngine(audio2* driver = NULL)
-    {
-        
-        fDriver = driver;
-        fRunning = false;
-        mydsp2* motion_dsp = new mydsp2();
-        
-        fFinalDSP = motion_dsp;
-        
-        // Update JSONs version
-        JSONUI jsonui2(motion_dsp->getNumInputs(), motion_dsp->getNumOutputs());
-        fFinalDSP->buildUserInterface(&jsonui2);
-        fJSONUI = jsonui2.JSON();
-        JSONUI jsonui2M(motion_dsp->getNumInputs(), motion_dsp->getNumOutputs());
-        fFinalDSP->metadata(&jsonui2M);
-        fJSONMeta = jsonui2M.JSON();
-        
-        fFinalDSP->buildUserInterface(&fAPIUI);
-        
-        fDriver->init("Motion", fFinalDSP);
-    }
-    
-    virtual ~FaustMotionEngine()
-    {
-        delete fDriver;
-        delete fFinalDSP;
-    }
-    
-    /*
-     * start()
-     * Begins the processing and return true if the connection
-     * with the audio device was successful and false if not.
-     */
-    bool start()
-    {
-        if (!fRunning) {
-            fRunning = fDriver->start();
-        }
-        return fRunning;
-    }
-    
-    /*
-     * isRunning()
-     * Returns true if the DSP frames are being computed and
-     * false if not.
-     */
-    bool isRunning()
-    {
-        return fRunning;
-    }
-    
-    /*
-     * stop()
-     * Stops the processing, closes the audio engine.
-     */
-    void stop()
-    {
-        if (fRunning) {
+        void init(dsp* mono_dsp, audio* driver, midi_handler* midi)
+        {
+            bool midi_sync = false;
+            int nvoices = 0;
+            
+            MidiMeta::analyse(mono_dsp, midi_sync, nvoices);
+            
+            fDriver = driver;
             fRunning = false;
-            fDriver->stop();
+            
+            // Getting the UI JSON
+            JSONUI jsonui1(mono_dsp->getNumInputs(), mono_dsp->getNumOutputs());
+            mono_dsp->buildUserInterface(&jsonui1);
+            fJSONUI = jsonui1.JSON();
+            
+            // Getting the metadata JSON
+            JSONUI jsonui1M(mono_dsp->getNumInputs(), mono_dsp->getNumOutputs());
+            mono_dsp->metadata(&jsonui1M);
+            fJSONMeta = jsonui1M.JSON();
+            
+            if (fJSONUI.find("keyboard") != std::string::npos
+                || fJSONUI.find("poly") != std::string::npos
+                || nvoices > 0) {
+                
+                fPolyDSP = new mydsp2_poly(mono_dsp, nvoices, true);
+                fMidiHandler.addMidiIn(fPolyDSP);
+                if (midi) midi->addMidiIn(fPolyDSP);
+                
+            #if POLY2
+                fFinalDSP = new dsp_sequencer(fPolyDSP, new effect());
+            #else
+                fFinalDSP = fPolyDSP;
+            #endif
+                
+                // Update JSONs with Poly version
+                JSONUI jsonui2(mono_dsp->getNumInputs(), mono_dsp->getNumOutputs());
+                fFinalDSP->buildUserInterface(&jsonui2);
+                fJSONUI = jsonui2.JSON();
+                JSONUI jsonui2M(mono_dsp->getNumInputs(), mono_dsp->getNumOutputs());
+                fFinalDSP->metadata(&jsonui2M);
+                fJSONMeta = jsonui2M.JSON();
+                
+            } else {
+                fPolyDSP = NULL;
+                fFinalDSP = mono_dsp;
+            }
+            
+            fFinalDSP->buildUserInterface(&fMidiUI);
+            fFinalDSP->buildUserInterface(&fAPIUI);
+            
+            // Retrieving DSP object name
+            struct MyMeta : public Meta
+            {
+                string fName;
+                void declare(const char* key, const char* value)
+                {
+                    if (strcmp(key, "name") == 0) fName = value;
+                }
+                MyMeta():fName("Dummy"){}
+            };
+      
+            MyMeta meta;
+            fFinalDSP->metadata(&meta);
+            fDriver->init(meta.fName.c_str(), fFinalDSP);
+            if (midi) midi->setName(meta.fName);
         }
-    }
     
-    /*
-     * render()
-     * Render motion dsp buffer
-     */
+    public:
     
-    void render()
-    {
-        
-        fDriver->render();
-    }
+        FaustPolyEngine(dsp* mono_dsp, audio* driver = NULL, midi_handler* midi = NULL):fMidiUI(&fMidiHandler)
+        {
+            init(((mono_dsp) ? mono_dsp : new mydsp2()), driver, midi);
+        }
     
-    /*
-     * setInput(int,float)
-     * connect motion input
-     */
-    void setInput(int channel,float value)
-    {
-        fDriver->setInputValue(channel, value);
-    }
-    
-    /*
-     * getOutput(int)
-     * get motion output
-     */
-    float getOutput(int channel)
-    {
-        return fDriver->getOutputValue(channel);
-    }
-    
-    /*
-     * getOutputChannelNum()
-     * get motion output num
-     */
-    float getOutputChannelNum()
-    {
-        return fDriver->getNumOutputs();
-    }
-    
-    /*
-     * getInputChannelNum()
-     * get motion output
-     */
-    float getInputChannelNum()
-    {
-        return fDriver->getNumInputs();
-    }
+        virtual ~FaustPolyEngine()
+        {
+            delete fDriver;
+            delete fFinalDSP;
+        }
 
+        /*
+         * start()
+         * Begins the processing and return true if the connection
+         * with the audio device was successful and false if not.
+         */
+        bool start()
+        {
+            if (!fRunning) {
+                fRunning = fDriver->start();
+            }
+            return fRunning;
+        }
+        
+        /*
+         * isRunning()
+         * Returns true if the DSP frames are being computed and
+         * false if not.
+         */
+        bool isRunning() 
+        {
+            return fRunning;
+        }
+
+        /*
+         * stop()
+         * Stops the processing, closes the audio engine.
+         */
+        void stop()
+        {
+            if (fRunning) {
+                fRunning = false;
+                fDriver->stop();
+            }
+        }
+    
+        /*
+         * keyOn(pitch, velocity)
+         * Instantiates a new polyphonic voice where velocity
+         * and pitch are MIDI numbers (0-127). keyOn can only
+         * be used if the [style:poly] metadata is used in the
+         * Faust code. keyOn will return 0 if the object is not
+         * polyphonic and the allocated voice otherwise.
+         */
+        MapUI* keyOn(int pitch, int velocity)
+        {
+            if (fPolyDSP) {
+                return fPolyDSP->keyOn(0, pitch, velocity); // MapUI* passed to Java as an integer
+            } else {
+                return 0;
+            }
+        }
+
+        /*
+         * keyOff(pitch)
+         * De-instantiates a polyphonic voice where pitch is the
+         * MIDI number of the note (0-127). keyOff can only be
+         * used if the [style:poly] metadata is used in the Faust
+         * code. keyOn will return 0 if the object is not polyphonic
+         * and 1 otherwise.
+         */
+        int keyOff(int pitch, int velocity = 127)
+        {
+            if (fPolyDSP) {
+                fPolyDSP->keyOff(0, pitch, velocity);
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        /*
+         * newVoice()
+         * Instantiate a new voice and returns the corresponding mapUI.
+         */
+        MapUI* newVoice()
+        {
+            if (fPolyDSP) {
+                return fPolyDSP->newVoice();
+            } else {
+                return 0;
+            }
+        }
+
+        /*
+         * deleteVoice(MapUI* voice)
+         * Delete a voice based on its MapUI*.
+         */
+        int deleteVoice(MapUI* voice)
+        {
+            if (fPolyDSP) {
+                fPolyDSP->deleteVoice(voice);
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        /*
+         * deleteVoice(unsigned long voice)
+         * Delete a voice based on its MapUI* casted as a unsigned long.
+         */
+        int deleteVoice(unsigned long voice)
+        {
+            return deleteVoice(reinterpret_cast<MapUI*>(voice));
+        }
+        
+        /*
+         * allNotesOff()
+         * Gently terminates all the active voices.
+         */
+        void allNotesOff()
+        {
+            if (fPolyDSP) {
+                fPolyDSP->allNotesOff();
+            }
+        }
+    
+        /*
+         * Propagate MIDI data to the Faust object.
+         */
+        void propagateMidi(int count, double time, int type, int channel, int data1, int data2)
+        {
+            if (count == 3) fMidiHandler.handleData2(time, type, channel, data1, data2);
+            else if (count == 2) fMidiHandler.handleData1(time, type, channel, data1);
+            else if (count == 1) fMidiHandler.handleSync(time, type);
+            GUI::updateAllGuis();
+        }
+    
         /*
          * getJSONUI()
          * Returns a string containing a JSON description of the
@@ -5958,7 +8855,7 @@ public:
         {
             return fJSONUI.c_str();
         }
-
+        
         /*
          * getJSONMeta()
          * Returns a string containing a JSON description of the
@@ -5968,10 +8865,10 @@ public:
         {
             return fJSONMeta.c_str();
         }
-
+    
         /*
          * buildUserInterface(ui)
-         * Calls the polyphonic of monophonic buildUserInterface with the ui parameter.
+         * Calls the polyphonic or monophonic buildUserInterface with the ui parameter.
          */
         void buildUserInterface(UI* ui_interface)
         {
@@ -5986,14 +8883,14 @@ public:
         {
             return fAPIUI.getParamsCount();
         }
-
+    
         /*
          * setParamValue(address, value)
          * Sets the value of the parameter associated with address.
          */
         void setParamValue(const char* address, float value)
         {
-            int id = fAPIUI.getParamIndex(address);
+            int id = (address) ? fAPIUI.getParamIndex(address) : -1;
             if (id >= 0) {
                 fAPIUI.setParamValue(id, value);
                 // In POLY mode, update all voices
@@ -6008,10 +8905,10 @@ public:
          */
         float getParamValue(const char* address)
         {
-            int id = fAPIUI.getParamIndex(address);
+            int id = (address) ? fAPIUI.getParamIndex(address) : -1;
             return (id >= 0) ? fAPIUI.getParamValue(id) : 0.f;
         }
-
+    
         /*
          * setParamValue(id, value)
          * Sets the value of the parameter associated with id.
@@ -6022,7 +8919,7 @@ public:
             // In POLY mode, update all voices
             GUI::updateAllGuis();
         }
-
+        
         /*
          * getParamValue(id)
          * Takes the id of a parameter and returns its current
@@ -6032,26 +8929,80 @@ public:
         {
             return fAPIUI.getParamValue(id);
         }
-       /*
-       * getParamAddress(id)
-       * Returns the address of a parameter in function of its "id".
-       */
-        const char* getParamAddress(int id)
+
+        /*
+         * setVoiceParamValue(address, voice, value)
+         * Sets the value of the parameter associated with address for
+         * the voice. setVoiceParamValue can only be
+         * used if the [style:poly] metadata is used in the Faust code.
+         */
+        void setVoiceParamValue(const char* address, unsigned long voice, float value)
         {
-        return fAPIUI.getParamAddress(id);
+            reinterpret_cast<MapUI*>(voice)->setParamValue(address, value);
         }
 
+        /*
+         * setVoiceParamValue(id, voice, value)
+         * Sets the value of the parameter associated with the id for
+         * the voice. setVoiceParamValue can only be
+         * used if the [style:poly] metadata is used in the Faust code.
+         */
+        void setVoiceParamValue(int id, unsigned long voice, float value)
+        {
+            reinterpret_cast<MapUI*>(voice)->setParamValue(reinterpret_cast<MapUI*>(voice)->getParamAddress(id), value);
+        }
+    
+        /*
+         * getVoiceParamValue(address, voice)
+         * Gets the parameter value associated with address for the voice.
+         * getVoiceParamValue can only be used if the [style:poly] metadata
+         * is used in the Faust code.
+         */
+        float getVoiceParamValue(const char* address, unsigned long voice)
+        {
+            return reinterpret_cast<MapUI*>(voice)->getParamValue(address);
+        }
 
+        /*
+         * getVoiceParamValue(id, voice)
+         * Gets the parameter value associated with the id for the voice.
+         * getVoiceParamValue can only be used if the [style:poly] metadata
+         * is used in the Faust code.
+         */
+        float getVoiceParamValue(int id, unsigned long voice)
+        {
+            return reinterpret_cast<MapUI*>(voice)->getParamValue(reinterpret_cast<MapUI*>(voice)->getParamAddress(id));
+        }
+    
+        /*
+         * getParamAddress(id)
+         * Returns the address of a parameter in function of its "id".
+         */
+        const char* getParamAddress(int id)
+        {
+            return fAPIUI.getParamAddress(id);
+        }
+
+        /*
+         * getVoiceParamAddress(id, voice)
+         * Returns the address of a parameter for a specific voice 
+         * in function of its "id".
+         */
+        const char* getVoiceParamAddress(int id, unsigned long voice)
+        {
+            return reinterpret_cast<MapUI*>(voice)->getParamAddress(id).c_str();
+        }
+        
         /*
          * getParamMin(address)
          * Returns the minimum value of a parameter.
          */
         float getParamMin(const char* address)
         {
-            int id = fAPIUI.getParamIndex(address);
+            int id = (address) ? fAPIUI.getParamIndex(address) : -1;
             return (id >= 0) ? fAPIUI.getParamMin(id) : 0.f;
         }
-
+    
         /*
          * getParamMin(id)
          * Returns the minimum value of a parameter.
@@ -6060,17 +9011,17 @@ public:
         {
             return fAPIUI.getParamMin(id);
         }
-
+    
         /*
          * getParamMax(address)
          * Returns the maximum value of a parameter.
          */
         float getParamMax(const char* address)
         {
-            int id = fAPIUI.getParamIndex(address);
+            int id = (address) ? fAPIUI.getParamIndex(address) : -1;
             return (id >= 0) ? fAPIUI.getParamMax(id) : 0.f;
         }
-
+    
         /*
          * getParamMax(id)
          * Returns the maximum value of a parameter.
@@ -6079,17 +9030,17 @@ public:
         {
             return fAPIUI.getParamMax(id);
         }
-
+    
         /*
          * getParamInit(address)
          * Returns the default value of a parameter.
          */
         float getParamInit(const char* address)
         {
-            int id = fAPIUI.getParamIndex(address);
+            int id = (address) ? fAPIUI.getParamIndex(address) : -1;
             return (id >= 0) ? fAPIUI.getParamInit(id) : 0.f;
         }
-
+    
         /*
          * getParamInit(id)
          * Returns the default value of a parameter.
@@ -6098,14 +9049,14 @@ public:
         {
             return fAPIUI.getParamInit(id);
         }
-
+    
         /*
          * getMetadata(address, key)
          * Returns the metadata of a parameter.
          */
         const char* getMetadata(const char* address, const char* key)
         {
-            int id = fAPIUI.getParamIndex(address);
+            int id = (address) ? fAPIUI.getParamIndex(address) : -1;
             return (id >= 0) ? fAPIUI.getMetadata(id, key) : "";
         }
     
@@ -6155,7 +9106,7 @@ public:
         {
             fAPIUI.setGyrConverter(p, gyr, curve, amin, amid, amax);
         }
-
+    
         /*
          * getCPULoad()
          * Return DSP CPU load.
@@ -6175,17 +9126,46 @@ public:
 
 };
 
-#endif // __faust_motion_engine__
+// Public C API
 
-//**************************************************************
-// IOS Coreaudio
-//**************************************************************
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+    
+#ifdef __cplusplus
+}
+#endif
+
+#endif // __faust_poly_engine__
+/************************************************************************
+ ************************************************************************
+ FAUST Polyphonic Architecture File
+ Copyright (C) 2017 GRAME, Allen Weng, SHCM
+ Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+
+ This is sample code. This file is provided as an example of minimal
+ FAUST architecture file. Redistribution and use in source and binary
+ forms, with or without modification, in part or in full are permitted.
+ In particular you can create a derived work of this FAUST architecture
+ and distribute that work under terms of your choice.
+
+ This sample code is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ ************************************************************************
+ ************************************************************************/
+
+#ifndef __faust_motion_engine_m__
+#define __faust_motion_engine_m__
+
 
 /************************************************************************
-    IMPORTANT NOTE : this file contains two clearly delimited sections :
-    the ARCHITECTURE section (in two parts) and the USER section. Each section
-    is governed by its own copyright and license. Please check individually
-    each section for license and copyright information.
+	IMPORTANT NOTE : this file contains two clearly delimited sections :
+	the ARCHITECTURE section (in two parts) and the USER section. Each section
+	is governed by its own copyright and license. Please check individually
+	each section for license and copyright information.
 *************************************************************************/
 
 /*******************BEGIN ARCHITECTURE SECTION (part 1/2)****************/
@@ -6216,14 +9196,161 @@ public:
 
  ************************************************************************
  ************************************************************************/
- 
+
 /******************************************************************************
 *******************************************************************************
 
-						A Motion "audio" driver
+						An abstraction layer over myaudio layer
 
 *******************************************************************************
 *******************************************************************************/
+
+#ifndef __myaudio__
+#define __myaudio__
+
+
+class myaudio : public audio
+{
+
+public:
+
+    
+    virtual void render()                                  = 0;
+
+    virtual void setInputValue(int ch,float val)           = 0;
+    virtual float getOutputValue(int ch) { return 0.f; }
+    
+
+};
+
+#endif
+
+
+//**************************************************************
+// Motion "audio" DSP engine modified from faust_poly_engine
+//**************************************************************
+
+using namespace std;
+
+
+class FaustMotionEngine : public FaustPolyEngine
+{
+
+public:
+
+    myaudio* fDriver;
+
+    FaustMotionEngine(dsp* mono_dsp, myaudio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
+    {
+        init(((mono_dsp) ? mono_dsp : new mydsp2()), driver, NULL);
+        fDriver = driver;
+    }
+
+    virtual ~FaustMotionEngine()
+    {
+        delete fDriver;
+        delete fFinalDSP;
+    }
+
+
+    /*
+     * render()
+     * Render motion dsp buffer
+     */
+
+    void render()
+    {
+
+        fDriver->render();
+    }
+
+    /*
+     * setInput(int,float)
+     * connect motion input
+     */
+    void setInput(int channel,float value)
+    {
+        fDriver->setInputValue(channel, value);
+    }
+
+    /*
+     * getOutput(int)
+     * get motion output
+     */
+    float getOutput(int channel)
+    {
+        return fDriver->getOutputValue(channel);
+    }
+
+    /*
+     * getOutputChannelNum()
+     * get motion output num
+     */
+    float getOutputChannelNum()
+    {
+        return fDriver->getNumOutputs();
+    }
+
+    /*
+     * getInputChannelNum()
+     * get motion output
+     */
+    float getInputChannelNum()
+    {
+        return fDriver->getNumInputs();
+    }
+
+};
+
+#endif // __faust_motion_engine__
+
+//**************************************************************
+// IOS Coreaudio
+//**************************************************************
+
+/************************************************************************
+ IMPORTANT NOTE : this file contains two clearly delimited sections :
+ the ARCHITECTURE section (in two parts) and the USER section. Each section
+ is governed by its own copyright and license. Please check individually
+ each section for license and copyright information.
+ *************************************************************************/
+
+/*******************BEGIN ARCHITECTURE SECTION (part 1/2)****************/
+
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2017 GRAME, Allen Weng, SHCM
+ Copyright (C) 2014-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+
+
+ ************************************************************************
+ ************************************************************************/
+
+/******************************************************************************
+ *******************************************************************************
+
+ A Motion "audio" driver
+
+ *******************************************************************************
+ *******************************************************************************/
 
 #ifndef __motion_audio__
 #define __motion_audio__
@@ -6233,37 +9360,37 @@ public:
 #include <stdio.h>
 #include <iostream>
 #include <iomanip>
-			
 
 
-class motion_audio : public audio2 {
-    
+
+class motion_audio : public myaudio {
+
 private:
-    
+
     dsp* fDSP2;
-    
+
     long fSampleRate2;
     long fBufferSize2;
-    
+
     int fNumInputs2;
     int fNumOutputs2;
-    
+
     FAUSTFLOAT** fInChannel2;
     FAUSTFLOAT** fOutChannel2;
-    
+
     int fRender;
     int fCount;
     bool fIsSample;
     bool fManager;
-    
+
 public:
-    
+
     motion_audio(int sr, int bs, int count = 10, bool sample = false, bool manager = false)
     :fSampleRate2(sr), fBufferSize2(bs), fRender(0), fCount(count), fIsSample(sample), fManager(manager) {}
-    
+
     motion_audio(int count = 10)
     :fSampleRate2(48000), fBufferSize2(512), fRender(0), fCount(count), fIsSample(false), fManager(false) {}
-    
+
     virtual ~motion_audio()
     {
         for (int i = 0; i < fDSP2->getNumInputs(); i++) {
@@ -6272,27 +9399,27 @@ public:
         for (int i = 0; i < fDSP2->getNumOutputs(); i++) {
             delete[] fOutChannel2[i];
         }
-        
+
         delete [] fInChannel2;
         delete [] fOutChannel2;
     }
-    
+
     virtual bool init(const char* name, dsp* dsp)
     {
         fDSP2 = dsp;
         fNumInputs2 = fDSP2->getNumInputs();
         fNumOutputs2 = fDSP2->getNumOutputs();
-        
+
         if (fManager) {
             // classInit is called elsewhere with a custom memory manager
             fDSP2->instanceInit(fSampleRate2);
         } else {
             fDSP2->init(fSampleRate2);
         }
-        
+
         fInChannel2 = new FAUSTFLOAT*[fNumInputs2];
         fOutChannel2 = new FAUSTFLOAT*[fNumOutputs2];
-        
+
         for (int i = 0; i < fDSP2->getNumInputs(); i++) {
             fInChannel2[i] = new FAUSTFLOAT[fBufferSize2];
             memset(fInChannel2[i], 0, sizeof(FAUSTFLOAT) * fBufferSize2);
@@ -6316,7 +9443,7 @@ public:
     {
         printf("stop buffer\n");
     }
-    
+
     virtual void setInputValue(int channel,float value)
     {
         if (fNumInputs2 > channel) {
@@ -6325,11 +9452,11 @@ public:
             }
         }
     }
-    
+
     virtual void render()
     {
         fDSP2->compute(fBufferSize2, fInChannel2, fOutChannel2);
-        
+
         if (fNumInputs2 > 0) {
             if (fIsSample) {
                 for (int frame = 0; frame < fBufferSize2; frame++) {
@@ -6344,9 +9471,9 @@ public:
                 }
             }
         }
-        
+
     }
-    
+
     virtual float getOutputValue(int channel)
     {
         if (fNumOutputs2 > channel) {
@@ -6354,15 +9481,15 @@ public:
                 return fOutChannel2[channel][frame];
             }
         }
-        
+
     }
-    
+
     virtual int getBufferSize() { return fBufferSize2; }
     virtual int getSampleRate() { return fSampleRate2; }
-    
+
     virtual int getNumInputs() { return fNumInputs2; }
     virtual int getNumOutputs() { return fNumOutputs2; }
-    
+
 };
 
 #endif
@@ -6377,53 +9504,53 @@ public:
 
 
 DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
-    fMotionEngine = new FaustMotionEngine(new motion_audio(sample_rate, buffer_size, 0, false, false));
-    
+    fMotionEngine = new FaustMotionEngine(NULL,new motion_audio(sample_rate, buffer_size, 0, false, false));
+
 }
 
 
 
 DspFaustMotion::~DspFaustMotion(){
     delete fMotionEngine;
-    
+
 }
 
 bool DspFaustMotion::start(){
-    
+
     return fMotionEngine->start();
 }
 
 void DspFaustMotion::stop(){
-    
+
     fMotionEngine->stop();
 }
 
 
 void DspFaustMotion::render(){
-    
+
     fMotionEngine->render();
 }
 
 void DspFaustMotion::setInput(int channel, float value) {
-    
+
     fMotionEngine->setInput(channel, value);
 }
 
 float DspFaustMotion::getOutput(int channel) {
-    
+
     return fMotionEngine->getOutput(channel);
-    
+
 }
 
 int DspFaustMotion::getOutputChannelNum() {
-    
+
     return fMotionEngine->getOutputChannelNum();
 }
 
 int DspFaustMotion::getInputChannelNum() {
-    
+
     return fMotionEngine->getInputChannelNum();
-    
+
 }
 
 bool DspFaustMotion::isRunning(){
