@@ -339,7 +339,8 @@ if [ $ANDROID -eq 1 ]; then
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
 	cp -r "$BUILDDIR/dsp-faust/cpp" "$APPFOLDER"
-	cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
+	#cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
+	rsync --delete -a $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
 	rm -r "$BUILDDIR/dsp-faust"
 
 elif [ $ANDROIDMOTION -eq 1 ]; then
@@ -349,7 +350,8 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
 	cp -r "$BUILDDIR/dsp-faust/cpp" "$APPFOLDER"
-	cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
+	#cp $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust"
+	rsync --delete -a $BUILDDIR/dsp-faust/java/* "$APPFOLDER/java/com/DspFaust" > $LOG
 	rm -r "$BUILDDIR/dsp-faust"
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
