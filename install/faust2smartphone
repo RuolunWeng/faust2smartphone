@@ -195,10 +195,10 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			PLATFORM=$(uname)
 
 			if [ $PLATFORM = "Darwin" ]; then
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
 				sed -i '' 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
 				if [[ $OPTIONS = " -osc" ]]; then
 					echo "osc" > $LOG
@@ -208,10 +208,10 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "noosc" > $LOG
 				fi
 			else
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
 				sed -i 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
 				if [[ $OPTIONS = " -osc" ]]; then
 					echo "osc" > $LOG
@@ -234,10 +234,10 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			PLATFORM=$(uname)
 
 			if [ $PLATFORM = "Darwin" ]; then
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
 				sed -i '' 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
 				if [[ $OPTIONS = " -osc" ]]; then
 					echo "osc" > $LOG
@@ -247,10 +247,10 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "noosc" > $LOG
 				fi
 			else
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
 				sed -i 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
 				if [[ $OPTIONS = " -osc" ]]; then
 					echo "osc" > $LOG
@@ -270,10 +270,10 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			PLATFORM=$(uname)
 
 			if [ $PLATFORM = "Darwin" ]; then
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
-				sed -i '' 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i '' 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
 				sed -i '' 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
 				if [[ $OPTIONS = " -osc" ]]; then
 					echo "osc" > $LOG
@@ -283,10 +283,10 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "noosc" > $LOG
 				fi
 			else
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $BUILDDIR/app/build.gradle
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
-				sed -i 's,com.allensmartfaust.faustapi,com.allensmartfaust.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/AndroidManifest.xml
+				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/res/layout/activity_main.xml
 				sed -i 's,FaustAPI,'$APPNAME',g' $APPFOLDER/res/values/strings.xml
 				if [[ $OPTIONS = " -osc" ]]; then
 					echo "osc" > $LOG
