@@ -56,6 +56,7 @@
 // Polyphony
 //**************************************************************
 
+#include "faust/dsp/faust-poly-engine.h"
 #include "faust/dsp/faust-motion-engine.h"
 
 //**************************************************************
@@ -76,7 +77,7 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 
 DspFaust::DspFaust(int sample_rate, int buffer_size){
-    fMotionEngine = new FaustMotionEngine(new motion_audio(sample_rate, buffer_size, 0, false, false));
+    fMotionEngine = new FaustMotionEngine(NULL,new motion_audio(sample_rate, buffer_size, 0, false, false));
 
     //**************************************************************
     // OSC TEST ALLEN
