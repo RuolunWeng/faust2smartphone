@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         cue.setText(cueList.get(cueIndex));
         cueNext.setText(cueList.get(cueIndexNext));
         tips.setText(tipsList.get(cueIndex));
-        appName.setText(getApplicationContext().getPackageName().replace("com.allensmartfaust."," ").concat(" | Grame"));
+        appName.setText(getApplicationContext().getPackageName().replace("com."," ").concat(" | Grame"));
 
         nextCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
