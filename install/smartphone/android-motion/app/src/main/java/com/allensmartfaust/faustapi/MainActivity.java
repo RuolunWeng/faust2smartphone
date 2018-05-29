@@ -174,12 +174,12 @@ public class MainActivity extends AppCompatActivity {
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            requestPermission();
-        } else {
+        //if (Build.VERSION.SDK_INT >= 23) {    // comment for now for Android 8.0
+            //requestPermission();
+        // } else {
             permissionToRecordAccepted = true;
             createFaust();
-        }
+        // }
 
         try {
             InputStream stream = getAssets().open("cuenums.txt");

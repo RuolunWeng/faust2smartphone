@@ -31,12 +31,12 @@ import static android.Manifest.permission.RECORD_AUDIO;
 public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
     private SensorManager sensorManager;
-    
+
     int SR = 44100;
     int blockSize = 512;
     long lastDate=0;
     int updateInterval = (int)(1000.f/(SR/blockSize));
-    
+
     private SeekBar param1,param2;
     private TextView paramOut1,paramOut2;
 
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        
+
 
         // TODO: SET PARAMETRE ADDRESS & VALUE
         // TODO: Change interface in .xml
@@ -142,21 +142,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        
+
     }
 
     private final SensorEventListener mSensorListener = new SensorEventListener() {
-    
+
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    
+
     public void onSensorChanged(SensorEvent event) {
-    
+
     long currentTime= System.currentTimeMillis();
-    
+
     if ((currentTime-lastDate) > updateInterval) {
-    
+
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Update mapping at sensor rate
             dspFaust.propagateAcc(0, -event.values[0]);
@@ -180,9 +180,9 @@ public class MainActivity extends AppCompatActivity {
         param2.setProgress((int)(getParam2+96.0f));
         paramOut1.setText("Freq:"+getParam1+"Hz");
         paramOut2.setText("Volume:"+getParam2+"dB");
-        
+
         lastDate = currentTime;
-        
+
     }
         }
     };
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Faust", "onStart");
         super.onStart();
         if (!isChangingConfigurations()) {
-            if(checkPermission()){
+            //if(checkPermission()){
 
                 Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
 
@@ -227,11 +227,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 dspFaust.start();
 
-            }
-            else {
+            //}
+            //else {
 
-                requestPermission();
-            }
+                //requestPermission();
+            //}
         }
     }
 
@@ -256,4 +256,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
