@@ -640,9 +640,9 @@ public class MainActivity extends AppCompatActivity {
     public void onSensorChanged(SensorEvent event) {
 
 
-    long currentTime= System.currentTimeMillis();
+    //long currentTime= System.currentTimeMillis();  //comment for now
 
-    if ((currentTime-lastDate) > updateInterval) {
+    //if ((currentTime-lastDate) > updateInterval) {
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // Update acc at sensor rate
@@ -681,9 +681,9 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        lastDate = currentTime;
+        //lastDate = currentTime;
 
-    }
+    //}
 
 }
 };
