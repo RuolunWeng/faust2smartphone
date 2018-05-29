@@ -36,8 +36,8 @@
     // init faust motor
     ////////////////////
     
-    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
-    //dspFaustMotion = new DspFaustMotion(SR, bufferSize);
+    //dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);   //trop lent
+    dspFaustMotion = new DspFaustMotion(SR, bufferSize);
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
@@ -204,6 +204,8 @@
                                       (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
         
     }
+    
+    _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue([_motionParamAddress[0] UTF8String])];
     
     if (dspFaust->getOSCIsOn()) {
         oscAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
@@ -863,7 +865,7 @@
     // Change value of all addresses with the same label
     for (int i=0; i<_motionParamArray.count; i++) {
         if ([_motionParamArray[i] UTF8String] ==  param) {
-            dspFaust->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
+            dspFaustMotion->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
             [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
         }
     }

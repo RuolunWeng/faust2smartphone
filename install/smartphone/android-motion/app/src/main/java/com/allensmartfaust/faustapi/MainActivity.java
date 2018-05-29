@@ -141,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (dspFaustMotion == null) {
-            dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
-            //dspFaustMotion = new DspFaustMotion(SR, blockSize);
+            //dspFaustMotion = new DspFaustMotion(SR / blockSize, 1);
+            dspFaustMotion = new DspFaustMotion(SR, blockSize);
 
             // PRINT ALL PARAMETRE ADDRESS
             for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {

@@ -40,8 +40,8 @@ using namespace std;
 namespace oscfaust
 {
 
-#define kVersion	 0.96f
-#define kVersionStr	"0.96"
+#define kVersion	 1.00f
+#define kVersionStr	"1.00"
 
 static const char* kUDPPortOpt	= "-port";
 static const char* kUDPOutOpt	= "-outport";
@@ -62,7 +62,7 @@ static int getPortOption(int argc, char *argv[], const std::string& option, int 
 {
 	for (int i = 0; i < argc-1; i++) {
 		if (option == argv[i]) {
-			int val = strtol(argv[i+1], 0, 10);
+			int val = int(strtol(argv[i+1], 0, 10));
 			if (val) return val;
 		}
 	}
@@ -82,7 +82,7 @@ static int getXmitOption(int argc, char *argv[], const std::string& option, bool
 {
 	for (int i = 0; i < argc-1; i++) {
     	if (option == argv[i]) {
-			int val = strtol(argv[i+1], 0, 10);
+			int val = int(strtol(argv[i+1], 0, 10));
 			return val;
 		}
 	}
@@ -150,10 +150,10 @@ void OSCControler::run()
 	SRootNode rootnode = fFactory->root();		// first get the root node
 	if (rootnode) {
 		// informs the root node of the udp ports numbers (required to handle the 'hello' message
-		rootnode->setPorts(&fUDPPort, &fUDPOut, &fUPDErr);
-		// starts the network services
-        
-		fOsc->start(rootnode, fUDPPort, fUDPOut, fUPDErr, getDestAddress());
+		rootnode->setPorts (&fUDPPort, &fUDPOut, &fUPDErr);
+		
+        // starts the network services
+		fOsc->start (rootnode, fUDPPort, fUDPOut, fUPDErr, getDestAddress());
 
 		// and outputs a message on the osc output port
 		oscout << OSCStart("Faust OSC version") << versionstr() << "-"
@@ -171,7 +171,7 @@ void OSCControler::run()
 }
 
 //--------------------------------------------------------------------------
-const char*	OSCControler::getRootName()	const { return fFactory->root()->getName(); }
+const char*	OSCControler::getRootName() const { return fFactory->root()->getName(); }
     
 //--------------------------------------------------------------------------    
 void OSCControler::addFilteredPath(std::string path) 
@@ -193,7 +193,7 @@ bool OSCControler::isPathFiltered(std::string path)
 //--------------------------------------------------------------------------
 void OSCControler::resetFilteredPaths()
 {
-    for (int i = fFilteredPaths.size()-1; i >= 0; i--) {
+    for (int i = int(fFilteredPaths.size()-1); i >= 0; i--) {
         OSCRegexp* reg = fFilteredPaths[i];
         fFilteredPaths.erase(fFilteredPaths.begin()+i);
         delete reg;
