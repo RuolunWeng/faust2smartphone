@@ -1,6 +1,6 @@
 //----------------------------------------------------------
 // name: "Faust Motion Library [Motion+RotationMatrix]"
-// version: "0.61"
+// version: "0.62"
 //
 // Code generated with Faust 2.5.35 (https://faust.grame.fr)
 //----------------------------------------------------------
@@ -1492,13 +1492,13 @@ class mydsp2 : public dsp {
 	FAUSTFLOAT 	fslider11;
 	FAUSTFLOAT 	fcheckbox10;
 	FAUSTFLOAT 	fcheckbox11;
-	FAUSTFLOAT 	fcheckbox12;
 	float 	fVec13[2];
 	float 	fRec31[2];
 	float 	fTempPerm32;
 	float 	fTempPerm33;
-	FAUSTFLOAT 	fcheckbox13;
+	FAUSTFLOAT 	fcheckbox12;
 	FAUSTFLOAT 	fslider12;
+	FAUSTFLOAT 	fcheckbox13;
 	FAUSTFLOAT 	fcheckbox14;
 	float 	fVec14[2];
 	float 	fRec32[2];
@@ -1870,9 +1870,6 @@ class mydsp2 : public dsp {
 	float 	fTempPerm195;
 	float 	fTempPerm196;
 	float 	fTempPerm197;
-	float 	fTempPerm198;
-	float 	fTempPerm199;
-	float 	fTempPerm200;
 	int fSamplingFreq;
 
   public:
@@ -1890,7 +1887,7 @@ class mydsp2 : public dsp {
 		m->declare("envelopes.lib/license", "LGPL with exception");
 		m->declare("envelopes.lib/name", "Faust Envelope Library");
 		m->declare("envelopes.lib/version", "0.0");
-		m->declare("filename", "motion_v6.1.lib");
+		m->declare("filename", "motion_v6.2.lib");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/version", "0.0");
 		m->declare("hoa.lib/author", "Pierre Guillot");
@@ -1922,7 +1919,7 @@ class mydsp2 : public dsp {
 		m->declare("synths.lib/version", "0.0");
 		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
 		m->declare("vaeffects.lib/version", "0.0");
-		m->declare("version", "0.61");
+		m->declare("version", "0.62");
 	}
 
 	virtual int getNumInputs() { return 18; }
@@ -2138,9 +2135,6 @@ class mydsp2 : public dsp {
 		fTempPerm195 = 0;
 		fTempPerm196 = 0;
 		fTempPerm197 = 0;
-		fTempPerm198 = 0;
-		fTempPerm199 = 0;
-		fTempPerm200 = 0;
 	}
 	virtual void instanceResetUserInterface() {
 		fcheckbox0 = 0.0;
@@ -2168,8 +2162,8 @@ class mydsp2 : public dsp {
 		fcheckbox10 = 0.0;
 		fcheckbox11 = 0.0;
 		fcheckbox12 = 0.0;
-		fcheckbox13 = 0.0;
 		fslider12 = 0.0f;
+		fcheckbox13 = 0.0;
 		fcheckbox14 = 0.0;
 		fcheckbox15 = 0.0;
 		fslider13 = 0.0f;
@@ -2455,9 +2449,9 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox9, "07", "");
 		ui_interface->declare(&fcheckbox9, "motionName", "iyp");
 		ui_interface->addCheckButton("iypOn", &fcheckbox9);
-		ui_interface->declare(&fcheckbox13, "08", "");
-		ui_interface->declare(&fcheckbox13, "motionName", "izp");
-		ui_interface->addCheckButton("izpOn", &fcheckbox13);
+		ui_interface->declare(&fcheckbox12, "08", "");
+		ui_interface->declare(&fcheckbox12, "motionName", "izp");
+		ui_interface->addCheckButton("izpOn", &fcheckbox12);
 		ui_interface->declare(&fcheckbox15, "09", "");
 		ui_interface->declare(&fcheckbox15, "motionName", "ixn");
 		ui_interface->addCheckButton("ixnOn", &fcheckbox15);
@@ -2660,75 +2654,75 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox62, "56", "");
 		ui_interface->declare(&fcheckbox62, "motionName", "brasD_cour");
 		ui_interface->addCheckButton("brasD_courOn", &fcheckbox62);
-		ui_interface->declare(&fcheckbox64, "57", "");
-		ui_interface->declare(&fcheckbox64, "motionName", "brasD_rear");
-		ui_interface->addCheckButton("brasD_rearOn", &fcheckbox64);
-		ui_interface->declare(&fcheckbox65, "58", "");
-		ui_interface->declare(&fcheckbox65, "motionName", "brasD_jardin");
-		ui_interface->addCheckButton("brasD_jardinOn", &fcheckbox65);
-		ui_interface->declare(&fcheckbox66, "59", "");
-		ui_interface->declare(&fcheckbox66, "motionName", "brasD_front");
-		ui_interface->addCheckButton("brasD_frontOn", &fcheckbox66);
-		ui_interface->declare(&fcheckbox67, "60", "");
-		ui_interface->declare(&fcheckbox67, "motionName", "brasD_down");
-		ui_interface->addCheckButton("brasD_downOn", &fcheckbox67);
-		ui_interface->declare(&fcheckbox63, "61", "");
-		ui_interface->declare(&fcheckbox63, "motionName", "brasD_up");
-		ui_interface->addCheckButton("brasD_upOn", &fcheckbox63);
+		ui_interface->declare(&fcheckbox66, "57", "");
+		ui_interface->declare(&fcheckbox66, "motionName", "brasD_rear");
+		ui_interface->addCheckButton("brasD_rearOn", &fcheckbox66);
+		ui_interface->declare(&fcheckbox64, "58", "");
+		ui_interface->declare(&fcheckbox64, "motionName", "brasD_jardin");
+		ui_interface->addCheckButton("brasD_jardinOn", &fcheckbox64);
+		ui_interface->declare(&fcheckbox67, "59", "");
+		ui_interface->declare(&fcheckbox67, "motionName", "brasD_front");
+		ui_interface->addCheckButton("brasD_frontOn", &fcheckbox67);
+		ui_interface->declare(&fcheckbox63, "60", "");
+		ui_interface->declare(&fcheckbox63, "motionName", "brasD_down");
+		ui_interface->addCheckButton("brasD_downOn", &fcheckbox63);
+		ui_interface->declare(&fcheckbox65, "61", "");
+		ui_interface->declare(&fcheckbox65, "motionName", "brasD_up");
+		ui_interface->addCheckButton("brasD_upOn", &fcheckbox65);
 		ui_interface->declare(&fcheckbox68, "62", "");
 		ui_interface->declare(&fcheckbox68, "motionName", "tete_cour");
 		ui_interface->addCheckButton("tete_courOn", &fcheckbox68);
-		ui_interface->declare(&fcheckbox69, "63", "");
-		ui_interface->declare(&fcheckbox69, "motionName", "tete_rear");
-		ui_interface->addCheckButton("tete_rearOn", &fcheckbox69);
-		ui_interface->declare(&fcheckbox70, "64", "");
-		ui_interface->declare(&fcheckbox70, "motionName", "tete_jardin");
-		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox70);
-		ui_interface->declare(&fcheckbox71, "65", "");
-		ui_interface->declare(&fcheckbox71, "motionName", "tete_front");
-		ui_interface->addCheckButton("tete_frontOn", &fcheckbox71);
-		ui_interface->declare(&fcheckbox72, "66", "");
-		ui_interface->declare(&fcheckbox72, "motionName", "tete_down");
-		ui_interface->addCheckButton("tete_downOn", &fcheckbox72);
-		ui_interface->declare(&fcheckbox73, "67", "");
-		ui_interface->declare(&fcheckbox73, "motionName", "tete_up");
-		ui_interface->addCheckButton("tete_upOn", &fcheckbox73);
+		ui_interface->declare(&fcheckbox71, "63", "");
+		ui_interface->declare(&fcheckbox71, "motionName", "tete_rear");
+		ui_interface->addCheckButton("tete_rearOn", &fcheckbox71);
+		ui_interface->declare(&fcheckbox73, "64", "");
+		ui_interface->declare(&fcheckbox73, "motionName", "tete_jardin");
+		ui_interface->addCheckButton("tete_jardinOn", &fcheckbox73);
+		ui_interface->declare(&fcheckbox69, "65", "");
+		ui_interface->declare(&fcheckbox69, "motionName", "tete_front");
+		ui_interface->addCheckButton("tete_frontOn", &fcheckbox69);
+		ui_interface->declare(&fcheckbox70, "66", "");
+		ui_interface->declare(&fcheckbox70, "motionName", "tete_down");
+		ui_interface->addCheckButton("tete_downOn", &fcheckbox70);
+		ui_interface->declare(&fcheckbox72, "67", "");
+		ui_interface->declare(&fcheckbox72, "motionName", "tete_up");
+		ui_interface->addCheckButton("tete_upOn", &fcheckbox72);
 		ui_interface->declare(&fcheckbox74, "68", "");
 		ui_interface->declare(&fcheckbox74, "motionName", "ventre_cour");
 		ui_interface->addCheckButton("ventre_courOn", &fcheckbox74);
-		ui_interface->declare(&fcheckbox79, "69", "");
-		ui_interface->declare(&fcheckbox79, "motionName", "ventre_rear");
-		ui_interface->addCheckButton("ventre_rearOn", &fcheckbox79);
-		ui_interface->declare(&fcheckbox75, "70", "");
-		ui_interface->declare(&fcheckbox75, "motionName", "ventre_jardin");
-		ui_interface->addCheckButton("ventre_jardinOn", &fcheckbox75);
-		ui_interface->declare(&fcheckbox76, "71", "");
-		ui_interface->declare(&fcheckbox76, "motionName", "ventre_front");
-		ui_interface->addCheckButton("ventre_frontOn", &fcheckbox76);
-		ui_interface->declare(&fcheckbox77, "72", "");
-		ui_interface->declare(&fcheckbox77, "motionName", "ventre_down");
-		ui_interface->addCheckButton("ventre_downOn", &fcheckbox77);
-		ui_interface->declare(&fcheckbox78, "73", "");
-		ui_interface->declare(&fcheckbox78, "motionName", "ventre_up");
-		ui_interface->addCheckButton("ventre_upOn", &fcheckbox78);
+		ui_interface->declare(&fcheckbox77, "69", "");
+		ui_interface->declare(&fcheckbox77, "motionName", "ventre_rear");
+		ui_interface->addCheckButton("ventre_rearOn", &fcheckbox77);
+		ui_interface->declare(&fcheckbox78, "70", "");
+		ui_interface->declare(&fcheckbox78, "motionName", "ventre_jardin");
+		ui_interface->addCheckButton("ventre_jardinOn", &fcheckbox78);
+		ui_interface->declare(&fcheckbox75, "71", "");
+		ui_interface->declare(&fcheckbox75, "motionName", "ventre_front");
+		ui_interface->addCheckButton("ventre_frontOn", &fcheckbox75);
+		ui_interface->declare(&fcheckbox76, "72", "");
+		ui_interface->declare(&fcheckbox76, "motionName", "ventre_down");
+		ui_interface->addCheckButton("ventre_downOn", &fcheckbox76);
+		ui_interface->declare(&fcheckbox79, "73", "");
+		ui_interface->declare(&fcheckbox79, "motionName", "ventre_up");
+		ui_interface->addCheckButton("ventre_upOn", &fcheckbox79);
 		ui_interface->declare(&fcheckbox7, "74", "");
 		ui_interface->declare(&fcheckbox7, "motionName", "ixpn");
 		ui_interface->addCheckButton("ixpnOn", &fcheckbox7);
-		ui_interface->declare(&fcheckbox10, "75", "");
-		ui_interface->declare(&fcheckbox10, "motionName", "iypn");
-		ui_interface->addCheckButton("iypnOn", &fcheckbox10);
-		ui_interface->declare(&fcheckbox11, "76", "");
-		ui_interface->declare(&fcheckbox11, "motionName", "izpn");
-		ui_interface->addCheckButton("izpnOn", &fcheckbox11);
+		ui_interface->declare(&fcheckbox11, "75", "");
+		ui_interface->declare(&fcheckbox11, "motionName", "iypn");
+		ui_interface->addCheckButton("iypnOn", &fcheckbox11);
+		ui_interface->declare(&fcheckbox14, "76", "");
+		ui_interface->declare(&fcheckbox14, "motionName", "izpn");
+		ui_interface->addCheckButton("izpnOn", &fcheckbox14);
 		ui_interface->declare(&fcheckbox8, "77", "");
 		ui_interface->declare(&fcheckbox8, "motionName", "ixpn_sym");
 		ui_interface->addCheckButton("ixpn_symOn", &fcheckbox8);
-		ui_interface->declare(&fcheckbox12, "78", "");
-		ui_interface->declare(&fcheckbox12, "motionName", "iypn_sym");
-		ui_interface->addCheckButton("iypn_symOn", &fcheckbox12);
-		ui_interface->declare(&fcheckbox14, "79", "");
-		ui_interface->declare(&fcheckbox14, "motionName", "izpn_sym");
-		ui_interface->addCheckButton("izpn_symOn", &fcheckbox14);
+		ui_interface->declare(&fcheckbox10, "78", "");
+		ui_interface->declare(&fcheckbox10, "motionName", "iypn_sym");
+		ui_interface->addCheckButton("iypn_symOn", &fcheckbox10);
+		ui_interface->declare(&fcheckbox13, "79", "");
+		ui_interface->declare(&fcheckbox13, "motionName", "izpn_sym");
+		ui_interface->addCheckButton("izpn_symOn", &fcheckbox13);
 		ui_interface->declare(&fslider24, "acc", "0 0 -30 0 30");
 		ui_interface->declare(&fslider24, "hidden", "1");
 		ui_interface->addHorizontalSlider("acc_x", &fslider24, 0.0f, -1.0f, 1.0f, 0.001f);
@@ -2858,9 +2852,9 @@ class mydsp2 : public dsp {
 		int 	iSlow49 = (fSlow48 > 0.0f);
 		float 	fSlow50 = float(fcheckbox12);
 		int 	iSlow51 = (fSlow50 > 0.0f);
-		float 	fSlow52 = float(fcheckbox13);
-		int 	iSlow53 = (fSlow52 > 0.0f);
-		float 	fSlow54 = max((float)0, float(fslider12));
+		float 	fSlow52 = max((float)0, float(fslider12));
+		float 	fSlow53 = float(fcheckbox13);
+		int 	iSlow54 = (fSlow53 > 0.0f);
 		float 	fSlow55 = float(fcheckbox14);
 		int 	iSlow56 = (fSlow55 > 0.0f);
 		float 	fSlow57 = float(fcheckbox15);
@@ -3225,7 +3219,7 @@ class mydsp2 : public dsp {
 				fTempPerm31 = (fSlow32 * fTempPerm30);
 			}
 			output6[i] = (FAUSTFLOAT)fTempPerm31;
-			if (iSlow44 || iSlow47 || iSlow49 || iSlow51) {
+			if (iSlow44 || iSlow47 || iSlow49) {
 				fVec13[0] = fSlow45;
 				fRec31[0] = ((fSlow36 * fRec31[1]) + (fSlow37 * (fSlow45 + fVec13[1])));
 				fTempPerm32 = min((float)1, max((float)0, fRec31[0]));
@@ -3234,13 +3228,13 @@ class mydsp2 : public dsp {
 				fTempPerm33 = (fSlow43 * fTempPerm32);
 			}
 			output7[i] = (FAUSTFLOAT)fTempPerm33;
-			if (iSlow53 || iSlow56) {
-				fVec14[0] = fSlow54;
-				fRec32[0] = ((fSlow36 * fRec32[1]) + (fSlow37 * (fSlow54 + fVec14[1])));
+			if (iSlow51 || iSlow54 || iSlow56) {
+				fVec14[0] = fSlow52;
+				fRec32[0] = ((fSlow36 * fRec32[1]) + (fSlow37 * (fSlow52 + fVec14[1])));
 				fTempPerm34 = min((float)1, max((float)0, fRec32[0]));
 			}
-			if (iSlow53) {
-				fTempPerm35 = (fSlow52 * fTempPerm34);
+			if (iSlow51) {
+				fTempPerm35 = (fSlow50 * fTempPerm34);
 			}
 			output8[i] = (FAUSTFLOAT)fTempPerm35;
 			if (iSlow58 || iSlow40 || iSlow42) {
@@ -3252,7 +3246,7 @@ class mydsp2 : public dsp {
 				fTempPerm37 = (fSlow57 * fTempPerm36);
 			}
 			output9[i] = (FAUSTFLOAT)fTempPerm37;
-			if (iSlow61 || iSlow47 || iSlow49 || iSlow51) {
+			if (iSlow61 || iSlow47 || iSlow49) {
 				fVec16[0] = fSlow62;
 				fRec34[0] = ((fSlow36 * fRec34[1]) + (fSlow37 * (fSlow62 + fVec16[1])));
 				fTempPerm38 = min((float)1, max((float)0, fRec34[0]));
@@ -3261,7 +3255,7 @@ class mydsp2 : public dsp {
 				fTempPerm39 = (fSlow60 * fTempPerm38);
 			}
 			output10[i] = (FAUSTFLOAT)fTempPerm39;
-			if (iSlow64 || iSlow56) {
+			if (iSlow64 || iSlow54 || iSlow56) {
 				fVec17[0] = fSlow65;
 				fRec35[0] = ((fSlow36 * fRec35[1]) + (fSlow37 * (fSlow65 + fVec17[1])));
 				fTempPerm40 = min((float)1, max((float)0, fRec35[0]));
@@ -3591,17 +3585,17 @@ class mydsp2 : public dsp {
 				fTempPerm135 = (fSlow168 * fRec99[0]);
 			}
 			output49[i] = (FAUSTFLOAT)fTempPerm135;
-			if (iSlow173 || iSlow175 || iSlow171 || iSlow177 || iSlow179 || iSlow181) {
+			if (iSlow171 || iSlow173 || iSlow175 || iSlow177 || iSlow179 || iSlow181) {
 				fTempPerm136 = (float)input6[i];
 				fTempPerm137 = (float)input7[i];
 			}
-			if (iSlow175 || iSlow171 || iSlow179 || iSlow181) {
+			if (iSlow171 || iSlow175 || iSlow179 || iSlow181) {
 				fTempPerm138 = faustpower<2>(fTempPerm137);
 			}
-			if (iSlow173 || iSlow175 || iSlow171 || iSlow177 || iSlow179 || iSlow181) {
+			if (iSlow171 || iSlow173 || iSlow175 || iSlow177 || iSlow179 || iSlow181) {
 				fTempPerm139 = (float)input8[i];
 			}
-			if (iSlow173 || iSlow175 || iSlow171 || iSlow177) {
+			if (iSlow171 || iSlow173 || iSlow175 || iSlow177) {
 				fTempPerm140 = faustpower<2>(fTempPerm139);
 			}
 			if (iSlow171) {
@@ -3643,17 +3637,17 @@ class mydsp2 : public dsp {
 				fTempPerm149 = (fSlow180 * fRec105[0]);
 			}
 			output55[i] = (FAUSTFLOAT)fTempPerm149;
-			if (iSlow185 || iSlow183 || iSlow187 || iSlow189 || iSlow191 || iSlow193) {
+			if (iSlow185 || iSlow187 || iSlow189 || iSlow183 || iSlow191 || iSlow193) {
 				fTempPerm150 = (float)input9[i];
 				fTempPerm151 = (float)input10[i];
 			}
-			if (iSlow185 || iSlow183 || iSlow189 || iSlow193) {
+			if (iSlow185 || iSlow187 || iSlow189 || iSlow183) {
 				fTempPerm152 = faustpower<2>(fTempPerm151);
 			}
-			if (iSlow185 || iSlow183 || iSlow187 || iSlow189 || iSlow191 || iSlow193) {
+			if (iSlow185 || iSlow187 || iSlow189 || iSlow183 || iSlow191 || iSlow193) {
 				fTempPerm153 = (float)input11[i];
 			}
-			if (iSlow183 || iSlow187 || iSlow189 || iSlow191) {
+			if (iSlow187 || iSlow183 || iSlow191 || iSlow193) {
 				fTempPerm154 = faustpower<2>(fTempPerm153);
 			}
 			if (iSlow183) {
@@ -3661,51 +3655,51 @@ class mydsp2 : public dsp {
 				fTempPerm155 = (fSlow182 * fRec106[0]);
 			}
 			output56[i] = (FAUSTFLOAT)fTempPerm155;
-			if (iSlow185 || iSlow187 || iSlow191 || iSlow193) {
+			if (iSlow185 || iSlow189 || iSlow191 || iSlow193) {
 				fTempPerm156 = faustpower<2>(fTempPerm150);
 			}
-			if (iSlow187 || iSlow191) {
+			if (iSlow191 || iSlow193) {
 				fTempPerm157 = (fTempPerm154 + fTempPerm156);
 			}
-			if (iSlow187) {
+			if (iSlow191) {
 				fRec107[0] = ((fConst7 * fRec107[1]) + (fConst8 * max(0.0f, (1 - (fSlow153 * sqrtf((faustpower<2>((fTempPerm151 + 1)) + fTempPerm157)))))));
-				fTempPerm158 = (fSlow186 * fRec107[0]);
+				fTempPerm158 = (fSlow190 * fRec107[0]);
 			}
 			output57[i] = (FAUSTFLOAT)fTempPerm158;
-			if (iSlow189) {
+			if (iSlow187) {
 				fRec108[0] = ((fConst7 * fRec108[1]) + (fConst8 * max(0.0f, (1 - (fSlow154 * sqrtf((faustpower<2>((fTempPerm150 + -1.0f)) + (fTempPerm152 + fTempPerm154))))))));
-				fTempPerm159 = (fSlow188 * fRec108[0]);
+				fTempPerm159 = (fSlow186 * fRec108[0]);
 			}
 			output58[i] = (FAUSTFLOAT)fTempPerm159;
-			if (iSlow191) {
+			if (iSlow193) {
 				fRec109[0] = ((fConst7 * fRec109[1]) + (fConst8 * max(0.0f, (1 - (fSlow155 * sqrtf((fTempPerm157 + faustpower<2>((fTempPerm151 + -1.0f)))))))));
-				fTempPerm160 = (fSlow190 * fRec109[0]);
+				fTempPerm160 = (fSlow192 * fRec109[0]);
 			}
 			output59[i] = (FAUSTFLOAT)fTempPerm160;
-			if (iSlow185 || iSlow193) {
+			if (iSlow185 || iSlow189) {
 				fTempPerm161 = (fTempPerm152 + fTempPerm156);
 			}
-			if (iSlow193) {
+			if (iSlow185) {
 				fRec110[0] = ((fConst7 * fRec110[1]) + (fConst8 * max(0.0f, (1 - (fSlow156 * sqrtf((fTempPerm161 + faustpower<2>((fTempPerm153 + 1.0f)))))))));
-				fTempPerm162 = (fSlow192 * fRec110[0]);
+				fTempPerm162 = (fSlow184 * fRec110[0]);
 			}
 			output60[i] = (FAUSTFLOAT)fTempPerm162;
-			if (iSlow185) {
+			if (iSlow189) {
 				fRec111[0] = ((fConst7 * fRec111[1]) + (fConst8 * max(0.0f, (1 - (fSlow157 * sqrtf((fTempPerm161 + faustpower<2>((fTempPerm153 + -1.0f)))))))));
-				fTempPerm163 = (fSlow184 * fRec111[0]);
+				fTempPerm163 = (fSlow188 * fRec111[0]);
 			}
 			output61[i] = (FAUSTFLOAT)fTempPerm163;
-			if (iSlow195 || iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow205) {
+			if (iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow195 || iSlow205) {
 				fTempPerm164 = (float)input12[i];
 				fTempPerm165 = (float)input13[i];
 			}
-			if (iSlow195 || iSlow199 || iSlow203 || iSlow205) {
+			if (iSlow199 || iSlow203 || iSlow195 || iSlow205) {
 				fTempPerm166 = faustpower<2>(fTempPerm165);
 			}
-			if (iSlow195 || iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow205) {
+			if (iSlow197 || iSlow199 || iSlow201 || iSlow203 || iSlow195 || iSlow205) {
 				fTempPerm167 = (float)input14[i];
 			}
-			if (iSlow195 || iSlow197 || iSlow199 || iSlow201) {
+			if (iSlow197 || iSlow201 || iSlow195 || iSlow205) {
 				fTempPerm168 = faustpower<2>(fTempPerm167);
 			}
 			if (iSlow195) {
@@ -3713,51 +3707,51 @@ class mydsp2 : public dsp {
 				fTempPerm169 = (fSlow194 * fRec112[0]);
 			}
 			output62[i] = (FAUSTFLOAT)fTempPerm169;
-			if (iSlow197 || iSlow201 || iSlow203 || iSlow205) {
+			if (iSlow197 || iSlow199 || iSlow201 || iSlow203) {
 				fTempPerm170 = faustpower<2>(fTempPerm164);
 			}
 			if (iSlow197 || iSlow201) {
 				fTempPerm171 = (fTempPerm168 + fTempPerm170);
 			}
-			if (iSlow197) {
+			if (iSlow201) {
 				fRec113[0] = ((fConst7 * fRec113[1]) + (fConst8 * max(0.0f, (1 - (fSlow153 * sqrtf((faustpower<2>((fTempPerm165 + 1)) + fTempPerm171)))))));
-				fTempPerm172 = (fSlow196 * fRec113[0]);
+				fTempPerm172 = (fSlow200 * fRec113[0]);
 			}
 			output63[i] = (FAUSTFLOAT)fTempPerm172;
-			if (iSlow199) {
+			if (iSlow205) {
 				fRec114[0] = ((fConst7 * fRec114[1]) + (fConst8 * max(0.0f, (1 - (fSlow154 * sqrtf((faustpower<2>((fTempPerm164 + -1.0f)) + (fTempPerm166 + fTempPerm168))))))));
-				fTempPerm173 = (fSlow198 * fRec114[0]);
+				fTempPerm173 = (fSlow204 * fRec114[0]);
 			}
 			output64[i] = (FAUSTFLOAT)fTempPerm173;
-			if (iSlow201) {
+			if (iSlow197) {
 				fRec115[0] = ((fConst7 * fRec115[1]) + (fConst8 * max(0.0f, (1 - (fSlow155 * sqrtf((fTempPerm171 + faustpower<2>((fTempPerm165 + -1.0f)))))))));
-				fTempPerm174 = (fSlow200 * fRec115[0]);
+				fTempPerm174 = (fSlow196 * fRec115[0]);
 			}
 			output65[i] = (FAUSTFLOAT)fTempPerm174;
-			if (iSlow203 || iSlow205) {
+			if (iSlow199 || iSlow203) {
 				fTempPerm175 = (fTempPerm166 + fTempPerm170);
 			}
-			if (iSlow203) {
+			if (iSlow199) {
 				fRec116[0] = ((fConst7 * fRec116[1]) + (fConst8 * max(0.0f, (1 - (fSlow156 * sqrtf((fTempPerm175 + faustpower<2>((fTempPerm167 + 1.0f)))))))));
-				fTempPerm176 = (fSlow202 * fRec116[0]);
+				fTempPerm176 = (fSlow198 * fRec116[0]);
 			}
 			output66[i] = (FAUSTFLOAT)fTempPerm176;
-			if (iSlow205) {
+			if (iSlow203) {
 				fRec117[0] = ((fConst7 * fRec117[1]) + (fConst8 * max(0.0f, (1 - (fSlow157 * sqrtf((fTempPerm175 + faustpower<2>((fTempPerm167 + -1.0f)))))))));
-				fTempPerm177 = (fSlow204 * fRec117[0]);
+				fTempPerm177 = (fSlow202 * fRec117[0]);
 			}
 			output67[i] = (FAUSTFLOAT)fTempPerm177;
-			if (iSlow209 || iSlow211 || iSlow213 || iSlow215 || iSlow207 || iSlow217) {
+			if (iSlow209 || iSlow211 || iSlow207 || iSlow213 || iSlow215 || iSlow217) {
 				fTempPerm178 = (float)input15[i];
 				fTempPerm179 = (float)input16[i];
 			}
-			if (iSlow209 || iSlow213 || iSlow215 || iSlow207) {
+			if (iSlow211 || iSlow207 || iSlow215 || iSlow217) {
 				fTempPerm180 = faustpower<2>(fTempPerm179);
 			}
-			if (iSlow209 || iSlow211 || iSlow213 || iSlow215 || iSlow207 || iSlow217) {
+			if (iSlow209 || iSlow211 || iSlow207 || iSlow213 || iSlow215 || iSlow217) {
 				fTempPerm181 = (float)input17[i];
 			}
-			if (iSlow209 || iSlow211 || iSlow207 || iSlow217) {
+			if (iSlow209 || iSlow207 || iSlow213 || iSlow215) {
 				fTempPerm182 = faustpower<2>(fTempPerm181);
 			}
 			if (iSlow207) {
@@ -3765,123 +3759,114 @@ class mydsp2 : public dsp {
 				fTempPerm183 = (fSlow206 * fRec118[0]);
 			}
 			output68[i] = (FAUSTFLOAT)fTempPerm183;
-			if (iSlow211 || iSlow213 || iSlow215 || iSlow217) {
+			if (iSlow209 || iSlow211 || iSlow213 || iSlow217) {
 				fTempPerm184 = faustpower<2>(fTempPerm178);
 			}
-			if (iSlow211 || iSlow217) {
+			if (iSlow209 || iSlow213) {
 				fTempPerm185 = (fTempPerm182 + fTempPerm184);
 			}
-			if (iSlow217) {
+			if (iSlow213) {
 				fRec119[0] = ((fConst7 * fRec119[1]) + (fConst8 * max(0.0f, (1 - (fSlow153 * sqrtf((faustpower<2>((fTempPerm179 + 1)) + fTempPerm185)))))));
-				fTempPerm186 = (fSlow216 * fRec119[0]);
+				fTempPerm186 = (fSlow212 * fRec119[0]);
 			}
 			output69[i] = (FAUSTFLOAT)fTempPerm186;
-			if (iSlow209) {
+			if (iSlow215) {
 				fRec120[0] = ((fConst7 * fRec120[1]) + (fConst8 * max(0.0f, (1 - (fSlow154 * sqrtf((faustpower<2>((fTempPerm178 + -1.0f)) + (fTempPerm180 + fTempPerm182))))))));
-				fTempPerm187 = (fSlow208 * fRec120[0]);
+				fTempPerm187 = (fSlow214 * fRec120[0]);
 			}
 			output70[i] = (FAUSTFLOAT)fTempPerm187;
-			if (iSlow211) {
+			if (iSlow209) {
 				fRec121[0] = ((fConst7 * fRec121[1]) + (fConst8 * max(0.0f, (1 - (fSlow155 * sqrtf((fTempPerm185 + faustpower<2>((fTempPerm179 + -1.0f)))))))));
-				fTempPerm188 = (fSlow210 * fRec121[0]);
+				fTempPerm188 = (fSlow208 * fRec121[0]);
 			}
 			output71[i] = (FAUSTFLOAT)fTempPerm188;
-			if (iSlow213 || iSlow215) {
+			if (iSlow211 || iSlow217) {
 				fTempPerm189 = (fTempPerm180 + fTempPerm184);
 			}
-			if (iSlow213) {
+			if (iSlow211) {
 				fRec122[0] = ((fConst7 * fRec122[1]) + (fConst8 * max(0.0f, (1 - (fSlow156 * sqrtf((fTempPerm189 + faustpower<2>((fTempPerm181 + 1.0f)))))))));
-				fTempPerm190 = (fSlow212 * fRec122[0]);
+				fTempPerm190 = (fSlow210 * fRec122[0]);
 			}
 			output72[i] = (FAUSTFLOAT)fTempPerm190;
-			if (iSlow215) {
+			if (iSlow217) {
 				fRec123[0] = ((fConst7 * fRec123[1]) + (fConst8 * max(0.0f, (1 - (fSlow157 * sqrtf((fTempPerm189 + faustpower<2>((fTempPerm181 + -1.0f)))))))));
-				fTempPerm191 = (fSlow214 * fRec123[0]);
+				fTempPerm191 = (fSlow216 * fRec123[0]);
 			}
 			output73[i] = (FAUSTFLOAT)fTempPerm191;
-			if (iSlow40 || iSlow42) {
-				fTempPerm192 = (fTempPerm30 + fTempPerm36);
-			}
 			if (iSlow40) {
-				fTempPerm193 = (fSlow39 * min((float)1, max((float)0, fTempPerm192)));
+				fTempPerm192 = (fSlow39 * min((float)1, max((float)0, (0 - (0.5f * (fTempPerm36 - (fTempPerm30 + 1.0f)))))));
 			}
-			output74[i] = (FAUSTFLOAT)fTempPerm193;
-			if (iSlow47 || iSlow49 || iSlow51) {
-				fTempPerm194 = (fTempPerm32 + fTempPerm38);
-			}
-			if (iSlow47 || iSlow49) {
-				fTempPerm195 = min((float)1, max((float)0, fTempPerm194));
-			}
-			if (iSlow47) {
-				fTempPerm196 = (fSlow46 * fTempPerm195);
-			}
-			output75[i] = (FAUSTFLOAT)fTempPerm196;
+			output74[i] = (FAUSTFLOAT)fTempPerm192;
 			if (iSlow49) {
-				fTempPerm197 = (fSlow48 * fTempPerm195);
+				fTempPerm193 = (fSlow48 * min((float)1, max((float)0, (0 - (0.5f * (fTempPerm38 - (fTempPerm32 + 1.0f)))))));
 			}
-			output76[i] = (FAUSTFLOAT)fTempPerm197;
-			if (iSlow42) {
-				fTempPerm198 = (fSlow41 * min((float)1, max((float)0, (1 - fTempPerm192))));
-			}
-			output77[i] = (FAUSTFLOAT)fTempPerm198;
-			if (iSlow51) {
-				fTempPerm199 = (fSlow50 * min((float)1, max((float)0, (1 - fTempPerm194))));
-			}
-			output78[i] = (FAUSTFLOAT)fTempPerm199;
+			output75[i] = (FAUSTFLOAT)fTempPerm193;
 			if (iSlow56) {
-				fTempPerm200 = (fSlow55 * min((float)1, max((float)0, (1 - (fTempPerm34 + fTempPerm40)))));
+				fTempPerm194 = (fSlow55 * min((float)1, max((float)0, (0 - (0.5f * (fTempPerm40 - (fTempPerm34 + 1.0f)))))));
 			}
-			output79[i] = (FAUSTFLOAT)fTempPerm200;
+			output76[i] = (FAUSTFLOAT)fTempPerm194;
+			if (iSlow42) {
+				fTempPerm195 = (fSlow41 * min((float)1, max((float)0, (1 - (fTempPerm30 + fTempPerm36)))));
+			}
+			output77[i] = (FAUSTFLOAT)fTempPerm195;
+			if (iSlow47) {
+				fTempPerm196 = (fSlow46 * min((float)1, max((float)0, (1 - (fTempPerm32 + fTempPerm38)))));
+			}
+			output78[i] = (FAUSTFLOAT)fTempPerm196;
+			if (iSlow54) {
+				fTempPerm197 = (fSlow53 * min((float)1, max((float)0, (1 - (fTempPerm34 + fTempPerm40)))));
+			}
+			output79[i] = (FAUSTFLOAT)fTempPerm197;
 			// post processing
-			if (iSlow215) {
+			if (iSlow217) {
 				fRec123[1] = fRec123[0];
 			}
-			if (iSlow213) {
+			if (iSlow211) {
 				fRec122[1] = fRec122[0];
 			}
-			if (iSlow211) {
+			if (iSlow209) {
 				fRec121[1] = fRec121[0];
 			}
-			if (iSlow209) {
+			if (iSlow215) {
 				fRec120[1] = fRec120[0];
 			}
-			if (iSlow217) {
+			if (iSlow213) {
 				fRec119[1] = fRec119[0];
 			}
 			if (iSlow207) {
 				fRec118[1] = fRec118[0];
 			}
-			if (iSlow205) {
+			if (iSlow203) {
 				fRec117[1] = fRec117[0];
 			}
-			if (iSlow203) {
+			if (iSlow199) {
 				fRec116[1] = fRec116[0];
 			}
-			if (iSlow201) {
+			if (iSlow197) {
 				fRec115[1] = fRec115[0];
 			}
-			if (iSlow199) {
+			if (iSlow205) {
 				fRec114[1] = fRec114[0];
 			}
-			if (iSlow197) {
+			if (iSlow201) {
 				fRec113[1] = fRec113[0];
 			}
 			if (iSlow195) {
 				fRec112[1] = fRec112[0];
 			}
-			if (iSlow185) {
+			if (iSlow189) {
 				fRec111[1] = fRec111[0];
 			}
-			if (iSlow193) {
+			if (iSlow185) {
 				fRec110[1] = fRec110[0];
 			}
-			if (iSlow191) {
+			if (iSlow193) {
 				fRec109[1] = fRec109[0];
 			}
-			if (iSlow189) {
+			if (iSlow187) {
 				fRec108[1] = fRec108[0];
 			}
-			if (iSlow187) {
+			if (iSlow191) {
 				fRec107[1] = fRec107[0];
 			}
 			if (iSlow183) {
@@ -4066,11 +4051,11 @@ class mydsp2 : public dsp {
 				fRec36[1] = fRec36[0];
 				fVec18[1] = fVec18[0];
 			}
-			if (iSlow64 || iSlow56) {
+			if (iSlow64 || iSlow54 || iSlow56) {
 				fRec35[1] = fRec35[0];
 				fVec17[1] = fVec17[0];
 			}
-			if (iSlow61 || iSlow47 || iSlow49 || iSlow51) {
+			if (iSlow61 || iSlow47 || iSlow49) {
 				fRec34[1] = fRec34[0];
 				fVec16[1] = fVec16[0];
 			}
@@ -4078,11 +4063,11 @@ class mydsp2 : public dsp {
 				fRec33[1] = fRec33[0];
 				fVec15[1] = fVec15[0];
 			}
-			if (iSlow53 || iSlow56) {
+			if (iSlow51 || iSlow54 || iSlow56) {
 				fRec32[1] = fRec32[0];
 				fVec14[1] = fVec14[0];
 			}
-			if (iSlow44 || iSlow47 || iSlow49 || iSlow51) {
+			if (iSlow44 || iSlow47 || iSlow49) {
 				fRec31[1] = fRec31[0];
 				fVec13[1] = fVec13[0];
 			}
