@@ -23,6 +23,7 @@
     CMMotionManager* _motionManager;
     CLLocationManager* _locationManager;
     
+    CMAttitude *referenceAttitude;
     
     NSTimer* _guiTimer;
     NSTimer *_sensorTimer;
@@ -37,18 +38,47 @@
     const char* screenXAddress;
     const char* screenYAddress;
     const char* magneticHeadingAddress;
+    const char* yawAddress;
+    const char* pitchAddress;
+    const char* rollAddress;
+    const char* useraccxAddress;
+    const char* useraccyAddress;
+    const char* useracczAddress;
+    const char* quaternionwAddress;
+    const char* quaternionxAddress;
+    const char* quaternionyAddress;
+    const char* quaternionzAddress;
     
     const char* cueAddress;
     const char* stateAddress;
-    const char* initAddress;
+    //const char* initAddress;
+    
+    const char* setref_compAddress;
+    const char* setref_rotaAddress;
     
     BOOL touchGateIsOn;
     BOOL screenXIsOn;
     BOOL screenYIsOn;
     BOOL magneticHeadingIsOn;
+    BOOL yawIsOn;
+    BOOL pitchIsOn;
+    BOOL rollIsOn;
+    BOOL useraccxIsOn;
+    BOOL useraccyIsOn;
+    BOOL useracczIsOn;
+    BOOL quaternionwIsOn;
+    BOOL quaternionxIsOn;
+    BOOL quaternionyIsOn;
+    BOOL quaternionzIsOn;
     
     BOOL cueIsOn;
     BOOL stateIsOn;
+    
+    BOOL setref_compIsOn;
+    BOOL setref_rotaIsOn;
+    
+    int cnt;
+    int cnt2;
     
     NSMutableArray *_motionParamArray;
     NSMutableArray *_motionParamAddress;

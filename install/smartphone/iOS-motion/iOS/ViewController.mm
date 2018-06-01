@@ -307,15 +307,54 @@
         } else if ([data hasSuffix:@"/compass"]) {
             magneticHeadingIsOn = true;
             magneticHeadingAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/yaw"]) {
+            yawIsOn = true;
+            yawAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/pitch"]) {
+            pitchIsOn = true;
+            pitchAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/roll"]) {
+            rollIsOn = true;
+            rollAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/useraccx"]) {
+            useraccxIsOn = true;
+            useraccxAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/useraccy"]) {
+            useraccyIsOn = true;
+            useraccyAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/useraccz"]) {
+            useracczIsOn = true;
+            useracczAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/quaternionw"]) {
+            quaternionwIsOn = true;
+            quaternionwAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/quaternionx"]) {
+            quaternionxIsOn = true;
+            quaternionxAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/quaterniony"]) {
+            quaternionyIsOn = true;
+            quaternionyAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/quaternionz"]) {
+            quaternionzIsOn = true;
+            quaternionzAddress = dspFaust->getParamAddress(i);
         } else if ([data hasSuffix:@"/cue"]) {
             cueIsOn = true;
             cueAddress = dspFaust->getParamAddress(i);
         } else if ([data hasSuffix:@"/state"]) {
             stateIsOn = true;
             stateAddress = dspFaust->getParamAddress(i);
-        } else if ([data hasSuffix:@"/init"]) {
-            initAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/setref_comp"]) {
+            setref_compIsOn = true;
+            setref_compAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/setref_rota"]) {
+            setref_rotaIsOn = true;
+            setref_rotaAddress = dspFaust->getParamAddress(i);
         }
+        
+        //comment init part for now
+        //else if ([data hasSuffix:@"/init"]) {
+            //initAddress = dspFaust->getParamAddress(i);
+        //}
         
     }
     
@@ -469,11 +508,47 @@
     [_motionManager setDeviceMotionUpdateInterval:updateInterval];
     NSOperationQueue *rotationMatrixQueue = [[NSOperationQueue alloc] init];
     [_motionManager startDeviceMotionUpdatesToQueue: rotationMatrixQueue
-        withHandler:^(CMDeviceMotion* motion, NSError* error){
+                                        withHandler:^(CMDeviceMotion* motion, NSError* error){
                                             
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                 
-        dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
+                                                dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
+            
+            // set reference frame
+            if (referenceAttitude != nil) {
+               [motion.attitude multiplyByInverseOfAttitude:referenceAttitude];
+            }
+            
+            if (yawIsOn) {
+                dspFaust->setParamValue(yawAddress, motion.attitude.yaw);
+            }
+            if (pitchIsOn) {
+                dspFaust->setParamValue(pitchAddress, motion.attitude.pitch);
+            }
+            if (rollIsOn) {
+                dspFaust->setParamValue(rollAddress, motion.attitude.roll);
+            }
+            if (useraccxIsOn) {
+                dspFaust->setParamValue(useraccxAddress, motion.userAcceleration.x);
+            }
+            if (useraccyIsOn) {
+                dspFaust->setParamValue(useraccyAddress, motion.userAcceleration.y);
+            }
+            if (useracczIsOn) {
+                dspFaust->setParamValue(useracczAddress, motion.userAcceleration.z);
+            }
+            if (quaternionwIsOn) {
+                dspFaust->setParamValue(quaternionwAddress, motion.attitude.quaternion.w);
+            }
+            if (quaternionxIsOn) {
+                dspFaust->setParamValue(quaternionxAddress, motion.attitude.quaternion.x);
+            }
+            if (quaternionyIsOn) {
+                dspFaust->setParamValue(quaternionyAddress, motion.attitude.quaternion.y);
+            }
+            if (quaternionzIsOn) {
+                dspFaust->setParamValue(quaternionzAddress, motion.attitude.quaternion.z);
+            }
                                                 
         }];
     }];
@@ -483,9 +558,10 @@
 -(void) initFrame {
     
     if (_motionManager!=nil) {
-        
+    
+        // using the calcul de matrix for rotation matrix(compatible with previous version), using the global reference way for others(yaw/quatarnion)
         dspFaust->initFrame();
-        
+        referenceAttitude = [_motionManager.deviceMotion.attitude copy];
     }
     
     
@@ -494,6 +570,7 @@
 - (IBAction)setRef:(id)sender {
     
     [self initFrame];
+    
     
 }
 
@@ -541,6 +618,27 @@
         _tips.text = [NSString stringWithFormat:@"State = %1.f", dspFaust->getParamValue(stateAddress)];
     }
     
+    if (setref_compIsOn && dspFaust->getParamValue(setref_compAddress)==1) {
+        
+        if (cnt<2) {
+            offset = magnetic;
+            NSLog(@"initCompass");
+            cnt++;
+        }
+    } else{
+            cnt=1;
+    }
+    
+    if (setref_rotaIsOn && dspFaust->getParamValue(setref_rotaAddress)==1) {
+        if (cnt2<2) {
+            [self initFrame];
+            NSLog(@"initRotation");
+            cnt2++;
+        }
+    } else{
+        cnt2=1;
+    }
+    
 }
 
 - (void) touchesBegan:(NSSet *)touches
@@ -564,10 +662,6 @@
             if (cueIsOn) {
                 [self counter];
                 _touch.alpha=1;
-            }
-                
-            if (magneticHeadingIsOn) {
-                offset = magnetic;
             }
             
             if (screenXIsOn) {
@@ -737,6 +831,7 @@
     _tips.text = [myCueTipsArrary objectAtIndex:0];
     }
     
+    /*  comment init part for now
     if (stateIsOn) {
         dspFaust->setParamValue(initAddress, 1);
         // delay pour init
@@ -745,6 +840,7 @@
             dspFaust->setParamValue(initAddress, 0);
         });
     }
+     */
 }
 
 
