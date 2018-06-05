@@ -362,9 +362,33 @@ public class MainActivity extends AppCompatActivity {
         setMotion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+               /*
                 for (int i=0; i< motionParamArray.size(); i++) {
                     if (paramsOn[i]){
                         dspFaustMotion.setParamValue(motionParamAddress.get(i), Float.valueOf(paramsValue.getText().toString()));
+                        SharedPreWriteFloat(motionParamArray.get(i),Float.valueOf(paramsValue.getText().toString()));
+                    }
+
+                }
+             */
+
+                // Find the label index of the edited parameter
+                int ii = -1;
+                for (ii=0; ii<motionParamArray.size(); ii++) {
+                    if (paramsOn[ii]) {
+
+                        break;
+                    }
+                }
+
+
+                String param =  motionParamArray.get(ii);
+
+
+                for (int i=0; i< motionParamArray.size(); i++) {
+
+                    if (motionParamArray.get(i).equals(param) ){
+                        dspFaust.setParamValue(motionParamAddress.get(i), Float.valueOf(paramsValue.getText().toString()));
                         SharedPreWriteFloat(motionParamArray.get(i),Float.valueOf(paramsValue.getText().toString()));
                     }
 
