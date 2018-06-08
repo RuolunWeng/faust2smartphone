@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina5_5" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,11 +19,11 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <slider opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="5" translatesAutoresizingMaskIntoConstraints="NO" id="vvB-eh-TrK">
-                                <rect key="frame" x="119" y="221" width="362" height="31"/>
+                                <rect key="frame" x="119" y="225" width="150" height="31"/>
                                 <connections>
                                     <action selector="freqOut:" destination="BYZ-38-t0r" eventType="valueChanged" id="eef-B1-IPX"/>
                                 </connections>
@@ -40,8 +40,8 @@
                                     <action selector="volumeOut:" destination="BYZ-38-t0r" eventType="valueChanged" id="As7-jq-ei9"/>
                                 </connections>
                             </slider>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Oscillator Demo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="huL-2P-ni1">
-                                <rect key="frame" x="239" y="82" width="123" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Oscillator Demo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="huL-2P-ni1">
+                                <rect key="frame" x="126" y="70" width="123" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -72,10 +72,17 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I don't generate interface, please do it yourself based on this example." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="keh-xT-A6R">
+                                <rect key="frame" x="32" y="111" width="311" height="11"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                                <color key="textColor" red="1" green="0.039137307288563905" blue="0.082526123365191051" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="highlightedColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="9lA-yi-FxP" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="28" id="7Oe-e0-UKF"/>
+                            <constraint firstItem="keh-xT-A6R" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="7ne-aX-7sI"/>
                             <constraint firstItem="656-II-kFK" firstAttribute="top" secondItem="9lA-yi-FxP" secondAttribute="bottom" constant="66" id="9jt-9N-WML"/>
                             <constraint firstItem="vvB-eh-TrK" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="BuT-T9-Ycw"/>
                             <constraint firstItem="XOO-G7-9az" firstAttribute="leading" secondItem="xqE-6L-aLD" secondAttribute="trailing" constant="8" id="Cfc-m0-NQ6"/>
@@ -86,6 +93,7 @@
                             <constraint firstItem="xqE-6L-aLD" firstAttribute="leading" secondItem="656-II-kFK" secondAttribute="trailing" constant="8" id="Jcv-01-IHb"/>
                             <constraint firstItem="lSI-DL-3Lr" firstAttribute="leading" secondItem="vvB-eh-TrK" secondAttribute="trailing" constant="8" id="LA4-1D-EXd"/>
                             <constraint firstItem="656-II-kFK" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="5" id="M9A-3K-Myr"/>
+                            <constraint firstItem="keh-xT-A6R" firstAttribute="top" secondItem="huL-2P-ni1" secondAttribute="bottom" constant="20" id="Ofa-GU-5jk"/>
                             <constraint firstItem="xqE-6L-aLD" firstAttribute="top" secondItem="vvB-eh-TrK" secondAttribute="bottom" constant="58" id="XfG-n2-pTZ"/>
                             <constraint firstItem="xqE-6L-aLD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="YRA-HZ-Z7l"/>
                             <constraint firstItem="huL-2P-ni1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="eNU-wZ-KPb"/>
