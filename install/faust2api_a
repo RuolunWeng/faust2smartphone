@@ -30,6 +30,7 @@ EFFECT=""
 OPTIONS=""
 
 OSCCTRL="0"
+OSCMODE="1"
 SOUNDFILE="0"
 
 
@@ -54,7 +55,7 @@ echoHelp ()
     echo ""
     echo "IOS-SPECIFIC OPTIONS "
     echo "   -midi : add built-in RtMidi support to the API."
-    echo "   -osc : add osc support to the API."
+    echo "   -oscall/-oscalias: add osc support to the API.(all / alias)"
     echo "   -soundfile : add soundfile support to the API."
     echo "   -iosmotion : generate app with motion support."
     echo "   -iosplugin : generate faustplugin support."
@@ -71,8 +72,12 @@ do
 		PACKAGENAME="$p"
   elif [ "$p" = "-soundfile" ]; then
     SOUNDFILE="1"
-	elif [ $p = "-osc" ]; then
+	elif [ $p = "-oscall" ]; then
         OSCCTRL="1"
+        OSCMODE="1"
+  elif [ $p = "-oscalias" ]; then
+        OSCCTRL="1"
+        OSCMODE="2"
   elif [ $p = "-android" ]; then
 		ANDROID=1
   elif [ $p = "-ios" ]; then
@@ -147,6 +152,11 @@ if [ $ANDROID -eq 1 ]; then
     if [ "$OSCCTRL" = "1" ]; then
     faust -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+       if [ "$OSCMODE" = "2" ]; then
+    echo "#define OSCALIAS 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+       elif [ "$OSCMODE" = "1" ]; then
+    echo "#define OSCALL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+       fi
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     else
     faust -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
@@ -169,6 +179,11 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
     if [ "$OSCCTRL" = "1" ]; then
     faust -i -a api-allen/motion/DspFaust.cpp $OPTIONS "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+    if [ "$OSCMODE" = "2" ]; then
+ echo "#define OSCALIAS 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+    elif [ "$OSCMODE" = "1" ]; then
+ echo "#define OSCALL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+    fi
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     else
     faust -i -a api-allen/motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
@@ -191,6 +206,11 @@ elif [ $ANDROIDPLUGIN -eq 1 ]; then
       if [ "$OSCCTRL" = "1" ]; then
       faust -i -a api-allen/plugin/DspFaust.cpp $OPTIONS "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
       echo "#define OSCCTRL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+      if [ "$OSCMODE" = "2" ]; then
+      echo "#define OSCALIAS 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+      elif [ "$OSCMODE" = "1" ]; then
+      echo "#define OSCALL 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+      fi
       else
       faust -i -a api-allen/plugin/DspFaust.cpp $OPTIONS "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
       fi
@@ -212,6 +232,11 @@ elif [ $IOS -eq 1 ]; then
     if [ "$OSCCTRL" = "1" ]; then
     faust -lang ocpp -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$OSCMODE" = "2" ]; then
+    echo "#define OSCALIAS 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    elif [ "$OSCMODE" = "1" ]; then
+    echo "#define OSCALL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     if [ "$SOUNDFILE" = "1" ]; then
   echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
@@ -232,6 +257,11 @@ elif [ $IOSMOTION -eq 1 ]; then
     if [ "$OSCCTRL" = "1" ]; then
     faust -lang ocpp -i -a api-allen/motion/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$OSCMODE" = "2" ]; then
+    echo "#define OSCALIAS 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    elif [ "$OSCMODE" = "1" ]; then
+    echo "#define OSCALL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     if [ "$SOUNDFILE" = "1" ]; then
   echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
@@ -250,6 +280,11 @@ elif [ $IOSPLUGIN -eq 1 ]; then
     if [ "$OSCCTRL" = "1" ]; then
     faust -lang ocpp -i -a api-allen/plugin/DspFaust.cpp $OPTIONS "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define OSCCTRL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    if [ "$OSCMODE" = "2" ]; then
+    echo "#define OSCALIAS 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    elif [ "$OSCMODE" = "1" ]; then
+    echo "#define OSCALL 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     if [ "$SOUNDFILE" = "1" ]; then
   echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"

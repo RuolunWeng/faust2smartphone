@@ -51,7 +51,7 @@ echoHelp ()
 	echo "Option: -androidmotion for Android Studio project for smartSOLO"
 	echo "Option: -androidplugin for Android Studio with faust plugin"
 	echo "Option: -updatelib <.lib> for update motion library"
-	echo "Option: -osc for OSC support"
+	echo "Option: -oscall/-oscalias for OSC support"
 	echo "Option: -soundfile for soundfile support"
 	echo "Option: -cuemanager for using Cue Maneger system"
 	echo "Option: -reuse for Uptade the project"

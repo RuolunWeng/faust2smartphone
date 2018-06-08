@@ -110,7 +110,12 @@ void DspFaust::init(audio* driver){
     const char* argv[9];
     argv[0] = "Faust";
     argv[1] = "-xmit";
+#if OSCALL
     argv[2] = "1";
+#endif
+#if OSCALIAS
+    argv[2] = "2";
+#endif
     argv[3] = "-desthost";
     argv[4] = "192.168.1.20";
     argv[5] = "-port";
