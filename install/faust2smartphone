@@ -64,7 +64,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone -"
 	echo "===================================="
-	echo "- Version: 5.0 -"
+	echo "- Version: 5.5 -"
 	echo "===================================="
 }
 
@@ -211,6 +211,14 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 				else
 					echo "noosc" > $LOG
 				fi
+				if [ "$SOUNDFILE" = "1" ]; then
+					echo "soundfile" > $LOG
+					sed -i '' 's,SOUNDFILE=false,SOUNDFILE=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(SOUNDFILE\ false),set(SOUNDFILE\ true),g' $BUILDDIR/app/CMakeLists.txt
+
+				else
+					echo "no soundfile" > $LOG
+				fi
 			else
 				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
 				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
@@ -224,9 +232,17 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 				elif [[ $OPTIONS = " -oscalias" ]]; then
 					echo "osc" > $LOG
 					sed -i '' 's,OSCCTRL=false,OSCCTRL=true,g' $BUILDDIR/app/build.gradle
-					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
+
 				else
 					echo "noosc" > $LOG
+				fi
+				if [ "$SOUNDFILE" = "1" ]; then
+					echo "soundfile" > $LOG
+					ed -i '' 's,SOUNDFILE=false,SOUNDFILE=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(SOUNDFILE\ false),set(SOUNDFILE\ true),g' $BUILDDIR/app/CMakeLists.txt
+
+				else
+					echo "no soundfile" > $LOG
 				fi
 			fi
 			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
@@ -258,6 +274,14 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 				else
 					echo "noosc" > $LOG
 				fi
+				if [ "$SOUNDFILE" = "1" ]; then
+					echo "soundfile" > $LOG
+					sed -i '' 's,SOUNDFILE=false,SOUNDFILE=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(SOUNDFILE\ false),set(SOUNDFILE\ true),g' $BUILDDIR/app/CMakeLists.txt
+
+				else
+					echo "no soundfile" > $LOG
+				fi
 			else
 				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
 				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
@@ -274,6 +298,14 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
 				else
 					echo "noosc" > $LOG
+				fi
+				if [ "$SOUNDFILE" = "1" ]; then
+					echo "soundfile" > $LOG
+					ed -i '' 's,SOUNDFILE=false,SOUNDFILE=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(SOUNDFILE\ false),set(SOUNDFILE\ true),g' $BUILDDIR/app/CMakeLists.txt
+		
+				else
+					echo "no soundfile" > $LOG
 				fi
 			fi
 			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME
@@ -353,8 +385,13 @@ fi
 
 if [ $ANDROID -eq 1 ]; then
 	if [ -z "$EFFECT" ]; then # no effect
+	if [ "$SOUNDFILE" = "1" ]; then
+		echo "Adding DSP with soundfile support to the app" > $LOG
+		faust2api_a $OPTIONS -android -soundfile -nodoc "$FILE" > $LOG
+	else
 		echo "Adding DSP with no effect chain to the app" > $LOG
 		faust2api_a $OPTIONS -android -nodoc "$FILE" > $LOG
+	fi
 	else
 		echo "Adding DSP with effect chain to the app" > $LOG
 		faust2api_a $OPTIONS -android -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
@@ -368,8 +405,13 @@ if [ $ANDROID -eq 1 ]; then
 	rm -r "$BUILDDIR/dsp-faust"
 
 elif [ $ANDROIDMOTION -eq 1 ]; then
-	echo "Adding DSP with motion support to the app" > $LOG
+	if [ "$SOUNDFILE" = "1" ]; then
+		echo "Adding DSP with soundfile support to the motion support app" > $LOG
+		faust2api_a $OPTIONS -androidmotion -soundfile -nodoc "$FILE" > $LOG
+	else
+		echo "Adding DSP to the plugin support app" > $LOG
 		faust2api_a $OPTIONS -androidmotion -nodoc "$FILE" > $LOG
+	fi
 	unzip "dsp-faust.zip" > $LOG
 	mv "dsp-faust" "$BUILDDIR"
 	rm "dsp-faust.zip"
@@ -461,6 +503,8 @@ else
 	if [ "$SOUNDFILE" = "1" ]; then
 	echo "=============!!Warning!!============="
 	echo "you have to manually add the needed soundfiles in the project"
+	echo "Drag your songs in Xcode or Android stduio/app/src/main/assets folder"
+	echo "=============!!Warning!!============="
 	fi
 	echo "========================================================"
 fi

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -33,6 +34,12 @@ import android.widget.Toast;
 
 import com.DspFaust.DspFaust;
 import com.DspFaust.DspFaustMotion;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -180,6 +187,52 @@ public class MainActivity extends AppCompatActivity {
             permissionToRecordAccepted = true;
             createFaust();
         // }
+
+        // check if audio files were saved in internal storage
+          String[] internalStorageList = getFilesDir().list();
+          boolean fileWereCopied = false;
+          for(int i=0; i<internalStorageList.length; i++){
+              if(internalStorageList[i].contains(".aif") || internalStorageList[i].contains(".wav") || internalStorageList[i].contains(".flac")) {
+                  fileWereCopied = true;
+                  break;
+              }
+          }
+
+          // if audio files were not saved in internal storage, then transfer them
+          if(!fileWereCopied) {
+              AssetManager assets = getAssets();
+              try {
+                  String[] assetsList = assets.list("");
+
+                  for (int i = 0; i < assetsList.length; i++) {
+                      if (assetsList[i].contains(".aif") || assetsList[i].contains(".wav") || assetsList[i].contains(".flac")) {
+
+                          InputStream in = null;
+                          OutputStream out = null;
+                          in = assets.open(assetsList[i]);
+                          File outFile = new File(getFilesDir().getPath(), assetsList[i]);
+                          out = new FileOutputStream(outFile);
+
+                          // copy content
+                          byte[] buffer = new byte[1024];
+                          int read;
+                          while ((read = in.read(buffer)) != -1) {
+                              out.write(buffer, 0, read);
+                          }
+                          in.close();
+                          in = null;
+                          out.flush();
+                          out.close();
+                          out = null;
+
+                      }
+
+                  }
+
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+          }
 
         try {
             InputStream stream = getAssets().open("cuenums.txt");
