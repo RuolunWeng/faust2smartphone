@@ -182,6 +182,12 @@
     
 }
 
+- (BOOL) connectedToInternet
+{
+    NSString *URLString = [NSString stringWithContentsOfURL:[NSURL URLWithString:@"http://www.bing.com"]];
+    return ( URLString != NULL ) ? YES : NO;
+}
+
 
 -(void) loadDefaultParams {
     
@@ -208,6 +214,9 @@
     _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue([_motionParamAddress[0] UTF8String])];
     
     if (dspFaust->getOSCIsOn()) {
+        
+        [self connectedToInternet];
+        
         oscAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
         oscInPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscInPort"];
         oscOutPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscOutPort"];

@@ -34,6 +34,9 @@
     const int SR = 44100;
     const int bufferSize = 256;
     
+    [self connectedToInternet];
+    
+    
     dspFaust = new DspFaust(SR,bufferSize);
     
     //////////////////////////////////////////////
@@ -56,6 +59,12 @@
     [self startMotion];
     [self startUpdate];
     
+}
+
+- (BOOL) connectedToInternet
+{
+    NSString *URLString = [NSString stringWithContentsOfURL:[NSURL URLWithString:@"http://www.bing.com"]];
+    return ( URLString != NULL ) ? YES : NO;
 }
 
 - (void)didReceiveMemoryWarning {

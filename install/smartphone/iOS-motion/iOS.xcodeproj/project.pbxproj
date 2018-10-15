@@ -52,7 +52,6 @@
 		C93C18F61E5BA375001551E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C93C18F01E5BA375001551E3 /* main.m */; };
 		C93C18FB1E5BA389001551E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C93C18F71E5BA389001551E3 /* LaunchScreen.storyboard */; };
 		C93C18FC1E5BA389001551E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C93C18F91E5BA389001551E3 /* Main.storyboard */; };
-		C93C19001E5BA526001551E3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C93C18FF1E5BA526001551E3 /* Info.plist */; };
 		C96A74CD1E86EF4D00C6474F /* keyDark.png in Resources */ = {isa = PBXBuildFile; fileRef = C96A74CC1E86EF4D00C6474F /* keyDark.png */; };
 		C9D94E5F1E79631D003A187A /* DspFaustMotion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9D94E5D1E79631D003A187A /* DspFaustMotion.cpp */; };
 /* End PBXBuildFile section */
@@ -481,6 +480,9 @@
 					65E5ED8D14DB037D00136CFC = {
 						DevelopmentTeam = E2257JUX9L;
 						SystemCapabilities = {
+							com.apple.AccessWiFi = {
+								enabled = 1;
+							};
 							com.apple.WAC = {
 								enabled = 1;
 							};
@@ -517,7 +519,6 @@
 				6F338BD41F77A925006BDC6E /* Assets.xcassets in Resources */,
 				6FB2E0D41E8EFA71005AF0C9 /* cueTips.txt in Resources */,
 				C93C18FB1E5BA389001551E3 /* LaunchScreen.storyboard in Resources */,
-				C93C19001E5BA526001551E3 /* Info.plist in Resources */,
 				C96A74CD1E86EF4D00C6474F /* keyDark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

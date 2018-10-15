@@ -23,6 +23,8 @@
 #include "faust/dsp/dsp-adapter.h"
 #include "faust/gui/meta.h"
 #include "faust/gui/GUI.h"
+#include "faust/gui/JSONUIDecoder.h"
+#include "faust/dsp/dsp-adapter.h"
 
 
 #include <math.h>

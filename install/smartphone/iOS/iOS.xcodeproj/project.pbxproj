@@ -50,7 +50,6 @@
 		C93C18F61E5BA375001551E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C93C18F01E5BA375001551E3 /* main.m */; };
 		C93C18FB1E5BA389001551E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C93C18F71E5BA389001551E3 /* LaunchScreen.storyboard */; };
 		C93C18FC1E5BA389001551E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C93C18F91E5BA389001551E3 /* Main.storyboard */; };
-		C93C19001E5BA526001551E3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C93C18FF1E5BA526001551E3 /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -467,6 +466,9 @@
 					65E5ED8D14DB037D00136CFC = {
 						DevelopmentTeam = E2257JUX9L;
 						SystemCapabilities = {
+							com.apple.AccessWiFi = {
+								enabled = 1;
+							};
 							com.apple.WAC = {
 								enabled = 1;
 							};
@@ -501,7 +503,6 @@
 				C93C18FC1E5BA389001551E3 /* Main.storyboard in Resources */,
 				6F6375CA1F77CF2500CD9779 /* Assets.xcassets in Resources */,
 				C93C18FB1E5BA389001551E3 /* LaunchScreen.storyboard in Resources */,
-				C93C19001E5BA526001551E3 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

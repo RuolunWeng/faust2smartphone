@@ -25,9 +25,21 @@
 #include "faust/gui/JSONUI.h"
 #include "faust/gui/MapUI.h"
 #include "faust/gui/GUI.h"
+#include "faust/gui/JSONUIDecoder.h"
+#include "faust/dsp/dsp-adapter.h"
 
 #if OSCCTRL
+#define OSC_IP_ADDRESS  "192.168.1.108"
+#define OSC_IN_PORT     "5510"
+#define OSC_OUT_PORT    "5511"
+
 #include "faust/gui/OSCUI.h"
+
+static void osc_compute_callback(void* arg)
+{
+    static_cast<OSCUI*>(arg)->endBundle();
+}
+
 #endif
 
 #include <math.h>
@@ -98,23 +110,27 @@ DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_s
 void DspFaust::init(audio* driver){
     fPolyEngine = new MyFaustPolyEngine(new mydsp(),driver);
 
+// OSC
 #if OSCCTRL
-    const char* argv[9];
-    argv[0] = "FAUST";
+    const char* argv[11];
+    argv[0] = "Faust";
     argv[1] = "-xmit";
-#if OSCALL
-    argv[2] = "1";
-#endif
-#if OSCALIAS
-    argv[2] = "2";
-#endif
+    #if OSCALL
+        argv[2] = "1";
+    #endif
+    #if OSCALIAS
+        argv[2] = "2";
+    #endif
     argv[3] = "-desthost";
-    argv[4] = "192.168.1.5";
+    argv[4] = OSC_IP_ADDRESS;
     argv[5] = "-port";
-    argv[6] = "5510";
+    argv[6] = OSC_IN_PORT;
     argv[7] = "-outport";
-    argv[8] = "5511";
-    fOSCUI = new OSCUI("FAUST", 9, (char**)argv);
+    argv[8] = OSC_OUT_PORT;
+    argv[9] = "-bundle";
+    argv[10] = "1";
+    fOSCUI = new OSCUI("Faust", 11, (char**)argv);
+    driver->setComputeCb(osc_compute_callback, fOSCUI);
     fPolyEngine->buildUserInterface(fOSCUI);
 #endif
 
@@ -213,22 +229,25 @@ void DspFaust::setOSCValue(const char* address, const char* inPort, const char* 
 
 #if OSCCTRL
     delete fOSCUI;
-    const char* argv[9];
-    argv[0] = "FAUST";
+    const char* argv[11];
+    argv[0] = "Faust";
     argv[1] = "-xmit";
-#if OSCALL
-    argv[2] = "1";
-#endif
-#if OSCALIAS
-    argv[2] = "2";
-#endif
+    #if OSCALL
+        argv[2] = "1";
+    #endif
+    #if OSCALIAS
+        argv[2] = "2";
+    #endif
     argv[3] = "-desthost";
-    argv[4] = address;
+    argv[4] = OSC_IP_ADDRESS;
     argv[5] = "-port";
-    argv[6] = inPort;
+    argv[6] = OSC_IN_PORT;
     argv[7] = "-outport";
-    argv[8] = outPort;
-    fOSCUI = new OSCUI("FAUST", 9, (char**)argv);
+    argv[8] = OSC_OUT_PORT;
+    argv[9] = "-bundle";
+    argv[10] = "1";
+    fOSCUI = new OSCUI("Faust", 11, (char**)argv);
+    driver->setComputeCb(osc_compute_callback, fOSCUI);
     fPolyEngine->buildUserInterface(fOSCUI);
     fOSCUI->run();
 #endif
