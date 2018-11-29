@@ -4,7 +4,7 @@ set(SOUNDFILE false)
 cmake_minimum_required(VERSION 3.4.1)
 add_library( dsp_faust SHARED src/main/cpp/java_interface_wrap.cpp src/main/cpp/DspFaust.cpp src/main/cpp/DspFaustMotion.cpp)
 
-add_definitions(-DANDROID_DRIVER -DSOUNDFILE)
+
 
 if(OSCCTRL)
 add_library( libOSCFaust SHARED IMPORTED )
