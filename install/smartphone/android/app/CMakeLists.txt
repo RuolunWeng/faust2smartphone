@@ -16,7 +16,7 @@ endif(SOUNDFILE)
 
 add_library( dsp_faust SHARED src/main/cpp/java_interface_wrap.cpp src/main/cpp/DspFaust.cpp )
 
-add_definitions(-DANDROID_DRIVER -DSOUNDFILE)
+
 
   find_library( log-lib log )
 
