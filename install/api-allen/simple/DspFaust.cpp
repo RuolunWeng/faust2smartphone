@@ -136,7 +136,7 @@ void DspFaust::init(audio* driver){
     argv[8] = OSC_OUT_PORT;
     argv[9] = "-bundle";
     argv[10] = "1";
-    fOSCUI = new OSCUI("Faust", 11, (char**)argv); 
+    fOSCUI = new OSCUI("Faust", 11, (char**)argv);
     driver->setComputeCb(osc_compute_callback, fOSCUI);
     fPolyEngine->buildUserInterface(fOSCUI);
 #endif
@@ -144,7 +144,10 @@ void DspFaust::init(audio* driver){
 #if SOUNDFILE
     // Use bundle path
     fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
+    // SoundUI has to be dispatched on all internal voices
+    fPolyEngine->setGroup(false);
     fPolyEngine->buildUserInterface(fSoundInterface);
+    fPolyEngine->setGroup(true);
 #endif
 
 }

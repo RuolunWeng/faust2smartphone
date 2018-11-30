@@ -123,7 +123,10 @@ DspFaust::DspFaust(int sample_rate, int buffer_size){
 #if SOUNDFILE
     // Use bundle path
     fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
+    // SoundUI has to be dispatched on all internal voices
+    fPolyEngine->setGroup(false);
     fPolyEngine->buildUserInterface(fSoundInterface);
+    fPolyEngine->setGroup(true);
 #endif
 
 }
