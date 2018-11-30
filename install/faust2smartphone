@@ -64,7 +64,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone -"
 	echo "===================================="
-	echo "- Version: 5.5 -"
+	echo "- Version: 5.6 -"
 	echo "===================================="
 }
 
@@ -167,7 +167,7 @@ elif [ $IOSMOTION -eq 1 ]; then
 elif [ $IOSPLUGIN -eq 1 ]; then
 	APPFOLDER="$BUILDDIR/iOS"
 else
-	echo "Please, specify a platform: -android -soloandroid -ios -soloios -iosplugin -androidplugin"
+	echo "Please, specify a platform: -android -androidmotion -ios -iosmotion -iosplugin -androidplugin"
 	echoHelp
 	exit 1
 fi
@@ -303,7 +303,7 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					echo "soundfile" > $LOG
 					ed -i '' 's,SOUNDFILE=false,SOUNDFILE=true,g' $BUILDDIR/app/build.gradle
 					sed -i '' 's,set(SOUNDFILE\ false),set(SOUNDFILE\ true),g' $BUILDDIR/app/CMakeLists.txt
-		
+
 				else
 					echo "no soundfile" > $LOG
 				fi
@@ -503,7 +503,7 @@ else
 	if [ "$SOUNDFILE" = "1" ]; then
 	echo "=============!!Warning!!============="
 	echo "you have to manually add the needed soundfiles in the project"
-	echo "Drag your songs in Xcode or Android stduio/app/src/main/assets folder"
+	echo "Drag your songs in Xcode or Android studio/app/src/main/assets folder"
 	echo "=============!!Warning!!============="
 	fi
 	echo "========================================================"
