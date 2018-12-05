@@ -46,8 +46,8 @@ public:
 
     virtual ~FaustMotionEngine()
     {
-        delete fDriver;
-        delete fFinalDSP;
+        //delete fDriver;
+        //delete fFinalDSP;
     }
 
 
