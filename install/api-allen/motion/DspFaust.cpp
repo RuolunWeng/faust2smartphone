@@ -229,52 +229,48 @@ void DspFaust::setParamValue(int id, float value){
 }
 
 void DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
-
+    
 #if OSCCTRL
-    delete fOSCUI;
-    const char* argv[11];
-    argv[0] = "Faust";
-    argv[1] = "-xmit";
-    #if OSCALL
-        argv[2] = "1";
-    #endif
-    #if OSCALIAS
-        argv[2] = "2";
-    #endif
-    argv[3] = "-desthost";
-    argv[4] = OSC_IP_ADDRESS;
-    argv[5] = "-port";
-    argv[6] = OSC_IN_PORT;
-    argv[7] = "-outport";
-    argv[8] = OSC_OUT_PORT;
-    argv[9] = "-bundle";
-    argv[10] = "1";
-    fOSCUI = new OSCUI("Faust", 11, (char**)argv);
-    driver->setComputeCb(osc_compute_callback, fOSCUI);
-    fPolyEngine->buildUserInterface(fOSCUI);
-    fOSCUI->run();
+    if (isRunning()) {
+    } else {
+#if OSCALL
+        oscfaust::OSCControler::gXmit = false;
 #endif
-
-
+#if OSCALIAS
+        oscfaust::OSCControler::gXmit = true;
+#endif
+        fOSCUI->setUDPPort(atoi(inPort));
+        fOSCUI->setUDPOut(atoi(outPort));
+        fOSCUI->setDestAddress(address);
+    }
+#endif
+    
+    
 }
 
 bool DspFaust::setOSCValue(const char* address, int inPort, int outPort){
-
+    
 #if OSCCTRL
-
+    
     if (isRunning()) {
         return false;
     } else {
+#if OSCALL
+        oscfaust::OSCControler::gXmit = false;
+#endif
+#if OSCALIAS
+        oscfaust::OSCControler::gXmit = true;
+#endif
         fOSCUI->setUDPPort(inPort);
         fOSCUI->setUDPOut(outPort);
         fOSCUI->setDestAddress(address);
         return true;
     }
-
+    
 #else
     return false;
 #endif
-
+    
 }
 
 
