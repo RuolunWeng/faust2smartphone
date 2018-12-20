@@ -128,7 +128,7 @@ void DspFaust::init(audio* driver){
     argv[7] = "-outport";
     argv[8] = OSC_OUT_PORT;
     argv[9] = "-bundle";
-    argv[10] = "1";
+    argv[10] = "0";
     fOSCUI = new OSCUI("Faust", 11, (char**)argv);
     driver->setComputeCb(osc_compute_callback, fOSCUI);
     fPolyEngine->buildUserInterface(fOSCUI);
