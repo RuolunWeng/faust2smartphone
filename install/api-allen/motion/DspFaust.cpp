@@ -229,48 +229,48 @@ void DspFaust::setParamValue(int id, float value){
 }
 
 void DspFaust::setOSCValue(const char* address, const char* inPort, const char* outPort){
-    
+
 #if OSCCTRL
     if (isRunning()) {
     } else {
 #if OSCALL
-        oscfaust::OSCControler::gXmit = false;
+        oscfaust::OSCControler::gXmit = 1;
 #endif
 #if OSCALIAS
-        oscfaust::OSCControler::gXmit = true;
+        oscfaust::OSCControler::gXmit = 2;
 #endif
         fOSCUI->setUDPPort(atoi(inPort));
         fOSCUI->setUDPOut(atoi(outPort));
         fOSCUI->setDestAddress(address);
     }
 #endif
-    
-    
+
+
 }
 
 bool DspFaust::setOSCValue(const char* address, int inPort, int outPort){
-    
+
 #if OSCCTRL
-    
+
     if (isRunning()) {
         return false;
     } else {
 #if OSCALL
-        oscfaust::OSCControler::gXmit = false;
+        oscfaust::OSCControler::gXmit = 1;
 #endif
 #if OSCALIAS
-        oscfaust::OSCControler::gXmit = true;
+        oscfaust::OSCControler::gXmit = 2;
 #endif
         fOSCUI->setUDPPort(inPort);
         fOSCUI->setUDPOut(outPort);
         fOSCUI->setDestAddress(address);
         return true;
     }
-    
+
 #else
     return false;
 #endif
-    
+
 }
 
 
