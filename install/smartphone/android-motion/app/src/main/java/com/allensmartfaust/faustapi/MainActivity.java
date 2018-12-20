@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     int cueIndex,cueIndexNext;
 
     float[] rotationMatrix = new float[9];
+    float[] mOrientation = new float[3];
+    float[] mQuaternion = new float[4];
 
     String oscAddress;
     int oscInPort;
@@ -94,18 +96,57 @@ public class MainActivity extends AppCompatActivity {
     String screenXAddress;
     String screenYAddress;
     String magneticHeadingAddress;
+    String yawAddress;
+    String pitchAddress;
+    String rollAddress;
+    String useraccxAddress;
+    String useraccyAddress;
+    String useracczAddress;
+    String quaternionwAddress;
+    String quaternionxAddress;
+    String quaternionyAddress;
+    String quaternionzAddress;
 
     String cueAddress;
     String tipAddress;
+    String stateAddress;
+
+    String setref_compAddress;
+    String setref_rotaAddress;
 
     boolean[] paramsOn;
     boolean touchGateIsOn;
     boolean screenXIsOn;
     boolean screenYIsOn;
     boolean magneticHeadingIsOn;
+    boolean yawIsOn;
+    boolean pitchIsOn;
+    boolean rollIsOn;
+    boolean useraccxIsOn;
+    boolean useraccyIsOn;
+    boolean useracczIsOn;
+    boolean quaternionwIsOn;
+    boolean quaternionxIsOn;
+    boolean quaternionyIsOn;
+    boolean quaternionzIsOn;
+
+    float magnetic;
+    float magneticNormal;
+    float magneticNew;
+    float magneticDeg;
+    float magneticBinaural;
+    float offset;
 
     boolean cueIsOn;
     boolean tipIsOn;
+    boolean stateIsOn;
+
+    boolean setref_compIsOn;
+    boolean setref_rotaIsOn;
+
+    int cnt;
+    int cnt2;
+
 
     public static final int RequestPermissionCode = 1;
 
@@ -549,6 +590,48 @@ public class MainActivity extends AppCompatActivity {
             } else if (Str.endsWith("/tip")) {
                 tipIsOn = true;
                 tipAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/yaw")) {
+                yawIsOn = true;
+                yawAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/pitch")) {
+                pitchIsOn = true;
+                pitchAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/roll")) {
+                rollIsOn = true;
+                rollAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/useraccx")) {
+                useraccxIsOn = true;
+                useraccxAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/useraccy")) {
+                useraccyIsOn = true;
+                useraccyAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/useraccz")) {
+                useracczIsOn = true;
+                useracczAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/quaternionw")) {
+                quaternionwIsOn = true;
+                quaternionwAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/quaternionx")) {
+                quaternionxIsOn = true;
+                quaternionxAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/quaterniony")) {
+                quaternionyIsOn = true;
+                quaternionyAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/quaternionz")) {
+                quaternionzIsOn = true;
+                quaternionzAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/cue")) {
+                cueIsOn = true;
+                cueAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/state")) {
+                stateIsOn = true;
+                stateAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/setref_comp")) {
+                setref_compIsOn = true;
+                setref_compAddress = dspFaust.getParamAddress(i);
+            } else if (Str.endsWith("/setref_rota")) {
+                setref_rotaIsOn = true;
+                setref_rotaAddress = dspFaust.getParamAddress(i);
             }
 
         }
@@ -756,7 +839,86 @@ public class MainActivity extends AppCompatActivity {
                                   rotationMatrix[1], rotationMatrix[4], rotationMatrix[7],
                                   rotationMatrix[2], rotationMatrix[5], rotationMatrix[8]);
 
+            SensorManager.getOrientation(rotationMatrix, mOrientation);
+
+            SensorManager.getQuaternionFromVector(mQuaternion, mOrientation);
+
+            if (yawIsOn) {
+                dspFaust.setParamValue(yawAddress, mOrientation[0]);
+            }
+            if (pitchIsOn) {
+                dspFaust.setParamValue(pitchAddress, mOrientation[1]);
+            }
+            if (rollIsOn) {
+                dspFaust.setParamValue(rollAddress, mOrientation[2]);
+            }
+            if (quaternionwIsOn) {
+                dspFaust.setParamValue(quaternionwAddress, mQuaternion[0]);
+            }
+            if (quaternionxIsOn) {
+                dspFaust.setParamValue(quaternionxAddress, mQuaternion[1]);
+            }
+            if (quaternionyIsOn) {
+                dspFaust.setParamValue(quaternionyAddress, mQuaternion[2]);
+            }
+            if (quaternionzIsOn) {
+                dspFaust.setParamValue(quaternionzAddress, mQuaternion[3]);
+            }
+
+
+
         }
+
+        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+
+
+            magnetic = event.values[0];
+
+            if (magnetic-offset>0) {
+                magneticNormal = magnetic-offset;
+            } else {
+                magneticNormal = magnetic-offset+360.00f;
+            }
+
+            if (magneticNormal<=180) {
+                magneticNew = magneticNormal /180.00f;
+            } else {
+                magneticNew = (360.00f - magneticNormal)/180.00f;
+            }
+
+            //Log.d("magneticNew",Float.toString(magneticNew));
+
+            // calcul magneticBinaural: s'initialise comme mangeticNew via l'offset mais conserve l'orientation relative et est adapté au spat de faust
+            // on appelera "ibinaural" ce paramter
+            // position initial => 0.25
+            // position tourner à gauche => 0.
+            // position tourner à droite => 0.5
+            // position opposée => 0.75
+            if (magnetic-offset>0) {
+                magneticDeg = magnetic-offset;
+            } else {
+                magneticDeg = magnetic-offset+360.00f;
+            }
+
+            double nn = Math.IEEEremainder((double)(((360+magneticDeg)/360)+0.25f), (double)1.f);
+
+            if (nn<0.f){
+                magneticBinaural = (float)(1+nn);
+            } else {
+                magneticBinaural = (float) nn;
+            }
+
+            //Log.d("magneticBinaural",Float.toString(magneticBinaural));
+
+            if (magneticHeadingIsOn) {
+                dspFaust.setParamValue(magneticHeadingAddress, magneticNew);
+            }
+
+
+        }
+
+
+        updateGUI();
 
         //lastDate = currentTime;
 
@@ -764,6 +926,35 @@ public class MainActivity extends AppCompatActivity {
 
 }
 };
+
+private void updateGUI(){
+
+    if (stateIsOn) {
+        tips.setText("State = " + dspFaust.getParamValue(stateAddress));
+    }
+
+    if (setref_compIsOn && dspFaust.getParamValue(setref_compAddress)==1) {
+
+        if (cnt<2) {
+            offset = magnetic;
+            Log.d("motion","initCompass");
+            cnt++;
+        }
+    } else{
+        cnt=1;
+    }
+
+    if (setref_rotaIsOn && dspFaust.getParamValue(setref_rotaAddress)==1) {
+        if (cnt2<2) {
+            initFrame();
+            Log.d("motion","initRotation");
+            cnt2++;
+        }
+    } else{
+        cnt2=1;
+    }
+
+}
 
 
 // set Ref function
