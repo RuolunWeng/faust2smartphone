@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
+import android.renderscript.Matrix4f;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.R.color.white;
+import static java.lang.Math.sqrt;
 
 public class MainActivity extends AppCompatActivity {
     DspFaust dspFaust;
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     int cnt;
     int cnt2;
+
 
 
     public static final int RequestPermissionCode = 1;
@@ -841,7 +844,46 @@ public class MainActivity extends AppCompatActivity {
 
             SensorManager.getOrientation(rotationMatrix, mOrientation);
 
-            SensorManager.getQuaternionFromVector(mQuaternion, mOrientation);
+            SensorManager.getQuaternionFromVector(mQuaternion, event.values);
+
+            float m00 = dspFaust.getRotationMatrix(0,0);
+            float m01 = dspFaust.getRotationMatrix(0,1);
+            float m02 = dspFaust.getRotationMatrix(0,2);
+            float m10 = dspFaust.getRotationMatrix(1,0);
+            float m11 = dspFaust.getRotationMatrix(1,1);
+            float m12 = dspFaust.getRotationMatrix(1,2);
+            float m20 = dspFaust.getRotationMatrix(2,1);
+            float m21 = dspFaust.getRotationMatrix(2,1);
+            float m22 = dspFaust.getRotationMatrix(2,2);
+
+            float tr = m00 + m11 + m22;
+
+            if (tr > 0) {
+                float S = (float) sqrt(tr+1.0) * 2; // S=4*qw
+                mQuaternion[0] = 0.25f * S;
+                mQuaternion[1] = (m21 - m12) / S;
+                mQuaternion[2] = (m02 - m20) / S;
+                mQuaternion[3] = (m10 - m01) / S;
+            } else if ((m00 > m11)&(m00 > m22)) {
+                float S = (float) sqrt(1.0 + m00 - m11 - m22) * 2; // S=4*qx
+                mQuaternion[0]  = (m21 - m12) / S;
+                mQuaternion[1]  = 0.25f * S;
+                mQuaternion[2]  = (m01 + m10) / S;
+                mQuaternion[3]  = (m02 + m20) / S;
+            } else if (m11 > m22) {
+                float S = (float) sqrt(1.0 + m11 - m00 - m22) * 2; // S=4*qy
+                mQuaternion[0] = (m02 - m20) / S;
+                mQuaternion[1] = (m01 + m10) / S;
+                mQuaternion[2] = 0.25f * S;
+                mQuaternion[3] = (m12 + m21) / S;
+            } else {
+                float S = (float) sqrt(1.0 + m22 - m00 - m11) * 2; // S=4*qz
+                mQuaternion[0] = (m10 - m01) / S;
+                mQuaternion[1] = (m02 + m20) / S;
+                mQuaternion[2] = (m12 + m21) / S;
+                mQuaternion[3] = 0.25f * S;
+            }
+
 
             if (yawIsOn) {
                 dspFaust.setParamValue(yawAddress, mOrientation[0]);
@@ -927,7 +969,9 @@ public class MainActivity extends AppCompatActivity {
 }
 };
 
-private void updateGUI(){
+
+
+    private void updateGUI(){
 
     if (stateIsOn) {
         tips.setText("State = " + dspFaust.getParamValue(stateAddress));

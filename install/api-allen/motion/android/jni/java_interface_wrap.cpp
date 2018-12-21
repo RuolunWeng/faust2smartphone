@@ -1059,6 +1059,25 @@ SWIGEXPORT void JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1checkAdress(JN
 }
 
 
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getRotationMatrix(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  jfloat jresult = 0 ;
+  DspFaust *arg1 = (DspFaust *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  float result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaust **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  result = (float)(arg1)->getRotationMatrix(arg2,arg3);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_DspFaust_dsp_1faustJNI_new_1DspFaustMotion(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2) {
   jlong jresult = 0 ;
   int arg1 ;

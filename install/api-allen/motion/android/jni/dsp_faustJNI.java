@@ -64,6 +64,7 @@ public class dsp_faustJNI {
   public final static native void DspFaust_initFrame(long jarg1, DspFaust jarg1_);
   public final static native void DspFaust_sendMotion(long jarg1, DspFaust jarg1_);
   public final static native void DspFaust_checkAdress(long jarg1, DspFaust jarg1_);
+  public final static native float DspFaust_getRotationMatrix(long jarg1, DspFaust jarg1_, int jarg2, int jarg3);
   public final static native long new_DspFaustMotion(int jarg1, int jarg2);
   public final static native void delete_DspFaustMotion(long jarg1);
   public final static native boolean DspFaustMotion_start(long jarg1, DspFaustMotion jarg1_);

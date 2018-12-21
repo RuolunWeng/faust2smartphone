@@ -211,4 +211,8 @@ public class DspFaust {
     dsp_faustJNI.DspFaust_checkAdress(swigCPtr, this);
   }
 
+  public float getRotationMatrix(int arg0, int arg1) {
+    return dsp_faustJNI.DspFaust_getRotationMatrix(swigCPtr, this, arg0, arg1);
+  }
+
 }

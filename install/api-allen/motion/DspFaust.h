@@ -453,6 +453,11 @@ public:
     //--------------------------------------------------------
     void checkAdress();
 
+    //------------------`float getRotationMatrix(int,int)------------------
+    // Get Current Rotation Matrix 
+    //--------------------------------------------------------
+    float getRotationMatrix(int,int);
+
 private:
     MyFaustPolyEngine *fPolyEngine;
     OSCUI *fOSCUI;
