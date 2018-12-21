@@ -35,10 +35,6 @@
 		65E5ED9314DB037D00136CFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5ED9214DB037D00136CFC /* UIKit.framework */; };
 		65E5ED9514DB037D00136CFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5ED9414DB037D00136CFC /* Foundation.framework */; };
 		65E5ED9714DB037D00136CFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5ED9614DB037D00136CFC /* CoreGraphics.framework */; };
-		65E5EDB814DB037D00136CFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5ED9214DB037D00136CFC /* UIKit.framework */; };
-		65E5EDB914DB037D00136CFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5ED9414DB037D00136CFC /* Foundation.framework */; };
-		65E5EDC114DB037D00136CFC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 65E5EDBF14DB037D00136CFC /* InfoPlist.strings */; };
-		65E5EDC414DB037D00136CFC /* iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 65E5EDC314DB037D00136CFC /* iOSTests.m */; };
 		65E5EDCE14DB055500136CFC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5EDCD14DB055500136CFC /* AudioToolbox.framework */; };
 		65E85C9B157806C2009F2D7A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E85C9A157806C2009F2D7A /* QuartzCore.framework */; };
 		65F87431156FFB0C008AE175 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65F87430156FFB0C008AE175 /* CoreMotion.framework */; };
@@ -55,16 +51,6 @@
 		C96A74CD1E86EF4D00C6474F /* keyDark.png in Resources */ = {isa = PBXBuildFile; fileRef = C96A74CC1E86EF4D00C6474F /* keyDark.png */; };
 		C9D94E5F1E79631D003A187A /* DspFaustMotion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9D94E5D1E79631D003A187A /* DspFaustMotion.cpp */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		65E5EDBA14DB037D00136CFC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 65E5ED8514DB037D00136CFC /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 65E5ED8D14DB037D00136CFC;
-			remoteInfo = iOS;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		4B3504141C10A57C009F7680 /* FaustFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaustFactory.h; sourceTree = "<group>"; };
@@ -118,7 +104,6 @@
 		4B35047B1C10A57C009F7680 /* OscReceivedElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OscReceivedElements.h; sourceTree = "<group>"; };
 		4B35047D1C10A57C009F7680 /* OscTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OscTypes.cpp; sourceTree = "<group>"; };
 		4B35047E1C10A57C009F7680 /* OscTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OscTypes.h; sourceTree = "<group>"; };
-		4BAD5B9E16F0FA5D000FEF86 /* jack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = jack.framework; sourceTree = "<group>"; };
 		4BB46D581C1B19BE00146D9D /* RootNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootNode.h; sourceTree = "<group>"; };
 		4BDAA20F16AEF05D00A3499E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		4BDEB1231C203C4400849601 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
@@ -127,11 +112,6 @@
 		65E5ED9214DB037D00136CFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		65E5ED9414DB037D00136CFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		65E5ED9614DB037D00136CFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		65E5EDB514DB037D00136CFC /* saw2.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = saw2.xctest; path = iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		65E5EDBE14DB037D00136CFC /* iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOSTests-Info.plist"; sourceTree = "<group>"; };
-		65E5EDC014DB037D00136CFC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		65E5EDC214DB037D00136CFC /* iOSTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iOSTests.h; sourceTree = "<group>"; };
-		65E5EDC314DB037D00136CFC /* iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOSTests.m; sourceTree = "<group>"; };
 		65E5EDCD14DB055500136CFC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		65E85C9A157806C2009F2D7A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		65F87430156FFB0C008AE175 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
@@ -170,15 +150,6 @@
 				65E5ED9714DB037D00136CFC /* CoreGraphics.framework in Frameworks */,
 				4BDEB1241C203C4400849601 /* CoreMIDI.framework in Frameworks */,
 				4BDAA21016AEF05D00A3499E /* Accelerate.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		65E5EDB114DB037D00136CFC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				65E5EDB814DB037D00136CFC /* UIKit.framework in Frameworks */,
-				65E5EDB914DB037D00136CFC /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,7 +325,6 @@
 				6F17F3A720BD217C002CA04A /* FaustAPI.entitlements */,
 				6F338BD31F77A925006BDC6E /* Assets.xcassets */,
 				65E5ED9814DB037D00136CFC /* iOS */,
-				65E5EDBC14DB037D00136CFC /* iOSTests */,
 				65E5ED9114DB037D00136CFC /* Frameworks */,
 				65E5ED8F14DB037D00136CFC /* Products */,
 			);
@@ -364,7 +334,6 @@
 			isa = PBXGroup;
 			children = (
 				65E5ED8E14DB037D00136CFC /* saw2.app */,
-				65E5EDB514DB037D00136CFC /* saw2.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -374,7 +343,6 @@
 			children = (
 				6F17F3A520BD217C002CA04A /* ExternalAccessory.framework */,
 				4BDEB1231C203C4400849601 /* CoreMIDI.framework */,
-				4BAD5B9E16F0FA5D000FEF86 /* jack.framework */,
 				4BDAA20F16AEF05D00A3499E /* Accelerate.framework */,
 				65E85C9A157806C2009F2D7A /* QuartzCore.framework */,
 				65F87430156FFB0C008AE175 /* CoreMotion.framework */,
@@ -410,25 +378,6 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
-		65E5EDBC14DB037D00136CFC /* iOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				65E5EDC214DB037D00136CFC /* iOSTests.h */,
-				65E5EDC314DB037D00136CFC /* iOSTests.m */,
-				65E5EDBD14DB037D00136CFC /* Supporting Files */,
-			);
-			path = iOSTests;
-			sourceTree = "<group>";
-		};
-		65E5EDBD14DB037D00136CFC /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				65E5EDBE14DB037D00136CFC /* iOSTests-Info.plist */,
-				65E5EDBF14DB037D00136CFC /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -448,25 +397,6 @@
 			productName = iOS;
 			productReference = 65E5ED8E14DB037D00136CFC /* saw2.app */;
 			productType = "com.apple.product-type.application";
-		};
-		65E5EDB414DB037D00136CFC /* iOSTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 65E5EDCA14DB037D00136CFC /* Build configuration list for PBXNativeTarget "iOSTests" */;
-			buildPhases = (
-				65E5EDB014DB037D00136CFC /* Sources */,
-				65E5EDB114DB037D00136CFC /* Frameworks */,
-				65E5EDB214DB037D00136CFC /* Resources */,
-				65E5EDB314DB037D00136CFC /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				65E5EDBB14DB037D00136CFC /* PBXTargetDependency */,
-			);
-			name = iOSTests;
-			productName = iOSTests;
-			productReference = 65E5EDB514DB037D00136CFC /* saw2.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -504,7 +434,6 @@
 			projectRoot = "";
 			targets = (
 				65E5ED8D14DB037D00136CFC /* FaustAPI */,
-				65E5EDB414DB037D00136CFC /* iOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -523,31 +452,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		65E5EDB214DB037D00136CFC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				65E5EDC114DB037D00136CFC /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		65E5EDB314DB037D00136CFC /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		65E5ED8A14DB037D00136CFC /* Sources */ = {
@@ -584,33 +489,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		65E5EDB014DB037D00136CFC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				65E5EDC414DB037D00136CFC /* iOSTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		65E5EDBB14DB037D00136CFC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 65E5ED8D14DB037D00136CFC /* FaustAPI */;
-			targetProxy = 65E5EDBA14DB037D00136CFC /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
-		65E5EDBF14DB037D00136CFC /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				65E5EDC014DB037D00136CFC /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		C93C18F71E5BA389001551E3 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -762,40 +643,6 @@
 			};
 			name = Release;
 		};
-		65E5EDCB14DB037D00136CFC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/iOS.app/iOS";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "iOS/iOS-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = NO;
-				INFOPLIST_FILE = "iOSTests/iOSTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-			};
-			name = Debug;
-		};
-		65E5EDCC14DB037D00136CFC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/iOS.app/iOS";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "iOS/iOS-Prefix.pch";
-				GCC_USE_STANDARD_INCLUDE_SEARCHING = NO;
-				INFOPLIST_FILE = "iOSTests/iOSTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -813,15 +660,6 @@
 			buildConfigurations = (
 				65E5EDC814DB037D00136CFC /* Debug */,
 				65E5EDC914DB037D00136CFC /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		65E5EDCA14DB037D00136CFC /* Build configuration list for PBXNativeTarget "iOSTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				65E5EDCB14DB037D00136CFC /* Debug */,
-				65E5EDCC14DB037D00136CFC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
