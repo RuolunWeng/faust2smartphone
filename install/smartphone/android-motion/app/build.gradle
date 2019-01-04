@@ -36,7 +36,17 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    if(OSCCTRL) {
+    if(OSCCTRL && SOUNDFILE) {
+            sourceSets {
+                main {
+                    // let gradle pack the shared library into apk
+                    jniLibs.srcDirs = ['/usr/local/share/faust/osclib/android/libs','lib/libsndfile/lib']
+
+                }
+            }
+    }
+
+    if(OSCCTRL && !SOUNDFILE) {
         sourceSets {
             main {
                 // let gradle pack the shared library into apk
@@ -46,12 +56,12 @@ android {
         }
     }
 
-
-    if(SOUNDFILE) {
+    if(!OSCCTRL && SOUNDFILE) {
         sourceSets {
             main {
                 // let gradle pack the shared library into apk
                 jniLibs.srcDirs = ['lib/libsndfile/lib']
+
             }
         }
     }

@@ -22,7 +22,7 @@ add_library( dsp_faust SHARED src/main/cpp/java_interface_wrap.cpp src/main/cpp/
 
   if(OSCCTRL)
   if(SOUNDFILE)
-  target_link_libraries( dsp_faust libsndfile  ${log-lib})
+  target_link_libraries( dsp_faust libOSCFaust libsndfile ${log-lib})
   elseif(NOT SOUNDFILE)
   target_link_libraries( dsp_faust libOSCFaust ${log-lib} )
   endif(SOUNDFILE)

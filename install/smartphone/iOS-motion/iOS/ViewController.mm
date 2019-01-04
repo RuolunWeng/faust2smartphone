@@ -48,6 +48,8 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
+    [self loadDefaultParams];
+    
     dspFaust->start();
     dspFaustMotion->start();
     
@@ -77,7 +79,7 @@
     
     [self displayTitle];
     
-    [self loadDefaultParams];
+    
     
     if (cueIsOn) {
         myCueNumArrary = [[NSMutableArray alloc] init];
@@ -252,6 +254,9 @@
         _outPort.text=oscOutPort;
         
         dspFaust->setOSCValue([oscAddress cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscInPort cStringUsingEncoding:[NSString defaultCStringEncoding]], [oscOutPort cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+        
+        _tips.hidden=false;
+        _tips.text = @"RESTART APP for New Setting";
     }
     
 }
@@ -362,7 +367,7 @@
         
         //comment init part for now
         //else if ([data hasSuffix:@"/init"]) {
-            //initAddress = dspFaust->getParamAddress(i);
+        //initAddress = dspFaust->getParamAddress(i);
         //}
         
     }
@@ -420,44 +425,44 @@
 }
 
 /*
-- (void)startUpdate
-{
-    
-    _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1.f/(SR/bufferSize) target:self
-                                                  selector:@selector(updateMotion) userInfo:nil repeats:YES];
-    
-}
-
-// Stop updating
-- (void)stopUpdate
-{
-    
-    [_sensorTimer invalidate];
-    
-    
-}
-
-
-- (void)updateMotion
-{
-    
-    dspFaust->propagateAcc(0, _motionManager.accelerometerData.acceleration.x * ONE_G);
-    dspFaust->propagateAcc(1, _motionManager.accelerometerData.acceleration.y * ONE_G);
-    dspFaust->propagateAcc(2, _motionManager.accelerometerData.acceleration.z * ONE_G);
-    dspFaust->propagateGyr(0, _motionManager.gyroData.rotationRate.x);
-    dspFaust->propagateGyr(1, _motionManager.gyroData.rotationRate.y);
-    dspFaust->propagateGyr(2, _motionManager.gyroData.rotationRate.z);
-    
-    dspFaustMotion->propagateAcc(0, _motionManager.accelerometerData.acceleration.x * ONE_G);
-    dspFaustMotion->propagateAcc(1, _motionManager.accelerometerData.acceleration.y * ONE_G);
-    dspFaustMotion->propagateAcc(2, _motionManager.accelerometerData.acceleration.z * ONE_G);
-    dspFaustMotion->propagateGyr(0, _motionManager.gyroData.rotationRate.x);
-    dspFaustMotion->propagateGyr(1, _motionManager.gyroData.rotationRate.y);
-    dspFaustMotion->propagateGyr(2, _motionManager.gyroData.rotationRate.z);
-    
-    
-}
-*/
+ - (void)startUpdate
+ {
+ 
+ _sensorTimer = [NSTimer scheduledTimerWithTimeInterval:1.f/(SR/bufferSize) target:self
+ selector:@selector(updateMotion) userInfo:nil repeats:YES];
+ 
+ }
+ 
+ // Stop updating
+ - (void)stopUpdate
+ {
+ 
+ [_sensorTimer invalidate];
+ 
+ 
+ }
+ 
+ 
+ - (void)updateMotion
+ {
+ 
+ dspFaust->propagateAcc(0, _motionManager.accelerometerData.acceleration.x * ONE_G);
+ dspFaust->propagateAcc(1, _motionManager.accelerometerData.acceleration.y * ONE_G);
+ dspFaust->propagateAcc(2, _motionManager.accelerometerData.acceleration.z * ONE_G);
+ dspFaust->propagateGyr(0, _motionManager.gyroData.rotationRate.x);
+ dspFaust->propagateGyr(1, _motionManager.gyroData.rotationRate.y);
+ dspFaust->propagateGyr(2, _motionManager.gyroData.rotationRate.z);
+ 
+ dspFaustMotion->propagateAcc(0, _motionManager.accelerometerData.acceleration.x * ONE_G);
+ dspFaustMotion->propagateAcc(1, _motionManager.accelerometerData.acceleration.y * ONE_G);
+ dspFaustMotion->propagateAcc(2, _motionManager.accelerometerData.acceleration.z * ONE_G);
+ dspFaustMotion->propagateGyr(0, _motionManager.gyroData.rotationRate.x);
+ dspFaustMotion->propagateGyr(1, _motionManager.gyroData.rotationRate.y);
+ dspFaustMotion->propagateGyr(2, _motionManager.gyroData.rotationRate.z);
+ 
+ 
+ }
+ */
 
 - (void)startAccelerometer
 {
@@ -466,18 +471,18 @@
     [_motionManager setAccelerometerUpdateInterval:updateInterval];
     NSOperationQueue *AccelerometerQueue = [[NSOperationQueue alloc] init];
     [_motionManager startAccelerometerUpdatesToQueue: AccelerometerQueue
-                                        withHandler:^(CMAccelerometerData *accelerometerData, NSError *error){
-                                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                                                
-                                                dspFaust->propagateAcc(0, accelerometerData.acceleration.x * ONE_G);
-                                                dspFaust->propagateAcc(1, accelerometerData.acceleration.y * ONE_G);
-                                                dspFaust->propagateAcc(2, accelerometerData.acceleration.z * ONE_G);
-                                                dspFaustMotion->propagateAcc(0, accelerometerData.acceleration.x * ONE_G);
-                                                dspFaustMotion->propagateAcc(1, accelerometerData.acceleration.y * ONE_G);
-                                                dspFaustMotion->propagateAcc(2, accelerometerData.acceleration.z * ONE_G);
-                                                
-                                            }];
-                                        }];
+                                         withHandler:^(CMAccelerometerData *accelerometerData, NSError *error){
+                                             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                                 
+                                                 dspFaust->propagateAcc(0, accelerometerData.acceleration.x * ONE_G);
+                                                 dspFaust->propagateAcc(1, accelerometerData.acceleration.y * ONE_G);
+                                                 dspFaust->propagateAcc(2, accelerometerData.acceleration.z * ONE_G);
+                                                 dspFaustMotion->propagateAcc(0, accelerometerData.acceleration.x * ONE_G);
+                                                 dspFaustMotion->propagateAcc(1, accelerometerData.acceleration.y * ONE_G);
+                                                 dspFaustMotion->propagateAcc(2, accelerometerData.acceleration.z * ONE_G);
+                                                 
+                                             }];
+                                         }];
     
 }
 
@@ -488,18 +493,18 @@
     [_motionManager setGyroUpdateInterval:updateInterval];
     NSOperationQueue *GyroscopeQueue = [[NSOperationQueue alloc] init];
     [_motionManager startGyroUpdatesToQueue: GyroscopeQueue
-                                         withHandler:^(CMGyroData *gyroData, NSError *error){
-                                             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                                                 
-                                                 dspFaust->propagateGyr(0, gyroData.rotationRate.x);
-                                                 dspFaust->propagateGyr(1, gyroData.rotationRate.y);
-                                                 dspFaust->propagateGyr(2, gyroData.rotationRate.z);
-                                                 dspFaustMotion->propagateGyr(0, gyroData.rotationRate.x);
-                                                 dspFaustMotion->propagateGyr(1, gyroData.rotationRate.y);
-                                                 dspFaustMotion->propagateGyr(2, gyroData.rotationRate.z);
-                                                 
-                                             }];
-                                         }];
+                                withHandler:^(CMGyroData *gyroData, NSError *error){
+                                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                        
+                                        dspFaust->propagateGyr(0, gyroData.rotationRate.x);
+                                        dspFaust->propagateGyr(1, gyroData.rotationRate.y);
+                                        dspFaust->propagateGyr(2, gyroData.rotationRate.z);
+                                        dspFaustMotion->propagateGyr(0, gyroData.rotationRate.x);
+                                        dspFaustMotion->propagateGyr(1, gyroData.rotationRate.y);
+                                        dspFaustMotion->propagateGyr(2, gyroData.rotationRate.z);
+                                        
+                                    }];
+                                }];
     
 }
 
@@ -522,52 +527,52 @@
                                             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                                                 
                                                 dspFaust->motionRender(motion.attitude.rotationMatrix.m11,motion.attitude.rotationMatrix.m12,motion.attitude.rotationMatrix.m13,motion.attitude.rotationMatrix.m21,motion.attitude.rotationMatrix.m22,motion.attitude.rotationMatrix.m23,motion.attitude.rotationMatrix.m31,motion.attitude.rotationMatrix.m32,motion.attitude.rotationMatrix.m33);
-            
-            // set reference frame
-            if (referenceAttitude != nil) {
-               [motion.attitude multiplyByInverseOfAttitude:referenceAttitude];
-            }
-            
-            if (yawIsOn) {
-                dspFaust->setParamValue(yawAddress, motion.attitude.yaw);
-            }
-            if (pitchIsOn) {
-                dspFaust->setParamValue(pitchAddress, motion.attitude.pitch);
-            }
-            if (rollIsOn) {
-                dspFaust->setParamValue(rollAddress, motion.attitude.roll);
-            }
-            if (useraccxIsOn) {
-                dspFaust->setParamValue(useraccxAddress, motion.userAcceleration.x);
-            }
-            if (useraccyIsOn) {
-                dspFaust->setParamValue(useraccyAddress, motion.userAcceleration.y);
-            }
-            if (useracczIsOn) {
-                dspFaust->setParamValue(useracczAddress, motion.userAcceleration.z);
-            }
-            if (quaternionwIsOn) {
-                dspFaust->setParamValue(quaternionwAddress, motion.attitude.quaternion.w);
-            }
-            if (quaternionxIsOn) {
-                dspFaust->setParamValue(quaternionxAddress, motion.attitude.quaternion.x);
-            }
-            if (quaternionyIsOn) {
-                dspFaust->setParamValue(quaternionyAddress, motion.attitude.quaternion.y);
-            }
-            if (quaternionzIsOn) {
-                dspFaust->setParamValue(quaternionzAddress, motion.attitude.quaternion.z);
-            }
                                                 
-        }];
-    }];
+                                                // set reference frame
+                                                if (referenceAttitude != nil) {
+                                                    [motion.attitude multiplyByInverseOfAttitude:referenceAttitude];
+                                                }
+                                                
+                                                if (yawIsOn) {
+                                                    dspFaust->setParamValue(yawAddress, motion.attitude.yaw);
+                                                }
+                                                if (pitchIsOn) {
+                                                    dspFaust->setParamValue(pitchAddress, motion.attitude.pitch);
+                                                }
+                                                if (rollIsOn) {
+                                                    dspFaust->setParamValue(rollAddress, motion.attitude.roll);
+                                                }
+                                                if (useraccxIsOn) {
+                                                    dspFaust->setParamValue(useraccxAddress, motion.userAcceleration.x);
+                                                }
+                                                if (useraccyIsOn) {
+                                                    dspFaust->setParamValue(useraccyAddress, motion.userAcceleration.y);
+                                                }
+                                                if (useracczIsOn) {
+                                                    dspFaust->setParamValue(useracczAddress, motion.userAcceleration.z);
+                                                }
+                                                if (quaternionwIsOn) {
+                                                    dspFaust->setParamValue(quaternionwAddress, motion.attitude.quaternion.w);
+                                                }
+                                                if (quaternionxIsOn) {
+                                                    dspFaust->setParamValue(quaternionxAddress, motion.attitude.quaternion.x);
+                                                }
+                                                if (quaternionyIsOn) {
+                                                    dspFaust->setParamValue(quaternionyAddress, motion.attitude.quaternion.y);
+                                                }
+                                                if (quaternionzIsOn) {
+                                                    dspFaust->setParamValue(quaternionzAddress, motion.attitude.quaternion.z);
+                                                }
+                                                
+                                            }];
+                                        }];
     
 }
 
 -(void) initFrame {
     
     if (_motionManager!=nil) {
-    
+        
         // using the calcul de matrix for rotation matrix(compatible with previous version), using the global reference way for others(yaw/quatarnion)
         dspFaust->initFrame();
         referenceAttitude = [_motionManager.deviceMotion.attitude copy];
@@ -635,7 +640,7 @@
             cnt++;
         }
     } else{
-            cnt=1;
+        cnt=1;
     }
     
     if (setref_rotaIsOn && dspFaust->getParamValue(setref_rotaAddress)==1) {
@@ -658,31 +663,31 @@
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
-
-        if (point.y < screenHeight/2) {
-            
-            CGFloat pointX = point.x/screenWidth;
-            CGFloat pointY = point.y/(screenHeight/2);
-            
-            if (touchGateIsOn) {
-                dspFaust->setParamValue(touchGateAddress, 1);
-                _touch.alpha=1;
-            }
-            if (cueIsOn) {
-                [self counter];
-                _touch.alpha=1;
-            }
-            
-            if (screenXIsOn) {
-                dspFaust->setParamValue(screenXAddress, pointX);
-                _touch.alpha=1;
-            }
-            if (screenYIsOn) {
-                dspFaust->setParamValue(screenYAddress, (1.f-pointY));
-                _touch.alpha=1;
-            }
-            
+    
+    if (point.y < screenHeight/2) {
+        
+        CGFloat pointX = point.x/screenWidth;
+        CGFloat pointY = point.y/(screenHeight/2);
+        
+        if (touchGateIsOn) {
+            dspFaust->setParamValue(touchGateAddress, 1);
+            _touch.alpha=1;
         }
+        if (cueIsOn) {
+            [self counter];
+            _touch.alpha=1;
+        }
+        
+        if (screenXIsOn) {
+            dspFaust->setParamValue(screenXAddress, pointX);
+            _touch.alpha=1;
+        }
+        if (screenYIsOn) {
+            dspFaust->setParamValue(screenYAddress, (1.f-pointY));
+            _touch.alpha=1;
+        }
+        
+    }
     
 }
 
@@ -694,20 +699,20 @@
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
+    
+    if (point.y < screenHeight/2) {
         
-        if (point.y < screenHeight/2) {
-            
-            CGFloat pointX = point.x/screenWidth;
-            CGFloat pointY = point.y/(screenHeight/2);
-            
-            if (screenXIsOn) {
-                dspFaust->setParamValue(screenXAddress, pointX);
-            }
-            if (screenYIsOn) {
-                dspFaust->setParamValue(screenYAddress, (1.f-pointY));
-            }
-            
+        CGFloat pointX = point.x/screenWidth;
+        CGFloat pointY = point.y/(screenHeight/2);
+        
+        if (screenXIsOn) {
+            dspFaust->setParamValue(screenXAddress, pointX);
         }
+        if (screenYIsOn) {
+            dspFaust->setParamValue(screenYAddress, (1.f-pointY));
+        }
+        
+    }
     
     
 }
@@ -720,41 +725,41 @@
     
     CGFloat screenWidth = [[UIScreen mainScreen] bounds].size.width;
     CGFloat screenHeight = [[UIScreen mainScreen] bounds].size.height;
+    
+    if (point.y < screenHeight/2) {
         
-        if (point.y < screenHeight/2) {
-            
-            CGFloat pointX = point.x/screenWidth;
-            CGFloat pointY = point.y/(screenHeight/2);
-            
-            if (touchGateIsOn) {
-                dspFaust->setParamValue(touchGateAddress, 0);
-                _touch.alpha=0.1;
-            }
-            
-            if (screenXIsOn) {
-                dspFaust->setParamValue(screenXAddress, pointX);
-                _touch.alpha=0.1;
-            }
-            
-            if (screenYIsOn) {
-                dspFaust->setParamValue(screenYAddress, (1.f-pointY));
-                _touch.alpha=0.1;
-            }
-        } else {
-            
-            if (touchGateIsOn) {
-                _touch.alpha=0.1;
-            }
-            
-            if (screenXIsOn) {
-                _touch.alpha=0.1;
-            }
-            
-            if (screenYIsOn) {
-                _touch.alpha=0.1;
-            }
-            
+        CGFloat pointX = point.x/screenWidth;
+        CGFloat pointY = point.y/(screenHeight/2);
+        
+        if (touchGateIsOn) {
+            dspFaust->setParamValue(touchGateAddress, 0);
+            _touch.alpha=0.1;
         }
+        
+        if (screenXIsOn) {
+            dspFaust->setParamValue(screenXAddress, pointX);
+            _touch.alpha=0.1;
+        }
+        
+        if (screenYIsOn) {
+            dspFaust->setParamValue(screenYAddress, (1.f-pointY));
+            _touch.alpha=0.1;
+        }
+    } else {
+        
+        if (touchGateIsOn) {
+            _touch.alpha=0.1;
+        }
+        
+        if (screenXIsOn) {
+            _touch.alpha=0.1;
+        }
+        
+        if (screenYIsOn) {
+            _touch.alpha=0.1;
+        }
+        
+    }
     
 }
 
@@ -789,6 +794,9 @@
     NSString* _oscOutputPortText = _outPort.text;
     
     dspFaust->setOSCValue([_oscIPOutputText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscInputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]], [_oscOutputPortText cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+    
+    _tips.hidden=false;
+    _tips.text = @"RESTART APP for New Setting";
     
     [[NSUserDefaults standardUserDefaults] setObject:_oscIPOutputText forKey:@"oscAddress"];
     [[NSUserDefaults standardUserDefaults] setObject:_oscInputPortText forKey:@"oscInPort"];
@@ -828,27 +836,27 @@
 - (IBAction)initCue:(id)sender {
     
     if (cueIsOn) {
-    cueIndex = 0;
-    cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
-    _cue.text= [NSString stringWithFormat:@"%ld",(long)cueNum];
-    cueIndexNext = 1;
-    cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-    _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-    
+        cueIndex = 0;
+        cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
+        _cue.text= [NSString stringWithFormat:@"%ld",(long)cueNum];
+        cueIndexNext = 1;
+        cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
+        _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
+        
         dspFaust->setParamValue(cueAddress, cueNum);
-    
-    _tips.text = [myCueTipsArrary objectAtIndex:0];
+        
+        _tips.text = [myCueTipsArrary objectAtIndex:0];
     }
     
     /*  comment init part for now
-    if (stateIsOn) {
-        dspFaust->setParamValue(initAddress, 1);
-        // delay pour init
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            dspFaust->setParamValue(initAddress, 0);
-        });
-    }
+     if (stateIsOn) {
+     dspFaust->setParamValue(initAddress, 1);
+     // delay pour init
+     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
+     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+     dspFaust->setParamValue(initAddress, 0);
+     });
+     }
      */
 }
 
@@ -949,13 +957,13 @@
     
     [_motionParam resignFirstResponder];
     /*
-    for (int i=0; i< _motionParamArray.count; i++) {
-        if (paramsOn[i]) {
-            dspFaustMotion->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
-            [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
-        }
-    }
-    */
+     for (int i=0; i< _motionParamArray.count; i++) {
+     if (paramsOn[i]) {
+     dspFaustMotion->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
+     [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
+     }
+     }
+     */
     // Find the label index of the edited parameter
     int i = -1;
     for (i=0; i<_motionParamArray.count; i++) {
