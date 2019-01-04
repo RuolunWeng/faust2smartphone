@@ -217,9 +217,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             // Update mapping at sensor rate
-            dspFaust.propagateGyr(0, -event.values[0]);
-            dspFaust.propagateGyr(1, -event.values[1]);
-            dspFaust.propagateGyr(2, -event.values[2]);
+            dspFaust.propagateGyr(0, event.values[0]);
+            dspFaust.propagateGyr(1, event.values[1]);
+            dspFaust.propagateGyr(2, event.values[2]);
             }
 
         // TODO: GET VALUE from FAUST

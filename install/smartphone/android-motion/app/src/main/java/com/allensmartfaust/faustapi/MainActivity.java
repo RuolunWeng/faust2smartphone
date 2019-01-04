@@ -812,7 +812,7 @@ public class MainActivity extends AppCompatActivity {
 
             dspFaust.propagateAcc(0, -event.values[0]);
             dspFaust.propagateAcc(1, -event.values[1]);
-            dspFaust.propagateAcc(2, event.values[2]);
+            dspFaust.propagateAcc(2, -event.values[2]);
 
             dspFaustMotion.propagateAcc(0, -event.values[0]);
             dspFaustMotion.propagateAcc(1, -event.values[1]);
@@ -823,13 +823,13 @@ public class MainActivity extends AppCompatActivity {
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             // Update gyr at sensor rate
 
-            dspFaust.propagateGyr(0, -event.values[0]);
-            dspFaust.propagateGyr(1, -event.values[1]);
-            dspFaust.propagateGyr(2, -event.values[2]);
+            dspFaust.propagateGyr(0, event.values[0]);
+            dspFaust.propagateGyr(1, event.values[1]);
+            dspFaust.propagateGyr(2, event.values[2]);
 
-            dspFaustMotion.propagateGyr(0, -event.values[0]);
-            dspFaustMotion.propagateGyr(1, -event.values[1]);
-            dspFaustMotion.propagateGyr(2, -event.values[2]);
+            dspFaustMotion.propagateGyr(0, event.values[0]);
+            dspFaustMotion.propagateGyr(1, event.values[1]);
+            dspFaustMotion.propagateGyr(2, event.values[2]);
 
         }
 
