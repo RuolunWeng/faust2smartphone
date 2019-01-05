@@ -838,13 +838,13 @@ public class MainActivity extends AppCompatActivity {
             // Update rotation matrix at sensor rate
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
 
-            dspFaust.motionRender(rotationMatrix[0], rotationMatrix[3], rotationMatrix[6],
-                                  rotationMatrix[1], rotationMatrix[4], rotationMatrix[7],
-                                  rotationMatrix[2], rotationMatrix[5], rotationMatrix[8]);
+            dspFaust.motionRender(rotationMatrix[0]*(-1.f), rotationMatrix[3]*(-1.f), rotationMatrix[6]*(-1.f),
+                                  rotationMatrix[1]*(-1.f), rotationMatrix[4]*(-1.f), rotationMatrix[7]*(-1.f),
+                                  rotationMatrix[2]*(-1.f), rotationMatrix[5]*(-1.f), rotationMatrix[8]*(-1.f));
 
             SensorManager.getOrientation(rotationMatrix, mOrientation);
 
-            SensorManager.getQuaternionFromVector(mQuaternion, event.values);
+            //SensorManager.getQuaternionFromVector(mQuaternion, event.values);
 
             float m00 = dspFaust.getRotationMatrix(0,0);
             float m01 = dspFaust.getRotationMatrix(0,1);
@@ -852,7 +852,7 @@ public class MainActivity extends AppCompatActivity {
             float m10 = dspFaust.getRotationMatrix(1,0);
             float m11 = dspFaust.getRotationMatrix(1,1);
             float m12 = dspFaust.getRotationMatrix(1,2);
-            float m20 = dspFaust.getRotationMatrix(2,1);
+            float m20 = dspFaust.getRotationMatrix(2,0);
             float m21 = dspFaust.getRotationMatrix(2,1);
             float m22 = dspFaust.getRotationMatrix(2,2);
 
@@ -898,13 +898,13 @@ public class MainActivity extends AppCompatActivity {
                 dspFaust.setParamValue(quaternionwAddress, mQuaternion[0]);
             }
             if (quaternionxIsOn) {
-                dspFaust.setParamValue(quaternionxAddress, mQuaternion[1]);
+                dspFaust.setParamValue(quaternionxAddress, mQuaternion[1]*(-1.f));
             }
             if (quaternionyIsOn) {
-                dspFaust.setParamValue(quaternionyAddress, mQuaternion[2]);
+                dspFaust.setParamValue(quaternionyAddress, mQuaternion[2]*(-1.f));
             }
             if (quaternionzIsOn) {
-                dspFaust.setParamValue(quaternionzAddress, mQuaternion[3]);
+                dspFaust.setParamValue(quaternionzAddress, mQuaternion[3]*(-1.f));
             }
 
 
