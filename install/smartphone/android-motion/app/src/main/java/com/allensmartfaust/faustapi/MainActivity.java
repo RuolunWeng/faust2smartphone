@@ -225,12 +225,12 @@ public class MainActivity extends AppCompatActivity {
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        //if (Build.VERSION.SDK_INT >= 23) {    // comment for now for Android 8.0
-            //requestPermission();
-        // } else {
+        if (Build.VERSION.SDK_INT == 23) {    // uniquement for now for Android 6.0
+            requestPermission();
+         } else {
             permissionToRecordAccepted = true;
             createFaust();
-        // }
+         }
 
         // check if audio files were saved in internal storage
           String[] internalStorageList = getFilesDir().list();
