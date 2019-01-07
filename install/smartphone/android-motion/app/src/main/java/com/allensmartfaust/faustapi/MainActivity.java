@@ -1006,7 +1006,10 @@ private void initFrame () {
 
 if (sensorManager!=null){
 
-dspFaust.initFrame();
+  if (dspFaust!=null){
+      dspFaust.initFrame();
+
+  }
 
 }
 
