@@ -172,6 +172,15 @@ if [ $ANDROID -eq 1 ]; then
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     else
     faust -i -a api-allen/simple/DspFaust.cpp $OPTIONS "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+    if [ "$SOUNDFILE" = "1" ]; then
+ echo "#define SOUNDFILE 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+ if [ $PLATFORM = "Darwin" ]; then
+   sed -i '' 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
+ else
+   sed -i 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
+ fi
+    fi
+    echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
 
     fi
 
@@ -207,6 +216,15 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     else
     faust -i -a api-allen/motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
+    if [ "$SOUNDFILE" = "1" ]; then
+ echo "#define SOUNDFILE 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+ if [ $PLATFORM = "Darwin" ]; then
+   sed -i '' 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
+ else
+   sed -i 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
+ fi
+    fi
+    echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     fi
 
 elif [ $ANDROIDPLUGIN -eq 1 ]; then
