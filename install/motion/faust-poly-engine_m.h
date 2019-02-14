@@ -36,13 +36,13 @@ public:
 
     MyFaustPolyEngine(dsp* mono_dsp, audio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
     {
-        init(((mono_dsp) ? mono_dsp : new mydsp()), driver, NULL);
+        //init(((mono_dsp) ? mono_dsp : new mydsp()), driver, NULL);
     }
 
     virtual ~MyFaustPolyEngine()
     {
-        delete fDriver;
-        delete fFinalDSP;
+        //delete fDriver;
+        //delete fFinalDSP;
     }
 
         const char* getMeta(const char* name)
