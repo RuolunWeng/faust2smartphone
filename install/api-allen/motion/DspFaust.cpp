@@ -421,7 +421,7 @@ void DspFaust::checkAdress() {
     for(int i=0; i<getParamsCount(); i++){
         const char* data = getMetadata(i, "motion");
         for (int p=0; p< paramsMotionNum; p++) {
-            if (endsWith(data,paramsKeys[p])) {
+            if (MapUI::endsWith(data,paramsKeys[p])) {
                 paramsOn[p] = true;
                 paramsAddressList[p].push_back(getParamAddress(i));
                 fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
