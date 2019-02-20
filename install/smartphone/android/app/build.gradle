@@ -15,7 +15,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                cppFlags "-O3 -fexceptions -frtti -lOpenSLES -landroid"
+                cppFlags "-lstdc++ -std=c++11 -O3 -fexceptions -frtti -lOpenSLES -landroid"
                 abiFilters  'armeabi-v7a', 'arm64-v8a'
             }
         }
