@@ -36,13 +36,17 @@
 #include "OSCFError.h"
 #include "OSCRegexp.h"
 
+#ifdef WIN32
+# pragma warning (disable: 4800)
+#endif
+
 using namespace std;
 
 namespace oscfaust
 {
 
-#define kVersion	 1.20f
-#define kVersionStr	"1.20"
+#define kVersion     1.21f
+#define kVersionStr "1.21"
 
 static const char* kUDPPortOpt	= "-port";
 static const char* kUDPOutOpt	= "-outport";
@@ -137,7 +141,7 @@ static void treatXmitFilterOption(int argc, char *argv[], const std::string& opt
 }
 
 //--------------------------------------------------------------------------
-OSCControler::OSCControler(int argc, char *argv[], GUI* ui, OSCIO* io, ErrorCallback errCallback, void* arg, bool init)
+OSCControler::OSCControler(int argc, char* argv[], GUI* ui, JSONUI* json, OSCIO* io, ErrorCallback errCallback, void* arg, bool init)
 	: fUDPPort(kUDPBasePort), fUDPOut(kUDPBasePort+1), fUPDErr(kUDPBasePort+2), fIO(io), fInit(init)
 {
 	checkHelp(argc, argv, kHelp);
@@ -153,7 +157,7 @@ OSCControler::OSCControler(int argc, char *argv[], GUI* ui, OSCIO* io, ErrorCall
 	}
     treatXmitFilterOption(argc, argv, kXmitFilterOpt);
  
-	fFactory = new FaustFactory(ui, io);
+	fFactory = new FaustFactory(ui, json, io);
 	fOsc = new OSCSetup(errCallback, arg);
 }
     
@@ -182,18 +186,19 @@ static std::string quote(const char* str)
 // start the network services
 string OSCControler::getInfos() const
 {
-	SRootNode rootnode = fFactory->root();		// first get the root node
-	if (!rootnode) return "no root node defined";
+    SRootNode rootnode = fFactory->root();		// first get the root node
+    if (!rootnode) return "no root node defined";
 
-	stringstream sstr;
-	sstr << "Faust OSC version " << versionstr() << " - " << quote(rootnode->getName()) << " is running on UDP ports "
+    stringstream sstr;
+    sstr << "Faust OSC version " << versionstr() << " - " << quote(rootnode->getName()) << " is running on UDP ports "
     << fUDPPort << ", " << fUDPOut << ", " << fUPDErr << ", sending on " << fDestAddress;
-	if (gBundle) sstr << ", with bundle mode ON.";
-	if (!fBindAddress.empty())
-		 sstr << " Listening is bound to " << fBindAddress << ".";
-	if (fIO)
-		sstr << " Using OSC IO with " << fIO->numInputs() << " input channel(s) and " << fIO->numOutputs() << " output channel(s)" << fIO->numOutputs();
-	return sstr.str();
+    if (gXmit > 0) sstr << ", with xmit mode = " << gXmit;
+    if (gBundle) sstr << ", with bundle mode ON.";
+    if (!fBindAddress.empty())
+        sstr << " Listening is bound to " << fBindAddress << ".";
+    if (fIO)
+        sstr << " Using OSC IO with " << fIO->numInputs() << " input channel(s) and " << fIO->numOutputs() << " output channel(s)" << fIO->numOutputs();
+    return sstr.str();
 }
 
 //--------------------------------------------------------------------------
