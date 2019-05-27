@@ -52,6 +52,7 @@ echoHelp ()
 	echo "Option: -androidplugin for Android Studio with faust plugin"
 	echo "Option: -updatelib <.lib> for update motion library"
 	echo "Option: -oscall/-oscalias for OSC support"
+	echo "Option: -nvoices: specify the max number of voices for MIDI"
 	echo "Option: -soundfile for soundfile support"
 	echo "Option: -cuemanager for using Cue Maneger system"
 	echo "Option: -reuse for Uptade the project"
@@ -64,7 +65,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone -"
 	echo "===================================="
-	echo "- Version: 5.8 -"
+	echo "- Version: 6.0 -"
 	echo "===================================="
 }
 
