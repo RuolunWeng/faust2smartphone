@@ -292,11 +292,11 @@
     _motionParamArray = [[NSMutableArray alloc] init];
     _motionParamAddress = [[NSMutableArray alloc] init];
     
-    for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
-        const char *dataParamMotion = dspFaustMotion->getMetadata(i, "showName");
+    for (int i=0; i<dspFaust->getParamsCount(); i++) {
+        const char *dataParamMotion = dspFaust->getMetadata(i, "showName");
         if (strcmp(dataParamMotion,"") != 0) {
             motionParamNames.push_back(dataParamMotion);
-            motionParamAddress.push_back(dspFaustMotion->getParamAddress(i));
+            motionParamAddress.push_back(dspFaust->getParamAddress(i));
         }
     }
     for (int i=0; i<motionParamNames.size(); i++) {
