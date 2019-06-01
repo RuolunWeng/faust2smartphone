@@ -197,7 +197,7 @@
     
     for (int i=0; i<_motionParamAddress.count; i++) {
         [appDefaultsDictionary setValue:
-         [NSNumber numberWithFloat:dspFaustMotion->getParamInit([_motionParamAddress[i] UTF8String])] forKey:_motionParamArray[i]];
+         [NSNumber numberWithFloat:dspFaust->getParamInit([_motionParamAddress[i] UTF8String])] forKey:_motionParamArray[i]];
     }
     
     [appDefaultsDictionary setValue:@"192.168.1.20" forKey:@"oscAddress"];
@@ -208,7 +208,7 @@
     
     for (int i=0; i<_motionParamAddress.count; i++) {
         
-        dspFaustMotion->setParamValue([_motionParamAddress[i] UTF8String],
+        dspFaust->setParamValue([_motionParamAddress[i] UTF8String],
                                       (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
         
     }
@@ -927,7 +927,7 @@
     
     paramsOn[row]=true;
     
-    _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue([_motionParamAddress[row] UTF8String])];
+    _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([_motionParamAddress[row] UTF8String])];
     
 }
 
@@ -978,7 +978,7 @@
     // Change value of all addresses with the same label
     for (int i=0; i<_motionParamArray.count; i++) {
         if ([_motionParamArray[i] UTF8String] ==  param) {
-            dspFaustMotion->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
+            dspFaust->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
             [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
         }
     }
