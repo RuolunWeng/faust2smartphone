@@ -108,7 +108,7 @@
 		4BDAA20F16AEF05D00A3499E /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		4BDEB1231C203C4400849601 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		65D1BD1315668A8A00ADCA32 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		65E5ED8E14DB037D00136CFC /* saw2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = saw2.app; path = FaustAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65E5ED8E14DB037D00136CFC /* FaustAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaustAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65E5ED9214DB037D00136CFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		65E5ED9414DB037D00136CFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		65E5ED9614DB037D00136CFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -116,7 +116,6 @@
 		65E85C9A157806C2009F2D7A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		65F87430156FFB0C008AE175 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		6F17F3A520BD217C002CA04A /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
-		6F17F3A720BD217C002CA04A /* FaustAPI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FaustAPI.entitlements; sourceTree = "<group>"; };
 		6F338BD31F77A925006BDC6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = iOS/Assets.xcassets; sourceTree = "<group>"; };
 		6FB2E0D11E8EFA71005AF0C9 /* cueNums.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cueNums.txt; sourceTree = "<group>"; };
 		6FB2E0D21E8EFA71005AF0C9 /* cueTips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cueTips.txt; sourceTree = "<group>"; };
@@ -322,7 +321,6 @@
 		65E5ED8314DB037D00136CFC = {
 			isa = PBXGroup;
 			children = (
-				6F17F3A720BD217C002CA04A /* FaustAPI.entitlements */,
 				6F338BD31F77A925006BDC6E /* Assets.xcassets */,
 				65E5ED9814DB037D00136CFC /* iOS */,
 				65E5ED9114DB037D00136CFC /* Frameworks */,
@@ -333,7 +331,7 @@
 		65E5ED8F14DB037D00136CFC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				65E5ED8E14DB037D00136CFC /* saw2.app */,
+				65E5ED8E14DB037D00136CFC /* FaustAPI.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -395,7 +393,7 @@
 			);
 			name = FaustAPI;
 			productName = iOS;
-			productReference = 65E5ED8E14DB037D00136CFC /* saw2.app */;
+			productReference = 65E5ED8E14DB037D00136CFC /* FaustAPI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -425,6 +423,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -578,7 +577,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = FaustAPI.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = E2257JUX9L;
@@ -613,7 +612,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = FaustAPI.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = E2257JUX9L;
