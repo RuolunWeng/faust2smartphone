@@ -20,8 +20,10 @@
 #include "faust/misc.h"
 #include "faust/gui/UI.h"
 #include "faust/dsp/dsp.h"
-#include "faust/dsp/dsp-adapter.h"
 #include "faust/gui/meta.h"
+#include "faust/gui/jsonfaustui.h"
+#include "faust/gui/JSONUI.h"
+#include "faust/gui/MapUI.h"
 #include "faust/gui/GUI.h"
 #include "faust/gui/JSONUIDecoder.h"
 #include "faust/dsp/dsp-adapter.h"
@@ -29,6 +31,21 @@
 
 #include <math.h>
 #include <cmath>
+
+
+#if OSCCTRL
+#define OSC_IP_ADDRESS  "192.168.0.101"
+#define OSC_IN_PORT     "5510"
+#define OSC_OUT_PORT    "5511"
+
+#include "faust/gui/OSCUI.h"
+
+static void osc_compute_callback(void* arg)
+{
+    static_cast<OSCUI*>(arg)->endBundle();
+}
+
+#endif
 
 //**************************************************************
 // Intrinsic
@@ -61,7 +78,33 @@
 
 
 DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
-    fMotionEngine = new FaustMotionEngine(NULL,new motion_audio(sample_rate, buffer_size, 0, false, false));
+    
+    myaudio* driver2= new motion_audio(sample_rate, buffer_size, 0, false, false);
+    fMotionEngine = new FaustMotionEngine(NULL,driver2);
+    
+    // OSC
+    #if OSCCTRL
+        const char* argv[11];
+        argv[0] = "Faust";
+        argv[1] = "-xmit";
+        #if OSCALL
+            argv[2] = "1";
+        #endif
+        #if OSCALIAS
+            argv[2] = "2";
+        #endif
+        argv[3] = "-desthost";
+        argv[4] = OSC_IP_ADDRESS;
+        argv[5] = "-port";
+        argv[6] = OSC_IN_PORT;
+        argv[7] = "-outport";
+        argv[8] = OSC_OUT_PORT;
+        argv[9] = "-bundle";
+        argv[10] = "0";
+        fMotionOSCUI = new OSCUI("Faust", 11, (char**)argv);
+        driver2->addControlCallback(osc_compute_callback, fMotionOSCUI);
+        fMotionEngine->buildUserInterface(fMotionOSCUI);
+    #endif
 
 }
 
@@ -69,17 +112,76 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
 
 DspFaustMotion::~DspFaustMotion(){
     delete fMotionEngine;
+    
+    #if OSCCTRL
+        delete fMotionOSCUI;
+    #endif
 
 }
 
 bool DspFaustMotion::start(){
+    #if OSCCTRL
+        fMotionOSCUI->run();
+    #endif
 
     return fMotionEngine->start();
+    
+    
 }
 
 void DspFaustMotion::stop(){
+    #if OSCCTRL
+        fMotionOSCUI->stop();
+    #endif
 
     fMotionEngine->stop();
+    
+    
+}
+    
+void DspFaustMotion::setOSCValue(const char* address, const char* inPort, const char* outPort){
+
+#if OSCCTRL
+    if (isRunning()) {
+    } else {
+#if OSCALL
+        oscfaust::OSCControler::gXmit = 1;
+#endif
+#if OSCALIAS
+        oscfaust::OSCControler::gXmit = 2;
+#endif
+        fMotionOSCUI->setUDPPort(atoi(inPort));
+        fMotionOSCUI->setUDPOut(atoi(outPort));
+        fMotionOSCUI->setDestAddress(address);
+    }
+#endif
+
+
+}
+
+bool DspFaustMotion::setOSCValue(const char* address, int inPort, int outPort){
+
+#if OSCCTRL
+
+    if (isRunning()) {
+        return false;
+    } else {
+#if OSCALL
+        oscfaust::OSCControler::gXmit = 1;
+#endif
+#if OSCALIAS
+        oscfaust::OSCControler::gXmit = 2;
+#endif
+        fMotionOSCUI->setUDPPort(inPort);
+        fMotionOSCUI->setUDPOut(outPort);
+        fMotionOSCUI->setDestAddress(address);
+        return true;
+    }
+
+#else
+    return false;
+#endif
+
 }
 
 

@@ -101,9 +101,11 @@ DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_s
     audio* driver = new androidaudio(sample_rate, buffer_size);
 #endif
 
+    fDSPFAUSTMOTION = dspFaustMotion;
+    
     init(driver);
 
-    fDSPFAUSTMOTION = dspFaustMotion;
+    
 
 }
 
@@ -244,6 +246,8 @@ void DspFaust::setOSCValue(const char* address, const char* inPort, const char* 
         fOSCUI->setDestAddress(address);
     }
 #endif
+    
+    fDSPFAUSTMOTION->setOSCValue(address, inPort, outPort);
 
 
 }
@@ -270,6 +274,8 @@ bool DspFaust::setOSCValue(const char* address, int inPort, int outPort){
 #else
     return false;
 #endif
+    
+    fDSPFAUSTMOTION->setOSCValue(address, inPort, outPort);
 
 }
 
