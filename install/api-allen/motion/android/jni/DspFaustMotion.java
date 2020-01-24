@@ -71,6 +71,14 @@ public class DspFaustMotion {
     return dsp_faustJNI.DspFaustMotion_isRunning(swigCPtr, this);
   }
 
+  public void setOSCValue(String arg0, String arg1, String arg2) {
+    dsp_faustJNI.DspFaustMotion_setOSCValue__SWIG_0(swigCPtr, this, arg0, arg1, arg2);
+  }
+
+  public boolean setOSCValue(String arg0, int arg1, int arg2) {
+    return dsp_faustJNI.DspFaustMotion_setOSCValue__SWIG_1(swigCPtr, this, arg0, arg1, arg2);
+  }
+
   public String getJSONUI() {
     return dsp_faustJNI.DspFaustMotion_getJSONUI(swigCPtr, this);
   }

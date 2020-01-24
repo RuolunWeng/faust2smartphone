@@ -24,6 +24,7 @@
 //==========================================
 
 class FaustMotionEngine;
+class OSCUI;
 
 
 class DspFaustMotion
@@ -86,6 +87,21 @@ public:
     // Returns `true` if audio is running.
     //--------------------------------------------------------
     bool isRunning();
+    
+    //----`void setOSCValue(const char* address, const char* address, const char* address)`------
+    // Set the value of OSC of the Faust
+    //
+    //
+    // #### Arguments
+    //
+    // * `address`: address of ip
+    // * `address`: address of inport
+    // * `address`: address of outport
+    //--------------------------------------------------------
+    void setOSCValue(const char*, const char*, const char*);
+
+    // Android version
+    bool setOSCValue(const char*, int, int);
     
     //-----------------`const char* getJSONUI()`----------------
     // Returns the JSON description of the UI of the Faust object.
@@ -293,9 +309,10 @@ public:
     
     int getScreenColor();
     
+    
 private:
     FaustMotionEngine *fMotionEngine;
-    
+    OSCUI *fMotionOSCUI;
 };
 
 #endif

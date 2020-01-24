@@ -2,7 +2,7 @@
 // name: "Faust Motion Library [Motion+RotationMatrix]"
 // version: "0.7"
 //
-// Code generated with Faust 2.17.12 (https://faust.grame.fr)
+// Code generated with Faust 2.19.7 (https://faust.grame.fr)
 //----------------------------------------------------------
 
 /* link with  */
@@ -38,6 +38,7 @@ template <> 	 inline float faustpower<2>(float x)          { return x*x; }
  ************************************************************************
  ************************************************************************/
 
+/************************** BEGIN misc.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -60,7 +61,7 @@ template <> 	 inline float faustpower<2>(float x)          { return x*x; }
  that work under terms of your choice, so long as this FAUST
  architecture section is not modified.
  ************************************************************************/
- 
+
 #ifndef __misc__
 #define __misc__
 
@@ -71,6 +72,7 @@ template <> 	 inline float faustpower<2>(float x)          { return x*x; }
 #include <fstream>
 #include <string>
 
+/************************** BEGIN meta.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -105,6 +107,7 @@ struct Meta
 };
 
 #endif
+/**************************  END  meta.h **************************/
 
 using std::max;
 using std::min;
@@ -125,23 +128,40 @@ static int int2pow2(int x) { int r = 0; while ((1<<r) < x) r++; return r; }
 
 static long lopt(char* argv[], const char* name, long def)
 {
-	int	i;
-    for (i = 0; argv[i]; i++) if (!strcmp(argv[i], name)) return std::atoi(argv[i+1]);
-	return def;
+    for (int i = 0; argv[i]; i++) if (!strcmp(argv[i], name)) return std::atoi(argv[i+1]);
+    return def;
 }
 
-static bool isopt(char* argv[], const char* name)
+static long lopt1(int argc, char* argv[], const char* longname, const char* shortname, long def)
 {
-	int	i;
-	for (i = 0; argv[i]; i++) if (!strcmp(argv[i], name)) return true;
-	return false;
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i-1], shortname) == 0 || strcmp(argv[i-1], longname) == 0) {
+            return atoi(argv[i]);
+        }
+    }
+    return def;
 }
 
 static const char* lopts(char* argv[], const char* name, const char* def)
 {
-	int	i;
-	for (i = 0; argv[i]; i++) if (!strcmp(argv[i], name)) return argv[i+1];
-	return def;
+    for (int i = 0; argv[i]; i++) if (!strcmp(argv[i], name)) return argv[i+1];
+    return def;
+}
+
+static const char* lopts1(int argc, char* argv[], const char* longname, const char* shortname, const char* def)
+{
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i-1], shortname) == 0 || strcmp(argv[i-1], longname) == 0) {
+            return argv[i];
+        }
+    }
+    return def;
+}
+
+static bool isopt(char* argv[], const char* name)
+{
+    for (int i = 0; argv[i]; i++) if (!strcmp(argv[i], name)) return true;
+    return false;
 }
 
 static std::string pathToContent(const std::string& path)
@@ -166,6 +186,8 @@ static std::string pathToContent(const std::string& path)
 
 #endif
 
+/**************************  END  misc.h **************************/
+/************************** BEGIN UI.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -253,6 +275,8 @@ class UI : public UIReal<FAUSTFLOAT>
 };
 
 #endif
+/**************************  END  UI.h **************************/
+/************************** BEGIN dsp.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -408,7 +432,7 @@ class decorator_dsp : public dsp {
 
     public:
 
-        decorator_dsp(dsp* dsp = 0):fDSP(dsp) {}
+        decorator_dsp(dsp* dsp = nullptr):fDSP(dsp) {}
         virtual ~decorator_dsp() { delete fDSP; }
 
         virtual int getNumInputs() { return fDSP->getNumInputs(); }
@@ -472,6 +496,127 @@ class dsp_factory {
 #endif
 
 #endif
+/**************************  END  dsp.h **************************/
+/*
+
+  Copyright (C) 2012 Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __jsonfaustui__
+#define __jsonfaustui__
+
+#include <string>
+
+namespace httpdfaust
+{
+
+template <typename C> class jsonui;
+ 
+class jsonfaustui : public UI, public Meta
+{
+	jsonui<FAUSTFLOAT>* fJSON;
+    
+	public:
+
+        jsonfaustui(const char *name, const char* address, int port);
+		virtual ~jsonfaustui();
+
+		//--------------------------------------------
+		// UI methods
+		//--------------------------------------------
+		// -- widget's layouts
+		virtual void openTabBox(const char* label);
+		virtual void openHorizontalBox(const char* label);
+		virtual void openVerticalBox(const char* label);
+		virtual void closeBox();
+
+		// -- active widgets
+		void addButton(const char* label, FAUSTFLOAT* zone);
+		void addCheckButton(const char* label, FAUSTFLOAT* zone);
+		void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step);
+		void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step);
+		void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step);
+
+		// -- passive widgets
+		void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max);
+		void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, float min, float max);
+    
+        // -- soundfiles
+        virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone) {}
+
+		// -- metadata declarations
+		void declare(FAUSTFLOAT*, const char*, const char*);
+
+		//--------------------------------------------
+		// additionnal methods (not part of UI)
+		//--------------------------------------------
+		void numInput(int n);			// should be called with the inputs number
+		void numOutput(int n);          // should be called with the outputs number
+		void declare(const char* , const char*); // global metadata declaration
+
+		//--------------------------------------------
+		// and eventually how to get the json as a string
+		//--------------------------------------------
+		std::string	json(bool flatten);
+};
+
+} //end namespace
+
+#endif
+/************************** BEGIN JSONUI.h **************************/
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+ 
+#ifndef FAUST_JSONUI_H
+#define FAUST_JSONUI_H
+
+#include <vector>
+#include <map>
+#include <string>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <algorithm>
+
+/************************** BEGIN PathBuilder.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -495,156 +640,736 @@ class dsp_factory {
  architecture section is not modified.
  ************************************************************************/
 
-#ifndef __dsp_adapter__
-#define __dsp_adapter__
+#ifndef FAUST_PATHBUILDER_H
+#define FAUST_PATHBUILDER_H
 
-#include <string.h>
-#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
 
-// Adapts a DSP for a different number of inputs/outputs
+/*******************************************************************************
+ * PathBuilder : Faust User Interface
+ * Helper class to build complete hierarchical path for UI items.
+ ******************************************************************************/
 
-class dsp_adapter : public decorator_dsp {
+class PathBuilder
+{
+
+    protected:
     
-    private:
-        
-        FAUSTFLOAT** fAdaptedInputs;
-        FAUSTFLOAT** fAdaptedOutputs;
-        int fHardwareInputs;
-        int fHardwareOutputs;
-        
-        void adaptBuffers(FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
-        {
-            for (int i = 0; i < fHardwareInputs; i++) {
-                fAdaptedInputs[i] = inputs[i];
-            }
-            for (int i = 0; i < fHardwareOutputs; i++) {
-                fAdaptedOutputs[i] = outputs[i];
-            }
-        }
-        
+        std::vector<std::string> fControlsLevel;
+       
     public:
-        
-        dsp_adapter(dsp* dsp, int hardware_inputs, int hardware_outputs, int buffer_size):decorator_dsp(dsp)
+    
+        PathBuilder() {}
+        virtual ~PathBuilder() {}
+    
+        std::string buildPath(const std::string& label) 
         {
-            fHardwareInputs = hardware_inputs;
-            fHardwareOutputs = hardware_outputs;
-             
-            fAdaptedInputs = new FAUSTFLOAT*[dsp->getNumInputs()];
-            for (int i = 0; i < dsp->getNumInputs() - fHardwareInputs; i++) {
-                fAdaptedInputs[i + fHardwareInputs] = new FAUSTFLOAT[buffer_size];
-                memset(fAdaptedInputs[i + fHardwareInputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
+            std::string res = "/";
+            for (size_t i = 0; i < fControlsLevel.size(); i++) {
+                res += fControlsLevel[i];
+                res += "/";
             }
-            
-            fAdaptedOutputs = new FAUSTFLOAT*[dsp->getNumOutputs()];
-            for (int i = 0; i < dsp->getNumOutputs() - fHardwareOutputs; i++) {
-                fAdaptedOutputs[i + fHardwareOutputs] = new FAUSTFLOAT[buffer_size];
-                memset(fAdaptedOutputs[i + fHardwareOutputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
-            }
-        }
-        
-        virtual ~dsp_adapter()
-        {
-            for (int i = 0; i < fDSP->getNumInputs() - fHardwareInputs; i++) {
-                delete [] fAdaptedInputs[i + fHardwareInputs];
-            }
-            delete [] fAdaptedInputs;
-            
-            for (int i = 0; i < fDSP->getNumOutputs() - fHardwareOutputs; i++) {
-                delete [] fAdaptedOutputs[i + fHardwareOutputs];
-            }
-            delete [] fAdaptedOutputs;
+            res += label;
+            std::replace(res.begin(), res.end(), ' ', '_');
+            return res;
         }
     
-        virtual int getNumInputs() { return fHardwareInputs; }
-        virtual int getNumOutputs() { return fHardwareOutputs; }
+        void pushLabel(const std::string& label) { fControlsLevel.push_back(label); }
+        void popLabel() { fControlsLevel.pop_back(); }
     
-        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
-        {
-            adaptBuffers(inputs, outputs);
-            fDSP->compute(date_usec, count, fAdaptedInputs, fAdaptedOutputs);
-        }
-        
-        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
-        {
-            adaptBuffers(inputs, outputs);
-            fDSP->compute(count, fAdaptedInputs, fAdaptedOutputs);
-        }
 };
 
-// Adapts a DSP for a different sample size
+#endif  // FAUST_PATHBUILDER_H
+/**************************  END  PathBuilder.h **************************/
 
-template <typename TYPE_INT, typename TYPE_EXT>
-class dsp_sample_adapter : public decorator_dsp {
+/*******************************************************************************
+ * JSONUI : Faust User Interface
+ * This class produce a complete JSON decription of the DSP instance.
+ ******************************************************************************/
+
+template <typename REAL>
+class JSONUIAux : public PathBuilder, public Meta, public UIReal<REAL>
+{
+
+    protected:
+    
+        std::stringstream fUI;
+        std::stringstream fMeta;
+        std::vector<std::pair <std::string, std::string> > fMetaAux;
+        std::string fVersion;           // Compiler version
+        std::string fCompileOptions;    // Compilation options
+        std::vector<std::string> fLibraryList;
+        std::vector<std::string> fIncludePathnames;
+        std::string fName;
+        std::string fFileName;
+        std::string fExpandedCode;
+        std::string fSHAKey;
+        int fDSPSize;                   // In bytes
+        std::map<std::string, int> fPathTable;
+        bool fExtended;
+    
+        char fCloseUIPar;
+        char fCloseMetaPar;
+        int fTab;
+    
+        int fInputs, fOutputs, fSRIndex;
+         
+        void tab(int n, std::ostream& fout)
+        {
+            fout << '\n';
+            while (n-- > 0) {
+                fout << '\t';
+            }
+        }
+    
+        std::string flatten(const std::string& src)
+        {
+            std::string dst;
+            for (size_t i = 0; i < src.size(); i++) {
+                switch (src[i]) {
+                    case '\n':
+                    case '\t':
+                        break;
+                    default:
+                        dst += src[i];
+                        break;
+                }
+            }
+            return dst;
+        }
+    
+        void addMeta(int tab_val, bool quote = true)
+        {
+            if (fMetaAux.size() > 0) {
+                tab(tab_val, fUI); fUI << "\"meta\": [";
+                std::string sep = "";
+                for (size_t i = 0; i < fMetaAux.size(); i++) {
+                    fUI << sep;
+                    tab(tab_val + 1, fUI); fUI << "{ \"" << fMetaAux[i].first << "\": \"" << fMetaAux[i].second << "\" }";
+                    sep = ",";
+                }
+                tab(tab_val, fUI); fUI << ((quote) ? "],": "]");
+                fMetaAux.clear();
+            }
+        }
+    
+        int getAddressIndex(const std::string& path)
+        {
+            return (fPathTable.find(path) != fPathTable.end()) ? fPathTable[path] : -1;
+        }
+      
+     public:
+     
+        JSONUIAux(const std::string& name,
+                  const std::string& filename,
+                  int inputs,
+                  int outputs,
+                  int sr_index,
+                  const std::string& sha_key,
+                  const std::string& dsp_code,
+                  const std::string& version,
+                  const std::string& compile_options,
+                  const std::vector<std::string>& library_list,
+                  const std::vector<std::string>& include_pathnames,
+                  int size,
+                  const std::map<std::string, int>& path_table)
+        {
+            init(name, filename, inputs, outputs, sr_index, sha_key, dsp_code, version, compile_options, library_list, include_pathnames, size, path_table);
+        }
+
+        JSONUIAux(const std::string& name, const std::string& filename, int inputs, int outputs)
+        {
+            init(name, filename, inputs, outputs, -1, "", "", "", "", std::vector<std::string>(), std::vector<std::string>(), -1, std::map<std::string, int>());
+        }
+
+        JSONUIAux(int inputs, int outputs)
+        {
+            init("", "", inputs, outputs, -1, "", "","", "", std::vector<std::string>(), std::vector<std::string>(), -1, std::map<std::string, int>());
+        }
+        
+        JSONUIAux()
+        {
+            init("", "", -1, -1, -1, "", "", "", "", std::vector<std::string>(), std::vector<std::string>(), -1, std::map<std::string, int>());
+        }
+ 
+        virtual ~JSONUIAux() {}
+        
+        void setInputs(int inputs) { fInputs = inputs; }
+        void setOutputs(int outputs) { fOutputs = outputs; }
+    
+        void setSRIndex(int sr_index) { fSRIndex = sr_index; }
+    
+        // Init may be called multiple times so fMeta and fUI are reinitialized
+        void init(const std::string& name,
+                  const std::string& filename,
+                  int inputs,
+                  int outputs,
+                  int sr_index,
+                  const std::string& sha_key,
+                  const std::string& dsp_code,
+                  const std::string& version,
+                  const std::string& compile_options,
+                  const std::vector<std::string>& library_list,
+                  const std::vector<std::string>& include_pathnames,
+                  int size,
+                  const std::map<std::string, int>& path_table,
+                  bool extended = false)
+        {
+            fTab = 1;
+            fExtended = extended;
+            if (fExtended) {
+                fUI << std::setprecision(std::numeric_limits<REAL>::max_digits10);
+                fMeta << std::setprecision(std::numeric_limits<REAL>::max_digits10);
+            }
+            
+            // Start Meta generation
+            fMeta.str("");
+            tab(fTab, fMeta); fMeta << "\"meta\": [";
+            fCloseMetaPar = ' ';
+            
+            // Start UI generation
+            fUI.str("");
+            tab(fTab, fUI); fUI << "\"ui\": [";
+            fCloseUIPar = ' ';
+            fTab += 1;
+            
+            fName = name;
+            fFileName = filename;
+            fInputs = inputs;
+            fOutputs = outputs;
+            fSRIndex = sr_index;
+            fExpandedCode = dsp_code;
+            fSHAKey = sha_key;
+            fDSPSize = size;
+            fPathTable = path_table;
+            fVersion = version;
+            fCompileOptions = compile_options;
+            fLibraryList = library_list;
+            fIncludePathnames = include_pathnames;
+        }
+   
+        // -- widget's layouts
+    
+        virtual void openGenericGroup(const char* label, const char* name)
+        {
+            pushLabel(label);
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            fTab += 1;
+            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
+            addMeta(fTab);
+            tab(fTab, fUI); fUI << "\"items\": [";
+            fCloseUIPar = ' ';
+            fTab += 1;
+        }
+
+        virtual void openTabBox(const char* label)
+        {
+            openGenericGroup(label, "tgroup");
+        }
+    
+        virtual void openHorizontalBox(const char* label)
+        {
+            openGenericGroup(label, "hgroup");
+        }
+    
+        virtual void openVerticalBox(const char* label)
+        {
+            openGenericGroup(label, "vgroup");
+        }
+    
+        virtual void closeBox()
+        {
+            popLabel();
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "]";
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+    
+        // -- active widgets
+  
+        virtual void addGenericButton(const char* label, const char* name)
+        {
+            std::string path = buildPath(label);
+            
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            fTab += 1;
+            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
+            if (fPathTable.size() > 0) {
+                tab(fTab, fUI); fUI << "\"address\": \"" << path << "\",";
+                tab(fTab, fUI); fUI << "\"index\": " << getAddressIndex(path) << ((fMetaAux.size() > 0) ? "," : "");
+            } else {
+                tab(fTab, fUI); fUI << "\"address\": \"" << path << "\"" << ((fMetaAux.size() > 0) ? "," : "");
+            }
+            addMeta(fTab, false);
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+
+        virtual void addButton(const char* label, REAL* zone)
+        {
+            addGenericButton(label, "button");
+        }
+    
+        virtual void addCheckButton(const char* label, REAL* zone)
+        {
+            addGenericButton(label, "checkbox");
+        }
+
+        virtual void addGenericEntry(const char* label, const char* name, REAL init, REAL min, REAL max, REAL step)
+        {
+            std::string path = buildPath(label);
+            
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            fTab += 1;
+            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
+            tab(fTab, fUI); fUI << "\"address\": \"" << path << "\",";
+            if (fPathTable.size() > 0) {
+                tab(fTab, fUI); fUI << "\"index\": " << getAddressIndex(path) << ",";
+            }
+            addMeta(fTab);
+            tab(fTab, fUI); fUI << "\"init\": " << init << ",";
+            tab(fTab, fUI); fUI << "\"min\": " << min << ",";
+            tab(fTab, fUI); fUI << "\"max\": " << max << ",";
+            tab(fTab, fUI); fUI << "\"step\": " << step;
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+    
+        virtual void addVerticalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
+        {
+            addGenericEntry(label, "vslider", init, min, max, step);
+        }
+    
+        virtual void addHorizontalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
+        {
+            addGenericEntry(label, "hslider", init, min, max, step);
+        }
+    
+        virtual void addNumEntry(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
+        {
+            addGenericEntry(label, "nentry", init, min, max, step);
+        }
+
+        // -- passive widgets
+    
+        virtual void addGenericBargraph(const char* label, const char* name, REAL min, REAL max) 
+        {
+            std::string path = buildPath(label);
+            
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            fTab += 1;
+            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
+            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
+            tab(fTab, fUI); fUI << "\"address\": \"" << path << "\",";
+            if (fPathTable.size() > 0) {
+                tab(fTab, fUI); fUI << "\"index\": " << getAddressIndex(path) << ",";
+            }
+            addMeta(fTab);
+            tab(fTab, fUI); fUI << "\"min\": " << min << ",";
+            tab(fTab, fUI); fUI << "\"max\": " << max;
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+
+        virtual void addHorizontalBargraph(const char* label, REAL* zone, REAL min, REAL max) 
+        {
+            addGenericBargraph(label, "hbargraph", min, max);
+        }
+    
+        virtual void addVerticalBargraph(const char* label, REAL* zone, REAL min, REAL max)
+        {
+            addGenericBargraph(label, "vbargraph", min, max);
+        }
+    
+        virtual void addSoundfile(const char* label, const char* url, Soundfile** zone)
+        {
+            std::string path = buildPath(label);
+            
+            fUI << fCloseUIPar;
+            tab(fTab, fUI); fUI << "{";
+            fTab += 1;
+            tab(fTab, fUI); fUI << "\"type\": \"" << "soundfile" << "\",";
+            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
+            tab(fTab, fUI); fUI << "\"url\": \"" << url << "\"" << ",";
+            tab(fTab, fUI); fUI << "\"address\": \"" << path << "\"" << ((fPathTable.size() > 0) ? "," : "");
+            if (fPathTable.size() > 0) {
+                tab(fTab, fUI); fUI << "\"index\": " << getAddressIndex(path);
+            }
+            fTab -= 1;
+            tab(fTab, fUI); fUI << "}";
+            fCloseUIPar = ',';
+        }
+
+        // -- metadata declarations
+
+        virtual void declare(REAL* zone, const char* key, const char* val)
+        {
+            fMetaAux.push_back(std::make_pair(key, val));
+        }
+    
+        // Meta interface
+        virtual void declare(const char* key, const char* value)
+        {
+            fMeta << fCloseMetaPar;
+            // fName found in metadata
+            if ((strcmp(key, "name") == 0) && (fName == "")) fName = value;
+            // fFileName found in metadata
+            if ((strcmp(key, "filename") == 0) && (fFileName == "")) fFileName = value;
+            tab(fTab, fMeta); fMeta << "{ " << "\"" << key << "\"" << ": " << "\"" << value << "\" }";
+            fCloseMetaPar = ',';
+        }
+    
+        std::string JSON(bool flat = false)
+        {
+            fTab = 0;
+            std::stringstream JSON;
+            if (fExtended) {
+                JSON << std::setprecision(std::numeric_limits<REAL>::max_digits10);
+            }
+            JSON << "{";
+            fTab += 1;
+            tab(fTab, JSON); JSON << "\"name\": \"" << fName << "\",";
+            tab(fTab, JSON); JSON << "\"filename\": \"" << fFileName << "\",";
+            if (fVersion != "") { tab(fTab, JSON); JSON << "\"version\": \"" << fVersion << "\","; }
+            if (fCompileOptions != "") { tab(fTab, JSON); JSON << "\"compile_options\": \"" <<  fCompileOptions << "\","; }
+            if (fLibraryList.size() > 0) {
+                tab(fTab, JSON);
+                JSON << "\"library_list\": [";
+                for (size_t i = 0; i < fLibraryList.size(); i++) {
+                    JSON << "\"" << fLibraryList[i] << "\"";
+                    if (i < (fLibraryList.size() - 1)) JSON << ",";
+                }
+                JSON << "],";
+            }
+            if (fIncludePathnames.size() > 0) {
+                tab(fTab, JSON);
+                JSON << "\"include_pathnames\": [";
+                for (size_t i = 0; i < fIncludePathnames.size(); i++) {
+                    JSON << "\"" << fIncludePathnames[i] << "\"";
+                    if (i < (fIncludePathnames.size() - 1)) JSON << ",";
+                }
+                JSON << "],";
+            }
+            if (fDSPSize != -1) { tab(fTab, JSON); JSON << "\"size\": " << fDSPSize << ","; }
+            if (fSHAKey != "") { tab(fTab, JSON); JSON << "\"sha_key\": \"" << fSHAKey << "\","; }
+            if (fExpandedCode != "") { tab(fTab, JSON); JSON << "\"code\": \"" << fExpandedCode << "\","; }
+            tab(fTab, JSON); JSON << "\"inputs\": " << fInputs << ",";
+            tab(fTab, JSON); JSON << "\"outputs\": " << fOutputs << ",";
+            if (fSRIndex != -1) { tab(fTab, JSON); JSON << "\"sr_index\": " << fSRIndex << ","; }
+            tab(fTab, fMeta); fMeta << "],";
+            tab(fTab, fUI); fUI << "]";
+            fTab -= 1;
+            if (fCloseMetaPar == ',') { // If "declare" has been called, fCloseMetaPar state is now ','
+                JSON << fMeta.str() << fUI.str();
+            } else {
+                JSON << fUI.str();
+            }
+            tab(fTab, JSON); JSON << "}";
+            return (flat) ? flatten(JSON.str()) : JSON.str();
+        }
+    
+};
+
+// Externally available class using FAUSTFLOAT
+
+class JSONUI : public JSONUIAux<FAUSTFLOAT>, public UI
+{
+    public :
+    
+        JSONUI(const std::string& name,
+               const std::string& filename,
+               int inputs,
+               int outputs,
+               int sr_index,
+               const std::string& sha_key,
+               const std::string& dsp_code,
+               const std::string& version,
+               const std::string& compile_options,
+               const std::vector<std::string>& library_list,
+               const std::vector<std::string>& include_pathnames,
+               int size,
+               const std::map<std::string, int>& path_table):
+        JSONUIAux<FAUSTFLOAT>(name, filename,
+                              inputs, outputs,
+                              sr_index,
+                              sha_key, dsp_code,
+                              version, compile_options,
+                              library_list, include_pathnames,
+                              size, path_table)
+        {}
+        
+        JSONUI(const std::string& name, const std::string& filename, int inputs, int outputs):
+        JSONUIAux<FAUSTFLOAT>(name, filename, inputs, outputs)
+        {}
+        
+        JSONUI(int inputs, int outputs):JSONUIAux<FAUSTFLOAT>(inputs, outputs)
+        {}
+        
+        JSONUI():JSONUIAux<FAUSTFLOAT>()
+        {}
+    
+        virtual void openTabBox(const char* label)
+        {
+            JSONUIAux<FAUSTFLOAT>::openTabBox(label);
+        }
+        virtual void openHorizontalBox(const char* label)
+        {
+            JSONUIAux<FAUSTFLOAT>::openHorizontalBox(label);
+        }
+        virtual void openVerticalBox(const char* label)
+        {
+            JSONUIAux<FAUSTFLOAT>::openVerticalBox(label);
+        }
+        virtual void closeBox()
+        {
+            JSONUIAux<FAUSTFLOAT>::closeBox();
+        }
+        
+        // -- active widgets
+        
+        virtual void addButton(const char* label, FAUSTFLOAT* zone)
+        {
+            JSONUIAux<FAUSTFLOAT>::addButton(label, zone);
+        }
+        virtual void addCheckButton(const char* label, FAUSTFLOAT* zone)
+        {
+            JSONUIAux<FAUSTFLOAT>::addCheckButton(label, zone);
+        }
+        virtual void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            JSONUIAux<FAUSTFLOAT>::addVerticalSlider(label, zone, init, min, max, step);
+        }
+        virtual void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            JSONUIAux<FAUSTFLOAT>::addHorizontalSlider(label, zone, init, min, max, step);
+        }
+        virtual void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            JSONUIAux<FAUSTFLOAT>::addNumEntry(label, zone, init, min, max, step);
+        }
+        
+        // -- passive widgets
+        
+        virtual void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max)
+        {
+            JSONUIAux<FAUSTFLOAT>::addHorizontalBargraph(label, zone, min, max);
+        }
+        virtual void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max)
+        {
+            JSONUIAux<FAUSTFLOAT>::addVerticalBargraph(label, zone, min, max);
+        }
+        
+        // -- soundfiles
+        
+        virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone)
+        {
+            JSONUIAux<FAUSTFLOAT>::addSoundfile(label, filename, sf_zone);
+        }
+        
+        // -- metadata declarations
+        
+        virtual void declare(FAUSTFLOAT* zone, const char* key, const char* val)
+        {
+            JSONUIAux<FAUSTFLOAT>::declare(zone, key, val);
+        }
+    
+        virtual void declare(const char* key, const char* val)
+        {
+            JSONUIAux<FAUSTFLOAT>::declare(key, val);
+        }
+    
+        virtual ~JSONUI() {}
+    
+};
+
+#endif // FAUST_JSONUI_H
+/**************************  END  JSONUI.h **************************/
+/************************** BEGIN MapUI.h **************************/
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef FAUST_MAPUI_H
+#define FAUST_MAPUI_H
+
+#include <vector>
+#include <map>
+#include <string>
+
+
+/*******************************************************************************
+ * MapUI : Faust User Interface
+ * This class creates a map of complete hierarchical path and zones for each UI items.
+ ******************************************************************************/
+
+class MapUI : public UI, public PathBuilder
+{
     
     protected:
     
-        TYPE_INT** fAdaptedInputs;
-        TYPE_INT** fAdaptedOutputs;
+        // Complete path map
+        std::map<std::string, FAUSTFLOAT*> fPathZoneMap;
     
-        void adaptInputBuffers(int count, FAUSTFLOAT** inputs)
-        {
-            for (int chan = 0; chan < fDSP->getNumInputs(); chan++) {
-                for (int frame = 0; frame < count; frame++) {
-                    fAdaptedInputs[chan][frame] = TYPE_INT(reinterpret_cast<TYPE_EXT**>(inputs)[chan][frame]);
-                }
-            }
-        }
-    
-        void adaptOutputsBuffers(int count, FAUSTFLOAT** outputs)
-        {
-            for (int chan = 0; chan < fDSP->getNumOutputs(); chan++) {
-                for (int frame = 0; frame < count; frame++) {
-                    reinterpret_cast<TYPE_EXT**>(outputs)[chan][frame] = TYPE_EXT(fAdaptedOutputs[chan][frame]);
-                }
-            }
-        }
+        // Label zone map
+        std::map<std::string, FAUSTFLOAT*> fLabelZoneMap;
     
     public:
-    
-        dsp_sample_adapter(dsp* dsp):decorator_dsp(dsp)
+        
+        MapUI() {};
+        virtual ~MapUI() {};
+        
+        // -- widget's layouts
+        void openTabBox(const char* label)
         {
-            fAdaptedInputs = new TYPE_INT*[dsp->getNumInputs()];
-            for (int i = 0; i < dsp->getNumInputs(); i++) {
-                fAdaptedInputs[i] = new TYPE_INT[4096];
+            pushLabel(label);
+        }
+        void openHorizontalBox(const char* label)
+        {
+            pushLabel(label);
+        }
+        void openVerticalBox(const char* label)
+        {
+            pushLabel(label);
+        }
+        void closeBox()
+        {
+            popLabel();
+        }
+        
+        // -- active widgets
+        void addButton(const char* label, FAUSTFLOAT* zone)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addCheckButton(const char* label, FAUSTFLOAT* zone)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        
+        // -- passive widgets
+        void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+        void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
+        {
+            fPathZoneMap[buildPath(label)] = zone;
+            fLabelZoneMap[label] = zone;
+        }
+    
+        // -- soundfiles
+        virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone) {}
+        
+        // -- metadata declarations
+        void declare(FAUSTFLOAT* zone, const char* key, const char* val)
+        {}
+        
+        // set/get
+        void setParamValue(const std::string& path, FAUSTFLOAT value)
+        {
+            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
+                *fPathZoneMap[path] = value;
+            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
+                *fLabelZoneMap[path] = value;
             }
-            
-            fAdaptedOutputs = new TYPE_INT*[dsp->getNumOutputs()];
-            for (int i = 0; i < dsp->getNumOutputs(); i++) {
-                fAdaptedOutputs[i] = new TYPE_INT[4096];
+        }
+        
+        FAUSTFLOAT getParamValue(const std::string& path)
+        {
+            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
+                return *fPathZoneMap[path];
+            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
+                return *fLabelZoneMap[path];
+            } else {
+                return FAUSTFLOAT(0);
             }
         }
     
-        virtual ~dsp_sample_adapter()
-        {
-            for (int i = 0; i < fDSP->getNumInputs(); i++) {
-                delete [] fAdaptedInputs[i];
-            }
-            delete [] fAdaptedInputs;
-            
-            for (int i = 0; i < fDSP->getNumOutputs(); i++) {
-                delete [] fAdaptedOutputs[i];
-            }
-            delete [] fAdaptedOutputs;
+        // map access 
+        std::map<std::string, FAUSTFLOAT*>& getMap() { return fPathZoneMap; }
+        
+        int getParamsCount() { return int(fPathZoneMap.size()); }
+        
+        std::string getParamAddress(int index)
+        { 
+            std::map<std::string, FAUSTFLOAT*>::iterator it = fPathZoneMap.begin();
+            while (index-- > 0 && it++ != fPathZoneMap.end()) {}
+            return (*it).first;
         }
     
-        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        std::string getParamAddress(FAUSTFLOAT* zone)
         {
-            adaptInputBuffers(count, inputs);
-            // DSP base class uses FAUSTFLOAT** type, so reinterpret_cast has to be used even if the real DSP uses TYPE_INT
-            fDSP->compute(count, reinterpret_cast<FAUSTFLOAT**>(fAdaptedInputs), reinterpret_cast<FAUSTFLOAT**>(fAdaptedOutputs));
-            adaptOutputsBuffers(count, outputs);
+            std::map<std::string, FAUSTFLOAT*>::iterator it = fPathZoneMap.begin();
+            do {
+                if ((*it).second == zone) return (*it).first;
+            }
+            while (it++ != fPathZoneMap.end());
+            return "";
         }
     
-        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        static bool endsWith(std::string const& str, std::string const& end)
         {
-            adaptInputBuffers(count, inputs);
-            // DSP base class uses FAUSTFLOAT** type, so reinterpret_cast has to be used even if the real DSP uses TYPE_INT
-            fDSP->compute(date_usec, count, reinterpret_cast<FAUSTFLOAT**>(fAdaptedInputs), reinterpret_cast<FAUSTFLOAT**>(fAdaptedOutputs));
-            adaptOutputsBuffers(count, outputs);
-       }
+            size_t l1 = str.length();
+            size_t l2 = end.length();
+            return (l1 >= l2) && (0 == str.compare(l1 - l2, l2, end));
+        }
 };
 
-#endif
+
+#endif // FAUST_MAPUI_H
+/**************************  END  MapUI.h **************************/
+/************************** BEGIN GUI.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -682,6 +1407,7 @@ class dsp_sample_adapter : public decorator_dsp {
 # pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 
+/************************** BEGIN ring-buffer.h **************************/
 /*
   Copyright (C) 2000 Paul Davis
   Copyright (C) 2003 Rohan Drape
@@ -1094,6 +1820,7 @@ ringbuffer_get_write_vector (const ringbuffer_t * rb,
 }
 
 #endif // __ring_buffer__
+/**************************  END  ring-buffer.h **************************/
 
 /*******************************************************************************
  * GUI : Abstract Graphic User Interface
@@ -1159,9 +1886,8 @@ class GUI : public UI
         virtual ~GUI() 
         {   
             // delete all items
-            zmap::iterator it;
-            for (it = fZoneMap.begin(); it != fZoneMap.end(); it++) {
-                delete (*it).second;
+            for (auto& it : fZoneMap) {
+                delete it.second;
             }
             // suppress 'this' in static fGuiList
             fGuiList.remove(this);
@@ -1175,34 +1901,33 @@ class GUI : public UI
             fZoneMap[z]->push_back(c);
         }
  
-        void updateAllZones()
-        {
-            for (zmap::iterator m = fZoneMap.begin(); m != fZoneMap.end(); m++) {
-                FAUSTFLOAT* z = m->first;
-                clist* l = m->second;
-                if (z) {
-                    FAUSTFLOAT v = *z;
-                    for (clist::iterator c = l->begin(); c != l->end(); c++) {
-                        if ((*c)->cache() != v) (*c)->reflectZone();
-                    }
-                }
-            }
-        }
-        
         void updateZone(FAUSTFLOAT* z)
         {
             FAUSTFLOAT v = *z;
-            clist* l = fZoneMap[z];
-            for (clist::iterator c = l->begin(); c != l->end(); c++) {
-                if ((*c)->cache() != v) (*c)->reflectZone();
+            clist* cl = fZoneMap[z];
+            for (auto& c : *cl) {
+                if (c->cache() != v) c->reflectZone();
+            }
+        }
+    
+        void updateAllZones()
+        {
+            for (auto& m : fZoneMap) {
+                updateZone(m.first);
             }
         }
     
         static void updateAllGuis()
         {
-            std::list<GUI*>::iterator g;
-            for (g = fGuiList.begin(); g != fGuiList.end(); g++) {
-                (*g)->updateAllZones();
+            for (auto& g : fGuiList) {
+                g->updateAllZones();
+            }
+        }
+    
+        static void runAllGuis()
+        {
+            for (auto& g : fGuiList) {
+                g->run();
             }
         }
     
@@ -1214,13 +1939,6 @@ class GUI : public UI
         virtual void show() {};	
         virtual bool run() { return false; };
 
-        static void runAllGuis() {
-            std::list<GUI*>::iterator g;
-            for (g = fGuiList.begin(); g != fGuiList.end(); g++) {
-                (*g)->run();
-            }
-        }
-    
         virtual void stop() { fStopped = true; }
         bool stopped() { return fStopped; }
     
@@ -1441,9 +2159,8 @@ class uiGroupItem : public uiItem
             fCache = v;
             
             // Update all zones of the same group
-            std::vector<FAUSTFLOAT*>::iterator it;
-            for (it = fZoneMap.begin(); it != fZoneMap.end(); it++) {
-                (*(*it)) = v;
+            for (auto& it : fZoneMap) {
+                *it = v;
             }
         }
         
@@ -1460,17 +2177,18 @@ static void createUiCallbackItem(GUI* ui, FAUSTFLOAT* zone, uiCallback foo, void
 
 static void deleteClist(clist* cl)
 {
-    std::list<uiItemBase*>::iterator it;
-    for (it = cl->begin(); it != cl->end(); it++) {
-        uiOwnedItem* owned = dynamic_cast<uiOwnedItem*>(*it);
+    for (auto& it : *cl) {
+        uiOwnedItem* owned = dynamic_cast<uiOwnedItem*>(it);
         // owned items are deleted by external code
         if (!owned) {
-            delete (*it);
+            delete it;
         }
     }
 }
 
 #endif
+/**************************  END  GUI.h **************************/
+/************************** BEGIN JSONUIDecoder.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -1502,50 +2220,57 @@ static void deleteClist(clist* cl)
 #include <utility>
 #include <cstdlib>
 #include <sstream>
+#include <functional>
 
+/************************** BEGIN CGlue.h **************************/
 /************************************************************************
- ************************************************************************
-    FAUST Architecture File
-    Copyright (C) 2003-2013 GRAME, Centre National de Creation Musicale
-    ---------------------------------------------------------------------
-    This Architecture section is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 3 of
-    the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; If not, see <http://www.gnu.org/licenses/>.
-
- ************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2018 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
  ************************************************************************/
 
 #ifndef CGLUE_H
 #define CGLUE_H
 
+/************************** BEGIN CInterface.h **************************/
 /************************************************************************
- ************************************************************************
-    FAUST Architecture File
-    Copyright (C) 2003-2013 GRAME, Centre National de Creation Musicale
-    ---------------------------------------------------------------------
-    This Architecture section is free software; you can redistribute it
-    and/or modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 3 of
-    the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; If not, see <http://www.gnu.org/licenses/>.
-
- ************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2018 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
  ************************************************************************/
 
 #ifndef CINTERFACE_H
@@ -1665,6 +2390,7 @@ typedef struct {
 #endif
 
 #endif
+/**************************  END  CInterface.h **************************/
 
 #ifdef __cplusplus
 extern "C" {
@@ -2119,6 +2845,8 @@ static void buildManagerGlue(ManagerGlue* glue, dsp_memory_manager* manager)
 #endif
 
 #endif
+/**************************  END  CGlue.h **************************/
+/************************** BEGIN SimpleParser.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -2168,12 +2896,15 @@ struct itemInfo {
     std::string label;
     std::string url;
     std::string address;
-    std::string index;
-    std::string init;
-    std::string min;
-    std::string max;
-    std::string step;
+    int index;
+    double init;
+    double min;
+    double max;
+    double step;
     std::vector<std::pair<std::string, std::string> > meta;
+    
+    itemInfo():index(0), init(0.), min(0.), max(0.), step(0.)
+    {}
 };
 
 // ---------------------------------------------------------------------
@@ -2284,6 +3015,7 @@ static bool parseDouble(const char*& p, double& x)
     } else {
         p = saved;
     }
+ 
     return valid;
 }
 
@@ -2325,16 +3057,6 @@ static bool parseSQString(const char*& p, std::string& s)
 }
 
 /**
- * @brief parseUQString, parse a underscore quoted string _..._ and store the result in s
- * @param p the string to parse, then the remaining string
- * @param s the (unquoted) string found if any
- * @return true if a string was found at the begin of p
- */
-static bool parseUQString(const char*& p, std::string& s)
-{
-    return parseString(p, '_', s);
-}
-/**
  * @brief parseDQString, parse a double quoted string "..." and store the result in s
  * @param p the string to parse, then the remaining string
  * @param s the (unquoted) string found if any
@@ -2373,8 +3095,8 @@ static bool parseMenuItem2(const char*& p, std::string& name)
 {
     const char* saved = p;  // to restore position if we fail
     
-    // single quoted or underscore string (like 'label' or _label_)
-    if (parseSQString(p, name) || parseUQString(p, name) ) {
+    // single quoted
+    if (parseSQString(p, name)) {
         return true;
     } else {
         p = saved;
@@ -2502,13 +3224,13 @@ static bool parseItemMetaData(const char*& p, std::vector<std::pair<std::string,
 // "name" : "...", "inputs" : "...", "outputs" : "...", ...
 // and store the result as key/value
 /// ---------------------------------------------------------------------
-static bool parseGlobalMetaData(const char*& p, std::string& key, std::string& value, std::map<std::string, std::string>& metadatas, std::vector<std::string>& items)
+static bool parseGlobalMetaData(const char*& p, std::string& key, std::string& value, double& dbl, std::map<std::string, std::string>& metadatas, std::vector<std::string>& items)
 {
     if (parseDQString(p, key)) {
         if (key == "meta") {
             return parseMetaData(p, metadatas);
         } else {
-            return parseChar(p, ':') && (parseDQString(p, value) || parseList(p, items));
+            return parseChar(p, ':') && (parseDQString(p, value) || parseList(p, items) || parseDouble(p, dbl));
         }
     } else {
         return false;
@@ -2520,12 +3242,13 @@ static bool parseGlobalMetaData(const char*& p, std::string& key, std::string& v
 // "type" : "...", "label" : "...", "address" : "...", ...
 // and store the result in uiItems Vector
 /// ---------------------------------------------------------------------
-static bool parseUI(const char*& p, std::vector<itemInfo*>& uiItems, int& numItems)
+static bool parseUI(const char*& p, std::vector<itemInfo>& uiItems, int& numItems)
 {
     if (parseChar(p, '{')) {
    
         std::string label;
         std::string value;
+        double dbl = 0;
         
         do {
             if (parseDQString(p, label)) {
@@ -2534,85 +3257,76 @@ static bool parseUI(const char*& p, std::vector<itemInfo*>& uiItems, int& numIte
                         numItems++;
                     }
                     if (parseChar(p, ':') && parseDQString(p, value)) {   
-                        itemInfo* item = new itemInfo;
-                        item->type = value;
+                        itemInfo item;
+                        item.type = value;
                         uiItems.push_back(item);
                     }
                 }
                 
                 else if (label == "label") {
                     if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->label = value;
+                        uiItems[numItems].label = value;
                     }
                 }
                 
                 else if (label == "url") {
                     if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->url = value;
+                        uiItems[numItems].url = value;
                     }
                 }
                 
                 else if (label == "address") {
                     if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->address = value;
+                        uiItems[numItems].address = value;
                     }
                 }
                 
                 else if (label == "index") {
-                    if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->index = value;
+                    if (parseChar(p, ':') && parseDouble(p, dbl)) {
+                        uiItems[numItems].index = int(dbl);
                     }
                 }
                 
                 else if (label == "meta") {
-                    itemInfo* item = uiItems[numItems];
-                    if (!parseItemMetaData(p, item->meta)) {
+                    if (!parseItemMetaData(p, uiItems[numItems].meta)) {
                         return false;
                     }
                 }
                 
                 else if (label == "init") {
-                    if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->init = value;
+                    if (parseChar(p, ':') && parseDouble(p, dbl)) {
+                        uiItems[numItems].init = dbl;
                     }
                 }
                 
                 else if (label == "min") {
-                    if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->min = value;
+                    if (parseChar(p, ':') && parseDouble(p, dbl)) {
+                        uiItems[numItems].min = dbl;
                     }
                 }
                 
                 else if (label == "max") {
-                    if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->max = value;
+                    if (parseChar(p, ':') && parseDouble(p, dbl)) {
+                        uiItems[numItems].max = dbl;
                     }
                 }
                 
                 else if (label == "step"){
-                    if (parseChar(p, ':') && parseDQString(p, value)) {
-                        itemInfo* item = uiItems[numItems];
-                        item->step = value;
+                    if (parseChar(p, ':') && parseDouble(p, dbl)) {
+                        uiItems[numItems].step = dbl;
                     }
                 }
                 
                 else if (label == "items") {
                     if (parseChar(p, ':') && parseChar(p, '[')) {
-                        do { 
+                        do {
                             if (!parseUI(p, uiItems, numItems)) {
                                 return false;
                             }
                         } while (tryChar(p, ','));
                         if (parseChar(p, ']')) {
-                            itemInfo* item = new itemInfo;
-                            item->type = "close";
+                            itemInfo item;
+                            item.type = "close";
                             uiItems.push_back(item);
                             numItems++;
                         }
@@ -2626,7 +3340,7 @@ static bool parseUI(const char*& p, std::vector<itemInfo*>& uiItems, int& numIte
         
         return parseChar(p, '}');
     } else {
-        return false;
+        return true; // "items": [] is valid
     }
 }
 
@@ -2637,25 +3351,28 @@ static bool parseUI(const char*& p, std::vector<itemInfo*>& uiItems, int& numIte
 // and store the result in map Metadatas and vector containing the items of the interface. Returns true if parsing was successfull.
 /// ---------------------------------------------------------------------
 static bool parseJson(const char*& p,
-                      std::map<std::string, std::string>& metaDatas0,
+                      std::map<std::string, std::pair<std::string, double> >& metaDatas0,
                       std::map<std::string, std::string>& metaDatas1,
                       std::map<std::string, std::vector<std::string> >& metaDatas2,
-                      std::vector<itemInfo*>& uiItems)
+                      std::vector<itemInfo>& uiItems)
 {
     parseChar(p, '{');
     
     do {
         std::string key;
         std::string value;
+        double dbl = 0;
         std::vector<std::string> items;
-        if (parseGlobalMetaData(p, key, value, metaDatas1, items)) {
+        if (parseGlobalMetaData(p, key, value, dbl, metaDatas1, items)) {
             if (key != "meta") {
                 // keep "name", "inputs", "outputs" key/value pairs
                 if (items.size() > 0) {
                     metaDatas2[key] = items;
                     items.clear();
+                } else if (value != "") {
+                    metaDatas0[key].first = value;
                 } else {
-                    metaDatas0[key] = value;
+                    metaDatas0[key].second = dbl;
                 }
             }
         } else if (key == "ui") {
@@ -2668,6 +3385,7 @@ static bool parseJson(const char*& p,
 }
 
 #endif // SIMPLEPARSER_H
+/**************************  END  SimpleParser.h **************************/
 
 #ifdef _WIN32
 #include <windows.h>
@@ -2682,13 +3400,53 @@ static bool parseJson(const char*& p,
 #define REAL_ADR(offset)       reinterpret_cast<REAL*>(&memory_block[offset])
 #define SOUNDFILE_ADR(offset)  reinterpret_cast<Soundfile**>(&memory_block[offset])
 
+typedef std::function<void(double)> ReflectFunction;
+typedef std::function<double()> ModifyFunction;
+
+struct ExtZoneParam {
+
+    virtual void reflectZone() = 0;
+    virtual void modifyZone() = 0;
+    
+    virtual void setReflectZoneFun(ReflectFunction reflect) = 0;
+    virtual void setModifyZoneFun(ModifyFunction modify) = 0;
+    
+    virtual ~ExtZoneParam()
+    {}
+    
+};
+
 template <typename REAL>
 struct JSONUIDecoderAux {
-
-    typedef std::map<std::string, std::pair <int, REAL*> > controlMap;
     
-    REAL STR2REAL(const std::string& str) { return REAL(std::strtod(str.c_str(), NULL)); }
- 
+    struct ZoneParam : public ExtZoneParam {
+        
+        REAL fZone;
+        int fIndex;
+        ReflectFunction fReflect;
+        ModifyFunction fModify;
+        
+    #if defined(TARGET_OS_IPHONE) || defined(WIN32)
+        ZoneParam(int index, ReflectFunction reflect = nullptr, ModifyFunction modify = nullptr)
+        :fIndex(index), fReflect(reflect), fModify(modify)
+        {}
+        void reflectZone() { if (fReflect) fReflect(fZone); }
+        void modifyZone() { if (fModify) fZone = fModify(); }
+    #else
+        ZoneParam(int index, ReflectFunction reflect = [](REAL value) {}, ModifyFunction modify = []() { return REAL(-1); })
+        :fIndex(index), fReflect(reflect), fModify(modify)
+        {}
+        void reflectZone() { fReflect(fZone); }
+        void modifyZone() { fZone = fModify(); }
+    #endif
+        
+        void setReflectZoneFun(ReflectFunction reflect) { fReflect = reflect; }
+        void setModifyZoneFun(ModifyFunction modify) { fModify = modify; }
+        
+    };
+
+    typedef std::vector<ExtZoneParam*> controlMap;
+  
     std::string fName;
     std::string fFileName;
     std::string fJSON;
@@ -2696,39 +3454,60 @@ struct JSONUIDecoderAux {
     std::string fCompileOptions;
     
     std::map<std::string, std::string> fMetadata;
-    std::vector<itemInfo*> fUiItems;     
+    std::vector<itemInfo> fUiItems;
     
     std::vector<std::string> fLibraryList;
     std::vector<std::string> fIncludePathnames;
     
-    REAL* fInControl;
-    REAL* fOutControl;
     Soundfile** fSoundfiles;
     
     int fNumInputs, fNumOutputs, fSRIndex;
-    int fInputItems, fOutputItems, fSoundfileItems;
+    int fSoundfileItems;
     int fDSPSize;
     
-    controlMap fPathInputTable;     // [path, <index, zone>]
-    controlMap fPathOutputTable;    // [path, <index, zone>]
+    controlMap fPathInputTable;     // [path, ZoneParam]
+    controlMap fPathOutputTable;    // [path, ZoneParam]
 
-    bool isInput(const std::string& type) { return (type == "vslider" || type == "hslider" || type == "nentry" || type == "button" || type == "checkbox"); }
+    bool isInput(const std::string& type)
+    {
+        return (type == "vslider" || type == "hslider" || type == "nentry" || type == "button" || type == "checkbox");
+    }
     bool isOutput(const std::string& type) { return (type == "hbargraph" || type == "vbargraph"); }
     bool isSoundfile(const std::string& type) { return (type == "soundfile"); }
+    
+    std::string getString(std::map<std::string, std::pair<std::string, double> >& map, const std::string& key)
+    {
+        return (map.find(key) != map.end()) ? map[key].first : "";
+    }
+    
+    int getInt(std::map<std::string, std::pair<std::string, double> >& map, const std::string& key)
+    {
+        return (map.find(key) != map.end()) ? int(map[key].second) : -1;
+    }
+    
+    void setReflectZoneFun(int index, ReflectFunction fun)
+    {
+        fPathInputTable[index]->setReflectZoneFun(fun);
+    }
+    
+    void setModifyZoneFun(int index, ModifyFunction fun)
+    {
+        fPathOutputTable[index]->setModifyZoneFun(fun);
+    }
 
     JSONUIDecoderAux(const std::string& json)
     {
         fJSON = json;
         const char* p = fJSON.c_str();
-        std::map<std::string, std::string > meta_data0;
+        std::map<std::string, std::pair<std::string, double> > meta_data1;
         std::map<std::string, std::vector<std::string> > meta_data2;
-        parseJson(p, meta_data0, fMetadata, meta_data2, fUiItems);
+        parseJson(p, meta_data1, fMetadata, meta_data2, fUiItems);
         
-        // meta_data0 contains <name : val>, <inputs : val>, <ouputs : val> pairs etc...
-        fName = (meta_data0.find("name") != meta_data0.end()) ? meta_data0["name"] : "";
-        fFileName = (meta_data0.find("filename") != meta_data0.end()) ? meta_data0["filename"] : "";
-        fVersion = (meta_data0.find("version") != meta_data0.end()) ? meta_data0["version"] : "";
-        fCompileOptions = (meta_data0.find("compile_options") != meta_data0.end()) ? meta_data0["compile_options"] : "";
+        // meta_data1 contains <name : val>, <inputs : val>, <ouputs : val> pairs etc...
+        fName = getString(meta_data1, "name");
+        fFileName = getString(meta_data1, "filename");
+        fVersion = getString(meta_data1, "version");
+        fCompileOptions = getString(meta_data1, "compile_options");
         
         if (meta_data2.find("library_list") != meta_data2.end()) {
             fLibraryList = meta_data2["library_list"];
@@ -2737,102 +3516,75 @@ struct JSONUIDecoderAux {
             fIncludePathnames = meta_data2["include_pathnames"];
         }
         
-        fDSPSize = (meta_data0.find("size") != meta_data0.end()) ? std::atoi(meta_data0["size"].c_str()) : -1;
-        fNumInputs = (meta_data0.find("inputs") != meta_data0.end()) ? std::atoi(meta_data0["inputs"].c_str()) : -1;
-        fNumOutputs = (meta_data0.find("outputs") != meta_data0.end()) ? std::atoi(meta_data0["outputs"].c_str()) : -1;
-        fSRIndex = (meta_data0.find("sr_index") != meta_data0.end()) ? std::atoi(meta_data0["sr_index"].c_str()) : -1;
+        fDSPSize = getInt(meta_data1, "size");
+        fNumInputs = getInt(meta_data1, "inputs");
+        fNumOutputs = getInt(meta_data1, "outputs");
+        fSRIndex = getInt(meta_data1, "sr_index");
        
-        fInputItems = 0;
-        fOutputItems = 0;
         fSoundfileItems = 0;
-        
-        std::vector<itemInfo*>::iterator it;
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
-            std::string type = (*it)->type;
-            if (isInput(type)) {
-                fInputItems++;
-            } else if (isOutput(type)) {
-                fOutputItems++;          
-            } else if (isSoundfile(type)) {
+        for (auto& it : fUiItems) {
+            std::string type = it.type;
+            if (isSoundfile(type)) {
                 fSoundfileItems++;
             }
         }
         
-        fInControl = new REAL[fInputItems];
-        fOutControl = new REAL[fOutputItems];
         fSoundfiles = new Soundfile*[fSoundfileItems];
         
-        int counterIn = 0;
-        int counterOut = 0;
-        
         // Prepare the fPathTable and init zone
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
-            std::string type = (*it)->type;
+        for (auto& it : fUiItems) {
+            std::string type = it.type;
             // Meta data declaration for input items
             if (isInput(type)) {
-                if ((*it)->address != "") {
-                    fPathInputTable[(*it)->address] = std::make_pair(std::atoi((*it)->index.c_str()), &fInControl[counterIn]);
-                }
-                fInControl[counterIn] = STR2REAL((*it)->init);
-                counterIn++;
+                ZoneParam* param = new ZoneParam(it.index);
+                fPathInputTable.push_back(param);
+                param->fZone = it.init;
             }
             // Meta data declaration for output items
             else if (isOutput(type)) {
-                if ((*it)->address != "") {
-                    fPathOutputTable[(*it)->address] = std::make_pair(std::atoi((*it)->index.c_str()), &fOutControl[counterOut]);
-                }
-                fOutControl[counterOut] = REAL(0);
-                counterOut++;
+                ZoneParam* param = new ZoneParam(it.index);
+                fPathOutputTable.push_back(param);
+                param->fZone = REAL(0);
             }
         }
     }
     
     virtual ~JSONUIDecoderAux()
     {
-        std::vector<itemInfo*>::iterator it;
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
-            delete(*it);
-        }
-        delete [] fInControl;
-        delete [] fOutControl;
         delete [] fSoundfiles;
     }
     
     void metadata(Meta* m)
     {
-        std::map<std::string, std::string>::iterator it;
-        for (it = fMetadata.begin(); it != fMetadata.end(); it++) {
-            m->declare((*it).first.c_str(), (*it).second.c_str());
+        for (auto& it : fMetadata) {
+            m->declare(it.first.c_str(), it.second.c_str());
         }
     }
     
     void metadata(MetaGlue* m)
     {
-        std::map<std::string, std::string>::iterator it;
-        for (it = fMetadata.begin(); it != fMetadata.end(); it++) {
-            m->declare(m->metaInterface, (*it).first.c_str(), (*it).second.c_str());
+        for (auto& it : fMetadata) {
+            m->declare(m->metaInterface, it.first.c_str(), it.second.c_str());
         }
     }
     
     void resetUserInterface()
     {
-        std::vector<itemInfo*>::iterator it;
         int item = 0;
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
-            if (isInput((*it)->type)) {
-                fInControl[item++] = STR2REAL((*it)->init);
+        for (auto& it : fUiItems) {
+            if (isInput(it.type)) {
+                static_cast<ZoneParam*>(fPathInputTable[item++])->fZone = it.init;
             }
         }
     }
     
     void resetUserInterface(char* memory_block, Soundfile* defaultsound = nullptr)
     {
-        std::vector<itemInfo*>::iterator it;
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
-            int offset = std::atoi((*it)->index.c_str());
-            if (isInput((*it)->type)) {
-                *REAL_ADR(offset) = STR2REAL((*it)->init);
-            } else if (isSoundfile((*it)->type)) {
+        for (auto& it : fUiItems) {
+            int offset = it.index;
+            if (isInput(it.type)) {
+                *REAL_ADR(offset) = it.init;
+            } else if (isSoundfile(it.type)) {
                 if (*SOUNDFILE_ADR(offset) == nullptr) {
                     *SOUNDFILE_ADR(offset) = defaultsound;
                 }
@@ -2848,216 +3600,145 @@ struct JSONUIDecoderAux {
     void buildUserInterface(UI* ui_interface)
     {
         // MANDATORY: to be sure floats or double are correctly parsed
-        char* tmp_local = setlocale(LC_ALL, NULL);
+        char* tmp_local = setlocale(LC_ALL, nullptr);
         setlocale(LC_ALL, "C");
         
-        int counterIn = 0;
-        int counterOut = 0;
-        int counterSound = 0;
-        std::vector<itemInfo*>::iterator it;
+        int countIn = 0;
+        int countOut = 0;
+        int countSound = 0;
         
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
+        for (auto& it : fUiItems) {
             
-            std::string type = (*it)->type;
-            
-            REAL init = STR2REAL((*it)->init);
-            REAL min = STR2REAL((*it)->min);
-            REAL max = STR2REAL((*it)->max);
-            REAL step = STR2REAL((*it)->step);
+            std::string type = it.type;
+            REAL init = REAL(it.init);
+            REAL min = REAL(it.min);
+            REAL max = REAL(it.max);
+            REAL step = REAL(it.step);
             
             // Meta data declaration for input items
             if (isInput(type)) {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    REAL_UI(ui_interface)->declare(&fInControl[counterIn], (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                for (size_t i = 0; i < it.meta.size(); i++) {
+                    REAL_UI(ui_interface)->declare(&static_cast<ZoneParam*>(fPathInputTable[countIn])->fZone, it.meta[i].first.c_str(), it.meta[i].second.c_str());
                 }
             }
             // Meta data declaration for output items
             else if (isOutput(type)) {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    REAL_UI(ui_interface)->declare(&fOutControl[counterOut], (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                for (size_t i = 0; i < it.meta.size(); i++) {
+                    REAL_UI(ui_interface)->declare(&static_cast<ZoneParam*>(fPathOutputTable[countOut])->fZone, it.meta[i].first.c_str(), it.meta[i].second.c_str());
                 }
             }
             // Meta data declaration for group opening or closing
             else {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    REAL_UI(ui_interface)->declare(0, (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                for (size_t i = 0; i < it.meta.size(); i++) {
+                    REAL_UI(ui_interface)->declare(0, it.meta[i].first.c_str(), it.meta[i].second.c_str());
                 }
             }
             
             if (type == "hgroup") {
-                REAL_UI(ui_interface)->openHorizontalBox((*it)->label.c_str());
+                REAL_UI(ui_interface)->openHorizontalBox(it.label.c_str());
             } else if (type == "vgroup") { 
-                REAL_UI(ui_interface)->openVerticalBox((*it)->label.c_str());
+                REAL_UI(ui_interface)->openVerticalBox(it.label.c_str());
             } else if (type == "tgroup") {
-                REAL_UI(ui_interface)->openTabBox((*it)->label.c_str());
+                REAL_UI(ui_interface)->openTabBox(it.label.c_str());
             } else if (type == "vslider") {
-                REAL_UI(ui_interface)->addVerticalSlider((*it)->label.c_str(), &fInControl[counterIn], init, min, max, step);
+                REAL_UI(ui_interface)->addVerticalSlider(it.label.c_str(), &static_cast<ZoneParam*>(fPathInputTable[countIn])->fZone, init, min, max, step);
             } else if (type == "hslider") {
-                REAL_UI(ui_interface)->addHorizontalSlider((*it)->label.c_str(), &fInControl[counterIn], init, min, max, step);            
+                REAL_UI(ui_interface)->addHorizontalSlider(it.label.c_str(), &static_cast<ZoneParam*>(fPathInputTable[countIn])->fZone, init, min, max, step);
             } else if (type == "checkbox") {
-                REAL_UI(ui_interface)->addCheckButton((*it)->label.c_str(), &fInControl[counterIn]);
+                REAL_UI(ui_interface)->addCheckButton(it.label.c_str(), &static_cast<ZoneParam*>(fPathInputTable[countIn])->fZone);
             } else if (type == "soundfile") {
-                REAL_UI(ui_interface)->addSoundfile((*it)->label.c_str(), (*it)->url.c_str(), &fSoundfiles[counterSound]);
+                REAL_UI(ui_interface)->addSoundfile(it.label.c_str(), it.url.c_str(), &fSoundfiles[countSound]);
             } else if (type == "hbargraph") {
-                REAL_UI(ui_interface)->addHorizontalBargraph((*it)->label.c_str(), &fOutControl[counterOut], min, max);
+                REAL_UI(ui_interface)->addHorizontalBargraph(it.label.c_str(), &static_cast<ZoneParam*>(fPathOutputTable[countOut])->fZone, min, max);
             } else if (type == "vbargraph") {
-                REAL_UI(ui_interface)->addVerticalBargraph((*it)->label.c_str(), &fOutControl[counterOut], min, max);
+                REAL_UI(ui_interface)->addVerticalBargraph(it.label.c_str(), &static_cast<ZoneParam*>(fPathOutputTable[countOut])->fZone, min, max);
             } else if (type == "nentry") {
-                REAL_UI(ui_interface)->addNumEntry((*it)->label.c_str(), &fInControl[counterIn], init, min, max, step);
+                REAL_UI(ui_interface)->addNumEntry(it.label.c_str(), &static_cast<ZoneParam*>(fPathInputTable[countIn])->fZone, init, min, max, step);
             } else if (type == "button") {
-                REAL_UI(ui_interface)->addButton((*it)->label.c_str(), &fInControl[counterIn]);
+                REAL_UI(ui_interface)->addButton(it.label.c_str(), &static_cast<ZoneParam*>(fPathInputTable[countIn])->fZone);
             } else if (type == "close") {
                 REAL_UI(ui_interface)->closeBox();
             }
             
             if (isInput(type)) {
-                counterIn++;
+                countIn++;
             } else if (isOutput(type)) {
-                counterOut++;
+                countOut++;
             } else if (isSoundfile(type)) {
-                counterSound++;
+                countSound++;
             }
         }
+        
         setlocale(LC_ALL, tmp_local);
     }
     
     void buildUserInterface(UI* ui_interface, char* memory_block)
     {
         // MANDATORY: to be sure floats or double are correctly parsed
-        char* tmp_local = setlocale(LC_ALL, NULL);
+        char* tmp_local = setlocale(LC_ALL, nullptr);
         setlocale(LC_ALL, "C");
         
-        int counterSound = 0;
-        std::vector<itemInfo*>::iterator it;
-        
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
+        for (auto& it : fUiItems) {
             
-            std::string type = (*it)->type;
-            int offset = std::atoi((*it)->index.c_str());
-            
-            REAL init = STR2REAL((*it)->init);
-            REAL min = STR2REAL((*it)->min);
-            REAL max = STR2REAL((*it)->max);
-            REAL step = STR2REAL((*it)->step);
+            std::string type = it.type;
+            int offset = it.index;
+            REAL init = REAL(it.init);
+            REAL min = REAL(it.min);
+            REAL max = REAL(it.max);
+            REAL step = REAL(it.step);
             
             // Meta data declaration for input items
             if (isInput(type)) {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    REAL_UI(ui_interface)->declare(REAL_ADR(offset), (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                for (size_t i = 0; i < it.meta.size(); i++) {
+                    REAL_UI(ui_interface)->declare(REAL_ADR(offset), it.meta[i].first.c_str(), it.meta[i].second.c_str());
                 }
             }
             // Meta data declaration for output items
             else if (isOutput(type)) {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    REAL_UI(ui_interface)->declare(REAL_ADR(offset), (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                for (size_t i = 0; i < it.meta.size(); i++) {
+                    REAL_UI(ui_interface)->declare(REAL_ADR(offset), it.meta[i].first.c_str(), it.meta[i].second.c_str());
                 }
             }
             // Meta data declaration for group opening or closing
             else {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    REAL_UI(ui_interface)->declare(0, (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
+                for (size_t i = 0; i < it.meta.size(); i++) {
+                    REAL_UI(ui_interface)->declare(0, it.meta[i].first.c_str(), it.meta[i].second.c_str());
                 }
             }
             
             if (type == "hgroup") {
-                REAL_UI(ui_interface)->openHorizontalBox((*it)->label.c_str());
+                REAL_UI(ui_interface)->openHorizontalBox(it.label.c_str());
             } else if (type == "vgroup") {
-                REAL_UI(ui_interface)->openVerticalBox((*it)->label.c_str());
+                REAL_UI(ui_interface)->openVerticalBox(it.label.c_str());
             } else if (type == "tgroup") {
-                REAL_UI(ui_interface)->openTabBox((*it)->label.c_str());
+                REAL_UI(ui_interface)->openTabBox(it.label.c_str());
             } else if (type == "vslider") {
-                REAL_UI(ui_interface)->addVerticalSlider((*it)->label.c_str(), REAL_ADR(offset), init, min, max, step);
+                REAL_UI(ui_interface)->addVerticalSlider(it.label.c_str(), REAL_ADR(offset), init, min, max, step);
             } else if (type == "hslider") {
-                REAL_UI(ui_interface)->addHorizontalSlider((*it)->label.c_str(), REAL_ADR(offset), init, min, max, step);
+                REAL_UI(ui_interface)->addHorizontalSlider(it.label.c_str(), REAL_ADR(offset), init, min, max, step);
             } else if (type == "checkbox") {
-                REAL_UI(ui_interface)->addCheckButton((*it)->label.c_str(), REAL_ADR(offset));
+                REAL_UI(ui_interface)->addCheckButton(it.label.c_str(), REAL_ADR(offset));
             } else if (type == "soundfile") {
-                REAL_UI(ui_interface)->addSoundfile((*it)->label.c_str(), (*it)->url.c_str(), SOUNDFILE_ADR(offset));
+                REAL_UI(ui_interface)->addSoundfile(it.label.c_str(), it.url.c_str(), SOUNDFILE_ADR(offset));
             } else if (type == "hbargraph") {
-                REAL_UI(ui_interface)->addHorizontalBargraph((*it)->label.c_str(), REAL_ADR(offset), min, max);
+                REAL_UI(ui_interface)->addHorizontalBargraph(it.label.c_str(), REAL_ADR(offset), min, max);
             } else if (type == "vbargraph") {
-                REAL_UI(ui_interface)->addVerticalBargraph((*it)->label.c_str(), REAL_ADR(offset), min, max);
+                REAL_UI(ui_interface)->addVerticalBargraph(it.label.c_str(), REAL_ADR(offset), min, max);
             } else if (type == "nentry") {
-                REAL_UI(ui_interface)->addNumEntry((*it)->label.c_str(), REAL_ADR(offset), init, min, max, step);
+                REAL_UI(ui_interface)->addNumEntry(it.label.c_str(), REAL_ADR(offset), init, min, max, step);
             } else if (type == "button") {
-                REAL_UI(ui_interface)->addButton((*it)->label.c_str(), REAL_ADR(offset));
+                REAL_UI(ui_interface)->addButton(it.label.c_str(), REAL_ADR(offset));
             } else if (type == "close") {
                 REAL_UI(ui_interface)->closeBox();
             }
-            
-            if (isSoundfile(type)) {
-                counterSound++;
-            }
         }
+        
         setlocale(LC_ALL, tmp_local);
     }
     
     void buildUserInterface(UIGlue* ui_interface, char* memory_block)
     {
-        /*
-        int counterSound = 0;
-        std::vector<itemInfo*>::iterator it;
-        
-        for (it = fUiItems.begin(); it != fUiItems.end(); it++) {
-            
-            std::string type = (*it)->type;
-            int offset = std::atoi((*it)->index.c_str());
-            
-            REAL init = STR2REAL((*it)->init);
-            REAL min = STR2REAL((*it)->min);
-            REAL max = STR2REAL((*it)->max);
-            REAL step = STR2REAL((*it)->step);
-            
-            // Meta data declaration for input items
-            if (isInput(type)) {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    ui_interface->declare(ui_interface->uiInterface, REAL_ADR(offset), (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
-                }
-            }
-            // Meta data declaration for output items
-            else if (isOutput(type)) {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    ui_interface->declare(ui_interface->uiInterface, REAL_ADR(offset), (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
-                }
-            }
-            // Meta data declaration for group opening or closing
-            else {
-                for (size_t i = 0; i < (*it)->meta.size(); i++) {
-                    ui_interface->declare(ui_interface->uiInterface, 0, (*it)->meta[i].first.c_str(), (*it)->meta[i].second.c_str());
-                }
-            }
-            
-            if (type == "hgroup") {
-                ui_interface->openHorizontalBox(ui_interface->uiInterface, (*it)->label.c_str());
-            } else if (type == "vgroup") {
-                ui_interface->openVerticalBox(ui_interface->uiInterface, (*it)->label.c_str());
-            } else if (type == "tgroup") {
-                ui_interface->openTabBox(ui_interface->uiInterface, (*it)->label.c_str());
-            } else if (type == "vslider") {
-                ui_interface->addVerticalSlider(ui_interface->uiInterface, (*it)->label.c_str(), REAL_ADR(offset), init, min, max, step);
-            } else if (type == "hslider") {
-                ui_interface->addHorizontalSlider(ui_interface->uiInterface, (*it)->label.c_str(), REAL_ADR(offset), init, min, max, step);
-            } else if (type == "checkbox") {
-                ui_interface->addCheckButton(ui_interface->uiInterface, (*it)->label.c_str(), REAL_ADR(offset));
-            } else if (type == "soundfile") {
-                ui_interface->addSoundfile(ui_interface->uiInterface, (*it)->label.c_str(), (*it)->url.c_str(), &fSoundfiles[counterSound]);
-            } else if (type == "hbargraph") {
-                ui_interface->addHorizontalBargraph(ui_interface->uiInterface, (*it)->label.c_str(), REAL_ADR(offset), min, max);
-            } else if (type == "vbargraph") {
-                ui_interface->addVerticalBargraph(ui_interface->uiInterface, (*it)->label.c_str(), REAL_ADR(offset), min, max);
-            } else if (type == "nentry") {
-                ui_interface->addNumEntry(ui_interface->uiInterface,(*it)->label.c_str(), REAL_ADR(offset), init, min, max, step);
-            } else if (type == "button") {
-                ui_interface->addButton(ui_interface->uiInterface, (*it)->label.c_str(), REAL_ADR(offset));
-            } else if (type == "close") {
-                ui_interface->closeBox(ui_interface->uiInterface);
-            }
-            
-            if (isSoundfile(type)) {
-                counterSound++;
-            }
-        }
-        */
+        // TODO
     }
     
     bool hasCompileOption(const std::string& option)
@@ -3091,7 +3772,12 @@ struct JSONUITemplatedDecoder
     virtual int getNumInputs() = 0;
     virtual int getNumOutputs() = 0;
     virtual int getSampleRate(char* memory_block) = 0;
+    virtual void setReflectZoneFun(int index, ReflectFunction fun) = 0;
+    virtual void setModifyZoneFun(int index, ModifyFunction fun) = 0;
+    virtual std::vector<ExtZoneParam*>& getInputControls() = 0;
+    virtual std::vector<ExtZoneParam*>& getOutputControls() = 0;
     virtual void resetUserInterface(char* memory_block, Soundfile* defaultsound = nullptr) = 0;
+    virtual void buildUserInterface(UI* ui_interface) = 0;
     virtual void buildUserInterface(UI* ui_interface, char* memory_block) = 0;
     virtual void buildUserInterface(UIGlue* ui_interface, char* memory_block) = 0;
     virtual bool hasCompileOption(const std::string& option) = 0;
@@ -3113,9 +3799,29 @@ struct JSONUIFloatDecoder : public JSONUIDecoderAux<float>, public JSONUITemplat
     int getNumInputs() { return fNumInputs; }
     int getNumOutputs() { return fNumOutputs; }
     int getSampleRate(char* memory_block)  { return JSONUIDecoderAux<float>::getSampleRate(memory_block); }
+    void setReflectZoneFun(int index, ReflectFunction fun)
+    {
+        JSONUIDecoderAux<float>::setReflectZoneFun(index, fun);
+    }
+    void setModifyZoneFun(int index, ModifyFunction fun)
+    {
+        JSONUIDecoderAux<float>::setModifyZoneFun(index, fun);
+    }
+    std::vector<ExtZoneParam*>& getInputControls()
+    {
+        return fPathInputTable;
+    }
+    std::vector<ExtZoneParam*>& getOutputControls()
+    {
+        return fPathOutputTable;
+    }
     void resetUserInterface(char* memory_block, Soundfile* defaultsound = nullptr)
     {
         JSONUIDecoderAux<float>::resetUserInterface(memory_block, defaultsound);
+    }
+    void buildUserInterface(UI* ui_interface)
+    {
+        JSONUIDecoderAux<float>::buildUserInterface(ui_interface);
     }
     void buildUserInterface(UI* ui_interface, char* memory_block)
     {
@@ -3144,9 +3850,29 @@ struct JSONUIDoubleDecoder : public JSONUIDecoderAux<double>, public JSONUITempl
     int getNumInputs() { return fNumInputs; }
     int getNumOutputs() { return fNumOutputs; }
     int getSampleRate(char* memory_block) { return JSONUIDecoderAux<double>::getSampleRate(memory_block); }
+    void setReflectZoneFun(int index, ReflectFunction fun)
+    {
+        JSONUIDecoderAux<double>::setReflectZoneFun(index, fun);
+    }
+    void setModifyZoneFun(int index, ModifyFunction fun)
+    {
+        JSONUIDecoderAux<double>::setModifyZoneFun(index, fun);
+    }
+    std::vector<ExtZoneParam*>& getInputControls()
+    {
+        return fPathInputTable;
+    }
+    std::vector<ExtZoneParam*>& getOutputControls()
+    {
+        return fPathOutputTable;
+    }
     void resetUserInterface(char* memory_block, Soundfile* defaultsound = nullptr)
     {
         JSONUIDecoderAux<double>::resetUserInterface(memory_block, defaultsound);
+    }
+    void buildUserInterface(UI* ui_interface)
+    {
+        JSONUIDecoderAux<double>::buildUserInterface(ui_interface);
     }
     void buildUserInterface(UI* ui_interface, char* memory_block)
     {
@@ -3178,10 +3904,1486 @@ static JSONUITemplatedDecoder* createJSONUIDecoder(const std::string& json)
 }
 
 #endif
+/**************************  END  JSONUIDecoder.h **************************/
+/************************** BEGIN dsp-adapter.h **************************/
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __dsp_adapter__
+#define __dsp_adapter__
+
+#include <string.h>
+#include <iostream>
+
+
+// Adapts a DSP for a different number of inputs/outputs
+
+class dsp_adapter : public decorator_dsp {
+    
+    private:
+        
+        FAUSTFLOAT** fAdaptedInputs;
+        FAUSTFLOAT** fAdaptedOutputs;
+        int fHardwareInputs;
+        int fHardwareOutputs;
+        
+        void adaptBuffers(FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            for (int i = 0; i < fHardwareInputs; i++) {
+                fAdaptedInputs[i] = inputs[i];
+            }
+            for (int i = 0; i < fHardwareOutputs; i++) {
+                fAdaptedOutputs[i] = outputs[i];
+            }
+        }
+        
+    public:
+        
+        dsp_adapter(dsp* dsp, int hardware_inputs, int hardware_outputs, int buffer_size):decorator_dsp(dsp)
+        {
+            fHardwareInputs = hardware_inputs;
+            fHardwareOutputs = hardware_outputs;
+             
+            fAdaptedInputs = new FAUSTFLOAT*[dsp->getNumInputs()];
+            for (int i = 0; i < dsp->getNumInputs() - fHardwareInputs; i++) {
+                fAdaptedInputs[i + fHardwareInputs] = new FAUSTFLOAT[buffer_size];
+                memset(fAdaptedInputs[i + fHardwareInputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
+            }
+            
+            fAdaptedOutputs = new FAUSTFLOAT*[dsp->getNumOutputs()];
+            for (int i = 0; i < dsp->getNumOutputs() - fHardwareOutputs; i++) {
+                fAdaptedOutputs[i + fHardwareOutputs] = new FAUSTFLOAT[buffer_size];
+                memset(fAdaptedOutputs[i + fHardwareOutputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
+            }
+        }
+        
+        virtual ~dsp_adapter()
+        {
+            for (int i = 0; i < fDSP->getNumInputs() - fHardwareInputs; i++) {
+                delete [] fAdaptedInputs[i + fHardwareInputs];
+            }
+            delete [] fAdaptedInputs;
+            
+            for (int i = 0; i < fDSP->getNumOutputs() - fHardwareOutputs; i++) {
+                delete [] fAdaptedOutputs[i + fHardwareOutputs];
+            }
+            delete [] fAdaptedOutputs;
+        }
+    
+        virtual int getNumInputs() { return fHardwareInputs; }
+        virtual int getNumOutputs() { return fHardwareOutputs; }
+    
+        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptBuffers(inputs, outputs);
+            fDSP->compute(date_usec, count, fAdaptedInputs, fAdaptedOutputs);
+        }
+        
+        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptBuffers(inputs, outputs);
+            fDSP->compute(count, fAdaptedInputs, fAdaptedOutputs);
+        }
+};
+
+// Adapts a DSP for a different sample size
+
+template <typename TYPE_INT, typename TYPE_EXT>
+class dsp_sample_adapter : public decorator_dsp {
+    
+    protected:
+    
+        TYPE_INT** fAdaptedInputs;
+        TYPE_INT** fAdaptedOutputs;
+    
+        void adaptInputBuffers(int count, FAUSTFLOAT** inputs)
+        {
+            for (int chan = 0; chan < fDSP->getNumInputs(); chan++) {
+                for (int frame = 0; frame < count; frame++) {
+                    fAdaptedInputs[chan][frame] = TYPE_INT(reinterpret_cast<TYPE_EXT**>(inputs)[chan][frame]);
+                }
+            }
+        }
+    
+        void adaptOutputsBuffers(int count, FAUSTFLOAT** outputs)
+        {
+            for (int chan = 0; chan < fDSP->getNumOutputs(); chan++) {
+                for (int frame = 0; frame < count; frame++) {
+                    reinterpret_cast<TYPE_EXT**>(outputs)[chan][frame] = TYPE_EXT(fAdaptedOutputs[chan][frame]);
+                }
+            }
+        }
+    
+    public:
+    
+        dsp_sample_adapter(dsp* dsp):decorator_dsp(dsp)
+        {
+            fAdaptedInputs = new TYPE_INT*[dsp->getNumInputs()];
+            for (int i = 0; i < dsp->getNumInputs(); i++) {
+                fAdaptedInputs[i] = new TYPE_INT[4096];
+            }
+            
+            fAdaptedOutputs = new TYPE_INT*[dsp->getNumOutputs()];
+            for (int i = 0; i < dsp->getNumOutputs(); i++) {
+                fAdaptedOutputs[i] = new TYPE_INT[4096];
+            }
+        }
+    
+        virtual ~dsp_sample_adapter()
+        {
+            for (int i = 0; i < fDSP->getNumInputs(); i++) {
+                delete [] fAdaptedInputs[i];
+            }
+            delete [] fAdaptedInputs;
+            
+            for (int i = 0; i < fDSP->getNumOutputs(); i++) {
+                delete [] fAdaptedOutputs[i];
+            }
+            delete [] fAdaptedOutputs;
+        }
+    
+        virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptInputBuffers(count, inputs);
+            // DSP base class uses FAUSTFLOAT** type, so reinterpret_cast has to be used even if the real DSP uses TYPE_INT
+            fDSP->compute(count, reinterpret_cast<FAUSTFLOAT**>(fAdaptedInputs), reinterpret_cast<FAUSTFLOAT**>(fAdaptedOutputs));
+            adaptOutputsBuffers(count, outputs);
+        }
+    
+        virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
+        {
+            adaptInputBuffers(count, inputs);
+            // DSP base class uses FAUSTFLOAT** type, so reinterpret_cast has to be used even if the real DSP uses TYPE_INT
+            fDSP->compute(date_usec, count, reinterpret_cast<FAUSTFLOAT**>(fAdaptedInputs), reinterpret_cast<FAUSTFLOAT**>(fAdaptedOutputs));
+            adaptOutputsBuffers(count, outputs);
+       }
+};
+
+#endif
+/**************************  END  dsp-adapter.h **************************/
 
 
 #include <math.h>
 #include <cmath>
+
+
+#if OSCCTRL
+#define OSC_IP_ADDRESS  "192.168.0.101"
+#define OSC_IN_PORT     "5510"
+#define OSC_OUT_PORT    "5511"
+
+/************************** BEGIN OSCUI.h **************************/
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __OSCUI__
+#define __OSCUI__
+
+#include <vector>
+#include <string>
+
+/*
+
+  Faust Project
+
+  Copyright (C) 2011 Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __OSCControler__
+#define __OSCControler__
+
+#include <string>
+/*
+
+  Copyright (C) 2011 Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __FaustFactory__
+#define __FaustFactory__
+
+#include <stack>
+#include <string>
+#include <sstream>
+
+/*
+
+  Copyright (C) 2011 Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __FaustNode__
+#define __FaustNode__
+
+#include <string>
+#include <vector>
+
+/*
+
+  Copyright (C) 2011 Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __MessageDriven__
+#define __MessageDriven__
+
+#include <string>
+#include <vector>
+
+/*
+
+  Copyright (C) 2010  Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __MessageProcessor__
+#define __MessageProcessor__
+
+namespace oscfaust
+{
+
+class Message;
+//--------------------------------------------------------------------------
+/*!
+	\brief an abstract class for objects able to process OSC messages	
+*/
+class MessageProcessor
+{
+	public:
+		virtual		~MessageProcessor() {}
+		virtual void processMessage( const Message* msg ) = 0;
+};
+
+} // end namespoace
+
+#endif
+/*
+
+  Copyright (C) 2011 Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __smartpointer__
+#define __smartpointer__
+
+#include <cassert>
+
+namespace oscfaust
+{
+
+/*!
+\brief the base class for smart pointers implementation
+
+	Any object that want to support smart pointers should
+	inherit from the smartable class which provides reference counting
+	and automatic delete when the reference count drops to zero.
+*/
+class smartable {
+	private:
+		unsigned 	refCount;		
+	public:
+		//! gives the reference count of the object
+		unsigned refs() const         { return refCount; }
+		//! addReference increments the ref count and checks for refCount overflow
+		void addReference()           { refCount++; assert(refCount != 0); }
+		//! removeReference delete the object when refCount is zero		
+		void removeReference()		  { if (--refCount == 0) delete this; }
+		
+	protected:
+		smartable() : refCount(0) {}
+		smartable(const smartable&): refCount(0) {}
+		//! destructor checks for non-zero refCount
+		virtual ~smartable()    
+        { 
+            /* 
+                See "Static SFaustNode create (const char* name, C* zone, C init, C min, C max, const char* prefix, GUI* ui)" comment.
+                assert (refCount == 0); 
+            */
+        }
+		smartable& operator=(const smartable&) { return *this; }
+};
+
+/*!
+\brief the smart pointer implementation
+
+	A smart pointer is in charge of maintaining the objects reference count 
+	by the way of pointers operators overloading. It supports class 
+	inheritance and conversion whenever possible.
+\n	Instances of the SMARTP class are supposed to use \e smartable types (or at least
+	objects that implements the \e addReference and \e removeReference
+	methods in a consistent way).
+*/
+template<class T> class SMARTP {
+	private:
+		//! the actual pointer to the class
+		T* fSmartPtr;
+
+	public:
+		//! an empty constructor - points to null
+		SMARTP()	: fSmartPtr(0) {}
+		//! build a smart pointer from a class pointer
+		SMARTP(T* rawptr) : fSmartPtr(rawptr)              { if (fSmartPtr) fSmartPtr->addReference(); }
+		//! build a smart pointer from an convertible class reference
+		template<class T2> 
+		SMARTP(const SMARTP<T2>& ptr) : fSmartPtr((T*)ptr) { if (fSmartPtr) fSmartPtr->addReference(); }
+		//! build a smart pointer from another smart pointer reference
+		SMARTP(const SMARTP& ptr) : fSmartPtr((T*)ptr)     { if (fSmartPtr) fSmartPtr->addReference(); }
+
+		//! the smart pointer destructor: simply removes one reference count
+		~SMARTP()  { if (fSmartPtr) fSmartPtr->removeReference(); }
+		
+		//! cast operator to retrieve the actual class pointer
+		operator T*() const  { return fSmartPtr;	}
+
+		//! '*' operator to access the actual class pointer
+		T& operator*() const {
+			// checks for null dereference
+			assert (fSmartPtr != 0);
+			return *fSmartPtr;
+		}
+
+		//! operator -> overloading to access the actual class pointer
+		T* operator->() const	{ 
+			// checks for null dereference
+			assert (fSmartPtr != 0);
+			return fSmartPtr;
+		}
+
+		//! operator = that moves the actual class pointer
+		template <class T2>
+		SMARTP& operator=(T2 p1_)	{ *this=(T*)p1_; return *this; }
+
+		//! operator = that moves the actual class pointer
+		SMARTP& operator=(T* p_)	{
+			// check first that pointers differ
+			if (fSmartPtr != p_) {
+				// increments the ref count of the new pointer if not null
+				if (p_ != 0) p_->addReference();
+				// decrements the ref count of the old pointer if not null
+				if (fSmartPtr != 0) fSmartPtr->removeReference();
+				// and finally stores the new actual pointer
+				fSmartPtr = p_;
+			}
+			return *this;
+		}
+		//! operator < to support SMARTP map with Visual C++
+		bool operator<(const SMARTP<T>& p_)	const			  { return fSmartPtr < ((T *) p_); }
+		//! operator = to support inherited class reference
+		SMARTP& operator=(const SMARTP<T>& p_)                { return operator=((T *) p_); }
+		//! dynamic cast support
+		template<class T2> SMARTP& cast(T2* p_)               { return operator=(dynamic_cast<T*>(p_)); }
+		//! dynamic cast support
+		template<class T2> SMARTP& cast(const SMARTP<T2>& p_) { return operator=(dynamic_cast<T*>(p_)); }
+};
+
+}
+
+#endif
+
+namespace oscfaust
+{
+
+class Message;
+class OSCRegexp;
+class MessageDriven;
+typedef class SMARTP<MessageDriven>	SMessageDriven;
+
+//--------------------------------------------------------------------------
+/*!
+	\brief a base class for objects accepting OSC messages
+	
+	Message driven objects are hierarchically organized in a tree.
+	They provides the necessary to dispatch an OSC message to its destination
+	node, according to the message OSC address. 
+	
+	The principle of the dispatch is the following:
+	- first the processMessage() method should be called on the top level node
+	- next processMessage call propose 
+*/
+class MessageDriven : public MessageProcessor, public smartable
+{
+	std::string						fName;			///< the node name
+	std::string						fOSCPrefix;		///< the node OSC address prefix (OSCAddress = fOSCPrefix + '/' + fName)
+	std::vector<SMessageDriven>		fSubNodes;		///< the subnodes of the current node
+
+	protected:
+				 MessageDriven(const char *name, const char *oscprefix) : fName (name), fOSCPrefix(oscprefix) {}
+		virtual ~MessageDriven() {}
+
+	public:
+		static SMessageDriven create(const char* name, const char *oscprefix)	{ return new MessageDriven(name, oscprefix); }
+
+		/*!
+			\brief OSC message processing method.
+			\param msg the osc message to be processed
+			The method should be called on the top level node.
+		*/
+		virtual void	processMessage(const Message* msg);
+
+		/*!
+			\brief propose an OSc message at a given hierarchy level.
+			\param msg the osc message currently processed
+			\param regexp a regular expression based on the osc address head
+			\param addrTail the osc address tail
+			
+			The method first tries to match the regular expression with the object name. 
+			When it matches:
+			- it calls \c accept when \c addrTail is empty 
+			- or it \c propose the message to its subnodes when \c addrTail is not empty. 
+			  In this case a new \c regexp is computed with the head of \c addrTail and a new \c addrTail as well.
+		*/
+		virtual void	propose(const Message* msg, const OSCRegexp* regexp, const std::string& addrTail);
+
+		/*!
+			\brief accept an OSC message. 
+			\param msg the osc message currently processed
+			\return true when the message is processed by the node
+			
+			The method is called only for the destination nodes. The real message acceptance is the node 
+			responsability and may depend on the message content.
+		*/
+		virtual bool	accept(const Message* msg);
+
+		/*!
+			\brief handler for the \c 'get' message
+			\param ipdest the output message destination IP
+			
+			The \c 'get' message is supported by every node:
+			- it is propagated to the subnodes until it reaches terminal nodes
+			- a terminal node send its state on \c 'get' request to the IP address given as parameter.
+			The \c get method is basically called by the accept method.
+		*/
+		virtual void	get(unsigned long ipdest) const;
+
+		/*!
+			\brief handler for the \c 'get' 'attribute' message
+			\param ipdest the output message destination IP
+			\param what the requested attribute
+			
+			The \c 'get' message is supported by every node:
+			- it is propagated to the subnodes until it reaches terminal nodes
+			- a terminal node send its state on \c 'get' request to the IP address given as parameter.
+			The \c get method is basically called by the accept method.
+		*/
+		virtual void	get(unsigned long ipdest, const std::string& what) const {}
+
+		void			add(SMessageDriven node)	{ fSubNodes.push_back (node); }
+		const char*		getName() const				{ return fName.c_str(); }
+		std::string		getOSCAddress() const;
+		int				size() const				{ return (int)fSubNodes.size (); }
+		
+		const std::string&	name() const			{ return fName; }
+		SMessageDriven	subnode(int i)              { return fSubNodes[i]; }
+};
+
+} // end namespoace
+
+#endif
+/*
+
+  Copyright (C) 2011  Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+
+#ifndef __Message__
+#define __Message__
+
+#include <string>
+#include <vector>
+
+namespace oscfaust
+{
+
+class OSCStream;
+template <typename T> class MsgParam;
+class baseparam;
+typedef SMARTP<baseparam>	Sbaseparam;
+
+//--------------------------------------------------------------------------
+/*!
+	\brief base class of a message parameters
+*/
+class baseparam : public smartable
+{
+	public:
+		virtual ~baseparam() {}
+
+		/*!
+		 \brief utility for parameter type checking
+		*/
+		template<typename X> bool isType() const { return dynamic_cast<const MsgParam<X>*> (this) != 0; }
+		/*!
+		 \brief utility for parameter convertion
+		 \param errvalue the returned value when no conversion applies
+		 \return the parameter value when the type matches
+		*/
+		template<typename X> X	value(X errvalue) const 
+			{ const MsgParam<X>* o = dynamic_cast<const MsgParam<X>*> (this); return o ? o->getValue() : errvalue; }
+		/*!
+		 \brief utility for parameter comparison
+		*/
+		template<typename X> bool	equal(const baseparam& p) const 
+			{ 
+				const MsgParam<X>* a = dynamic_cast<const MsgParam<X>*> (this); 
+				const MsgParam<X>* b = dynamic_cast<const MsgParam<X>*> (&p);
+				return a && b && (a->getValue() == b->getValue());
+			}
+		/*!
+		 \brief utility for parameter comparison
+		*/
+		bool operator==(const baseparam& p) const 
+			{ 
+				return equal<float>(p) || equal<int>(p) || equal<std::string>(p);
+			}
+		bool operator!=(const baseparam& p) const
+			{ 
+				return !equal<float>(p) && !equal<int>(p) && !equal<std::string>(p);
+			}
+			
+		virtual SMARTP<baseparam> copy() const = 0;
+};
+
+//--------------------------------------------------------------------------
+/*!
+	\brief template for a message parameter
+*/
+template <typename T> class MsgParam : public baseparam
+{
+	T fParam;
+	public:
+				 MsgParam(T val) : fParam(val)	{}
+		virtual ~MsgParam() {}
+		
+		T getValue() const { return fParam; }
+		
+		virtual Sbaseparam copy() const { return new MsgParam<T>(fParam); }
+};
+
+//--------------------------------------------------------------------------
+/*!
+	\brief a message description
+	
+	A message is composed of an address (actually an OSC address),
+	a message string that may be viewed as a method name
+	and a list of message parameters.
+*/
+class Message
+{
+    public:
+        typedef SMARTP<baseparam>		argPtr;		///< a message argument ptr type
+        typedef std::vector<argPtr>		argslist;	///< args list type
+
+    private:
+        unsigned long	fSrcIP;			///< the message source IP number
+        std::string	fAddress;			///< the message osc destination address
+        std::string	fAlias;             ///< the message alias osc destination address
+        argslist	fArguments;			///< the message arguments
+
+    public:
+            /*!
+                \brief an empty message constructor
+            */
+             Message() {}
+            /*!
+                \brief a message constructor
+                \param address the message destination address
+            */
+            Message(const std::string& address) : fAddress(address), fAlias("") {}
+             
+            Message(const std::string& address, const std::string& alias) : fAddress(address), fAlias(alias) {}
+            /*!
+                \brief a message constructor
+                \param address the message destination address
+                \param args the message parameters
+            */
+            Message(const std::string& address, const argslist& args) 
+                : fAddress(address), fArguments(args) {}
+            /*!
+                \brief a message constructor
+                \param msg a message
+            */
+             Message(const Message& msg);
+    virtual ~Message() {} //{ freed++; std::cout << "running messages: " << (allocated - freed) << std::endl; }
+
+    /*!
+        \brief adds a parameter to the message
+        \param val the parameter
+    */
+    template <typename T> void add(T val)	{ fArguments.push_back(new MsgParam<T>(val)); }
+    /*!
+        \brief adds a float parameter to the message
+        \param val the parameter value
+    */
+    void	add(float val)					{ add<float>(val); }
+    
+    /*!
+     \brief adds a double parameter to the message
+     \param val the parameter value
+     */
+    void	add(double val)					{ add<double>(val); }
+    
+    /*!
+        \brief adds an int parameter to the message
+        \param val the parameter value
+    */
+    void	add(int val)					{ add<int>(val); }
+    
+    /*!
+        \brief adds a string parameter to the message
+        \param val the parameter value
+    */
+    void	add(const std::string& val)		{ add<std::string>(val); }
+
+    /*!
+        \brief adds a parameter to the message
+        \param val the parameter
+    */
+    void	add(argPtr val)                 { fArguments.push_back( val ); }
+
+    /*!
+        \brief sets the message address
+        \param addr the address
+    */
+    void				setSrcIP(unsigned long addr)		{ fSrcIP = addr; }
+
+    /*!
+        \brief sets the message address
+        \param addr the address
+    */
+    void				setAddress(const std::string& addr)		{ fAddress = addr; }
+    /*!
+        \brief print the message
+        \param out the output stream
+    */
+    void				print(std::ostream& out) const;
+    /*!
+        \brief send the message to OSC
+        \param out the OSC output stream
+    */
+    void				print(OSCStream& out) const;
+    /*!
+        \brief print message arguments
+        \param out the OSC output stream
+    */
+    void				printArgs(OSCStream& out) const;
+
+    /// \brief gives the message address
+    const std::string&	address() const		{ return fAddress; }
+    /// \brief gives the message alias
+    const std::string&	alias() const		{ return fAlias; }
+    /// \brief gives the message parameters list
+    const argslist&		params() const		{ return fArguments; }
+    /// \brief gives the message parameters list
+    argslist&			params()			{ return fArguments; }
+    /// \brief gives the message source IP 
+    unsigned long		src() const			{ return fSrcIP; }
+    /// \brief gives the message parameters count
+    int					size() const		{ return (int)fArguments.size(); }
+
+    bool operator == (const Message& other) const;	
+
+    /*!
+        \brief gives a message float parameter
+        \param i the parameter index (0 <= i < size())
+        \param val on output: the parameter value when the parameter type matches
+        \return false when types don't match
+    */
+    bool	param(int i, float& val) const		{ val = params()[i]->value<float>(val); return params()[i]->isType<float>(); }
+    
+    /*!
+     \brief gives a message double parameter
+     \param i the parameter index (0 <= i < size())
+     \param val on output: the parameter value when the parameter type matches
+     \return false when types don't match
+     */
+    bool	param(int i, double& val) const		{ val = params()[i]->value<double>(val); return params()[i]->isType<double>(); }
+    
+    /*!
+        \brief gives a message int parameter
+        \param i the parameter index (0 <= i < size())
+        \param val on output: the parameter value when the parameter type matches
+        \return false when types don't match
+    */
+    bool	param(int i, int& val) const		{ val = params()[i]->value<int>(val); return params()[i]->isType<int>(); }
+    /*!
+        \brief gives a message int parameter
+        \param i the parameter index (0 <= i < size())
+        \param val on output: the parameter value when the parameter type matches
+        \return false when types don't match
+    */
+    bool	param(int i, unsigned int& val) const		{ val = params()[i]->value<int>(val); return params()[i]->isType<int>(); }
+    /*!
+        \brief gives a message int parameter
+        \param i the parameter index (0 <= i < size())
+        \param val on output: the parameter value when the parameter type matches
+        \return false when types don't match
+        \note a boolean value is handled as integer
+    */
+    bool	param(int i, bool& val) const		{ int ival = 0; ival = params()[i]->value<int>(ival); val = ival!=0; return params()[i]->isType<int>(); }
+    /*!
+        \brief gives a message int parameter
+        \param i the parameter index (0 <= i < size())
+        \param val on output: the parameter value when the parameter type matches
+        \return false when types don't match
+    */
+    bool	param(int i, long int& val) const	{ val = long(params()[i]->value<int>(val)); return params()[i]->isType<int>(); }
+    /*!
+        \brief gives a message string parameter
+        \param i the parameter index (0 <= i < size())
+        \param val on output: the parameter value when the parameter type matches
+        \return false when types don't match
+    */
+    bool	param(int i, std::string& val) const { val = params()[i]->value<std::string>(val); return params()[i]->isType<std::string>(); }
+};
+
+
+} // end namespoace
+
+#endif
+/*
+
+  Copyright (C) 2011 Grame
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+  Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France
+  research@grame.fr
+
+*/
+
+#ifndef __RootNode__
+#define __RootNode__
+
+#include <map>
+#include <string>
+#include <vector>
+
+
+namespace oscfaust
+{
+
+class OSCIO;
+class RootNode;
+typedef class SMARTP<RootNode> SRootNode;
+
+/**
+ * an alias target includes a map to rescale input values to output values
+ * and a target osc address. The input values can be given in reversed order
+ * to reverse the control
+ */
+struct aliastarget
+{
+	double      fMinIn;
+	double      fMaxIn;
+	double      fMinOut;
+	double      fMaxOut;
+	std::string fTarget;	// the real osc address
+
+	aliastarget(const char* address, double imin, double imax, double omin, double omax)
+		: fMinIn(imin), fMaxIn(imax), fMinOut(omin), fMaxOut(omax), fTarget(address) {}
+
+	aliastarget(const aliastarget& t)
+		: fMinIn(t.fMinIn), fMaxIn(t.fMaxIn), fMinOut(t.fMinOut), fMaxOut(t.fMaxOut), fTarget(t.fTarget) {}
+
+	double scale(double x) const 
+    {
+        if (fMinIn < fMaxIn) {
+            // increasing control
+            double z = (x < fMinIn) ? fMinIn : (x > fMaxIn) ? fMaxIn : x;
+            return fMinOut + (z-fMinIn)*(fMaxOut-fMinOut)/(fMaxIn-fMinIn);
+            
+        } else if (fMinIn > fMaxIn) {
+            // reversed control
+            double z = (x < fMaxIn) ? fMaxIn : (x > fMinIn) ? fMinIn : x;
+            return fMinOut + (fMinIn-z)*(fMaxOut-fMinOut)/(fMinIn-fMaxIn);
+            
+        } else {
+            // no control !
+            return (fMinOut+fMaxOut)/2.0f;
+        }
+    }
+    
+    double invscale(double x) const
+    {
+        if (fMinOut < fMaxOut) {
+            // increasing control
+            double z = (x < fMinOut) ? fMinOut : (x > fMaxOut) ? fMaxOut : x;
+            return fMinIn + (z-fMinOut)*(fMaxIn-fMinIn)/(fMaxOut-fMinOut);
+            
+        } else if (fMinOut > fMaxOut) {
+            // reversed control
+            double z = (x < fMaxOut) ? fMaxOut : (x > fMinOut) ? fMinOut : x;
+            return fMinIn + (fMinOut-z)*(fMaxIn-fMinIn)/(fMinOut-fMaxOut);
+            
+        } else {
+            // no control !
+            return (fMinIn+fMaxIn)/2.0f;
+        }
+    }
+};
+
+//--------------------------------------------------------------------------
+/*!
+	\brief a faust root node
+
+	A Faust root node handles the \c 'hello' message and provides support
+	for incoming osc signal data. 
+*/
+class RootNode : public MessageDriven
+{
+
+    private:
+        int *fUPDIn, *fUDPOut, *fUDPErr;    // the osc port numbers (required by the hello method)
+        OSCIO* fIO;                         // an OSC IO controler
+        JSONUI* fJSON;
+
+        typedef std::map<std::string, std::vector<aliastarget> > TAliasMap;
+        TAliasMap fAliases;
+
+        template <typename T>
+        void processAliasAux(const std::string& address, T val);
+        void processAlias(const std::string& address, float val);
+        void processAlias(const std::string& address, double val);
+    
+        void eraseAliases(const std::string& target);
+        void eraseAlias(const std::string& target, const std::string& alias);
+        bool aliasError(const Message* msg);
+
+    protected:
+        RootNode(const char *name, JSONUI* json, OSCIO* io = NULL) : MessageDriven(name, ""), fUPDIn(0), fUDPOut(0), fUDPErr(0), fIO(io), fJSON(json) {}
+        virtual ~RootNode() {}
+
+    public:
+        static SRootNode create(const char* name, JSONUI* json, OSCIO* io = NULL) { return new RootNode(name, json, io); }
+
+        virtual void processMessage(const Message* msg);
+        virtual bool accept(const Message* msg);
+        virtual void get(unsigned long ipdest) const;
+        virtual void get(unsigned long ipdest, const std::string& what) const;
+
+        template <typename T>
+        bool aliasMsgAux(const Message* msg, T omin, T omax);
+        bool aliasMsg(const Message* msg, double omin, double omax);
+        bool aliasMsg(const Message* msg, float omin, float omax);
+    
+        template <typename T>
+        void addAliasAux(const char* alias, const char* address, T imin, T imax, T omin, T omax);
+        void addAlias(const char* alias, const char* address, float imin, float imax, float omin, float omax);
+        void addAlias(const char* alias, const char* address, double imin, double imax, double omin, double omax);
+    
+        bool acceptSignal(const Message* msg);      ///< handler for signal data
+        void hello(unsigned long ipdest) const;     ///< handler for the 'hello' message
+        void setPorts(int* in, int* out, int* err);
+
+        std::vector<std::pair<std::string, double> > getAliases(const std::string& address, double value);
+};
+
+} // end namespoace
+
+#endif
+
+namespace oscfaust
+{
+
+/**
+ * map (rescale) input values to output values
+ */
+template <typename C> struct mapping
+{
+	const C fMinOut;
+	const C fMaxOut;
+	mapping(C omin, C omax) : fMinOut(omin), fMaxOut(omax) {}
+	C clip (C x) { return (x < fMinOut) ? fMinOut : (x > fMaxOut) ? fMaxOut : x; }
+};
+
+//--------------------------------------------------------------------------
+/*!
+	\brief a faust node is a terminal node and represents a faust parameter controler
+*/
+template <typename C> class FaustNode : public MessageDriven, public uiTypedItem<C>
+{
+	mapping<C>	fMapping;
+    RootNode*   fRoot;
+    bool        fInput;  // true for input nodes (slider, button...)
+	
+	//---------------------------------------------------------------------
+	// Warning !!!
+	// The cast (C *)fZone is necessary because the real size allocated is
+	// only known at execution time. When the library is compiled, fZone is
+	// uniquely defined by FAUSTFLOAT.
+	//---------------------------------------------------------------------
+	bool store(C val) { *(C *)this->fZone = fMapping.clip(val); return true; }
+	void sendOSC() const;
+
+	protected:
+		FaustNode(RootNode* root, const char *name, C* zone, C init, C min, C max, const char* prefix, GUI* ui, bool initZone, bool input) 
+			: MessageDriven(name, prefix), uiTypedItem<C>(ui, zone), fMapping(min, max), fRoot(root), fInput(input)
+			{
+                if (initZone) {
+                    *zone = init; 
+                }
+            }
+			
+		virtual ~FaustNode() {}
+
+	public:
+		typedef SMARTP<FaustNode<C> > SFaustNode;
+		static SFaustNode create(RootNode* root, const char* name, C* zone, C init, C min, C max, const char* prefix, GUI* ui, bool initZone, bool input)	
+        { 
+            SFaustNode node = new FaustNode(root, name, zone, init, min, max, prefix, ui, initZone, input); 
+            /*
+                Since FaustNode is a subclass of uiItem, the pointer will also be kept in the GUI class, and it's desallocation will be done there.
+                So we don't want to have smartpointer logic desallocate it and we increment the refcount.
+            */
+            node->addReference();
+            return node; 
+        }
+    
+		bool accept(const Message* msg);
+		void get(unsigned long ipdest) const;		///< handler for the 'get' message
+		virtual void reflectZone() { sendOSC(); this->fCache = *this->fZone; }
+};
+
+} // end namespace
+
+#endif
+
+class GUI;
+namespace oscfaust
+{
+
+class OSCIO;
+class RootNode;
+typedef class SMARTP<RootNode> SRootNode;
+class MessageDriven;
+typedef class SMARTP<MessageDriven>	SMessageDriven;
+
+//--------------------------------------------------------------------------
+/*!
+	\brief a factory to build a OSC UI hierarchy
+	
+	Actually, makes use of a stack to build the UI hierarchy.
+	It includes a pointer to a OSCIO controler, but just to give it to the root node.
+*/
+class FaustFactory
+{
+    std::stack<SMessageDriven>  fNodes;		///< maintains the current hierarchy level
+    SRootNode  fRoot;   ///< keep track of the root node
+    OSCIO*     fIO;     ///< hack to support audio IO via OSC, actually the field is given to the root node
+    GUI*       fGUI;    ///< a GUI pointer to support updateAllGuis(), required for bi-directionnal OSC
+    JSONUI*    fJSON;
+    
+    private:
+        std::string addressFirst(const std::string& address) const;
+        std::string addressTail(const std::string& address) const;
+        
+    public:
+        FaustFactory(GUI* ui, JSONUI* json, OSCIO * io = NULL);
+        virtual ~FaustFactory();
+        
+        template <typename C> void addnode(const char* label, C* zone, C init, C min, C max, bool initZone, bool input);
+        template <typename C> void addAlias(const std::string& fullpath, C* zone, C imin, C imax, C init, C min, C max, const char* label);
+        
+        void addAlias(const char* alias, const char* address, float imin, float imax, float omin, float omax);
+        void addAlias(const char* alias, const char* address, double imin, double imax, double omin, double omax);
+        void opengroup(const char* label);
+        void closegroup();
+        
+        SRootNode root() const; 
+};
+
+/**
+ * Add a node to the OSC UI tree in the current group at the top of the stack 
+ */
+template <typename C> void FaustFactory::addnode(const char* label, C* zone, C init, C min, C max, bool initZone, bool input) 
+{
+	SMessageDriven top;
+	if (fNodes.size()) top = fNodes.top();
+	if (top) {
+		std::string prefix = top->getOSCAddress();
+		top->add(FaustNode<C>::create(root(), label, zone, init, min, max, prefix.c_str(), fGUI, initZone, input));
+	}
+}
+
+/**
+ * Add an alias (actually stored and handled at root node level
+ */
+template <typename C> void FaustFactory::addAlias(const std::string& fullpath, C* zone, C imin, C imax, C init, C min, C max, const char* label)
+{
+	std::istringstream 	ss(fullpath);
+	std::string 		realpath; 
+ 
+	ss >> realpath >> imin >> imax;
+	SMessageDriven top = fNodes.top();
+	if (top) {
+		std::string target = top->getOSCAddress() + "/" + label;
+		addAlias(realpath.c_str(), target.c_str(), C(imin), C(imax), C(min), C(max));
+	}
+}
+
+} // end namespoace
+
+#endif
+
+class GUI;
+
+typedef void (*ErrorCallback)(void*);  
+
+namespace oscfaust
+{
+
+class OSCIO;
+class OSCSetup;
+class OSCRegexp;
+    
+//--------------------------------------------------------------------------
+/*!
+	\brief the main Faust OSC Lib API
+	
+	The OSCControler is essentially a glue between the memory representation (in charge of the FaustFactory),
+	and the network services (in charge of OSCSetup).
+*/
+class OSCControler
+{
+	int fUDPPort,   fUDPOut, fUPDErr;	// the udp ports numbers
+	std::string     fDestAddress;		// the osc messages destination address, used at initialization only
+										// to collect the address from the command line
+	std::string     fBindAddress;		// when non empty, the address used to bind the socket for listening
+	OSCSetup*		fOsc;				// the network manager (handles the udp sockets)
+	OSCIO*			fIO;				// hack for OSC IO support (actually only relayed to the factory)
+	FaustFactory*	fFactory;			// a factory to build the memory representation
+
+    bool            fInit;
+    
+	public:
+		/*
+			base udp port is chosen in an unassigned range from IANA PORT NUMBERS (last updated 2011-01-24)
+			see at http://www.iana.org/assignments/port-numbers
+			5507-5552  Unassigned
+		*/
+		enum { kUDPBasePort = 5510 };
+            
+        OSCControler(int argc, char* argv[], GUI* ui, JSONUI* json, OSCIO* io = NULL, ErrorCallback errCallback = NULL, void* arg = NULL, bool init = true);
+
+        virtual ~OSCControler();
+	
+		//--------------------------------------------------------------------------
+		// addnode, opengroup and closegroup are simply relayed to the factory
+		//--------------------------------------------------------------------------
+		// Add a node in the current group (top of the group stack)
+		template <typename T> void addnode(const char* label, T* zone, T init, T min, T max, bool input = true)
+							{ fFactory->addnode(label, zone, init, min, max, fInit, input); }
+		
+		//--------------------------------------------------------------------------
+		// This method is used for alias messages. The arguments imin and imax allow
+		// to map incomming values from the alias input range to the actual range 
+		template <typename T> void addAlias(const std::string& fullpath, T* zone, T imin, T imax, T init, T min, T max, const char* label)
+							{ fFactory->addAlias(fullpath, zone, imin, imax, init, min, max, label); }
+
+		void opengroup(const char* label)		{ fFactory->opengroup(label); }
+		void closegroup()						{ fFactory->closegroup(); }
+	   
+		//--------------------------------------------------------------------------
+		void run();				// starts the network services
+		void endBundle();		// when bundle mode is on, close and send the current bundle (if any)
+		void stop();			// stop the network services
+		std::string getInfos() const; // gives information about the current environment (version, port numbers,...)
+
+		int	getUDPPort() const			{ return fUDPPort; }
+		int	getUDPOut()	const			{ return fUDPOut; }
+		int	getUDPErr()	const			{ return fUPDErr; }
+		const char*	getDestAddress() const { return fDestAddress.c_str(); }
+		const char*	getRootName() const;	// probably useless, introduced for UI extension experiments
+    
+        void setUDPPort(int port) { fUDPPort = port; }
+        void setUDPOut(int port) { fUDPOut = port; }
+        void setUDPErr(int port) { fUPDErr = port; }
+        void setDestAddress(const char* address) { fDestAddress = address; }
+
+        // By default, an osc interface emits all parameters. You can filter specific params dynamically.
+        static std::vector<OSCRegexp*>     fFilteredPaths; // filtered paths will not be emitted
+        static void addFilteredPath(std::string path);
+        static bool isPathFiltered(std::string path);
+        static void resetFilteredPaths();
+    
+		static float version();				// the Faust OSC library version number
+		static const char* versionstr();	// the Faust OSC library version number as a string
+		static int gXmit;                   // a static variable to control the transmission of values
+                                            // i.e. the use of the interface as a controler
+		static int gBundle;                 // a static variable to control the osc bundle mode
+};
+
+#define kNoXmit     0
+#define kAll        1
+#define kAlias      2
+
+}
+
+#endif
+
+#ifdef _WIN32
+#define strcasecmp _stricmp
+#endif
+
+/******************************************************************************
+ *******************************************************************************
+ 
+ OSC (Open Sound Control) USER INTERFACE
+ 
+ *******************************************************************************
+ *******************************************************************************/
+/*
+ 
+ Note about the OSC addresses and the Faust UI names:
+ ----------------------------------------------------
+ There are potential conflicts between the Faust UI objects naming scheme and
+ the OSC address space. An OSC symbolic names is an ASCII string consisting of
+ printable characters other than the following:
+	space
+ #	number sign
+ *	asterisk
+ ,	comma
+ /	forward
+ ?	question mark
+ [	open bracket
+ ]	close bracket
+ {	open curly brace
+ }	close curly brace
+ 
+ a simple solution to address the problem consists in replacing
+ space or tabulation with '_' (underscore)
+ all the other osc excluded characters with '-' (hyphen)
+ 
+ This solution is implemented in the proposed OSC UI;
+ */
+
+class OSCUI : public GUI
+{
+    
+    private:
+        
+        oscfaust::OSCControler*	fCtrl;
+        std::vector<const char*> fAlias;
+        JSONUI fJSON;
+        
+        const char* tr(const char* label) const
+        {
+            static char buffer[1024];
+            char * ptr = buffer; int n=1;
+            while (*label && (n++ < 1024)) {
+                switch (*label) {
+                    case ' ': case '	':
+                        *ptr++ = '_';
+                        break;
+                    case '#': case '*': case ',': case '/': case '?':
+                    case '[': case ']': case '{': case '}': case '(': case ')':
+                        *ptr++ = '_';
+                        break;
+                    default:
+                        *ptr++ = *label;
+                }
+                label++;
+            }
+            *ptr = 0;
+            return buffer;
+        }
+        
+        // add all accumulated alias
+        void addalias(FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, const char* label)
+        {
+            for (unsigned int i = 0; i < fAlias.size(); i++) {
+                fCtrl->addAlias(fAlias[i], zone, FAUSTFLOAT(0), FAUSTFLOAT(1), init, min, max, label);
+            }
+            fAlias.clear();
+        }
+        
+    public:
+        
+        OSCUI(const char* /*applicationname*/, int argc, char* argv[], oscfaust::OSCIO* io = NULL, ErrorCallback errCallback = NULL, void* arg = NULL, bool init = true) : GUI()
+        {
+            fCtrl = new oscfaust::OSCControler(argc, argv, this, &fJSON, io, errCallback, arg, init);
+            //		fCtrl->opengroup(applicationname);
+        }
+        
+        virtual ~OSCUI() { delete fCtrl; }
+        
+        // -- widget's layouts
+        
+        virtual void openTabBox(const char* label)          { fCtrl->opengroup(tr(label)); fJSON.openTabBox(label); }
+        virtual void openHorizontalBox(const char* label)   { fCtrl->opengroup(tr(label)); fJSON.openHorizontalBox(label); }
+        virtual void openVerticalBox(const char* label)     { fCtrl->opengroup(tr(label)); fJSON.openVerticalBox(label); }
+        virtual void closeBox()                             { fCtrl->closegroup(); fJSON.closeBox(); }
+        
+        // -- active widgets
+        virtual void addButton(const char* label, FAUSTFLOAT* zone)
+        {
+            const char* l = tr(label);
+            addalias(zone, 0, 0, 1, l);
+            fCtrl->addnode(l, zone, FAUSTFLOAT(0), FAUSTFLOAT(0), FAUSTFLOAT(1));
+            fJSON.addButton(label, zone);
+        }
+        virtual void addCheckButton(const char* label, FAUSTFLOAT* zone)
+        {
+            const char* l = tr(label);
+            addalias(zone, 0, 0, 1, l);
+            fCtrl->addnode(l, zone, FAUSTFLOAT(0), FAUSTFLOAT(0), FAUSTFLOAT(1));
+            fJSON.addCheckButton(label, zone);
+        }
+        virtual void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            const char* l = tr(label);
+            addalias(zone, init, min, max, l);
+            fCtrl->addnode(l, zone, init, min, max);
+            fJSON.addVerticalSlider(label, zone, init, min, max, step);
+        }
+        virtual void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            const char* l = tr(label);
+            addalias(zone, init, min, max, l);
+            fCtrl->addnode(l, zone, init, min, max);
+            fJSON.addHorizontalSlider(label, zone, init, min, max, step);
+        }
+        virtual void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
+        {
+            const char* l = tr(label);
+            addalias(zone, init, min, max, l);
+            fCtrl->addnode(l, zone, init, min, max);
+            fJSON.addNumEntry(label, zone, init, min, max, step);
+        }
+        
+        // -- passive widgets
+        
+        virtual void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max)
+        {
+            const char* l = tr(label);
+            addalias(zone, 0, min, max, l);
+            fCtrl->addnode(l, zone, FAUSTFLOAT(0), min, max, false);
+            fJSON.addHorizontalBargraph(label, zone, min, max);
+        }
+        virtual void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max)
+        {
+            const char* l = tr(label);
+            addalias(zone, 0, min, max, l);
+            fCtrl->addnode(l, zone, FAUSTFLOAT(0), min, max, false);
+            fJSON.addVerticalBargraph(label, zone, min, max);
+        }
+            
+        // -- metadata declarations
+        
+        virtual void declare(FAUSTFLOAT* zone, const char* key, const char* alias)
+        {
+            if (strcasecmp(key, "OSC") == 0) fAlias.push_back(alias);
+            fJSON.declare(zone, key, alias);
+        }
+        
+        virtual void show() {}
+        
+        bool run()
+        {
+            fCtrl->run();
+            return true;
+        }
+        
+        void stop()			{ fCtrl->stop(); }
+        void endBundle() 	{ fCtrl->endBundle(); }
+        
+        std::string getInfos()          { return fCtrl->getInfos(); }
+        
+        const char* getRootName()		{ return fCtrl->getRootName(); }
+        int getUDPPort()                { return fCtrl->getUDPPort(); }
+        int getUDPOut()                 { return fCtrl->getUDPOut(); }
+        int getUDPErr()                 { return fCtrl->getUDPErr(); }
+        const char* getDestAddress()    { return fCtrl->getDestAddress(); }
+        
+        void setUDPPort(int port)       { fCtrl->setUDPPort(port); }
+        void setUDPOut(int port)        { fCtrl->setUDPOut(port); }
+        void setUDPErr(int port)        { fCtrl->setUDPErr(port); }
+        void setDestAddress(const char* address)    { return fCtrl->setDestAddress(address); }
+    
+};
+
+#endif // __OSCUI__
+/**************************  END  OSCUI.h **************************/
+
+static void osc_compute_callback(void* arg)
+{
+    static_cast<OSCUI*>(arg)->endBundle();
+}
+
+#endif
 
 //**************************************************************
 // Intrinsic
@@ -3703,10 +5905,31 @@ class mydsp2 : public dsp {
 		m->declare("analyzers.lib/name", "Faust Analyzer Library");
 		m->declare("analyzers.lib/version", "0.0");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
-		m->declare("basics.lib/version", "0.0");
+		m->declare("basics.lib/version", "0.1");
 		m->declare("filename", "motion_v7b.lib");
+		m->declare("filters.lib/dcblockerat:author", "Julius O. Smith III");
+		m->declare("filters.lib/dcblockerat:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/dcblockerat:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/highpass:author", "Julius O. Smith III");
+		m->declare("filters.lib/highpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass0_highpass1", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass0_highpass1:author", "Julius O. Smith III");
+		m->declare("filters.lib/lowpass:author", "Julius O. Smith III");
+		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
-		m->declare("filters.lib/version", "0.0");
+		m->declare("filters.lib/pole:author", "Julius O. Smith III");
+		m->declare("filters.lib/pole:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/pole:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1s:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1s:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/zero:author", "Julius O. Smith III");
+		m->declare("filters.lib/zero:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/zero:license", "MIT-style STK-4.3 license");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
@@ -4508,21 +6731,21 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fcheckbox85, "68", "");
 		ui_interface->declare(&fcheckbox85, "motionName", "ventre_cour");
 		ui_interface->addCheckButton("ventre_courOn", &fcheckbox85);
-		ui_interface->declare(&fcheckbox87, "69", "");
-		ui_interface->declare(&fcheckbox87, "motionName", "ventre_rear");
-		ui_interface->addCheckButton("ventre_rearOn", &fcheckbox87);
-		ui_interface->declare(&fcheckbox88, "70", "");
-		ui_interface->declare(&fcheckbox88, "motionName", "ventre_jardin");
-		ui_interface->addCheckButton("ventre_jardinOn", &fcheckbox88);
-		ui_interface->declare(&fcheckbox89, "71", "");
-		ui_interface->declare(&fcheckbox89, "motionName", "ventre_front");
-		ui_interface->addCheckButton("ventre_frontOn", &fcheckbox89);
-		ui_interface->declare(&fcheckbox90, "72", "");
-		ui_interface->declare(&fcheckbox90, "motionName", "ventre_down");
-		ui_interface->addCheckButton("ventre_downOn", &fcheckbox90);
-		ui_interface->declare(&fcheckbox86, "73", "");
-		ui_interface->declare(&fcheckbox86, "motionName", "ventre_up");
-		ui_interface->addCheckButton("ventre_upOn", &fcheckbox86);
+		ui_interface->declare(&fcheckbox86, "69", "");
+		ui_interface->declare(&fcheckbox86, "motionName", "ventre_rear");
+		ui_interface->addCheckButton("ventre_rearOn", &fcheckbox86);
+		ui_interface->declare(&fcheckbox87, "70", "");
+		ui_interface->declare(&fcheckbox87, "motionName", "ventre_jardin");
+		ui_interface->addCheckButton("ventre_jardinOn", &fcheckbox87);
+		ui_interface->declare(&fcheckbox88, "71", "");
+		ui_interface->declare(&fcheckbox88, "motionName", "ventre_front");
+		ui_interface->addCheckButton("ventre_frontOn", &fcheckbox88);
+		ui_interface->declare(&fcheckbox89, "72", "");
+		ui_interface->declare(&fcheckbox89, "motionName", "ventre_down");
+		ui_interface->addCheckButton("ventre_downOn", &fcheckbox89);
+		ui_interface->declare(&fcheckbox90, "73", "");
+		ui_interface->declare(&fcheckbox90, "motionName", "ventre_up");
+		ui_interface->addCheckButton("ventre_upOn", &fcheckbox90);
 		ui_interface->declare(&fcheckbox7, "74", "");
 		ui_interface->declare(&fcheckbox7, "motionName", "ixpn");
 		ui_interface->addCheckButton("ixpnOn", &fcheckbox7);
@@ -5275,7 +7498,7 @@ class mydsp2 : public dsp {
 				fTempPerm77 = (fSlow93 * fRec63[0]);
 			}
 			output27[i] = (FAUSTFLOAT)fTempPerm77;
-			if (iSlow113 || iSlow117 || iSlow119 || iSlow121) {
+			if (iSlow117 || iSlow119 || iSlow121 || iSlow113) {
 				fRec67[0] = (fSlow115 + (0.999f * fRec67[1]));
 			}
 			if (iSlow113) {
@@ -5286,7 +7509,7 @@ class mydsp2 : public dsp {
 				fTempPerm80 = (fSlow112 * fRec65[0]);
 			}
 			output28[i] = (FAUSTFLOAT)fTempPerm80;
-			if (iSlow126 || iSlow129 || iSlow131 || iSlow121) {
+			if (iSlow129 || iSlow131 || iSlow121 || iSlow126) {
 				fRec70[0] = (fSlow127 + (0.999f * fRec70[1]));
 			}
 			if (iSlow126) {
@@ -5297,7 +7520,7 @@ class mydsp2 : public dsp {
 				fTempPerm83 = (fSlow125 * fRec68[0]);
 			}
 			output29[i] = (FAUSTFLOAT)fTempPerm83;
-			if (iSlow133 || iSlow136 || iSlow138 || iSlow121) {
+			if (iSlow136 || iSlow138 || iSlow121 || iSlow133) {
 				fRec73[0] = (fSlow134 + (0.999f * fRec73[1]));
 			}
 			if (iSlow133) {
@@ -5418,14 +7641,14 @@ class mydsp2 : public dsp {
 				fTempPerm121 = (fSlow150 * fRec93[0]);
 			}
 			output43[i] = (FAUSTFLOAT)fTempPerm121;
-			if (iSlow166 || iSlow164 || iSlow168 || iSlow170 || iSlow172 || iSlow174) {
+			if (iSlow164 || iSlow166 || iSlow168 || iSlow170 || iSlow172 || iSlow174) {
 				fTempPerm122 = (float)input3[i];
 				fTempPerm123 = (float)input4[i];
 			}
-			if (iSlow166 || iSlow164 || iSlow170 || iSlow174) {
+			if (iSlow164 || iSlow166 || iSlow170 || iSlow174) {
 				fTempPerm124 = faustpower<2>(fTempPerm123);
 			}
-			if (iSlow166 || iSlow164 || iSlow168 || iSlow170 || iSlow172 || iSlow174) {
+			if (iSlow164 || iSlow166 || iSlow168 || iSlow170 || iSlow172 || iSlow174) {
 				fTempPerm125 = (float)input5[i];
 			}
 			if (iSlow164 || iSlow168 || iSlow170 || iSlow172) {
@@ -5630,17 +7853,17 @@ class mydsp2 : public dsp {
 				fTempPerm177 = (fSlow219 * fRec117[0]);
 			}
 			output67[i] = (FAUSTFLOAT)fTempPerm177;
-			if (iSlow230 || iSlow228 || iSlow232 || iSlow234 || iSlow236 || iSlow238) {
+			if (iSlow228 || iSlow230 || iSlow232 || iSlow234 || iSlow236 || iSlow238) {
 				fTempPerm178 = (float)input15[i];
 				fTempPerm179 = (float)input16[i];
 			}
-			if (iSlow230 || iSlow228 || iSlow234 || iSlow238) {
+			if (iSlow228 || iSlow232 || iSlow236 || iSlow238) {
 				fTempPerm180 = faustpower<2>(fTempPerm179);
 			}
-			if (iSlow230 || iSlow228 || iSlow232 || iSlow234 || iSlow236 || iSlow238) {
+			if (iSlow228 || iSlow230 || iSlow232 || iSlow234 || iSlow236 || iSlow238) {
 				fTempPerm181 = (float)input17[i];
 			}
-			if (iSlow228 || iSlow232 || iSlow234 || iSlow236) {
+			if (iSlow228 || iSlow230 || iSlow232 || iSlow234) {
 				fTempPerm182 = faustpower<2>(fTempPerm181);
 			}
 			if (iSlow228) {
@@ -5648,38 +7871,38 @@ class mydsp2 : public dsp {
 				fTempPerm183 = (fSlow227 * fRec118[0]);
 			}
 			output68[i] = (FAUSTFLOAT)fTempPerm183;
-			if (iSlow230 || iSlow232 || iSlow236 || iSlow238) {
+			if (iSlow230 || iSlow234 || iSlow236 || iSlow238) {
 				fTempPerm184 = faustpower<2>(fTempPerm178);
 			}
-			if (iSlow232 || iSlow236) {
+			if (iSlow230 || iSlow234) {
 				fTempPerm185 = (fTempPerm182 + fTempPerm184);
 			}
-			if (iSlow232) {
+			if (iSlow230) {
 				fRec119[0] = ((fConst7 * fRec119[1]) + (fConst8 * max(0.0f, (1.0f - (fSlow158 * sqrtf((faustpower<2>((fTempPerm179 + 1.0f)) + fTempPerm185)))))));
-				fTempPerm186 = (fSlow231 * fRec119[0]);
+				fTempPerm186 = (fSlow229 * fRec119[0]);
 			}
 			output69[i] = (FAUSTFLOAT)fTempPerm186;
-			if (iSlow234) {
+			if (iSlow232) {
 				fRec120[0] = ((fConst7 * fRec120[1]) + (fConst8 * max(0.0f, (1.0f - (fSlow159 * sqrtf((faustpower<2>((fTempPerm178 + -1.0f)) + (fTempPerm180 + fTempPerm182))))))));
-				fTempPerm187 = (fSlow233 * fRec120[0]);
+				fTempPerm187 = (fSlow231 * fRec120[0]);
 			}
 			output70[i] = (FAUSTFLOAT)fTempPerm187;
-			if (iSlow236) {
+			if (iSlow234) {
 				fRec121[0] = ((fConst7 * fRec121[1]) + (fConst8 * max(0.0f, (1.0f - (fSlow160 * sqrtf((fTempPerm185 + faustpower<2>((fTempPerm179 + -1.0f)))))))));
-				fTempPerm188 = (fSlow235 * fRec121[0]);
+				fTempPerm188 = (fSlow233 * fRec121[0]);
 			}
 			output71[i] = (FAUSTFLOAT)fTempPerm188;
-			if (iSlow230 || iSlow238) {
+			if (iSlow236 || iSlow238) {
 				fTempPerm189 = (fTempPerm180 + fTempPerm184);
 			}
-			if (iSlow238) {
+			if (iSlow236) {
 				fRec122[0] = ((fConst7 * fRec122[1]) + (fConst8 * max(0.0f, (1.0f - (fSlow161 * sqrtf((fTempPerm189 + faustpower<2>((fTempPerm181 + 1.0f)))))))));
-				fTempPerm190 = (fSlow237 * fRec122[0]);
+				fTempPerm190 = (fSlow235 * fRec122[0]);
 			}
 			output72[i] = (FAUSTFLOAT)fTempPerm190;
-			if (iSlow230) {
+			if (iSlow238) {
 				fRec123[0] = ((fConst7 * fRec123[1]) + (fConst8 * max(0.0f, (1.0f - (fSlow162 * sqrtf((fTempPerm189 + faustpower<2>((fTempPerm181 + -1.0f)))))))));
-				fTempPerm191 = (fSlow229 * fRec123[0]);
+				fTempPerm191 = (fSlow237 * fRec123[0]);
 			}
 			output73[i] = (FAUSTFLOAT)fTempPerm191;
 			if (iSlow39) {
@@ -5751,19 +7974,19 @@ class mydsp2 : public dsp {
 			}
 			output90[i] = (FAUSTFLOAT)fTempPerm208;
 			// post processing
-			if (iSlow230) {
+			if (iSlow238) {
 				fRec123[1] = fRec123[0];
 			}
-			if (iSlow238) {
+			if (iSlow236) {
 				fRec122[1] = fRec122[0];
 			}
-			if (iSlow236) {
+			if (iSlow234) {
 				fRec121[1] = fRec121[0];
 			}
-			if (iSlow234) {
+			if (iSlow232) {
 				fRec120[1] = fRec120[0];
 			}
-			if (iSlow232) {
+			if (iSlow230) {
 				fRec119[1] = fRec119[0];
 			}
 			if (iSlow228) {
@@ -5891,21 +8114,21 @@ class mydsp2 : public dsp {
 				fRec71[1] = fRec71[0];
 				fRec72[1] = fRec72[0];
 			}
-			if (iSlow133 || iSlow136 || iSlow138 || iSlow121) {
+			if (iSlow136 || iSlow138 || iSlow121 || iSlow133) {
 				fRec73[1] = fRec73[0];
 			}
 			if (iSlow126) {
 				fRec68[1] = fRec68[0];
 				fRec69[1] = fRec69[0];
 			}
-			if (iSlow126 || iSlow129 || iSlow131 || iSlow121) {
+			if (iSlow129 || iSlow131 || iSlow121 || iSlow126) {
 				fRec70[1] = fRec70[0];
 			}
 			if (iSlow113) {
 				fRec65[1] = fRec65[0];
 				fRec66[1] = fRec66[0];
 			}
-			if (iSlow113 || iSlow117 || iSlow119 || iSlow121) {
+			if (iSlow117 || iSlow119 || iSlow121 || iSlow113) {
 				fRec67[1] = fRec67[0];
 			}
 			if (iSlow94) {
@@ -6066,6 +8289,7 @@ class mydsp2 : public dsp {
 // Polyphony
 //**************************************************************
 
+/************************** BEGIN faust-poly-engine.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2013 GRAME, Romain Michon, CCRMA - Stanford University
@@ -6097,6 +8321,7 @@ class mydsp2 : public dsp {
 #include <stdio.h>
 #include <string.h>
 
+/************************** BEGIN audio.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -6182,553 +8407,8 @@ class audio {
 };
 					
 #endif
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- ************************************************************************/
- 
-#ifndef FAUST_JSONUI_H
-#define FAUST_JSONUI_H
-
-#include <vector>
-#include <map>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <algorithm>
-
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- ************************************************************************/
-
-#ifndef FAUST_PATHBUILDER_H
-#define FAUST_PATHBUILDER_H
-
-#include <vector>
-#include <string>
-#include <algorithm>
-
-/*******************************************************************************
- * PathBuilder : Faust User Interface
- * Helper class to build complete hierarchical path for UI items.
- ******************************************************************************/
-
-class PathBuilder
-{
-
-    protected:
-    
-        std::vector<std::string> fControlsLevel;
-       
-    public:
-    
-        PathBuilder() {}
-        virtual ~PathBuilder() {}
-    
-        std::string buildPath(const std::string& label) 
-        {
-            std::string res = "/";
-            for (size_t i = 0; i < fControlsLevel.size(); i++) {
-                res += fControlsLevel[i];
-                res += "/";
-            }
-            res += label;
-            std::replace(res.begin(), res.end(), ' ', '_');
-            return res;
-        }
-    
-        void pushLabel(const std::string& label) { fControlsLevel.push_back(label); }
-        void popLabel() { fControlsLevel.pop_back(); }
-    
-};
-
-#endif  // FAUST_PATHBUILDER_H
-
-/*******************************************************************************
- * JSONUI : Faust User Interface
- * This class produce a complete JSON decription of the DSP instance.
- ******************************************************************************/
-
-template <typename REAL>
-class JSONUIAux : public PathBuilder, public Meta, public UI
-{
-
-    protected:
-    
-        std::stringstream fUI;
-        std::stringstream fMeta;
-        std::vector<std::pair <std::string, std::string> > fMetaAux;
-        std::string fVersion;           // Compiler version
-        std::string fCompileOptions;    // Compilation options
-        std::vector<std::string> fLibraryList;
-        std::vector<std::string> fIncludePathnames;
-        std::string fName;
-        std::string fFileName;
-        std::string fExpandedCode;
-        std::string fSHAKey;
-        std::string fDSPSize;           // In bytes
-        std::map<std::string, int> fPathTable;
-    
-        char fCloseUIPar;
-        char fCloseMetaPar;
-        int fTab;
-    
-        int fInputs, fOutputs, fSRIndex;
-         
-        void tab(int n, std::ostream& fout)
-        {
-            fout << '\n';
-            while (n-- > 0) {
-                fout << '\t';
-            }
-        }
-    
-        std::string flatten(const std::string& src)
-        {
-            std::string dst;
-            for (size_t i = 0; i < src.size(); i++) {
-                switch (src[i]) {
-                    case '\n':
-                    case '\t':
-                        break;
-                    // replace single quote with '_'
-                    case '\'':
-                        dst += '_';
-                        break;
-                    default:
-                        dst += src[i];
-                        break;
-                }
-            }
-            return dst;
-        }
-    
-        void addMeta(int tab_val, bool quote = true)
-        {
-            if (fMetaAux.size() > 0) {
-                tab(tab_val, fUI); fUI << "\"meta\": [";
-                std::string sep = "";
-                for (size_t i = 0; i < fMetaAux.size(); i++) {
-                    fUI << sep;
-                    tab(tab_val + 1, fUI); fUI << "{ \"" << fMetaAux[i].first << "\": \"" << fMetaAux[i].second << "\" }";
-                    sep = ",";
-                }
-                tab(tab_val, fUI); fUI << ((quote) ? "],": "]");
-                fMetaAux.clear();
-            }
-        }
-    
-        std::string getAddressIndex(const std::string& path)
-        {
-            if (fPathTable.find(path) != fPathTable.end()) {
-                std::stringstream num; num << fPathTable[path];
-                return num.str();
-            } else {
-                return "-1";
-            }
-        }
-      
-     public:
-     
-        JSONUIAux(const std::string& name,
-                  const std::string& filename,
-                  int inputs,
-                  int outputs,
-                  int sr_index,
-                  const std::string& sha_key,
-                  const std::string& dsp_code,
-                  const std::string& version,
-                  const std::string& compile_options,
-                  const std::vector<std::string>& library_list,
-                  const std::vector<std::string>& include_pathnames,
-                  const std::string& size,
-                  const std::map<std::string, int>& path_table)
-        {
-            init(name, filename, inputs, outputs, sr_index, sha_key, dsp_code, version, compile_options, library_list, include_pathnames, size, path_table);
-        }
-
-        JSONUIAux(const std::string& name, const std::string& filename, int inputs, int outputs)
-        {
-            init(name, filename, inputs, outputs, -1, "", "", "", "", std::vector<std::string>(), std::vector<std::string>(), "", std::map<std::string, int>());
-        }
-
-        JSONUIAux(int inputs, int outputs)
-        {
-            init("", "", inputs, outputs, -1, "", "","", "", std::vector<std::string>(), std::vector<std::string>(), "", std::map<std::string, int>());
-        }
-        
-        JSONUIAux()
-        {
-            init("", "", -1, -1, -1, "", "", "", "", std::vector<std::string>(), std::vector<std::string>(), "", std::map<std::string, int>());
-        }
- 
-        virtual ~JSONUIAux() {}
-        
-        void setInputs(int inputs) { fInputs = inputs; }
-        void setOutputs(int outputs) { fOutputs = outputs; }
-    
-        void setSRIndex(int sr_index) { fSRIndex = sr_index; }
-    
-        // Init may be called multiple times so fMeta and fUI are reinitialized
-        void init(const std::string& name,
-                  const std::string& filename,
-                  int inputs,
-                  int outputs,
-                  int sr_index,
-                  const std::string& sha_key,
-                  const std::string& dsp_code,
-                  const std::string& version,
-                  const std::string& compile_options,
-                  const std::vector<std::string>& library_list,
-                  const std::vector<std::string>& include_pathnames,
-                  const std::string& size,
-                  const std::map<std::string, int>& path_table)
-        {
-            fTab = 1;
-            
-            // Start Meta generation
-            fMeta.str("");
-            tab(fTab, fMeta); fMeta << "\"meta\": [";
-            fCloseMetaPar = ' ';
-            
-            // Start UI generation
-            fUI.str("");
-            tab(fTab, fUI); fUI << "\"ui\": [";
-            fCloseUIPar = ' ';
-            fTab += 1;
-            
-            fName = name;
-            fFileName = filename;
-            fInputs = inputs;
-            fOutputs = outputs;
-            fSRIndex = sr_index;
-            fExpandedCode = dsp_code;
-            fSHAKey = sha_key;
-            fDSPSize = size;
-            fPathTable = path_table;
-            fVersion = version;
-            fCompileOptions = compile_options;
-            fLibraryList = library_list;
-            fIncludePathnames = include_pathnames;
-        }
-   
-        // -- widget's layouts
-    
-        virtual void openGenericGroup(const char* label, const char* name)
-        {
-            pushLabel(label);
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            fTab += 1;
-            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
-            addMeta(fTab);
-            tab(fTab, fUI); fUI << "\"items\": [";
-            fCloseUIPar = ' ';
-            fTab += 1;
-        }
-
-        virtual void openTabBox(const char* label)
-        {
-            openGenericGroup(label, "tgroup");
-        }
-    
-        virtual void openHorizontalBox(const char* label)
-        {
-            openGenericGroup(label, "hgroup");
-        }
-    
-        virtual void openVerticalBox(const char* label)
-        {
-            openGenericGroup(label, "vgroup");
-        }
-    
-        virtual void closeBox()
-        {
-            popLabel();
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "]";
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-    
-        // -- active widgets
-  
-        virtual void addGenericButton(const char* label, const char* name)
-        {
-            std::string path = buildPath(label);
-            
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            fTab += 1;
-            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
-            if (fPathTable.size() > 0) {
-                tab(fTab, fUI); fUI << "\"address\": \"" << path << "\",";
-                tab(fTab, fUI); fUI << "\"index\": \"" << getAddressIndex(path) << "\"" << ((fMetaAux.size() > 0) ? "," : "");
-            } else {
-                tab(fTab, fUI); fUI << "\"address\": \"" << path << "\"" << ((fMetaAux.size() > 0) ? "," : "");
-            }
-            addMeta(fTab, false);
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-
-        virtual void addButton(const char* label, REAL* zone)
-        {
-            addGenericButton(label, "button");
-        }
-    
-        virtual void addCheckButton(const char* label, REAL* zone)
-        {
-            addGenericButton(label, "checkbox");
-        }
-
-        virtual void addGenericEntry(const char* label, const char* name, REAL init, REAL min, REAL max, REAL step)
-        {
-            std::string path = buildPath(label);
-            
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            fTab += 1;
-            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
-            tab(fTab, fUI); fUI << "\"address\": \"" << path << "\",";
-            if (fPathTable.size() > 0) {
-                tab(fTab, fUI); fUI << "\"index\": \"" << getAddressIndex(path) << "\",";
-            }
-            addMeta(fTab);
-            tab(fTab, fUI); fUI << "\"init\": \"" << init << "\",";
-            tab(fTab, fUI); fUI << "\"min\": \"" << min << "\",";
-            tab(fTab, fUI); fUI << "\"max\": \"" << max << "\",";
-            tab(fTab, fUI); fUI << "\"step\": \"" << step << "\"";
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-    
-        virtual void addVerticalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
-        {
-            addGenericEntry(label, "vslider", init, min, max, step);
-        }
-    
-        virtual void addHorizontalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
-        {
-            addGenericEntry(label, "hslider", init, min, max, step);
-        }
-    
-        virtual void addNumEntry(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step)
-        {
-            addGenericEntry(label, "nentry", init, min, max, step);
-        }
-
-        // -- passive widgets
-    
-        virtual void addGenericBargraph(const char* label, const char* name, REAL min, REAL max) 
-        {
-            std::string path = buildPath(label);
-            
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            fTab += 1;
-            tab(fTab, fUI); fUI << "\"type\": \"" << name << "\",";
-            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\",";
-            tab(fTab, fUI); fUI << "\"address\": \"" << path << "\",";
-            if (fPathTable.size() > 0) {
-                tab(fTab, fUI); fUI << "\"index\": \"" << getAddressIndex(path) << "\",";
-            }
-            addMeta(fTab);
-            tab(fTab, fUI); fUI << "\"min\": \"" << min << "\",";
-            tab(fTab, fUI); fUI << "\"max\": \"" << max << "\"";
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-
-        virtual void addHorizontalBargraph(const char* label, REAL* zone, REAL min, REAL max) 
-        {
-            addGenericBargraph(label, "hbargraph", min, max);
-        }
-    
-        virtual void addVerticalBargraph(const char* label, REAL* zone, REAL min, REAL max)
-        {
-            addGenericBargraph(label, "vbargraph", min, max);
-        }
-    
-        virtual void addSoundfile(const char* label, const char* url, Soundfile** zone)
-        {
-            std::string path = buildPath(label);
-            
-            fUI << fCloseUIPar;
-            tab(fTab, fUI); fUI << "{";
-            fTab += 1;
-            tab(fTab, fUI); fUI << "\"type\": \"" << "soundfile" << "\",";
-            tab(fTab, fUI); fUI << "\"label\": \"" << label << "\"" << ",";
-            tab(fTab, fUI); fUI << "\"url\": \"" << url << "\"" << ",";
-            tab(fTab, fUI); fUI << "\"address\": \"" << path << "\"" << ((fPathTable.size() > 0) ? "," : "");
-            if (fPathTable.size() > 0) {
-                tab(fTab, fUI); fUI << "\"index\": \"" << getAddressIndex(path) << "\"";
-            }
-            fTab -= 1;
-            tab(fTab, fUI); fUI << "}";
-            fCloseUIPar = ',';
-        }
-
-        // -- metadata declarations
-
-        virtual void declare(REAL* zone, const char* key, const char* val)
-        {
-            fMetaAux.push_back(std::make_pair(key, val));
-        }
-    
-        // Meta interface
-        virtual void declare(const char* key, const char* value)
-        {
-            fMeta << fCloseMetaPar;
-            // fName found in metadata
-            if ((strcmp(key, "name") == 0) && (fName == "")) fName = value;
-            // fFileName found in metadata
-            if ((strcmp(key, "filename") == 0) && (fFileName == "")) fFileName = value;
-            tab(fTab, fMeta); fMeta << "{ " << "\"" << key << "\"" << ": " << "\"" << value << "\" }";
-            fCloseMetaPar = ',';
-        }
-    
-        std::string JSON(bool flat = false)
-        {
-            fTab = 0;
-            std::stringstream JSON;
-            JSON << "{";
-            fTab += 1;
-            tab(fTab, JSON); JSON << "\"name\": \"" << fName << "\",";
-            tab(fTab, JSON); JSON << "\"filename\": \"" << fFileName << "\",";
-            if (fVersion != "") { tab(fTab, JSON); JSON << "\"version\": \"" << fVersion << "\","; }
-            if (fCompileOptions != "") { tab(fTab, JSON); JSON << "\"compile_options\": \"" <<  fCompileOptions << "\","; }
-            if (fLibraryList.size() > 0) {
-                tab(fTab, JSON);
-                JSON << "\"library_list\": [";
-                for (size_t i = 0; i < fLibraryList.size(); i++) {
-                    JSON << "\"" << fLibraryList[i] << "\"";
-                    if (i < (fLibraryList.size() - 1)) JSON << ",";
-                }
-                JSON << "],";
-            }
-            if (fIncludePathnames.size() > 0) {
-                tab(fTab, JSON);
-                JSON << "\"include_pathnames\": [";
-                for (size_t i = 0; i < fIncludePathnames.size(); i++) {
-                    JSON << "\"" << fIncludePathnames[i] << "\"";
-                    if (i < (fIncludePathnames.size() - 1)) JSON << ",";
-                }
-                JSON << "],";
-            }
-            if (fDSPSize != "") { tab(fTab, JSON); JSON << "\"size\": \"" << fDSPSize << "\","; }
-            if (fSHAKey != "") { tab(fTab, JSON); JSON << "\"sha_key\": \"" << fSHAKey << "\","; }
-            if (fExpandedCode != "") { tab(fTab, JSON); JSON << "\"code\": \"" << fExpandedCode << "\","; }
-            tab(fTab, JSON); JSON << "\"inputs\": \"" << fInputs << "\","; 
-            tab(fTab, JSON); JSON << "\"outputs\": \"" << fOutputs << "\",";
-            if (fSRIndex != -1) { tab(fTab, JSON); JSON << "\"sr_index\": \"" << fSRIndex << "\","; }
-            tab(fTab, fMeta); fMeta << "],";
-            tab(fTab, fUI); fUI << "]";
-            fTab -= 1;
-            if (fCloseMetaPar == ',') { // If "declare" has been called, fCloseMetaPar state is now ','
-                JSON << fMeta.str() << fUI.str();
-            } else {
-                JSON << fUI.str();
-            }
-            tab(fTab, JSON); JSON << "}";
-            if (flat) {
-                return flatten(JSON.str());
-            } else {
-                std::string json = JSON.str();
-                std::replace(json.begin(), json.end(), '\'', '_');
-                return json;
-            }
-        }
-    
-};
-
-// Externally available class using FAUSTFLOAT
-
-class JSONUI : public JSONUIAux<FAUSTFLOAT>
-{
-    public :
-    
-        JSONUI(const std::string& name,
-               const std::string& filename,
-               int inputs,
-               int outputs,
-               int sr_index,
-               const std::string& sha_key,
-               const std::string& dsp_code,
-               const std::string& version,
-               const std::string& compile_options,
-               const std::vector<std::string>& library_list,
-               const std::vector<std::string>& include_pathnames,
-               const std::string& size,
-               const std::map<std::string, int>& path_table):
-        JSONUIAux<FAUSTFLOAT>(name, filename,
-                              inputs, outputs,
-                              sr_index,
-                              sha_key, dsp_code,
-                              version, compile_options,
-                              library_list, include_pathnames,
-                              size, path_table)
-        {}
-        
-        JSONUI(const std::string& name, const std::string& filename, int inputs, int outputs):
-        JSONUIAux<FAUSTFLOAT>(name, filename, inputs, outputs)
-        {}
-        
-        JSONUI(int inputs, int outputs):JSONUIAux<FAUSTFLOAT>(inputs, outputs)
-        {}
-        
-        JSONUI():JSONUIAux<FAUSTFLOAT>()
-        {}
-    
-        virtual ~JSONUI() {}
-    
-};
-
-#endif // FAUST_JSONUI_H
+/**************************  END  audio.h **************************/
+/************************** BEGIN APIUI.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -6761,6 +8441,7 @@ class JSONUI : public JSONUIAux<FAUSTFLOAT>
 #include <iostream>
 #include <map>
 
+/************************** BEGIN ValueConverter.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -6789,7 +8470,7 @@ class JSONUI : public JSONUIAux<FAUSTFLOAT>
 
 /***************************************************************************************
 								ValueConverter.h
-							    (GRAME, © 2015)
+                            (GRAME, Copyright 2015-2019)
 
 Set of conversion objects used to map user interface values (for example a gui slider
 delivering values between 0 and 1) to faust values (for example a vslider between
@@ -6809,6 +8490,7 @@ ValueConverter::faust2ui(x)
 -- ValueConverters used for sliders depending of the scale
 
 LinearValueConverter(umin, umax, fmin, fmax)
+LinearValueConverter2(lo, mi, hi, v1, vm, v2) using 2 segments
 LogValueConverter(umin, umax, fmin, fmax)
 ExpValueConverter(umin, umax, fmin, fmax)
 
@@ -6934,28 +8616,89 @@ class ValueConverter
 };
 
 //--------------------------------------------------------------------------------------
+// A converter than can be updated
+//--------------------------------------------------------------------------------------
+
+class UpdatableValueConverter : public ValueConverter {
+    
+    protected:
+        
+        bool fActive;
+        
+    public:
+        
+        UpdatableValueConverter():fActive(true)
+        {}
+        virtual ~UpdatableValueConverter()
+        {}
+        
+        virtual void setMappingValues(double amin, double amid, double amax, double min, double init, double max) = 0;
+        virtual void getMappingValues(double& amin, double& amid, double& amax) = 0;
+        
+        void setActive(bool on_off) { fActive = on_off; }
+        bool getActive() { return fActive; }
+    
+};
+
+
+//--------------------------------------------------------------------------------------
 // Linear conversion between ui and Faust values
 //--------------------------------------------------------------------------------------
 class LinearValueConverter : public ValueConverter
 {
-
+    
     private:
-
+        
         Interpolator fUI2F;
         Interpolator fF2UI;
-
+        
     public:
-
+        
         LinearValueConverter(double umin, double umax, double fmin, double fmax) :
             fUI2F(umin,umax,fmin,fmax), fF2UI(fmin,fmax,umin,umax)
         {}
-
-        LinearValueConverter() :
-            fUI2F(0.,0.,0.,0.), fF2UI(0.,0.,0.,0.)
+        
+        LinearValueConverter() : fUI2F(0.,0.,0.,0.), fF2UI(0.,0.,0.,0.)
         {}
-        virtual double ui2faust(double x) {	return fUI2F(x); }
-        virtual double faust2ui(double x) {	return fF2UI(x); }
+        virtual double ui2faust(double x) { return fUI2F(x); }
+        virtual double faust2ui(double x) { return fF2UI(x); }
+    
+};
 
+//--------------------------------------------------------------------------------------
+// Two segments linear conversion between ui and Faust values
+//--------------------------------------------------------------------------------------
+class LinearValueConverter2 : public UpdatableValueConverter
+{
+    
+    private:
+    
+        Interpolator3pt fUI2F;
+        Interpolator3pt fF2UI;
+        
+    public:
+    
+        LinearValueConverter2(double amin, double amid, double amax, double min, double init, double max) :
+            fUI2F(amin, amid, amax, min, init, max), fF2UI(min, init, max, amin, amid, amax)
+        {}
+        
+        LinearValueConverter2() : fUI2F(0.,0.,0.,0.,0.,0.), fF2UI(0.,0.,0.,0.,0.,0.)
+        {}
+    
+        virtual double ui2faust(double x) { return fUI2F(x); }
+        virtual double faust2ui(double x) { return fF2UI(x); }
+    
+        virtual void setMappingValues(double amin, double amid, double amax, double min, double init, double max)
+        {
+            fUI2F = Interpolator3pt(amin, amid, amax, min, init, max);
+            fF2UI = Interpolator3pt(min, init, max, amin, amid, amax);
+        }
+
+        virtual void getMappingValues(double& amin, double& amid, double& amax)
+        {
+            fUI2F.getMappingValues(amin, amid, amax);
+        }
+    
 };
 
 //--------------------------------------------------------------------------------------
@@ -6970,8 +8713,8 @@ class LogValueConverter : public LinearValueConverter
         LinearValueConverter(umin, umax, log(std::max<double>(DBL_MIN, fmin)), std::log(std::max<double>(DBL_MIN, fmax)))
         {}
 
-        virtual double ui2faust(double x) 	{ return std::exp(LinearValueConverter::ui2faust(x)); }
-        virtual double faust2ui(double x)	{ return LinearValueConverter::faust2ui(std::log(std::max<double>(x, DBL_MIN))); }
+        virtual double ui2faust(double x) { return std::exp(LinearValueConverter::ui2faust(x)); }
+        virtual double faust2ui(double x) { return LinearValueConverter::faust2ui(std::log(std::max<double>(x, DBL_MIN))); }
 
 };
 
@@ -6989,31 +8732,6 @@ class ExpValueConverter : public LinearValueConverter
 
         virtual double ui2faust(double x) { return std::log(LinearValueConverter::ui2faust(x)); }
         virtual double faust2ui(double x) { return LinearValueConverter::faust2ui(std::exp(x)); }
-
-};
-
-//--------------------------------------------------------------------------------------
-// A converter than can be updated
-//--------------------------------------------------------------------------------------
-
-class UpdatableValueConverter : public ValueConverter {
-
-    protected:
-
-        bool fActive;
-
-    public:
-
-        UpdatableValueConverter():fActive(true)
-        {}
-        virtual ~UpdatableValueConverter()
-        {}
-
-        virtual void setMappingValues(double amin, double amid, double amax, double min, double init, double max) = 0;
-        virtual void getMappingValues(double& amin, double& amid, double& amax) = 0;
-
-        void setActive(bool on_off) { fActive = on_off; }
-        bool getActive() { return fActive; }
 
 };
 
@@ -7036,14 +8754,14 @@ class AccUpConverter : public UpdatableValueConverter
             fF2A(fmin,fmid,fmax,amin,amid,amax)
         {}
 
-        virtual double ui2faust(double x)	{ return fA2F(x); }
-        virtual double faust2ui(double x)	{ return fF2A(x); }
+        virtual double ui2faust(double x) { return fA2F(x); }
+        virtual double faust2ui(double x) { return fF2A(x); }
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
             //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccUpConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
-            fA2F = Interpolator3pt(amin,amid,amax,fmin,fmid,fmax);
-            fF2A = Interpolator3pt(fmin,fmid,fmax,amin,amid,amax);
+            fA2F = Interpolator3pt(amin, amid, amax, fmin, fmid, fmax);
+            fF2A = Interpolator3pt(fmin, fmid, fmax, amin, amid, amax);
         }
 
         virtual void getMappingValues(double& amin, double& amid, double& amax)
@@ -7072,14 +8790,14 @@ class AccDownConverter : public UpdatableValueConverter
             fF2A(fmin,fmid,fmax,amax,amid,amin)
         {}
 
-        virtual double ui2faust(double x)	{ return fA2F(x); }
-        virtual double faust2ui(double x)	{ return fF2A(x); }
+        virtual double ui2faust(double x) { return fA2F(x); }
+        virtual double faust2ui(double x) { return fF2A(x); }
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
              //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccDownConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
-            fA2F = Interpolator3pt(amin,amid,amax,fmax,fmid,fmin);
-            fF2A = Interpolator3pt(fmin,fmid,fmax,amax,amid,amin);
+            fA2F = Interpolator3pt(amin, amid, amax, fmax, fmid, fmin);
+            fF2A = Interpolator3pt(fmin, fmid, fmax, amax, amid, amin);
         }
 
         virtual void getMappingValues(double& amin, double& amid, double& amax)
@@ -7104,17 +8822,17 @@ class AccUpDownConverter : public UpdatableValueConverter
 
         AccUpDownConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
             fA2F(amin,amid,amax,fmin,fmax,fmin),
-            fF2A(fmin,fmax,amin,amax)				// Special, pseudo inverse of a non monotone function
+            fF2A(fmin,fmax,amin,amax)				// Special, pseudo inverse of a non monotonic function
         {}
 
-        virtual double ui2faust(double x)	{ return fA2F(x); }
-        virtual double faust2ui(double x)	{ return fF2A(x); }
+        virtual double ui2faust(double x) { return fA2F(x); }
+        virtual double faust2ui(double x) { return fF2A(x); }
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
-             //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccUpDownConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
-            fA2F = Interpolator3pt(amin,amid,amax,fmin,fmax,fmin);
-            fF2A = Interpolator(fmin,fmax,amin,amax);
+            //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccUpDownConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
+            fA2F = Interpolator3pt(amin, amid, amax, fmin, fmax, fmin);
+            fF2A = Interpolator(fmin, fmax, amin, amax);
         }
 
         virtual void getMappingValues(double& amin, double& amid, double& amax)
@@ -7139,17 +8857,17 @@ class AccDownUpConverter : public UpdatableValueConverter
 
         AccDownUpConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
             fA2F(amin,amid,amax,fmax,fmin,fmax),
-            fF2A(fmin,fmax,amin,amax)				// Special, pseudo inverse of a non monotone function
+            fF2A(fmin,fmax,amin,amax)				// Special, pseudo inverse of a non monotonic function
         {}
 
-        virtual double ui2faust(double x)	{ return fA2F(x); }
-        virtual double faust2ui(double x)	{ return fF2A(x); }
+        virtual double ui2faust(double x) { return fA2F(x); }
+        virtual double faust2ui(double x) { return fF2A(x); }
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
             //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccDownUpConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
-            fA2F = Interpolator3pt(amin,amid,amax,fmax,fmin,fmax);
-            fF2A = Interpolator(fmin,fmax,amin,amax);
+            fA2F = Interpolator3pt(amin, amid, amax, fmax, fmin, fmax);
+            fF2A = Interpolator(fmin, fmax, amin, amax);
         }
 
         virtual void getMappingValues(double& amin, double& amid, double& amax)
@@ -7278,16 +8996,13 @@ class ZoneReader
 
         int getValue()
         {
-            if (fZone != 0) {
-                return (int)fInterpolator(*fZone);
-            } else {
-                return 127;
-            }
+            return (fZone != nullptr) ? int(fInterpolator(*fZone)) : 127;
         }
 
 };
 
 #endif
+/**************************  END  ValueConverter.h **************************/
 
 class APIUI : public PathBuilder, public Meta, public UI
 {
@@ -7793,6 +9508,8 @@ class APIUI : public PathBuilder, public Meta, public UI
 };
 
 #endif
+/**************************  END  APIUI.h **************************/
+/************************** BEGIN MidiUI.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -7826,175 +9543,7 @@ class APIUI : public PathBuilder, public Meta, public UI
 #include <cstdlib>
 #include <cmath>
 
-/************************************************************************
- FAUST Architecture File
- Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
- ---------------------------------------------------------------------
- This Architecture section is free software; you can redistribute it
- and/or modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 3 of
- the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
- EXCEPTION : As a special exception, you may create a larger work
- that contains this FAUST architecture section and distribute
- that work under terms of your choice, so long as this FAUST
- architecture section is not modified.
- ************************************************************************/
-
-#ifndef FAUST_MAPUI_H
-#define FAUST_MAPUI_H
-
-#include <vector>
-#include <map>
-#include <string>
-
-
-/*******************************************************************************
- * MapUI : Faust User Interface
- * This class creates a map of complete hierarchical path and zones for each UI items.
- ******************************************************************************/
-
-class MapUI : public UI, public PathBuilder
-{
-    
-    protected:
-    
-        // Complete path map
-        std::map<std::string, FAUSTFLOAT*> fPathZoneMap;
-    
-        // Label zone map
-        std::map<std::string, FAUSTFLOAT*> fLabelZoneMap;
-    
-    public:
-        
-        MapUI() {};
-        virtual ~MapUI() {};
-        
-        // -- widget's layouts
-        void openTabBox(const char* label)
-        {
-            pushLabel(label);
-        }
-        void openHorizontalBox(const char* label)
-        {
-            pushLabel(label);
-        }
-        void openVerticalBox(const char* label)
-        {
-            pushLabel(label);
-        }
-        void closeBox()
-        {
-            popLabel();
-        }
-        
-        // -- active widgets
-        void addButton(const char* label, FAUSTFLOAT* zone)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addCheckButton(const char* label, FAUSTFLOAT* zone)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addVerticalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addHorizontalSlider(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addNumEntry(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT fmin, FAUSTFLOAT fmax, FAUSTFLOAT step)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        
-        // -- passive widgets
-        void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-        void addVerticalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
-        {
-            fPathZoneMap[buildPath(label)] = zone;
-            fLabelZoneMap[label] = zone;
-        }
-    
-        // -- soundfiles
-        virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone) {}
-        
-        // -- metadata declarations
-        void declare(FAUSTFLOAT* zone, const char* key, const char* val)
-        {}
-        
-        // set/get
-        void setParamValue(const std::string& path, FAUSTFLOAT value)
-        {
-            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
-                *fPathZoneMap[path] = value;
-            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
-                *fLabelZoneMap[path] = value;
-            }
-        }
-        
-        FAUSTFLOAT getParamValue(const std::string& path)
-        {
-            if (fPathZoneMap.find(path) != fPathZoneMap.end()) {
-                return *fPathZoneMap[path];
-            } else if (fLabelZoneMap.find(path) != fLabelZoneMap.end()) {
-                return *fLabelZoneMap[path];
-            } else {
-                return FAUSTFLOAT(0);
-            }
-        }
-    
-        // map access 
-        std::map<std::string, FAUSTFLOAT*>& getMap() { return fPathZoneMap; }
-        
-        int getParamsCount() { return int(fPathZoneMap.size()); }
-        
-        std::string getParamAddress(int index)
-        { 
-            std::map<std::string, FAUSTFLOAT*>::iterator it = fPathZoneMap.begin();
-            while (index-- > 0 && it++ != fPathZoneMap.end()) {}
-            return (*it).first;
-        }
-    
-        std::string getParamAddress(FAUSTFLOAT* zone)
-        {
-            std::map<std::string, FAUSTFLOAT*>::iterator it = fPathZoneMap.begin();
-            do {
-                if ((*it).second == zone) return (*it).first;
-            }
-            while (it++ != fPathZoneMap.end());
-            return "";
-        }
-    
-        static bool endsWith(std::string const& str, std::string const& end)
-        {
-            size_t l1 = str.length();
-            size_t l2 = end.length();
-            return (l1 >= l2) && (0 == str.compare(l1 - l2, l2, end));
-        }
-};
-
-
-#endif // FAUST_MAPUI_H
+/************************** BEGIN MetaDataUI.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -8346,6 +9895,8 @@ class MetaDataUI {
 };
 
 #endif
+/**************************  END  MetaDataUI.h **************************/
+/************************** BEGIN midi.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -8378,6 +9929,18 @@ class MetaDataUI {
 #include <assert.h>
 
 class MapUI;
+
+/*************************************
+ A time-stamped short MIDI message
+**************************************/
+
+#pragma pack (push, 1)
+struct MIDIMessage
+{
+    uint32_t frameIndex;
+    uint8_t byte0, byte1, byte2;
+};
+#pragma pack (pop)
 
 /*******************************************************************************
  * MIDI processor definition.
@@ -8429,6 +9992,11 @@ class midi {
         {
             ctrlChange14bits(channel, ctrl, value);
         }
+    
+        virtual void rpn(double, int channel, int ctrl, int value)
+        {
+            rpn(channel, ctrl, value);
+        }
 
         virtual void progChange(double, int channel, int pgm)
         {
@@ -8446,18 +10014,18 @@ class midi {
         virtual void clock(double date)  {}
 
         // Standard MIDI API
-        virtual MapUI* keyOn(int channel, int pitch, int velocity)      { return 0; }
+        virtual MapUI* keyOn(int channel, int pitch, int velocity)      { return nullptr; }
         virtual void keyOff(int channel, int pitch, int velocity)       {}
         virtual void keyPress(int channel, int pitch, int press)        {}
         virtual void chanPress(int channel, int press)                  {}
         virtual void ctrlChange(int channel, int ctrl, int value)       {}
         virtual void ctrlChange14bits(int channel, int ctrl, int value) {}
+        virtual void rpn(int channel, int ctrl, int value)              {}
         virtual void pitchWheel(int channel, int wheel)                 {}
         virtual void progChange(int channel, int pgm)                   {}
         virtual void sysEx(std::vector<unsigned char>& message)         {}
 
         enum MidiStatus {
-
             // channel voice messages
             MIDI_NOTE_OFF = 0x80,
             MIDI_NOTE_ON = 0x90,
@@ -8472,16 +10040,110 @@ class midi {
             MIDI_STOP = 0xFC,
             MIDI_SYSEX_START = 0xF0,
             MIDI_SYSEX_STOP = 0xF7
-
         };
 
         enum MidiCtrl {
-
             ALL_NOTES_OFF = 123,
             ALL_SOUND_OFF = 120
-
         };
+    
+        enum MidiNPN {
+            PITCH_BEND_RANGE = 0
+        };
+
 };
+
+/*
+ A class to decode NRPN and RPN messages, adapted from JUCE forum message: https://forum.juce.com/t/14bit-midi-controller-support/11517
+*/
+
+class MidiNRPN
+{
+    
+    private:
+    
+        bool ctrlnew;
+        int ctrlnum;
+        int ctrlval;
+        
+        int nrpn_lsb, nrpn_msb;
+        int data_lsb, data_msb;
+        
+        enum
+        {
+            midi_nrpn_lsb = 98,
+            midi_nrpn_msb = 99,
+            midi_rpn_lsb  = 100,
+            midi_rpn_msb  = 101,
+            midi_data_lsb = 38,
+            midi_data_msb = 6
+        };
+    
+    public:
+        
+        MidiNRPN(): ctrlnew(false), nrpn_lsb(-1), nrpn_msb(-1), data_lsb(-1), data_msb(-1)
+        {}
+        
+        // return true if the message has been filtered
+        bool process(int data1, int data2)
+        {
+            switch (data1)
+            {
+                case midi_nrpn_lsb: nrpn_lsb = data2; return true;
+                case midi_nrpn_msb: nrpn_msb = data2; return true;
+                case midi_rpn_lsb: {
+                    if (data2 == 127) {
+                        nrpn_lsb = data_lsb = -1;
+                    } else {
+                        nrpn_lsb = 0;
+                        data_lsb = -1;
+                    }
+                    return true;
+                }
+                case midi_rpn_msb: {
+                    if (data2 == 127) {
+                        nrpn_msb = data_msb = -1;
+                    } else {
+                        nrpn_msb = 0;
+                        data_msb = -1;
+                    }
+                    return true;
+                }
+                case midi_data_lsb:
+                case midi_data_msb:
+                {
+                    if (data1 == midi_data_msb) {
+                        if (nrpn_msb < 0) {
+                            return false;
+                        }
+                        data_msb = data2;
+                    } else { // midi_data_lsb
+                        if (nrpn_lsb < 0) {
+                            return false;
+                        }
+                        data_lsb = data2;
+                    }
+                    if (data_lsb >= 0 && data_msb >= 0) {
+                        ctrlnum = (nrpn_msb << 7) | nrpn_lsb;
+                        ctrlval = (data_msb << 7) | data_lsb;
+                        data_lsb = data_msb = -1;
+                        nrpn_msb = nrpn_lsb = -1;
+                        ctrlnew = true;
+                    }
+                    return true;
+                }
+                default: return false;
+            };
+        }
+        
+        bool hasNewNRPN() { bool res = ctrlnew; ctrlnew = false; return res; }
+        
+        // results in [0, 16383]
+        int getCtrl() const { return ctrlnum; }
+        int getVal() const { return ctrlval; }
+    
+};
+
 
 /****************************************************
  * Base class for MIDI input handling.
@@ -8490,6 +10152,7 @@ class midi {
  * - decoding Real-Time messages: handleSync
  * - decoding one data byte messages: handleData1
  * - decoding two data byte messages: handleData2
+ * - getting ready messages in polling mode
  ****************************************************/
 
 class midi_handler : public midi {
@@ -8498,6 +10161,7 @@ class midi_handler : public midi {
 
         std::vector<midi*> fMidiInputs;
         std::string fName;
+        MidiNRPN fNRPN;
     
         int range(int min, int max, int val) { return (val < min) ? min : ((val >= max) ? max : val); }
   
@@ -8520,71 +10184,147 @@ class midi_handler : public midi {
     
         void setName(const std::string& name) { fName = name; }
         std::string getName() { return fName; }
+    
+        // To be used in polling mode
+        virtual int getMessages(std::vector<MIDIMessage>* message) { return 0; }
+    
+    
+        // MIDI Real-Time
+        void handleClock(double time)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->clock(time);
+            }
+        }
         
+        void handleStart(double time)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->startSync(time);
+            }
+        }
+        
+        void handleStop(double time)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->stopSync(time);
+            }
+        }
+    
         void handleSync(double time, int type)
         {
             if (type == MIDI_CLOCK) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->clock(time);
-                }
+                handleClock(time);
             } else if (type == MIDI_START) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->startSync(time);
-                }
+                handleStart(time);
             } else if (type == MIDI_STOP) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->stopSync(time);
-                }
+                handleStop(time);
+            }
+        }
+    
+        // MIDI 1 data
+        void handleProgChange(double time, int channel, int data1)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->progChange(time, channel, data1);
+            }
+        }
+    
+        void handleAfterTouch(double time, int channel, int data1)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->chanPress(time, channel, data1);
             }
         }
 
         void handleData1(double time, int type, int channel, int data1)
         {
             if (type == MIDI_PROGRAM_CHANGE) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->progChange(time, channel, data1);
-                }
+                handleProgChange(time, channel, data1);
             } else if (type == MIDI_AFTERTOUCH) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->chanPress(time, channel, data1);
-                }
+                handleAfterTouch(time, channel, data1);
             }
         }
-
-        void handleData2(double time, int type, int channel, int data1, int data2)
+    
+        // MIDI 2 datas
+        void handleKeyOff(double time, int channel, int data1, int data2)
         {
-            if (type == MIDI_NOTE_OFF || ((type == MIDI_NOTE_ON) && (data2 == 0))) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->keyOff(time, channel, data1, data2);
-                }
-            } else if (type == MIDI_NOTE_ON) {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->keyOff(time, channel, data1, data2);
+            }
+        }
+        
+        void handleKeyOn(double time, int channel, int data1, int data2)
+        {
+            if (data2 == 0) {
+                handleKeyOff(time, channel, data1, data2);
+            } else {
                 for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
                     fMidiInputs[i]->keyOn(time, channel, data1, data2);
                 }
-            } else if (type == MIDI_CONTROL_CHANGE) {
+            }
+        }
+    
+        void handleCtrlChange(double time, int channel, int data1, int data2)
+        {
+            // Special processing for NRPN and RPN
+            if (fNRPN.process(data1, data2)) {
+                if (fNRPN.hasNewNRPN()) {
+                    for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                        fMidiInputs[i]->rpn(time, channel, fNRPN.getCtrl(), fNRPN.getVal());
+                    }
+                }
+            } else {
                 for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
                     fMidiInputs[i]->ctrlChange(time, channel, data1, data2);
                 }
+            }
+        }
+        
+        void handlePitchWheel(double time, int channel, int data1, int data2)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->pitchWheel(time, channel, (data2 << 7) + data1);
+            }
+        }
+        
+        void handlePolyAfterTouch(double time, int channel, int data1, int data2)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->keyPress(time, channel, data1, data2);
+            }
+        }
+  
+        void handleData2(double time, int type, int channel, int data1, int data2)
+        {
+            if (type == MIDI_NOTE_OFF) {
+                handleKeyOff(time, channel,  data1, data2);
+            } else if (type == MIDI_NOTE_ON) {
+                handleKeyOn(time, channel, data1, data2);
+            } else if (type == MIDI_CONTROL_CHANGE) {
+                handleCtrlChange(time, channel, data1, data2);
             } else if (type == MIDI_PITCH_BEND) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->pitchWheel(time, channel, (data2 << 7) + data1);
-                }
+                handlePitchWheel(time, channel, data1, data2);
             } else if (type == MIDI_POLY_AFTERTOUCH) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->keyPress(time, channel, data1, data2);
-                }
+                handlePolyAfterTouch(time, channel, data1, data2);
+            }
+        }
+    
+        // SysEx
+        void handleSysex(double time, std::vector<unsigned char>& message)
+        {
+            for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
+                fMidiInputs[i]->sysEx(time, message);
             }
         }
     
         void handleMessage(double time, int type, std::vector<unsigned char>& message)
         {
             if (type == MIDI_SYSEX_START) {
-                for (unsigned int i = 0; i < fMidiInputs.size(); i++) {
-                    fMidiInputs[i]->sysEx(time, message);
-                }
+                handleSysex(time, message);
             }
         }
-
+  
 };
 
 //-------------------------------
@@ -8610,6 +10350,7 @@ struct DatedMessage {
 };
 
 #endif // __midi__
+/**************************  END  midi.h **************************/
 
 #ifdef _MSC_VER
 #define gsscanf sscanf_s
@@ -8630,11 +10371,7 @@ struct MidiMeta : public Meta, public std::map<std::string, std::string>
     
     const std::string get(const char* key, const char* def)
     {
-        if (this->find(key) != this->end()) {
-            return (*this)[key];
-        } else {
-            return def;
-        }
+        return (this->find(key) != this->end()) ? (*this)[key] : def;
     }
     
     static void analyse(dsp* mono_dsp, bool& midi_sync, int& nvoices)
@@ -8701,18 +10438,23 @@ struct MidiMeta : public Meta, public std::map<std::string, std::string>
 
 class uiMidi {
     
+    friend class MidiUI;
+    
     protected:
         
         midi* fMidiOut;
         bool fInputCtrl;
-        
+        int fChan;
+    
+        int rangeChan() { return (((fChan < 0) || (fChan > 15)) ? 0 : fChan); }
+    
     public:
         
-        uiMidi(midi* midi_out, bool input):fMidiOut(midi_out), fInputCtrl(input)
+        uiMidi(midi* midi_out, bool input, int chan = -1):fMidiOut(midi_out), fInputCtrl(input), fChan(chan)
         {}
         virtual ~uiMidi()
         {}
-    
+
 };
 
 /*****************************************************************************
@@ -8723,8 +10465,8 @@ class uiMidiItem : public uiMidi, public uiItem {
     
     public:
         
-        uiMidiItem(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
-            :uiMidi(midi_out, input), uiItem(ui, zone)
+        uiMidiItem(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true, int chan = -1)
+            :uiMidi(midi_out, input, chan), uiItem(ui, zone)
         {}
         virtual ~uiMidiItem()
         {}
@@ -8741,8 +10483,8 @@ class uiMidiTimedItem : public uiMidi, public uiTimedItem {
     
     public:
         
-        uiMidiTimedItem(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
-            :uiMidi(midi_out, input), uiTimedItem(ui, zone)
+        uiMidiTimedItem(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true, int chan = -1)
+            :uiMidi(midi_out, input, chan), uiTimedItem(ui, zone)
         {}
         virtual ~uiMidiTimedItem()
         {}
@@ -8751,9 +10493,9 @@ class uiMidiTimedItem : public uiMidi, public uiTimedItem {
     
 };
 
-//-------------
+//-----------
 // MIDI sync
-//-------------
+//-----------
 
 class uiMidiStart : public uiMidiTimedItem
 {
@@ -8856,8 +10598,8 @@ class uiMidiProgChange : public uiMidiTimedItem
   
     public:
     
-        uiMidiProgChange(midi* midi_out, int pgm, GUI* ui, FAUSTFLOAT* zone, bool input = true)
-            :uiMidiTimedItem(midi_out, ui, zone, input), fPgm(pgm)
+        uiMidiProgChange(midi* midi_out, int pgm, GUI* ui, FAUSTFLOAT* zone, bool input = true, int chan = -1)
+            :uiMidiTimedItem(midi_out, ui, zone, input, chan), fPgm(pgm)
         {}
         virtual ~uiMidiProgChange()
         {}
@@ -8867,7 +10609,7 @@ class uiMidiProgChange : public uiMidiTimedItem
             FAUSTFLOAT v = *fZone;
             fCache = v;
             if (v != FAUSTFLOAT(0)) {
-                fMidiOut->progChange(0, fPgm);
+                fMidiOut->progChange(rangeChan(), fPgm);
             }
         }
         
@@ -8881,8 +10623,8 @@ class uiMidiChanPress : public uiMidiTimedItem
   
     public:
     
-        uiMidiChanPress(midi* midi_out, int press, GUI* ui, FAUSTFLOAT* zone, bool input = true)
-            :uiMidiTimedItem(midi_out, ui, zone, input), fPress(press)
+        uiMidiChanPress(midi* midi_out, int press, GUI* ui, FAUSTFLOAT* zone, bool input = true, int chan = -1)
+            :uiMidiTimedItem(midi_out, ui, zone, input, chan), fPress(press)
         {}
         virtual ~uiMidiChanPress()
         {}
@@ -8892,7 +10634,7 @@ class uiMidiChanPress : public uiMidiTimedItem
             FAUSTFLOAT v = *fZone;
             fCache = v;
             if (v != FAUSTFLOAT(0)) {
-                fMidiOut->chanPress(0, fPress);
+                fMidiOut->chanPress(rangeChan(), fPress);
             }
         }
         
@@ -8906,9 +10648,9 @@ class uiMidiCtrlChange : public uiMidiTimedItem
         LinearValueConverter fConverter;
  
     public:
-    
-        uiMidiCtrlChange(midi* midi_out, int ctrl, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
-            :uiMidiTimedItem(midi_out, ui, zone, input), fCtrl(ctrl), fConverter(0., 127., double(min), double(max))
+
+        uiMidiCtrlChange(midi* midi_out, int ctrl, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true, int chan = -1)
+            :uiMidiTimedItem(midi_out, ui, zone, input, chan), fCtrl(ctrl), fConverter(0., 127., double(min), double(max))
         {}
         virtual ~uiMidiCtrlChange()
         {}
@@ -8917,7 +10659,52 @@ class uiMidiCtrlChange : public uiMidiTimedItem
         {
             FAUSTFLOAT v = *fZone;
             fCache = v;
-            fMidiOut->ctrlChange(0, fCtrl, fConverter.faust2ui(v));
+            fMidiOut->ctrlChange(rangeChan(), fCtrl, fConverter.faust2ui(v));
+        }
+        
+        void modifyZone(FAUSTFLOAT v)
+        {
+            if (fInputCtrl) {
+                uiItem::modifyZone(FAUSTFLOAT(fConverter.ui2faust(v)));
+            }
+        }
+    
+        void modifyZone(double date, FAUSTFLOAT v)
+        {
+            if (fInputCtrl) {
+                uiMidiTimedItem::modifyZone(date, FAUSTFLOAT(fConverter.ui2faust(v)));
+            }
+        }
+};
+
+class uiMidiPitchWheel : public uiMidiTimedItem
+{
+
+    private:
+    
+        LinearValueConverter2 fConverter;
+    
+    public:
+    
+        uiMidiPitchWheel(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true, int chan = -1)
+        :uiMidiTimedItem(midi_out, ui, zone, input, chan)
+        {
+            if (min <= 0 && max >= 0) {
+                fConverter = LinearValueConverter2(0., 8191., 16383., double(min), 0., double(max));
+            } else {
+                // Degenerated case...
+                fConverter = LinearValueConverter2(0., 8191., 16383., double(min),double(min + (max - min)/FAUSTFLOAT(2)), double(max));
+            }
+        }
+    
+        virtual ~uiMidiPitchWheel()
+        {}
+        
+        virtual void reflectZone()
+        {
+            FAUSTFLOAT v = *fZone;
+            fCache = v;
+            fMidiOut->pitchWheel(rangeChan(), fConverter.faust2ui(v));
         }
         
         void modifyZone(FAUSTFLOAT v)
@@ -8930,55 +10717,14 @@ class uiMidiCtrlChange : public uiMidiTimedItem
         void modifyZone(double date, FAUSTFLOAT v)
         {
             if (fInputCtrl) {
-                uiMidiTimedItem::modifyZone(date, FAUSTFLOAT(fConverter.ui2faust(v)));
-            }
-        }
- 
-};
-
-class uiMidiPitchWheel : public uiMidiTimedItem
-{
-
-    private:
-    	
-		// currently, the range is of pitchwheel if fixed (-2/2 semitones)
-        FAUSTFLOAT wheel2bend(float v)
-        {
-            return std::pow(2.0,(v/16383.0*4-2)/12);
-        }
-
-        int bend2wheel(float v)
-        {
-            return (int)((12*std::log(v)/std::log(2.0)+2)/4*16383);
-        }
- 
-    public:
-    
-        uiMidiPitchWheel(midi* midi_out, GUI* ui, FAUSTFLOAT* zone, bool input = true)
-            :uiMidiTimedItem(midi_out, ui, zone, input)
-        {}
-        virtual ~uiMidiPitchWheel()
-        {}
-        
-        virtual void reflectZone()
-        {
-            FAUSTFLOAT v = *fZone;
-            fCache = v;
-            fMidiOut->pitchWheel(0, bend2wheel(v));
-        }
-        
-        void modifyZone(FAUSTFLOAT v)
-        { 
-            if (fInputCtrl) {
-                uiItem::modifyZone(wheel2bend(v));
+                uiMidiTimedItem::modifyZone(FAUSTFLOAT(fConverter.ui2faust(v)));
             }
         }
     
-        void modifyZone(double date, FAUSTFLOAT v)
+        void setRange(int val)
         {
-            if (fInputCtrl) {
-                uiMidiTimedItem::modifyZone(date, wheel2bend(v));
-            }
+            double semi = (val / 128) + ((val % 128) / 100.);
+            fConverter.setMappingValues(0., 8191., 16383., -semi, 0., semi);
         }
  
 };
@@ -8993,8 +10739,8 @@ class uiMidiKeyOn : public uiMidiTimedItem
   
     public:
     
-        uiMidiKeyOn(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
-            :uiMidiTimedItem(midi_out, ui, zone, input), fKeyOn(key), fConverter(0., 127., double(min), double(max))
+        uiMidiKeyOn(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true, int chan = -1)
+            :uiMidiTimedItem(midi_out, ui, zone, input, chan), fKeyOn(key), fConverter(0., 127., double(min), double(max))
         {}
         virtual ~uiMidiKeyOn()
         {}
@@ -9003,7 +10749,7 @@ class uiMidiKeyOn : public uiMidiTimedItem
         {
             FAUSTFLOAT v = *fZone;
             fCache = v;
-            fMidiOut->keyOn(0, fKeyOn, fConverter.faust2ui(v));
+            fMidiOut->keyOn(rangeChan(), fKeyOn, fConverter.faust2ui(v));
         }
         
         void modifyZone(FAUSTFLOAT v)
@@ -9032,8 +10778,8 @@ class uiMidiKeyOff : public uiMidiTimedItem
   
     public:
     
-        uiMidiKeyOff(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
-            :uiMidiTimedItem(midi_out, ui, zone, input), fKeyOff(key), fConverter(0., 127., double(min), double(max))
+        uiMidiKeyOff(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true, int chan = -1)
+            :uiMidiTimedItem(midi_out, ui, zone, input, chan), fKeyOff(key), fConverter(0., 127., double(min), double(max))
         {}
         virtual ~uiMidiKeyOff()
         {}
@@ -9042,7 +10788,7 @@ class uiMidiKeyOff : public uiMidiTimedItem
         {
             FAUSTFLOAT v = *fZone;
             fCache = v;
-            fMidiOut->keyOff(0, fKeyOff, fConverter.faust2ui(v));
+            fMidiOut->keyOff(rangeChan(), fKeyOff, fConverter.faust2ui(v));
         }
         
         void modifyZone(FAUSTFLOAT v)
@@ -9071,8 +10817,8 @@ class uiMidiKeyPress : public uiMidiTimedItem
   
     public:
     
-        uiMidiKeyPress(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true)
-            :uiMidiTimedItem(midi_out, ui, zone, input), fKey(key), fConverter(0., 127., double(min), double(max))
+        uiMidiKeyPress(midi* midi_out, int key, GUI* ui, FAUSTFLOAT* zone, FAUSTFLOAT min, FAUSTFLOAT max, bool input = true, int chan = -1)
+            :uiMidiTimedItem(midi_out, ui, zone, input, chan), fKey(key), fConverter(0., 127., double(min), double(max))
         {}
         virtual ~uiMidiKeyPress()
         {}
@@ -9081,7 +10827,7 @@ class uiMidiKeyPress : public uiMidiTimedItem
         {
             FAUSTFLOAT v = *fZone;
             fCache = v;
-            fMidiOut->keyPress(0, fKey, fConverter.faust2ui(v));
+            fMidiOut->keyPress(rangeChan(), fKey, fConverter.faust2ui(v));
         }
         
         void modifyZone(FAUSTFLOAT v)
@@ -9118,20 +10864,28 @@ class MapUI;
 class MidiUI : public GUI, public midi
 {
 
+    typedef std::map <int, std::vector<uiMidiCtrlChange*> > TCtrlChangeTable;
+    typedef std::map <int, std::vector<uiMidiProgChange*> > TProgChangeTable;
+    typedef std::map <int, std::vector<uiMidiChanPress*> >  TChanPressTable;
+    typedef std::map <int, std::vector<uiMidiKeyOn*> >      TKeyOnTable;
+    typedef std::map <int, std::vector<uiMidiKeyOff*> >     TKeyOffTable;
+    typedef std::map <int, std::vector<uiMidiKeyPress*> >   TKeyPressTable;
+    typedef std::vector<uiMidiPitchWheel*>                  TPitchWheelTable;
+    
     protected:
     
-        std::map <int, std::vector<uiMidiCtrlChange*> > fCtrlChangeTable;
-        std::map <int, std::vector<uiMidiProgChange*> > fProgChangeTable;
-        std::map <int, std::vector<uiMidiChanPress*> >  fChanPressTable;
-        std::map <int, std::vector<uiMidiKeyOn*> >      fKeyOnTable;
-        std::map <int, std::vector<uiMidiKeyOff*> >     fKeyOffTable;
-        std::map <int, std::vector<uiMidiKeyOn*> >      fKeyTable;
-        std::map <int, std::vector<uiMidiKeyPress*> >   fKeyPressTable;
-        std::vector<uiMidiPitchWheel*>                  fPitchWheelTable;
+        TCtrlChangeTable fCtrlChangeTable;
+        TProgChangeTable fProgChangeTable;
+        TChanPressTable  fChanPressTable;
+        TKeyOnTable      fKeyOnTable;
+        TKeyOffTable     fKeyOffTable;
+        TKeyOnTable      fKeyTable;
+        TKeyPressTable   fKeyPressTable;
+        TPitchWheelTable fPitchWheelTable;
         
-        std::vector<uiMidiStart*>   fStartTable;
-        std::vector<uiMidiStop*>    fStopTable;
-        std::vector<uiMidiClock*>   fClockTable;
+        std::vector<uiMidiStart*> fStartTable;
+        std::vector<uiMidiStop*>  fStopTable;
+        std::vector<uiMidiClock*> fClockTable;
         
         std::vector<std::pair <std::string, std::string> > fMetaAux;
         
@@ -9144,23 +10898,40 @@ class MidiUI : public GUI, public midi
             if (fMetaAux.size() > 0) {
                 for (size_t i = 0; i < fMetaAux.size(); i++) {
                     unsigned num;
+                    unsigned chan;
                     if (fMetaAux[i].first == "midi") {
-                        if (gsscanf(fMetaAux[i].second.c_str(), "ctrl %u", &num) == 1) {
+                        if (gsscanf(fMetaAux[i].second.c_str(), "ctrl %u %u", &num, &chan) == 2) {
+                            fCtrlChangeTable[num].push_back(new uiMidiCtrlChange(fMidiHandler, num, this, zone, min, max, input, chan));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "ctrl %u", &num) == 1) {
                             fCtrlChangeTable[num].push_back(new uiMidiCtrlChange(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyon %u %u", &num, &chan) == 2) {
+                            fKeyOnTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input, chan));
                         } else if (gsscanf(fMetaAux[i].second.c_str(), "keyon %u", &num) == 1) {
                             fKeyOnTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keyoff %u %u", &num, &chan) == 2) {
+                            fKeyOffTable[num].push_back(new uiMidiKeyOff(fMidiHandler, num, this, zone, min, max, input, chan));
                         } else if (gsscanf(fMetaAux[i].second.c_str(), "keyoff %u", &num) == 1) {
                             fKeyOffTable[num].push_back(new uiMidiKeyOff(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "key %u %u", &num, &chan) == 2) {
+                            fKeyTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input, chan));
                         } else if (gsscanf(fMetaAux[i].second.c_str(), "key %u", &num) == 1) {
                             fKeyTable[num].push_back(new uiMidiKeyOn(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "keypress %u %u", &num, &chan) == 2) {
+                            fKeyPressTable[num].push_back(new uiMidiKeyPress(fMidiHandler, num, this, zone, min, max, input, chan));
                         } else if (gsscanf(fMetaAux[i].second.c_str(), "keypress %u", &num) == 1) {
                             fKeyPressTable[num].push_back(new uiMidiKeyPress(fMidiHandler, num, this, zone, min, max, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "pgm %u %u", &num, &chan) == 2) {
+                            fProgChangeTable[num].push_back(new uiMidiProgChange(fMidiHandler, num, this, zone, input, chan));
                         } else if (gsscanf(fMetaAux[i].second.c_str(), "pgm %u", &num) == 1) {
                             fProgChangeTable[num].push_back(new uiMidiProgChange(fMidiHandler, num, this, zone, input));
+                        } else if (gsscanf(fMetaAux[i].second.c_str(), "chanpress %u %u", &num, &chan) == 2) {
+                            fChanPressTable[num].push_back(new uiMidiChanPress(fMidiHandler, num, this, zone, input, chan));
                         } else if (gsscanf(fMetaAux[i].second.c_str(), "chanpress %u", &num) == 1) {
                             fChanPressTable[num].push_back(new uiMidiChanPress(fMidiHandler, num, this, zone, input));
-                        } else if (fMetaAux[i].second == "pitchwheel" || fMetaAux[i].second == "pitchbend") {
-                            fPitchWheelTable.push_back(new uiMidiPitchWheel(fMidiHandler, this, zone, input));
+                        } else if ((gsscanf(fMetaAux[i].second.c_str(), "pitchwheel %u", &chan) == 1) || (gsscanf(fMetaAux[i].second.c_str(), "pitchbend %u", &chan) == 1)) {
+                            fPitchWheelTable.push_back(new uiMidiPitchWheel(fMidiHandler, this, zone, min, max, input, chan));
+                        } else if ((fMetaAux[i].second == "pitchwheel") || (fMetaAux[i].second == "pitchbend")) {
+                            fPitchWheelTable.push_back(new uiMidiPitchWheel(fMidiHandler, this, zone, min, max, input));
                         // MIDI sync
                         } else if (fMetaAux[i].second == "start") {
                             fStartTable.push_back(new uiMidiStart(fMidiHandler, this, zone, input));
@@ -9177,12 +10948,41 @@ class MidiUI : public GUI, public midi
             }
             fMetaAux.clear();
         }
-
+    
+        template <typename T>
+        void updateTable1(T& table, double date, int channel, int val1)
+        {
+            for (size_t i = 0; i < table.size(); i++) {
+                int channel_aux = table[i]->fChan;
+                if (channel_aux == -1 || channel == channel_aux) {
+                    if (fTimeStamp) {
+                        table[i]->modifyZone(date, FAUSTFLOAT(val1));
+                    } else {
+                        table[i]->modifyZone(FAUSTFLOAT(val1));
+                    }
+                }
+            }
+        }
+        
+        template <typename T>
+        void updateTable2(T& table, double date, int channel, int val1, int val2)
+        {
+            if (table.find(val1) != table.end()) {
+                for (size_t i = 0; i < table[val1].size(); i++) {
+                    int channel_aux = table[val1][i]->fChan;
+                    if (channel_aux == -1 || channel == channel_aux) {
+                        if (fTimeStamp) {
+                            table[val1][i]->modifyZone(date, FAUSTFLOAT(val2));
+                        } else {
+                            table[val1][i]->modifyZone(FAUSTFLOAT(val2));
+                        }
+                    }
+                }
+            }
+        }
+    
     public:
     
-        MidiUI():fMidiHandler(NULL), fDelete(false), fTimeStamp(false)
-        {}
-
         MidiUI(midi_handler* midi_handler, bool delete_handler = false)
         {
             fMidiHandler = midi_handler;
@@ -9245,134 +11045,63 @@ class MidiUI : public GUI, public midi
             fMetaAux.push_back(std::make_pair(key, val));
         }
         
-        // -- MIDI API 
-        
+        // -- MIDI API
+    
+        void key(double date, int channel, int note, int velocity)
+        {
+            updateTable2<TKeyOnTable>(fKeyTable, date, channel, note, velocity);
+        }
+    
         MapUI* keyOn(double date, int channel, int note, int velocity)
         {
-            if (fKeyOnTable.find(note) != fKeyOnTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fKeyOnTable[note].size(); i++) {
-                        fKeyOnTable[note][i]->modifyZone(date, FAUSTFLOAT(velocity));
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fKeyOnTable[note].size(); i++) {
-                        fKeyOnTable[note][i]->modifyZone(FAUSTFLOAT(velocity));
-                    }
-                }
-            }
+            updateTable2<TKeyOnTable>(fKeyOnTable, date, channel, note, velocity);
             // If note is in fKeyTable, handle it as a keyOn
-            if (fKeyTable.find(note) != fKeyTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fKeyTable[note].size(); i++) {
-                        fKeyTable[note][i]->modifyZone(date, FAUSTFLOAT(velocity));
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fKeyTable[note].size(); i++) {
-                        fKeyTable[note][i]->modifyZone(FAUSTFLOAT(velocity));
-                    }
-                }
-            }
-            return 0;
+            key(date, channel, note, velocity);
+            return nullptr;
         }
         
         void keyOff(double date, int channel, int note, int velocity)
         {
-            if (fKeyOffTable.find(note) != fKeyOffTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fKeyOffTable[note].size(); i++) {
-                        fKeyOffTable[note][i]->modifyZone(date, FAUSTFLOAT(velocity));
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fKeyOffTable[note].size(); i++) {
-                        fKeyOffTable[note][i]->modifyZone(FAUSTFLOAT(velocity));
-                    }
-                }
-            }
+            updateTable2<TKeyOffTable>(fKeyOffTable, date, channel, note, velocity);
             // If note is in fKeyTable, handle it as a keyOff with a 0 velocity
-            if (fKeyTable.find(note) != fKeyTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fKeyTable[note].size(); i++) {
-                        fKeyTable[note][i]->modifyZone(date, 0);
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fKeyTable[note].size(); i++) {
-                        fKeyTable[note][i]->modifyZone(0);
-                    }
-                }
-            }
-        }
-           
-        void ctrlChange(double date, int channel, int ctrl, int value)
-        {
-            if (fCtrlChangeTable.find(ctrl) != fCtrlChangeTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fCtrlChangeTable[ctrl].size(); i++) {
-                        fCtrlChangeTable[ctrl][i]->modifyZone(date, FAUSTFLOAT(value));
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fCtrlChangeTable[ctrl].size(); i++) {
-                        fCtrlChangeTable[ctrl][i]->modifyZone(FAUSTFLOAT(value));
-                    }
-                }
-            }
+            key(date, channel, note, 0);
         }
         
-        void progChange(double date, int channel, int pgm)
+        void ctrlChange(double date, int channel, int ctrl, int value)
         {
-            if (fProgChangeTable.find(pgm) != fProgChangeTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fProgChangeTable[pgm].size(); i++) {
-                        fProgChangeTable[pgm][i]->modifyZone(date, FAUSTFLOAT(1));
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fProgChangeTable[pgm].size(); i++) {
-                        fProgChangeTable[pgm][i]->modifyZone(FAUSTFLOAT(1));
+            updateTable2<TCtrlChangeTable>(fCtrlChangeTable, date, channel, ctrl, value);
+        }
+    
+        void rpn(double date, int channel, int ctrl, int value)
+        {
+            if (ctrl == midi::PITCH_BEND_RANGE) {
+                for (size_t i = 0; i < fPitchWheelTable.size(); i++) {
+                    int channel_aux = fPitchWheelTable[i]->fChan;
+                    if (channel_aux == -1 || channel == channel_aux) {
+                        fPitchWheelTable[i]->setRange(value);
                     }
                 }
             }
+        }
+    
+        void progChange(double date, int channel, int pgm)
+        {
+            updateTable2<TProgChangeTable>(fProgChangeTable, date, channel, pgm, FAUSTFLOAT(1));
         }
         
         void pitchWheel(double date, int channel, int wheel) 
         {
-            if (fTimeStamp) {
-                for (unsigned int i = 0; i < fPitchWheelTable.size(); i++) {
-                    fPitchWheelTable[i]->modifyZone(date, FAUSTFLOAT(wheel));
-                }
-            } else {
-                for (unsigned int i = 0; i < fPitchWheelTable.size(); i++) {
-                    fPitchWheelTable[i]->modifyZone(FAUSTFLOAT(wheel));
-                }
-            }
+            updateTable1<TPitchWheelTable>(fPitchWheelTable, date, channel, wheel);
         }
         
         void keyPress(double date, int channel, int pitch, int press) 
         {
-            if (fKeyPressTable.find(pitch) != fKeyPressTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fKeyPressTable[pitch].size(); i++) {
-                        fKeyPressTable[pitch][i]->modifyZone(date, FAUSTFLOAT(press));
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fKeyPressTable[pitch].size(); i++) {
-                        fKeyPressTable[pitch][i]->modifyZone(FAUSTFLOAT(press));
-                    }
-                }
-            }
+            updateTable2<TKeyPressTable>(fKeyPressTable, date, channel, pitch, press);
         }
         
         void chanPress(double date, int channel, int press)
         {
-            if (fChanPressTable.find(press) != fChanPressTable.end()) {
-                if (fTimeStamp) {
-                    for (unsigned int i = 0; i < fChanPressTable[press].size(); i++) {
-                        fChanPressTable[press][i]->modifyZone(date, FAUSTFLOAT(1));
-                    }
-                } else {
-                    for (unsigned int i = 0; i < fChanPressTable[press].size(); i++) {
-                        fChanPressTable[press][i]->modifyZone(FAUSTFLOAT(1));
-                    }
-                }
-            } 
+            updateTable2<TChanPressTable>(fChanPressTable, date, channel, press, FAUSTFLOAT(1));
         }
         
         void ctrlChange14bits(double date, int channel, int ctrl, int value) {}
@@ -9381,27 +11110,29 @@ class MidiUI : public GUI, public midi
         
         void startSync(double date)
         {
-            for (unsigned int i = 0; i < fStartTable.size(); i++) {
+            for (size_t i = 0; i < fStartTable.size(); i++) {
                 fStartTable[i]->modifyZone(date, FAUSTFLOAT(1));
             }
         }
         
         void stopSync(double date)
         {
-            for (unsigned int i = 0; i < fStopTable.size(); i++) {
+            for (size_t i = 0; i < fStopTable.size(); i++) {
                 fStopTable[i]->modifyZone(date, FAUSTFLOAT(0));
             }
         }
         
         void clock(double date)
         {
-            for (unsigned int i = 0; i < fClockTable.size(); i++) {
+            for (size_t i = 0; i < fClockTable.size(); i++) {
                 fClockTable[i]->modifyZone(date, FAUSTFLOAT(1));
             }
         }
 };
 
 #endif // FAUST_MIDIUI_H
+/**************************  END  MidiUI.h **************************/
+/************************** BEGIN poly-dsp.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -9439,6 +11170,7 @@ class MidiUI : public GUI, public midi
 #include <float.h>
 #include <assert.h>
 
+/************************** BEGIN dsp-combiner.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2019 GRAME, Centre National de Creation Musicale
@@ -9847,6 +11579,8 @@ class dsp_recursiver : public dsp_binary_combiner {
 
 
 #endif
+/**************************  END  dsp-combiner.h **************************/
+/************************** BEGIN proxy-dsp.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2003-2017 GRAME, Centre National de Creation Musicale
@@ -9951,6 +11685,55 @@ class proxy_dsp : public dsp {
 };
 
 #endif
+/**************************  END  proxy-dsp.h **************************/
+/************************** BEGIN JSONControl.h **************************/
+/************************************************************************
+ FAUST Architecture File
+ Copyright (C) 2019 GRAME, Centre National de Creation Musicale
+ ---------------------------------------------------------------------
+ This Architecture section is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 3 of
+ the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; If not, see <http://www.gnu.org/licenses/>.
+ 
+ EXCEPTION : As a special exception, you may create a larger work
+ that contains this FAUST architecture section and distribute
+ that work under terms of your choice, so long as this FAUST
+ architecture section is not modified.
+ ************************************************************************/
+
+#ifndef __JSON_CONTROL__
+#define __JSON_CONTROL__
+
+#include <string>
+
+#ifndef FAUSTFLOAT
+#define FAUSTFLOAT float
+#endif
+
+struct JSONControl {
+    
+    virtual std::string getJSON() { return ""; }
+
+    virtual void setParamValue(const std::string& path, FAUSTFLOAT value) {}
+
+    virtual FAUSTFLOAT getParamValue(const std::string& path) { return 0; }
+    
+    virtual ~JSONControl()
+    {}
+    
+};
+
+#endif
+/**************************  END  JSONControl.h **************************/
 
 #define kActiveVoice      0
 #define kFreeVoice        -1
@@ -10067,6 +11850,8 @@ struct dsp_voice : public MapUI, public decorator_dsp {
 
     int fNote;                          // Playing note actual pitch
     int fDate;                          // KeyOn date
+    int fRelease;                       // Current number of samples used in release mode to detect end of note
+    int fMinRelease;                    // Max of samples used in release mode to detect end of note
     FAUSTFLOAT fLevel;                  // Last audio block level
     std::vector<std::string> fGatePath; // Paths of 'gate' control
     std::vector<std::string> fGainPath; // Paths of 'gain' control
@@ -10078,6 +11863,7 @@ struct dsp_voice : public MapUI, public decorator_dsp {
         fNote = kFreeVoice;
         fLevel = FAUSTFLOAT(0);
         fDate = 0;
+        fMinRelease = dsp->getSampleRate()/2; // One 1/2 sec used in release mode to detect end of note
         extractPaths(fGatePath, fFreqPath, fGainPath);
     }
     virtual ~dsp_voice()
@@ -10133,6 +11919,7 @@ struct dsp_voice : public MapUI, public decorator_dsp {
             fNote = kFreeVoice;
         } else {
             // Release voice
+            fRelease = fMinRelease;
             fNote = kReleaseVoice;
         }
     }
@@ -10223,18 +12010,40 @@ struct dsp_voice_group {
  * Base class for MIDI controllable DSP.
  */
 
-class dsp_poly : public decorator_dsp, public midi {
+#ifdef EMCC
+#endif
 
+class dsp_poly : public decorator_dsp, public midi, public JSONControl {
+
+    protected:
+    
+    #ifdef EMCC
+        MapUI fMapUI;
+        std::string fJSON;
+        midi_handler fMIDIHandler;
+        MidiUI fMIDIUI;
+    #endif
+    
     public:
     
-        dsp_poly()
-        {}
+    #ifdef EMCC
+        dsp_poly(dsp* dsp):decorator_dsp(dsp), fMIDIUI(&fMIDIHandler)
+        {
+            JSONUI jsonui(getNumInputs(), getNumOutputs());
+            buildUserInterface(&jsonui);
+            fJSON = jsonui.JSON(true);
+            buildUserInterface(&fMapUI);
+            buildUserInterface(&fMIDIUI);
+        }
+    #else
         dsp_poly(dsp* dsp):decorator_dsp(dsp)
         {}
+    #endif
     
         virtual ~dsp_poly() {}
     
         // Reimplemented for EMCC
+    #ifdef EMCC
         virtual int getNumInputs() { return decorator_dsp::getNumInputs(); }
         virtual int getNumOutputs() { return decorator_dsp::getNumOutputs(); }
         virtual void buildUserInterface(UI* ui_interface) { decorator_dsp::buildUserInterface(ui_interface); }
@@ -10246,20 +12055,36 @@ class dsp_poly : public decorator_dsp, public midi {
         virtual void instanceClear() { decorator_dsp::instanceClear(); }
         virtual dsp_poly* clone() { return new dsp_poly(fDSP->clone()); }
         virtual void metadata(Meta* m) { decorator_dsp::metadata(m); }
+    
+        // Additional API
+        std::string getJSON()
+        {
+            return fJSON;
+        }
+    
+        virtual void setParamValue(const std::string& path, FAUSTFLOAT value)
+        {
+            fMapUI.setParamValue(path, value);
+            GUI::updateAllGuis();
+        }
+        
+        virtual FAUSTFLOAT getParamValue(const std::string& path) { return fMapUI.getParamValue(path); }
+
         virtual void computeJS(int count, uintptr_t inputs, uintptr_t outputs)
         {
             decorator_dsp::compute(count, reinterpret_cast<FAUSTFLOAT**>(inputs),reinterpret_cast<FAUSTFLOAT**>(outputs));
         }
+    #endif
     
-        virtual  MapUI* keyOn(int channel, int pitch, int velocity)
+        virtual MapUI* keyOn(int channel, int pitch, int velocity)
         {
             return midi::keyOn(channel, pitch, velocity);
         }
-        virtual  void keyOff(int channel, int pitch, int velocity)
+        virtual void keyOff(int channel, int pitch, int velocity)
         {
             midi::keyOff(channel, pitch, velocity);
         }
-        virtual  void keyPress(int channel, int pitch, int press)
+        virtual void keyPress(int channel, int pitch, int press)
         {
             midi::keyPress(channel, pitch, press);
         }
@@ -10277,7 +12102,12 @@ class dsp_poly : public decorator_dsp, public midi {
         }
         virtual void pitchWheel(int channel, int wheel)
         {
+        #ifdef EMCC
+            fMIDIUI.pitchWheel(0., channel, wheel);
+            GUI::updateAllGuis();
+        #else
             midi::pitchWheel(channel, wheel);
+        #endif
         }
         virtual void progChange(int channel, int pgm)
         {
@@ -10304,7 +12134,7 @@ class mydsp2_poly : public dsp_voice_group, public dsp_poly {
         FAUSTFLOAT** fMixBuffer;
         int fDate;
 
-        FAUSTFLOAT mixVoice(int count, FAUSTFLOAT** outputBuffer, FAUSTFLOAT** mixBuffer)
+        FAUSTFLOAT mixCheckVoice(int count, FAUSTFLOAT** outputBuffer, FAUSTFLOAT** mixBuffer)
         {
             FAUSTFLOAT level = 0;
             for (int i = 0; i < getNumOutputs(); i++) {
@@ -10316,6 +12146,17 @@ class mydsp2_poly : public dsp_voice_group, public dsp_poly {
                 }
             }
             return level;
+        }
+    
+        void mixVoice(int count, FAUSTFLOAT** outputBuffer, FAUSTFLOAT** mixBuffer)
+        {
+            for (int i = 0; i < getNumOutputs(); i++) {
+                FAUSTFLOAT* mixChannel = mixBuffer[i];
+                FAUSTFLOAT* outChannel = outputBuffer[i];
+                for (int j = 0; j < count; j++) {
+                    mixChannel[j] += outChannel[j];
+                }
+            }
         }
 
         void clearOutput(int count, FAUSTFLOAT** mixBuffer)
@@ -10427,7 +12268,7 @@ class mydsp2_poly : public dsp_voice_group, public dsp_poly {
          * Constructor.
          *
          * @param dsp - the dsp to be used for one voice. Beware: mydsp2_poly will use and finally delete the pointer.
-         * @param nvoices - number of polyphony voices
+         * @param nvoices - number of polyphony voices, should be at least 1
          * @param control - whether voices will be dynamically allocated and controlled (typically by a MIDI controler).
          *                If false all voices are always running.
          * @param group - if true, voices are not individually accessible, a global "Voices" tab will automatically dispatch
@@ -10544,9 +12385,12 @@ class mydsp2_poly : public dsp_voice_group, public dsp_poly {
                     if (voice->fNote != kFreeVoice) {
                         voice->compute(count, inputs, fMixBuffer);
                         // Mix it in result
-                        voice->fLevel = mixVoice(count, fMixBuffer, outputs);
+                        voice->fLevel = mixCheckVoice(count, fMixBuffer, outputs);
                         // Check the level to possibly set the voice in kFreeVoice again
-                        if ((voice->fLevel < VOICE_STOP_LEVEL) && (voice->fNote == kReleaseVoice)) {
+                        voice->fRelease -= count;
+                        if ((voice->fNote == kReleaseVoice)
+                            && (voice->fRelease < 0)
+                            && (voice->fLevel < VOICE_STOP_LEVEL)) {
                             voice->fNote = kFreeVoice;
                         }
                     }
@@ -10589,6 +12433,7 @@ class mydsp2_poly : public dsp_voice_group, public dsp_poly {
             }
         }
     
+        // Group API
         void setGroup(bool group) { fGroupControl = group; }
         bool getGroup() { return fGroupControl; }
 
@@ -10616,27 +12461,12 @@ class mydsp2_poly : public dsp_voice_group, public dsp_poly {
             }
         }
 
-        void pitchWheel(int channel, int wheel)
-        {}
-
         void ctrlChange(int channel, int ctrl, int value)
         {
             if (ctrl == ALL_NOTES_OFF || ctrl == ALL_SOUND_OFF) {
                 allNotesOff();
             }
         }
-
-        void progChange(int channel, int pgm)
-        {}
-
-        void keyPress(int channel, int pitch, int press)
-        {}
-
-        void chanPress(int channel, int press)
-        {}
-
-        void ctrlChange14bits(int channel, int ctrl, int value)
-        {}
 
 };
 
@@ -10750,7 +12580,7 @@ struct dsp_poly_factory : public dsp_factory {
     
     /* Create a new polyphonic DSP instance with global effect, to be deleted with C++ 'delete'
      *
-     * @param nvoices - number of polyphony voices
+     * @param nvoices - number of polyphony voices, should be at least 1
      * @param control - whether voices will be dynamically allocated and controlled (typically by a MIDI controler).
      *                If false all voices are always running.
      * @param group - if true, voices are not individually accessible, a global "Voices" tab will automatically dispatch
@@ -10777,6 +12607,8 @@ struct dsp_poly_factory : public dsp_factory {
 };
 
 #endif // __poly_dsp__
+/**************************  END  poly-dsp.h **************************/
+/************************** BEGIN faust-engine.h **************************/
 /************************************************************************
  FAUST Architecture File
  Copyright (C) 2013 GRAME, Romain Michon, CCRMA - Stanford University
@@ -10816,7 +12648,7 @@ extern "C" {
     
     bool isRunning(void*);
 
-    unsigned long keyOn(void*, int, int);
+    uintptr_t keyOn(void*, int, int);
     int keyOff(void*, int);
     
     void propagateMidi(void*, int, double, int, int, int, int);
@@ -10832,8 +12664,8 @@ extern "C" {
     void setParamIdValue(void*, int, float);
     float getParamIdValue(void*, int);
 
-    void setVoiceParamValue(void*, const char*, unsigned long, float);
-    float getVoiceParamValue(void*, const char*, unsigned long);
+    void setVoiceParamValue(void*, const char*, uintptr_t, float);
+    float getVoiceParamValue(void*, const char*, uintptr_t);
 
     const char* getParamAddress(void*, int);
 
@@ -10851,6 +12683,7 @@ extern "C" {
 #endif
 
 #endif // __faust_engine__
+/**************************  END  faust-engine.h **************************/
 
 //**************************************************************
 // Mono or polyphonic audio DSP engine
@@ -10875,13 +12708,6 @@ class FaustPolyEngine {
         midi_handler fMidiHandler;
         MidiUI fMidiUI;
     
-        bool checkPolyphony(dsp* mono_dsp)
-        {
-            if (fJSONUI.find("keyboard") != std::string::npos) return true;
-            if (fJSONUI.find("poly") != std::string::npos) return true;
-            return MidiMeta::checkPolyphony(mono_dsp);
-        }
-    
         void init(dsp* mono_dsp, audio* driver, midi_handler* midi)
         {
             bool midi_sync = false;
@@ -10900,7 +12726,7 @@ class FaustPolyEngine {
             mono_dsp->metadata(&jsonui1M);
             fJSONMeta = jsonui1M.JSON();
             
-            if (checkPolyphony(mono_dsp) && (nvoices > 0)) {
+            if (nvoices > 0) {
                 
                 fPolyDSP = new mydsp2_poly(mono_dsp, nvoices, true);
                 fMidiHandler.addMidiIn(fPolyDSP);
@@ -11071,22 +12897,22 @@ class FaustPolyEngine {
         }
 
         /*
-         * deleteVoice(unsigned long voice)
-         * Delete a voice based on its MapUI* casted as a unsigned long.
+         * deleteVoice(uintptr_t voice)
+         * Delete a voice based on its MapUI* casted as a uintptr_t.
          */
-        int deleteVoice(unsigned long voice)
+        int deleteVoice(uintptr_t voice)
         {
             return deleteVoice(reinterpret_cast<MapUI*>(voice));
         }
         
         /*
          * allNotesOff()
-         * Gently terminates all the active voices.
+         * Terminates all the active voices, gently (with release when hard = false or immediately when hard = true)
          */
-        void allNotesOff()
+        void allNotesOff(bool hard = false)
         {
             if (fPolyDSP) {
-                fPolyDSP->allNotesOff();
+                fPolyDSP->allNotesOff(hard);
             }
         }
     
@@ -11196,7 +13022,7 @@ class FaustPolyEngine {
          * the voice. setVoiceParamValue can only be
          * used if the [style:poly] metadata is used in the Faust code.
          */
-        void setVoiceParamValue(const char* address, unsigned long voice, float value)
+        void setVoiceParamValue(const char* address, uintptr_t voice, float value)
         {
             reinterpret_cast<MapUI*>(voice)->setParamValue(address, value);
         }
@@ -11207,7 +13033,7 @@ class FaustPolyEngine {
          * the voice. setVoiceParamValue can only be
          * used if the [style:poly] metadata is used in the Faust code.
          */
-        void setVoiceParamValue(int id, unsigned long voice, float value)
+        void setVoiceParamValue(int id, uintptr_t voice, float value)
         {
             reinterpret_cast<MapUI*>(voice)->setParamValue(reinterpret_cast<MapUI*>(voice)->getParamAddress(id), value);
         }
@@ -11218,7 +13044,7 @@ class FaustPolyEngine {
          * getVoiceParamValue can only be used if the [style:poly] metadata
          * is used in the Faust code.
          */
-        float getVoiceParamValue(const char* address, unsigned long voice)
+        float getVoiceParamValue(const char* address, uintptr_t voice)
         {
             return reinterpret_cast<MapUI*>(voice)->getParamValue(address);
         }
@@ -11229,7 +13055,7 @@ class FaustPolyEngine {
          * getVoiceParamValue can only be used if the [style:poly] metadata
          * is used in the Faust code.
          */
-        float getVoiceParamValue(int id, unsigned long voice)
+        float getVoiceParamValue(int id, uintptr_t voice)
         {
             return reinterpret_cast<MapUI*>(voice)->getParamValue(reinterpret_cast<MapUI*>(voice)->getParamAddress(id));
         }
@@ -11248,7 +13074,7 @@ class FaustPolyEngine {
          * Returns the address of a parameter for a specific voice 
          * in function of its "id".
          */
-        const char* getVoiceParamAddress(int id, unsigned long voice)
+        const char* getVoiceParamAddress(int id, uintptr_t voice)
         {
             return reinterpret_cast<MapUI*>(voice)->getParamAddress(id).c_str();
         }
@@ -11398,6 +13224,7 @@ extern "C" {
 #endif
 
 #endif // __faust_poly_engine__
+/**************************  END  faust-poly-engine.h **************************/
 /************************************************************************
  ************************************************************************
  FAUST Polyphonic Architecture File
@@ -11764,7 +13591,33 @@ public:
 
 
 DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
-    fMotionEngine = new FaustMotionEngine(NULL,new motion_audio(sample_rate, buffer_size, 0, false, false));
+    
+    myaudio* driver2= new motion_audio(sample_rate, buffer_size, 0, false, false);
+    fMotionEngine = new FaustMotionEngine(NULL,driver2);
+    
+    // OSC
+    #if OSCCTRL
+        const char* argv[11];
+        argv[0] = "Faust";
+        argv[1] = "-xmit";
+        #if OSCALL
+            argv[2] = "1";
+        #endif
+        #if OSCALIAS
+            argv[2] = "2";
+        #endif
+        argv[3] = "-desthost";
+        argv[4] = OSC_IP_ADDRESS;
+        argv[5] = "-port";
+        argv[6] = OSC_IN_PORT;
+        argv[7] = "-outport";
+        argv[8] = OSC_OUT_PORT;
+        argv[9] = "-bundle";
+        argv[10] = "0";
+        fMotionOSCUI = new OSCUI("Faust", 11, (char**)argv);
+        driver2->addControlCallback(osc_compute_callback, fMotionOSCUI);
+        fMotionEngine->buildUserInterface(fMotionOSCUI);
+    #endif
 
 }
 
@@ -11772,17 +13625,76 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
 
 DspFaustMotion::~DspFaustMotion(){
     delete fMotionEngine;
+    
+    #if OSCCTRL
+        delete fMotionOSCUI;
+    #endif
 
 }
 
 bool DspFaustMotion::start(){
+    #if OSCCTRL
+        fMotionOSCUI->run();
+    #endif
 
     return fMotionEngine->start();
+    
+    
 }
 
 void DspFaustMotion::stop(){
+    #if OSCCTRL
+        fMotionOSCUI->stop();
+    #endif
 
     fMotionEngine->stop();
+    
+    
+}
+    
+void DspFaustMotion::setOSCValue(const char* address, const char* inPort, const char* outPort){
+
+#if OSCCTRL
+    if (isRunning()) {
+    } else {
+#if OSCALL
+        oscfaust::OSCControler::gXmit = 1;
+#endif
+#if OSCALIAS
+        oscfaust::OSCControler::gXmit = 2;
+#endif
+        fMotionOSCUI->setUDPPort(atoi(inPort));
+        fMotionOSCUI->setUDPOut(atoi(outPort));
+        fMotionOSCUI->setDestAddress(address);
+    }
+#endif
+
+
+}
+
+bool DspFaustMotion::setOSCValue(const char* address, int inPort, int outPort){
+
+#if OSCCTRL
+
+    if (isRunning()) {
+        return false;
+    } else {
+#if OSCALL
+        oscfaust::OSCControler::gXmit = 1;
+#endif
+#if OSCALIAS
+        oscfaust::OSCControler::gXmit = 2;
+#endif
+        fMotionOSCUI->setUDPPort(inPort);
+        fMotionOSCUI->setUDPOut(outPort);
+        fMotionOSCUI->setDestAddress(address);
+        return true;
+    }
+
+#else
+    return false;
+#endif
+
 }
 
 
