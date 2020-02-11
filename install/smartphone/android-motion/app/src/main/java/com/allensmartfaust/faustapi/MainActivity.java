@@ -53,7 +53,16 @@ import java.util.TimerTask;
 import static android.R.color.white;
 import static java.lang.Math.sqrt;
 
-public class MainActivity extends AppCompatActivity {
+// For audio input request permission
+import android.support.v4.app.ActivityCompat;
+import android.Manifest;
+import android.widget.Toast;
+import android.support.annotation.NonNull;
+import android.content.pm.PackageManager;
+
+public class MainActivity extends AppCompatActivity
+implements ActivityCompat.OnRequestPermissionsResultCallback {
+
     DspFaust dspFaust;
     DspFaustMotion dspFaustMotion;
 
@@ -150,43 +159,9 @@ public class MainActivity extends AppCompatActivity {
     int cnt2;
 
 
-
-    public static final int RequestPermissionCode = 1;
-
+    // For audio input request permission
+    private static final int AUDIO_ECHO_REQUEST = 0;
     private boolean permissionToRecordAccepted = false;
-    private String [] permissions = {Manifest.permission.RECORD_AUDIO,Manifest.permission.INTERNET,Manifest.permission.ACCESS_NETWORK_STATE};
-
-    private void requestPermission() {
-
-        ActivityCompat.requestPermissions(this, permissions,RequestPermissionCode);
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-
-            case RequestPermissionCode:
-
-                if (grantResults.length > 0) {
-
-                    boolean AudioPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean InternetPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    boolean NetworkPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
-
-                    permissionToRecordAccepted = AudioPermission && InternetPermission && NetworkPermission;
-                    if (permissionToRecordAccepted) {
-                        createFaust();
-                    }
-                    else {
-                        finish();
-                    }
-                }
-
-                break;
-        }
-    }
-
 
     private void createFaust() {
 
@@ -225,12 +200,12 @@ public class MainActivity extends AppCompatActivity {
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if (Build.VERSION.SDK_INT == 23) {    // uniquement for now for Android 6.0
-            requestPermission();
-         } else {
+        if (Build.VERSION.SDK_INT >= 23 && !isRecordPermissionGranted()){
+            requestRecordPermission();
+        } else {
             permissionToRecordAccepted = true;
             createFaust();
-         }
+        }
 
         // check if audio files were saved in internal storage
           String[] internalStorageList = getFilesDir().list();
@@ -1082,85 +1057,112 @@ outputPort.setText(SharedPrefRead("oscOutPort","5511"));
 
 
 @Override
-protected void onPause() {
-Log.d("Faust", "onPause");
-super.onPause();
-if(permissionToRecordAccepted) {
+    protected void onPause() {
+        Log.d("Faust", "onPause");
+        super.onPause();
+        if(permissionToRecordAccepted) {
 
-dspFaustMotion.stop();
-dspFaust.stop();
+        dspFaustMotion.stop();
+        dspFaust.stop();
 
-if (sensorManager!=null) {
-sensorManager.unregisterListener(mSensorListener);
-}
-}
+        if (sensorManager!=null) {
+        sensorManager.unregisterListener(mSensorListener);
+        }
+        }
 
-}
-
-@Override
-protected void onResume() {
-Log.d("Faust", "onResume");
-super.onResume();
-if(permissionToRecordAccepted) {
-
-if (!dspFaustMotion.isRunning()) {
-
-dspFaustMotion.start();
-}
-
-if (!dspFaust.isRunning()) {
-
-SharedPrefInit(getApplicationContext());
-
-if (dspFaust.getOSCIsOn()) {
-oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
-oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
-oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
-
-dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
-
-}
-
-dspFaust.start();
-
-checkAddress();
-dspFaust.checkAdress();
-loadDefaultParams();
-
-
-sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-
-sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-
-sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_FASTEST);
-
-}
-
-
-}
-}
+    }
 
 @Override
-public void onDestroy() {
-Log.d("Faust", "onDestroy");
+    protected void onResume() {
+        Log.d("Faust", "onResume");
+        super.onResume();
+        if(permissionToRecordAccepted) {
 
-super.onDestroy();
+        if (!dspFaustMotion.isRunning()) {
 
-if (dspFaustMotion != null) {
-dspFaustMotion = null;
-}
+        dspFaustMotion.start();
+        }
 
-if (dspFaust != null) {
-dspFaust = null;
-}
+        if (!dspFaust.isRunning()) {
 
-if (sensorManager!=null){sensorManager.unregisterListener(mSensorListener);}
+        SharedPrefInit(getApplicationContext());
 
-sensorManager= null;
+        if (dspFaust.getOSCIsOn()) {
+        oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
+        oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
+        oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
+
+        dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
+
+        }
+
+        dspFaust.start();
+
+        checkAddress();
+        dspFaust.checkAdress();
+        loadDefaultParams();
 
 
-}
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+        Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+        Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+        Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_FASTEST);
+
+        }
+
+
+        }
+    }
+
+@Override
+    public void onDestroy() {
+        Log.d("Faust", "onDestroy");
+
+        super.onDestroy();
+
+        if (dspFaustMotion != null) {
+        dspFaustMotion = null;
+        }
+
+        if (dspFaust != null) {
+        dspFaust = null;
+        }
+
+        if (sensorManager!=null){sensorManager.unregisterListener(mSensorListener);}
+
+        sensorManager= null;
+
+    }
+
+@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (AUDIO_ECHO_REQUEST != requestCode) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+
+        if (grantResults.length != 1 ||
+                grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            finish();
+        } else {
+            // Permission was granted
+            permissionToRecordAccepted = true;
+            createFaust();
+        }
+    }
+
+    // For audio input request permission
+    private boolean isRecordPermissionGranted() {
+        return (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestRecordPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_ECHO_REQUEST);
+    }
 }

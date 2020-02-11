@@ -35,7 +35,18 @@ import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.RECORD_AUDIO;
 
-public class MainActivity extends AppCompatActivity {
+import android.os.Build;
+
+// For audio input request permission
+import android.support.v4.app.ActivityCompat;
+import android.Manifest;
+import android.widget.Toast;
+import android.support.annotation.NonNull;
+import android.content.pm.PackageManager;
+
+public class MainActivity extends AppCompatActivity
+implements ActivityCompat.OnRequestPermissionsResultCallback {
+
     DspFaust dspFaust;
     private SensorManager sensorManager;
 
@@ -47,56 +58,22 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar param1,param2;
     private TextView paramOut1,paramOut2;
 
-    public static final int RequestPermissionCode = 1;
+    // For audio input request permission
+    private static final int AUDIO_ECHO_REQUEST = 0;
+    private boolean permissionToRecordAccepted = false;
 
-    private void requestPermission() {
+    private void createFaust() {
+        if (dspFaust == null) {
+            Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
 
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]
-                {
-                        RECORD_AUDIO,
-                        INTERNET,
-                        ACCESS_NETWORK_STATE
-                }, RequestPermissionCode);
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-
-            case RequestPermissionCode:
-
-                if (grantResults.length > 0) {
-
-                    boolean AudioPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean InternetPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    boolean NetworkPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
-
-                    if (AudioPermission && InternetPermission && NetworkPermission) {
-
-                        Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
-
-                    }
+                dspFaust = new DspFaust(SR,blockSize);
+                // PRINT ALL PARAMETRE ADDRESS
+                for(int i=0; i < dspFaust.getParamsCount(); i++){
+                    System.out.println(dspFaust.getParamAddress(i));
                 }
 
-                break;
         }
     }
-
-    public boolean checkPermission() {
-
-        int FirstPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), RECORD_AUDIO);
-        int SecondPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), INTERNET);
-        int ThirdPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_NETWORK_STATE);
-
-        return FirstPermissionResult == PackageManager.PERMISSION_GRANTED &&
-                SecondPermissionResult == PackageManager.PERMISSION_GRANTED &&
-                ThirdPermissionResult == PackageManager.PERMISSION_GRANTED;
-    }
-
 
 
     @Override
@@ -116,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
                   break;
               }
           }
+
+          if (Build.VERSION.SDK_INT >= 23 && !isRecordPermissionGranted()){
+                requestRecordPermission();
+            } else {
+                permissionToRecordAccepted = true;
+                createFaust();
+            }
 
           // if audio files were not saved in internal storage, then transfer them
           if(!fileWereCopied) {
@@ -242,23 +226,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.d("Faust", "onPause");
-        dspFaust.stop();
-        sensorManager.unregisterListener(mSensorListener);
-        dspFaust.delete();
         super.onPause();
+
+        if(permissionToRecordAccepted) {
+            dspFaust.stop();
+            if (sensorManager!=null) {
+                sensorManager.unregisterListener(mSensorListener);
+            }
+        }
+        
     }
 
     @Override
     protected void onResume() {
         Log.d("Faust", "onResume");
         super.onResume();
+        if(permissionToRecordAccepted) {
+            
+            if (!dspFaust.isRunning()) {
+                dspFaust.start();
+                sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                    Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+    
+                sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                    Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+            }
 
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-                Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-                Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-
+        }
 
     }
 
@@ -266,24 +260,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         Log.d("Faust", "onStart");
         super.onStart();
-        if (!isChangingConfigurations()) {
-            //if(checkPermission()){
 
-                Toast.makeText(MainActivity.this, "WELCOME", Toast.LENGTH_LONG).show();
-
-                dspFaust = new DspFaust(SR,blockSize);
-                // PRINT ALL PARAMETRE ADDRESS
-                for(int i=0; i < dspFaust.getParamsCount(); i++){
-                    System.out.println(dspFaust.getParamAddress(i));
-                }
-                dspFaust.start();
-
-            //}
-            //else {
-
-                //requestPermission();
-            //}
-        }
     }
 
     @Override
@@ -302,8 +279,43 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         Log.d("Faust", "onDestroy");
-
         super.onDestroy();
-    }
+        if (dspFaust != null) {
+            dspFaust = null;
+            }
+    
+            if (sensorManager!=null){sensorManager.unregisterListener(mSensorListener);}
+    
+            sensorManager= null;
+    
+        }
+    
+    @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                               @NonNull int[] grantResults) {
+    
+            if (AUDIO_ECHO_REQUEST != requestCode) {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                return;
+            }
+    
+            if (grantResults.length != 1 ||
+                    grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                finish();
+            } else {
+                // Permission was granted
+                permissionToRecordAccepted = true;
+                createFaust();
+            }
+        }
+    
+        // For audio input request permission
+        private boolean isRecordPermissionGranted() {
+            return (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
+        }
+    
+        private void requestRecordPermission() {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_ECHO_REQUEST);
+        }
 
 }
