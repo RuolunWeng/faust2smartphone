@@ -219,7 +219,12 @@
         
     }
     
-    _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([_motionParamAddress[0] UTF8String])];
+    for (int i=0; i<_motionParamAddress.count; i++) {
+        
+        dspFaust->setParamValue([_motionParamAddress[i] UTF8String],
+                                      (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
+        
+    }
     
     if (dspFaust->getOSCIsOn()) {
         
