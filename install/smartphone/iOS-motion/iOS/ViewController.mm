@@ -48,8 +48,9 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
-    [self loadDefaultParams];
-    
+    //////////////////////////
+    // start FAUST
+    ///////////////////////////
     dspFaust->start();
     dspFaustMotion->start();
     
@@ -59,6 +60,9 @@
     
     dspFaust->checkAdress();
     [self checkAddress];
+    
+    // LOAD preset
+    [self loadDefaultParams];
     
     
     ///////////////////////
@@ -181,6 +185,8 @@
         _tips.hidden=true;
     }
     
+
+    
     
 }
 
@@ -194,7 +200,7 @@
 -(void) loadDefaultParams {
     
     NSMutableDictionary *appDefaultsDictionary = [NSMutableDictionary dictionaryWithCapacity:_motionParamAddress.count];
-    
+ 
     for (int i=0; i<_motionParamAddress.count; i++) {
         [appDefaultsDictionary setValue:
          [NSNumber numberWithFloat:dspFaust->getParamInit([_motionParamAddress[i] UTF8String])] forKey:_motionParamArray[i]];
@@ -213,7 +219,7 @@
         
     }
     
-    _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue([_motionParamAddress[0] UTF8String])];
+    _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([_motionParamAddress[0] UTF8String])];
     
     if (dspFaust->getOSCIsOn()) {
         
@@ -812,10 +818,12 @@
         _inPort.hidden=false;
         _outPort.hidden=false;
         _setOSC.hidden=false;
-        _pikerView.hidden= false;
-        _motionParam.hidden=false;
-        _motionParamSend.hidden=false;
-        _initParam.hidden=false;
+        if (_motionParamArray.count != 0) {
+            _pikerView.hidden = false;
+            _motionParam.hidden=false;
+            _motionParamSend.hidden=false;
+            _initParam.hidden=false;
+        }
         _setRefrence.hidden=false;
         
     } else {
@@ -894,6 +902,10 @@
     
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
         dspFaustMotion->setParamValue(i, dspFaustMotion->getParamInit(i));
+    }
+    
+    for (int i=0; i<dspFaust->getParamsCount(); i++) {
+        dspFaust->setParamValue(i, dspFaust->getParamInit(i));
     }
     
     _motionParam.text = @"Done";
@@ -1045,7 +1057,7 @@
         }
     }
     
-    if (!titleString) titleString = @"Faust | Grame";
+    if (!titleString) titleString = @"faust2smartphone | Allen";
     
     _titleApp.text = titleString;
     
