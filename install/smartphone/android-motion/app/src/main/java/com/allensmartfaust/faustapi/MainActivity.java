@@ -380,11 +380,12 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
 
                 if (isChecked) {
-
-                    radioGroup.setVisibility(View.VISIBLE);
-                    paramsValue.setVisibility(View.VISIBLE);
-                    setMotion.setVisibility(View.VISIBLE);
-                    defaultParams.setVisibility(View.VISIBLE);
+                    if (motionParamArray.size() >0) {
+                        radioGroup.setVisibility(View.VISIBLE);
+                        paramsValue.setVisibility(View.VISIBLE);
+                        setMotion.setVisibility(View.VISIBLE);
+                        defaultParams.setVisibility(View.VISIBLE);
+                    }
                     setRef.setVisibility(View.VISIBLE);
                     if (dspFaust.getOSCIsOn()) {
                         ipAddress.setVisibility(View.VISIBLE);
@@ -424,7 +425,8 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                         paramsOn[i]=false;
                     }
                     paramsOn[checkedId]=true;
-                    paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue(motionParamAddress.get(checkedId))));
+                    paramsValue.setText( String.valueOf(dspFaust.getParamValue(motionParamAddress.get(checkedId))));
+                    //paramsValue.setText( String.valueOf(dspFaustMotion.getParamValue(motionParamAddress.get(checkedId))));
 
                 }
             }
@@ -474,13 +476,14 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
         defaultParams.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                for (int i=0; i<dspFaustMotion.getParamsCount(); i++) {
-                    dspFaustMotion.setParamValue(i, dspFaustMotion.getParamInit(i));
+                for (int i=0; i<dspFaust.getParamsCount(); i++) {
+                    dspFaust.setParamValue(i, dspFaust.getParamInit(i));
+                    //dspFaustMotion.setParamValue(i, dspFaustMotion.getParamInit(i));
                 }
 
                 paramsValue.setText("Done");
                 Toast.makeText(MainActivity.this, "Reset Defaults(restart to use new OSC)", Toast.LENGTH_LONG).show();
-                checkAddress();
+                //checkAddress();
                 dspFaust.checkAdress();
 
                 resetParams();
@@ -523,11 +526,15 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     public void checkAddress() {
 
-        for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
-            String Str = dspFaustMotion.getMetadata(i, "showName");
+
+        //for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
+        for (int i = 0; i < dspFaust.getParamsCount(); i++) {
+            String Str = dspFaust.getMetadata(i, "showName");
+            //String Str = dspFaustMotion.getMetadata(i, "showName");
             if (!Str.equals("")){
                 motionParamArray.add(Str);
-                motionParamAddress.add(dspFaustMotion.getParamAddress(i));
+                motionParamAddress.add(dspFaust.getParamAddress(i));
+                //motionParamAddress.add(dspFaustMotion.getParamAddress(i));
             }
         }
 
@@ -1022,8 +1029,9 @@ prefsEditor.clear().commit();
 private void loadDefaultParams() {
 
 for (int i=0; i<motionParamAddress.size(); i++){
-dspFaustMotion.setParamValue(motionParamAddress.get(i),
-SharedPrefRead(motionParamArray.get(i),dspFaustMotion.getParamInit(motionParamAddress.get(i))));
+dspFaust.setParamValue(motionParamAddress.get(i),
+SharedPrefRead(motionParamArray.get(i),dspFaust.getParamInit(motionParamAddress.get(i))));
+//SharedPrefRead(motionParamArray.get(i),dspFaustMotion.getParamInit(motionParamAddress.get(i))));
 }
 
 
@@ -1034,7 +1042,8 @@ private void resetParams() {
 SharedPreClear();
 
 for (int i=0; i<motionParamAddress.size(); i++){
-SharedPreWriteFloat(motionParamArray.get(i), dspFaustMotion.getParamInit((motionParamAddress.get(i))));
+    SharedPreWriteFloat(motionParamArray.get(i), dspFaust.getParamInit((motionParamAddress.get(i))));
+    //SharedPreWriteFloat(motionParamArray.get(i), dspFaustMotion.getParamInit((motionParamAddress.get(i))));
 }
 
 SharedPrefWriteString("oscAddress", "192.168.1.5");

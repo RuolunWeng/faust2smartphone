@@ -10,13 +10,13 @@ A tool for musical mobile application using FAUST API.
 
 ## INSTALLATION 
 
-### Make sure you are already installed FAUST first
+### -Make sure you are already installed FAUST first
 Check [Faust Website](https://faust.grame.fr/) and follow the instruction on its [github](https://github.com/grame-cncm/faust)
 
-### Get faust2smartphone from GitHub
+### -Get faust2smartphone from GitHub
 `   git clone https://github.com/RuolunWeng/faust2smartphone.git`
  
-### Install all the sources
+### -Install all the sources
 `   cd install`
 
 `   sudo make install`

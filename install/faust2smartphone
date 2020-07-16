@@ -339,6 +339,14 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 				else
 					echo "noosc" > $LOG
 				fi
+				if [ "$SOUNDFILE" = "1" ]; then
+					echo "soundfile" > $LOG
+					sed -i '' 's,SOUNDFILE=false,SOUNDFILE=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(SOUNDFILE\ false),set(SOUNDFILE\ true),g' $BUILDDIR/app/CMakeLists.txt
+
+				else
+					echo "no soundfile" > $LOG
+				fi
 			else
 				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $BUILDDIR/app/build.gradle
 				sed -i 's,com.allensmartfaust.faustapi,com.'$APPNAME',g' $APPFOLDER/java/com/allensmartfaust/faustapi/*
@@ -355,6 +363,14 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 					sed -i '' 's,set(OSCCTRL\ false),set(OSCCTRL\ true),g' $BUILDDIR/app/CMakeLists.txt
 				else
 					echo "noosc" > $LOG
+				fi
+				if [ "$SOUNDFILE" = "1" ]; then
+					echo "soundfile" > $LOG
+					sed -i '' 's,SOUNDFILE=false,SOUNDFILE=true,g' $BUILDDIR/app/build.gradle
+					sed -i '' 's,set(SOUNDFILE\ false),set(SOUNDFILE\ true),g' $BUILDDIR/app/CMakeLists.txt
+
+				else
+					echo "no soundfile" > $LOG
 				fi
 			fi
 			mv $APPFOLDER/java/com/allensmartfaust/faustapi $APPFOLDER/java/com/allensmartfaust/$APPNAME

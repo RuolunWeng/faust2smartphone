@@ -16,6 +16,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags "-std=c++11 -lstdc++ -O3 -fexceptions -frtti -lOpenSLES -landroid"
+                arguments "-DANDROID_ARM_NEON=TRUE",'-DANDROID_STL=c++_shared'
                 abiFilters  'armeabi-v7a', 'arm64-v8a'
             }
         }
@@ -35,6 +36,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+    }
+    packagingOptions {
+
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+
     }
     if(OSCCTRL && SOUNDFILE) {
             sourceSets {
