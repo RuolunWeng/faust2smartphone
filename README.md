@@ -4,35 +4,43 @@ A tool for musical mobile application using FAUST API.
 
 ============
 
-INSTALLATION
+# # INSTALLATION
 
 ============
 
-_Make sure you are already installed FAUST first. -> https://github.com/grame-cncm/faust
+# # # Make sure you are already installed FAUST first. 
+    check [Faust](https://faust.grame.fr/): https://github.com/grame-cncm/faust
 
-_Get from GitHub, " git clone https://github.com/RuolunWeng/faust2smartphone.git ".
+# # # Get faust2smartphone from GitHub, 
+(```)
+    git clone https://github.com/RuolunWeng/faust2smartphone.git
+(```)
  
-_Open your terminal, cd to “install” folder, tap “sudo make install”.
+# # # Installation
+(```)
+    cd install
+    sudo make install 
+(```)
 
-_Done!
+**Done!**
 
 
 ============
 
-How To Use
+# # How To Use
 
 ============
 
-_Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to know more.
+**Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to know more.**
 
 
-1) For Simple Project
-
+# # # 1) For Simple Project
+(```)
     fasut2smartphone -ios/-android toto.dsp
-   
-   _in Xcode or Android Studio project, DspFaust is added, create your own interface. 
+ (```)  
+    in Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
-2) For specific function
+# # # 2) For specific function
 
     "-osc" for OSC support
     
@@ -43,10 +51,13 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
     "-androidmotion" to generate a project with Motion support for Android.
 
     [Motion.lib created by Christophe Lebreton].
-
+**here is some motion parameters list you can call in you code:**
+>
+    这是引用的内容
+>
     --------------------------------------------------------------
 
-    _in your .dsp file, declare motion controller you need, like:
+    in your .dsp file, declare motion controller you need, like:
         
            ***************************
            ** simple motion support **
@@ -93,10 +104,22 @@ _Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to 
 
     "-androidplugin" to generate a project with Faust Plugin for Android.
     
-3) Compile Application
-    
+# # # 3) Compile Application
+    after edit your project, compile your app for your device.
+
+(```)   
     ./compile -ios/android toto
+(```)
 
-    _after edit your project, compile your app for your device.
 
+
+============
+
+# # REFERENCE
+
+============
+
+- TALK & PAPER @ International FAUST Conference (IFC2018)
+    https://www.youtube.com/watch?v=nePEYdMrcPg
+    http://www.ifc18.uni-mainz.de/papers/weng.pdf
 
