@@ -2,45 +2,37 @@
 A tool for musical mobile application using FAUST API.
 
 
-============
+## INSTALLATION 
 
-# # INSTALLATION
-
-============
-
-# # # Make sure you are already installed FAUST first. 
+### Make sure you are already installed FAUST first. 
     check [Faust](https://faust.grame.fr/): https://github.com/grame-cncm/faust
 
-# # # Get faust2smartphone from GitHub, 
-(```)
+### Get faust2smartphone from GitHub, 
+```
     git clone https://github.com/RuolunWeng/faust2smartphone.git
-(```)
+```
  
-# # # Installation
-(```)
+### install all the sources
+```
     cd install
     sudo make install 
-(```)
+```
 
 **Done!**
 
 
-============
 
-# # How To Use
-
-============
+## How To Use
 
 **Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to know more.**
 
-
-# # # 1) For Simple Project
-(```)
+### 1) For Simple Project
+```
     fasut2smartphone -ios/-android toto.dsp
- (```)  
+```
     in Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
-# # # 2) For specific function
+### 2) For specific function
 
     "-osc" for OSC support
     
@@ -104,22 +96,21 @@ A tool for musical mobile application using FAUST API.
 
     "-androidplugin" to generate a project with Faust Plugin for Android.
     
-# # # 3) Compile Application
+### 3) Compile Application
     after edit your project, compile your app for your device.
 
-(```)   
+```  
     ./compile -ios/android toto
-(```)
-
+```
 
 
 ============
 
-# # REFERENCE
+## REFERENCE
 
 ============
 
-- TALK & PAPER @ International FAUST Conference (IFC2018)
++ TALK & PAPER @ International FAUST Conference (IFC2018)
     https://www.youtube.com/watch?v=nePEYdMrcPg
     http://www.ifc18.uni-mainz.de/papers/weng.pdf
 
