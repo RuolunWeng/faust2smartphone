@@ -4,19 +4,15 @@ A tool for musical mobile application using FAUST API.
 
 ## INSTALLATION 
 
-### Make sure you are already installed FAUST first. 
-    check [Faust](https://faust.grame.fr/): https://github.com/grame-cncm/faust
+### Make sure you are already installed FAUST first
+check [Faust](https://faust.grame.fr/): https://github.com/grame-cncm/faust
 
-### Get faust2smartphone from GitHub, 
-```
-    git clone https://github.com/RuolunWeng/faust2smartphone.git
-```
+### Get faust2smartphone from GitHub
+`   git clone https://github.com/RuolunWeng/faust2smartphone.git`
  
-### install all the sources
-```
-    cd install
-    sudo make install 
-```
+### Install all the sources
+`   cd install`
+`   sudo make install`
 
 **Done!**
 
@@ -27,9 +23,8 @@ A tool for musical mobile application using FAUST API.
 **Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to know more.**
 
 ### 1) For Simple Project
-```
-    fasut2smartphone -ios/-android toto.dsp
-```
+`       fasut2smartphone -ios/-android toto.dsp`
+
     in Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
 ### 2) For specific function
@@ -47,10 +42,9 @@ A tool for musical mobile application using FAUST API.
 >
     这是引用的内容
 >
-    --------------------------------------------------------------
 
     in your .dsp file, declare motion controller you need, like:
-        
+```      
            ***************************
            ** simple motion support **
            ***************************
@@ -87,8 +81,7 @@ A tool for musical mobile application using FAUST API.
         
         init = button("init");
 
-
-    -------------------------------------------------------------
+```
 
     "./updatecue toto" to update your cue manager.
 
@@ -99,18 +92,13 @@ A tool for musical mobile application using FAUST API.
 ### 3) Compile Application
     after edit your project, compile your app for your device.
 
-```  
-    ./compile -ios/android toto
-```
+`   ./compile -ios/android toto `
 
 
-============
 
 ## REFERENCE
 
-============
-
-+ TALK & PAPER @ International FAUST Conference (IFC2018)
-    https://www.youtube.com/watch?v=nePEYdMrcPg
-    http://www.ifc18.uni-mainz.de/papers/weng.pdf
+- TALK & PAPER @ International FAUST Conference (IFC2018)
+    * https://www.youtube.com/watch?v=nePEYdMrcPg
+    * http://www.ifc18.uni-mainz.de/papers/weng.pdf
 
