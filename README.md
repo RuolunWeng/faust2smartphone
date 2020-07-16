@@ -6,7 +6,7 @@ A tool for musical mobile application using FAUST API.
 ## INSTALLATION 
 
 ### Make sure you are already installed FAUST first
-check [Faust Website](https://faust.grame.fr/) and follow the instruction on its [github](https://github.com/grame-cncm/faust)
+Check [Faust Website](https://faust.grame.fr/) and follow the instruction on its [github](https://github.com/grame-cncm/faust)
 
 ### Get faust2smartphone from GitHub
 `   git clone https://github.com/RuolunWeng/faust2smartphone.git`
@@ -27,25 +27,22 @@ check [Faust Website](https://faust.grame.fr/) and follow the instruction on its
 ### 1) For Simple Project
 `       fasut2smartphone -ios/-android toto.dsp`
 
-in Xcode or Android Studio project, DspFaust is added, create your own interface. 
+In Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
-### 2) For specific function
+### 2) For Motion lib support Project
+`       fasut2smartphone -iosmotion/-androidmotion toto.dsp`
 
-"-osc" for OSC support
-    
-"-soundfile" for build-in soundfile support [iOS only for now].
-    
-"-iosmotion" to generate a project with Motion support for iOS.
+In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create your own interface or use the default. 
+(Like this mode is specially designed for projet [Smart Hand Computer](https://www.lisilog.com/en/shc-2/), so the CueManager interface is ready to call)
 
-"-androidmotion" to generate a project with Motion support for Android.
+*Motion.lib created by Christophe Lebreton*
 
-[Motion.lib created by Christophe Lebreton].
-**here is some motion parameters list you can call in you code:**
+**Here is some motion parameters list you can call in you code:**
 >
     这是引用的内容
 >
 
-in your .dsp file, declare motion controller you need, like:
+In your .dsp file, declare motion controller you need, like:
 ```      
            ***************************
            ** simple motion support **
@@ -84,15 +81,19 @@ in your .dsp file, declare motion controller you need, like:
         init = button("init");
 
 ```
+### 3) For Faust Non-audio Plugin Support Project
+`       fasut2smartphone -iosplugin/-androidplugin toto.dsp`
+In Xcode or Android Studio project, DspFaust is added, create your own interface and plug it to your process. 
+### 4) For Specific Functions
 
-"./updatecue toto" to update your cue manager.
-
-"-iosplugin" to generate a project with Faust Plugin for iOS.
-
-"-androidplugin" to generate a project with Faust Plugin for Android.
+"-osc" for OSC support
     
-### 3) Compile Application
-after edit your project, compile your app for your device.
+"-soundfile" for build-in soundfile support.
+ 
+"./updatecue toto" to update your cue manager.
+    
+### 5) Compile Application
+After edit your project, compile your app for your device using the command below or launch via you IDE.
 
 `   ./compile -ios/android toto `
 
