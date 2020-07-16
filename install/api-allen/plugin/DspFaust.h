@@ -297,7 +297,9 @@ public:
 private:
     FaustMotionEngine *fMotionEngine;
     OSCUI *fOSCUI;
+#if SOUNDFILE
     SoundUI* fSoundInterface;
+#endif
 };
 
 #endif

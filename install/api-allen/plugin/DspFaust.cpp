@@ -89,7 +89,10 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 
 DspFaust::DspFaust(int sample_rate, int buffer_size){
-    fMotionEngine = new FaustMotionEngine(NULL,new motion_audio(sample_rate, buffer_size, 0, false, false));
+    
+    myaudio* driver = new motion_audio(sample_rate, buffer_size, 0, false, false);
+    
+    fMotionEngine = new FaustMotionEngine(NULL,driver);
 
     //**************************************************************
     // OSC TEST ALLEN
@@ -113,10 +116,10 @@ DspFaust::DspFaust(int sample_rate, int buffer_size){
     argv[7] = "-outport";
     argv[8] = OSC_OUT_PORT;
     argv[9] = "-bundle";
-    argv[10] = "1";
+    argv[10] = "0";
     fOSCUI = new OSCUI("Faust", 11, (char**)argv);
     driver->addControlCallback(osc_compute_callback, fOSCUI);
-    fPolyEngine->buildUserInterface(fOSCUI);
+    fMotionEngine->buildUserInterface(fOSCUI);
 
 #endif
 
@@ -124,9 +127,9 @@ DspFaust::DspFaust(int sample_rate, int buffer_size){
     // Use bundle path
     fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
     // SoundUI has to be dispatched on all internal voices
-    fPolyEngine->setGroup(false);
-    fPolyEngine->buildUserInterface(fSoundInterface);
-    fPolyEngine->setGroup(true);
+    fMotionEngine->setGroup(false);
+    fMotionEngine->buildUserInterface(fSoundInterface);
+    fMotionEngine->setGroup(true);
 #endif
 
 }
