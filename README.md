@@ -1,7 +1,9 @@
 # faust2smartphone
-A tool for musical mobile application using FAUST API.
+
 
 ======================================================
+
+A tool for musical mobile application using FAUST API.
 
 ======================================================
 
