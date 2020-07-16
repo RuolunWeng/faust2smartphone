@@ -83,6 +83,7 @@ In your .dsp file, declare motion controller you need, like:
 ```
 ### 3) For Faust Non-audio Plugin Support Project
 `       fasut2smartphone -iosplugin/-androidplugin toto.dsp`
+
 In Xcode or Android Studio project, DspFaust is added, create your own interface and plug it to your process. 
 ### 4) For Specific Functions
 
@@ -101,7 +102,7 @@ After edit your project, compile your app for your device using the command belo
 
 ## REFERENCE
 
-- TALK & PAPER @ International FAUST Conference (IFC2018)
+- TALK & PAPER @ International FAUST Conference ([IFC2018](http://www.ifc18.uni-mainz.de/))
     * https://www.youtube.com/watch?v=nePEYdMrcPg
     * http://www.ifc18.uni-mainz.de/papers/weng.pdf
 
