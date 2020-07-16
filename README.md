@@ -2,16 +2,18 @@
 A tool for musical mobile application using FAUST API.
 
 
+
 ## INSTALLATION 
 
 ### Make sure you are already installed FAUST first
-check [Faust](https://faust.grame.fr/): https://github.com/grame-cncm/faust
+check [Faust Website](https://faust.grame.fr/) and follow the instruction on its [github](https://github.com/grame-cncm/faust)
 
 ### Get faust2smartphone from GitHub
 `   git clone https://github.com/RuolunWeng/faust2smartphone.git`
  
 ### Install all the sources
 `   cd install`
+
 `   sudo make install`
 
 **Done!**
@@ -25,25 +27,25 @@ check [Faust](https://faust.grame.fr/): https://github.com/grame-cncm/faust
 ### 1) For Simple Project
 `       fasut2smartphone -ios/-android toto.dsp`
 
-    in Xcode or Android Studio project, DspFaust is added, create your own interface. 
+in Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
 ### 2) For specific function
 
-    "-osc" for OSC support
+"-osc" for OSC support
     
-    "-soundfile" for build-in soundfile support [iOS only for now].
+"-soundfile" for build-in soundfile support [iOS only for now].
     
-    "-iosmotion" to generate a project with Motion support for iOS.
+"-iosmotion" to generate a project with Motion support for iOS.
 
-    "-androidmotion" to generate a project with Motion support for Android.
+"-androidmotion" to generate a project with Motion support for Android.
 
-    [Motion.lib created by Christophe Lebreton].
+[Motion.lib created by Christophe Lebreton].
 **here is some motion parameters list you can call in you code:**
 >
     这是引用的内容
 >
 
-    in your .dsp file, declare motion controller you need, like:
+in your .dsp file, declare motion controller you need, like:
 ```      
            ***************************
            ** simple motion support **
@@ -83,14 +85,14 @@ check [Faust](https://faust.grame.fr/): https://github.com/grame-cncm/faust
 
 ```
 
-    "./updatecue toto" to update your cue manager.
+"./updatecue toto" to update your cue manager.
 
-    "-iosplugin" to generate a project with Faust Plugin for iOS.
+"-iosplugin" to generate a project with Faust Plugin for iOS.
 
-    "-androidplugin" to generate a project with Faust Plugin for Android.
+"-androidplugin" to generate a project with Faust Plugin for Android.
     
 ### 3) Compile Application
-    after edit your project, compile your app for your device.
+after edit your project, compile your app for your device.
 
 `   ./compile -ios/android toto `
 
