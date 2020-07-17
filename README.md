@@ -8,10 +8,11 @@ A tool for musical mobile application using FAUST API.
 =========================================
 
 
-## INSTALLATION 
+## Installation
 
 ### -Make sure you have already installed FAUST first
-Check [Faust Website](https://faust.grame.fr/) and follow the instruction on its [github](https://github.com/grame-cncm/faust)
+Check [Faust Website](https://faust.grame.fr/) for the language usage,
+and follow the instruction on its [Github](https://github.com/grame-cncm/faust)
 
 ### -Get faust2smartphone from GitHub
 `   git clone https://github.com/RuolunWeng/faust2smartphone.git`
@@ -128,9 +129,9 @@ In your .dsp file, declare motion controller you need, like:
 
     tata = hslider("tata[motion:ventre_front]",0,0,1,0.01);
     
-        **********************************
-        ** motion support + cue manager **
-        **********************************
+    **********************************
+    ** motion support + cue manager **
+    **********************************
     
     // Active Cue
     
@@ -170,7 +171,7 @@ After edit your project, compile your app for your device using the command belo
 
 
 
-## REFERENCE
+## Reference
 
 - TALK & PAPER @ International FAUST Conference ([IFC2018](http://www.ifc18.uni-mainz.de/))
     * https://www.youtube.com/watch?v=nePEYdMrcPg
