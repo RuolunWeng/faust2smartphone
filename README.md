@@ -40,7 +40,7 @@ In Xcode or Android Studio project, DspFaust is added, create your own interface
 `       fasut2smartphone -iosmotion/-androidmotion toto.dsp`
 
 In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create your own interface or use the default. 
-(Like this mode is specially designed for projet [Smart Hand Computer](https://www.lisilog.com/en/shc-2/), so the CueManager interface is ready to call)
+(Like this mode is specially designed for projet [Smart Hand Computer](https://www.lisilog.com/en/shc-2/), so the CueManager interface is ready to call by -cueanager)
 
 *Motion.lib created by Christophe Lebreton*
 
@@ -48,7 +48,7 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
     
     // Of cause you could always call accelerometer/gyroscope in UI with traditional Faust syndax:
 
-        parameter = nentry("UIparamName[acc/gro: a b c d e]",def,min,max,step);
+        parameter = nentry("UIparamName [acc/gro: a b c d e]",def,min,max,step);
 
     // And you could call mobile device attitude sensor value:
     // [yaw, raw, pitch, quaternionw, quaternionx, quaterniony, quaternionz]
@@ -57,7 +57,12 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
 
     // Or if you want use the methode in Motion.lib with the syndax
 
-        parameter = nentry("UIparamName[motion: descriptorName]",def,min,max,step);
+        parameter = nentry("UIparamName [motion: descriptorName]",def,min,max,step);
+
+    // If you want show some parameters in the UI, declare showName in the metada
+
+        parameter = nentry("UIparamName [showName: paramName]",def,min,max,step);
+
 >
 **Here is motion descriptor list you can call in you code:**  
 >
@@ -162,6 +167,8 @@ In Xcode or Android Studio project, DspFaust is added, create your own interface
     
 "-soundfile" for build-in soundfile support.**(Make sure you have dependecies installed)**
  
+"-cuemanager" for using Cue Maneger system
+
 "./updatecue toto" to update your cue manager.
     
 ### 5) Compile Application
