@@ -1,16 +1,16 @@
 # faust2smartphone
 
 
-======================================================
+=========================================
 
 A tool for musical mobile application using FAUST API.
 
-======================================================
+=========================================
 
 
 ## INSTALLATION 
 
-### -Make sure you are already installed FAUST first
+### -Make sure you have already installed FAUST first
 Check [Faust Website](https://faust.grame.fr/) and follow the instruction on its [github](https://github.com/grame-cncm/faust)
 
 ### -Get faust2smartphone from GitHub
@@ -44,22 +44,22 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
 *Motion.lib created by Christophe Lebreton*
 
 >
-
     
-    // of cause you could always call accelerometer/gyroscope in UI with traditional Faust syndax:
+    // Of cause you could always call accelerometer/gyroscope in UI with traditional Faust syndax:
 
-    parameter = nentry("UIparamName[acc/gro: a b c d e]",def,min,max,step);
+        parameter = nentry("UIparamName[acc/gro: a b c d e]",def,min,max,step);
 
-    // and you could call mobile device attitude sensor value:
+    // And you could call mobile device attitude sensor value:
     // [yaw, raw, pitch, quaternionw, quaternionx, quaterniony, quaternionz]
 
-    parameter = nentry("yaw",def,min,max,step);
+        parameter = nentry("yaw",def,min,max,step);
 
-    // or if you want use the methode in Motion.lib with the syndax
+    // Or if you want use the methode in Motion.lib with the syndax
 
-    parameter = nentry("UIparamName[motion: descriptorName]",def,min,max,step);
-
-    **Here is motion descriptor list you can call in you code:**  
+        parameter = nentry("UIparamName[motion: descriptorName]",def,min,max,step);
+>
+**Here is motion descriptor list you can call in you code:**  
+>
 
     //============= ACCELEROMETER SHOCK TRIGGER ===============
 	// setting of user sensibility to trig with a antirebond , p->positive axe; n->nagative axe
@@ -99,7 +99,7 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
         + totalgyro
 
 	//--------------------------------------------------
-	// TRAITEMENT FOR ROTATION MATRIX 
+	// TREATMENT FOR ROTATION MATRIX 
 	//--------------------------------------------------
     // Calculate distance for each axe compared to 6 poles
     // Left Hand => brasG; Right Hand => brasD; Head => tete; Foot => pieds; Chest => ventre; Back => dos
@@ -116,37 +116,36 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
 
 In your .dsp file, declare motion controller you need, like:
 ```      
-           ***************************
-           ** simple motion support **
-           ***************************
+    ***************************
+    ** simple motion support **
+    ***************************
 
-        // Active Motion controller
+    // Active Motion controller
 
-        titi = hslider("titi[motion:ixp]",0,0,1,0.01);
+    titi = hslider("titi[motion:ixp]",0,0,1,0.01);
 
-        toto = hslider("toto[motion:brasG_cours]",0,0,1,0.01);
+    toto = hslider("toto[motion:brasG_cours]",0,0,1,0.01);
 
-        tata = hslider("tata[motion:ventre_front]",0,0,1,0.01);
+    tata = hslider("tata[motion:ventre_front]",0,0,1,0.01);
+    
+        **********************************
+        ** motion support + cue manager **
+        **********************************
+    
+    // Active Cue
+    
+    cue = nentry("cue",0,0,3,1);
+
+    // Active Touch Screen
+
+    touchGate = checkbox("touchgate");
+
+    // Active Touch Pad X,Y
+
+    touchX = hslider("screenx",0,0,1,0.01);
+
+    touchY = hslider("screeny",0,0,1,0.01);
         
-           **********************************
-           ** motion support + cue manager **
-           **********************************
-        
-        // Active Cue
-        
-        cue = nentry("cue",0,0,3,1);
-
-        // Active Touch Screen
-
-        touchGate = checkbox("touchgate");
-
-        // Active Touch Pad X,Y
-
-        touchX = hslider("screenx",0,0,1,0.01);
-
-        touchY = hslider("screeny",0,0,1,0.01);
-        
-
 ```
 **Please check the exmaple code in examples/2_Motion_Mode**
 
