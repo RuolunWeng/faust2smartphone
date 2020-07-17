@@ -33,6 +33,7 @@ Check [Faust Website](https://faust.grame.fr/) and follow the instruction on its
 `       fasut2smartphone -ios/-android toto.dsp`
 
 In Xcode or Android Studio project, DspFaust is added, create your own interface. 
+**Please check the exmaple code in examples/1_Simple_Mode**
 
 ### 2) For Motion lib support Project
 `       fasut2smartphone -iosmotion/-androidmotion toto.dsp`
@@ -42,9 +43,75 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
 
 *Motion.lib created by Christophe Lebreton*
 
-**Here is some motion parameters list you can call in you code:**
 >
-    这是引用的内容
+
+    
+    // of cause you could always call accelerometer/gyroscope in UI with traditional Faust syndax:
+
+    parameter = nentry("UIparamName[acc/gro: a b c d e]",def,min,max,step);
+
+    // and you could call mobile device attitude sensor value:
+    // [yaw, raw, pitch, quaternionw, quaternionx, quaterniony, quaternionz]
+
+    parameter = nentry("yaw",def,min,max,step);
+
+    // or if you want use the methode in Motion.lib with the syndax
+
+    parameter = nentry("UIparamName[motion: descriptorName]",def,min,max,step);
+
+    **Here is motion descriptor list you can call in you code:**  
+
+    //============= ACCELEROMETER SHOCK TRIGGER ===============
+	// setting of user sensibility to trig with a antirebond , p->positive axe; n->nagative axe
+    - 
+        + sxp syp szp
+        + sxn syn szn
+    //============= INCLINOMETER TO GRAVITY ===============
+    // accelerometer -> inclinometer
+    - 
+        + ixp iyp izp
+        + ixn iyn izn
+        + ixpn iypn izpn
+    //accelerometer -> inclinometer positive & negative axe sens combined to compare gravity symetric 0->1->0
+    - 
+        + ixpn_sym iypn_sym izpn_sym
+	// accelerometer -> inclinometer -> projection to gravity positive axe sens
+    - 
+        + pixp piyp pizp
+        + pixn piyn pizn
+    //============= ACCELEROMETER TOTAL ACCELERATION with gravity removed ===============
+	// totalmotion don't dpeant of specific orientation, only the quantity of global acceleration create a modulation
+	// normalized 0 to 1
+    - 
+        + axpn aypn azpn
+        + axp ayp azp
+        + axn ayn azn
+        + totalaccel
+    //============= GYROSCOPES ===============
+	// les gyroscopes des iPhones ont un range max de +/- 2000deg/sec => 34,906 radians.s-1
+	// les valeurs reçues par le smartphone sont en radian.s-1
+	// pour un iPhoneSE on obsverve un bruit de +/- 0.01 radian.s-1 ce qui inférieur à 1 degré ( 1 dégré ~ 0.017 radian)
+	// smooth is need to remove artefact from signal/vector_size setting
+    - 
+        + gxpn gypn gzpn
+        + gxp gyp gzp
+        + gxn gyn gzn
+        + totalgyro
+
+	//--------------------------------------------------
+	// TRAITEMENT FOR ROTATION MATRIX 
+	//--------------------------------------------------
+    // Calculate distance for each axe compared to 6 poles
+    // Left Hand => brasG; Right Hand => brasD; Head => tete; Foot => pieds; Chest => ventre; Back => dos
+    // State left => jardin; State right => cour; State up => up; State down => down; State front => front; State back => rear;
+    - 
+        + brasG_cour brasG_rear brasG_jardin brasG_front brasG_down brasG_up
+        + pieds_cour pieds_rear pieds_jardin pieds_front pieds_down pieds_up
+        + dos_cour dos_rear dos_jardin dos_front dos_down dos_up
+        + brasD_cour brasD_rear brasD_jardin brasD_front brasD_down brasD_up
+        + tete_cour tete_rear tete_jardin tete_front tete_down tete_up
+        + ventre_cour ventre_rear ventre_jardin ventre_front ventre_down ventre_up
+
 >
 
 In your .dsp file, declare motion controller you need, like:
@@ -79,22 +146,21 @@ In your .dsp file, declare motion controller you need, like:
 
         touchY = hslider("screeny",0,0,1,0.01);
         
-        // Active State + Init
-        
-        state = hbargraph("state",0,6);
-        
-        init = button("init");
 
 ```
+**Please check the exmaple code in examples/2_Motion_Mode**
+
 ### 3) For Faust Non-audio Plugin Support Project
 `       fasut2smartphone -iosplugin/-androidplugin toto.dsp`
 
 In Xcode or Android Studio project, DspFaust is added, create your own interface and plug it to your process. 
+**Please check the exmaple code in examples/3_Plugin_Mode**
+
 ### 4) For Specific Functions
 
-"-osc" for OSC support
+"-osc" for OSC support.**(Make sure you have dependecies installed)**
     
-"-soundfile" for build-in soundfile support.
+"-soundfile" for build-in soundfile support.**(Make sure you have dependecies installed)**
  
 "./updatecue toto" to update your cue manager.
     
