@@ -3,7 +3,11 @@
 
 =========================================
 
-A tool for musical mobile application using FAUST API.
+**What is Faust?**
+Faust (Functional Audio Stream) is a functional programming language for sound synthesis and audio processing with a strong focus on the design of synthesizers, musical instruments, audio effects, etc. Faust targets high-performance signal processing applications and audio plug-ins for a variety of platforms and standards.
+
+**What is faust2smartphone?**
+faust2smartphone is a tool to generate interactive musical mobile application embeded Faust API.
 
 =========================================
 
@@ -11,8 +15,8 @@ A tool for musical mobile application using FAUST API.
 ## Installation
 
 ### -Make sure you have already installed FAUST first
-Check [Faust Website](https://faust.grame.fr/) for the language usage,
-and follow the instruction on its [Github](https://github.com/grame-cncm/faust)
+Check [Faust Quick Start](https://faust.grame.fr/doc/manual/index.html#quick-start) for the language usage,
+and follow the installation instruction on its [Github](https://github.com/grame-cncm/faust)
 
 ### -Get faust2smartphone from GitHub
 `   git clone https://github.com/RuolunWeng/faust2smartphone.git`
@@ -34,13 +38,14 @@ and follow the instruction on its [Github](https://github.com/grame-cncm/faust)
 `       fasut2smartphone -ios/-android toto.dsp`
 
 In Xcode or Android Studio project, DspFaust is added, create your own interface. 
+
 **Please check the exmaple code in examples/1_Simple_Mode**
 
 ### 2) For Motion lib support Project
 `       fasut2smartphone -iosmotion/-androidmotion toto.dsp`
 
 In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create your own interface or use the default. 
-(Like this mode is specially designed for projet [Smart Hand Computer](https://www.lisilog.com/en/shc-2/), so the CueManager interface is ready to call by -cueanager)
+(Like this mode is specially designed for projet [Smart Hand Computer](https://www.lisilog.com/en/shc-2/), so the CueManager interface is ready to call by -cuemanager)
 
 *Motion.lib created by Christophe Lebreton*
 
