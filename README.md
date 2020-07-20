@@ -4,9 +4,11 @@
 =========================================
 
 **What is Faust?**
-Faust (Functional Audio Stream) is a functional programming language for sound synthesis and audio processing with a strong focus on the design of synthesizers, musical instruments, audio effects, etc. Faust targets high-performance signal processing applications and audio plug-ins for a variety of platforms and standards.
+
+[Faust](https://faust.grame.fr) (Functional Audio Stream) is a functional programming language for sound synthesis and audio processing with a strong focus on the design of synthesizers, musical instruments, audio effects, etc. Faust targets high-performance signal processing applications and audio plug-ins for a variety of platforms and standards.
 
 **What is faust2smartphone?**
+
 faust2smartphone is a tool to generate interactive musical mobile application embeded Faust API.
 
 =========================================
@@ -127,35 +129,35 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
 
 In your .dsp file, declare motion controller you need, like:
 ```      
-    ***************************
-    ** simple motion support **
-    ***************************
+***************************
+** simple motion support **
+***************************
 
-    // Active Motion controller
+// Active Motion controller
 
-    titi = hslider("titi[motion:ixp]",0,0,1,0.01);
+titi = hslider("titi[motion:ixp]",0,0,1,0.01);
 
-    toto = hslider("toto[motion:brasG_cours]",0,0,1,0.01);
+toto = hslider("toto[motion:brasG_cours]",0,0,1,0.01);
 
-    tata = hslider("tata[motion:ventre_front]",0,0,1,0.01);
-    
-    **********************************
-    ** motion support + cue manager **
-    **********************************
-    
-    // Active Cue
-    
-    cue = nentry("cue",0,0,3,1);
+tata = hslider("tata[motion:ventre_front]",0,0,1,0.01);
 
-    // Active Touch Screen
+**********************************
+** motion support + cue manager **
+**********************************
 
-    touchGate = checkbox("touchgate");
+// Active Cue
 
-    // Active Touch Pad X,Y
+cue = nentry("cue",0,0,3,1);
 
-    touchX = hslider("screenx",0,0,1,0.01);
+// Active Touch Screen
 
-    touchY = hslider("screeny",0,0,1,0.01);
+touchGate = checkbox("touchgate");
+
+// Active Touch Pad X,Y
+
+touchX = hslider("screenx",0,0,1,0.01);
+
+touchY = hslider("screeny",0,0,1,0.01);
         
 ```
 **Please check the exmaple code in examples/2_Motion_Mode**
