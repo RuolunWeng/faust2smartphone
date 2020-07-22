@@ -36,8 +36,8 @@
     // init faust motor
     ////////////////////
     
-    //dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);   //trop lent
-    dspFaustMotion = new DspFaustMotion(SR, bufferSize);
+    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1); 
+    //dspFaustMotion = new DspFaustMotion(SR, bufferSize);
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
@@ -47,6 +47,9 @@
     
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
+    
+    // LOAD preset before start
+    [self loadDefaultParams];
     
     //////////////////////////
     // start FAUST
@@ -60,10 +63,6 @@
     
     dspFaust->checkAdress();
     [self checkAddress];
-    
-    // LOAD preset
-    [self loadDefaultParams];
-    
     
     ///////////////////////
     //other Initialization
