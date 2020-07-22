@@ -36,7 +36,7 @@
     // init faust motor
     ////////////////////
     
-    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1); 
+    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
     //dspFaustMotion = new DspFaustMotion(SR, bufferSize);
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
@@ -48,18 +48,30 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
+
+    // create default dictionary for preset
+    [self loadDefaultParams];
+    // load possible OSC preset before start
+    [self loadPossibleOSC];
+    
+    //////////////////////////
+    // start FAUST
+    ///////////////////////////
+    dspFaust->start();
+    dspFaustMotion->start();
+    
+    // load possible preset after start (crash before start with osc)
+    [self loadPossiblePreset];
+    
     ///////////////////////////////////
     // check motion key word in address
     ///////////////////////////////////
-    
     dspFaust->checkAdress();
     [self checkAddress];
     
-    // LOAD preset before start
-    [self loadDefaultParams];
     
     ///////////////////////
-    //other Initialization
+    //other Initialization ( motion sensor + etc )
     ///////////////////////
     //There are two methods to receive data from CMMotionManager: push and pull.
     //Using push for now
@@ -75,12 +87,6 @@
     [self startUpdateGUI];
     
     [self displayTitle];
-    
-    //////////////////////////
-    // start FAUST
-    ///////////////////////////
-    dspFaust->start();
-    dspFaustMotion->start();
     
     
     
@@ -198,6 +204,24 @@
 
 -(void) loadDefaultParams {
     
+    std::vector<std::string>motionParamNames;
+    std::vector<std::string>motionParamAddress;
+    _motionParamArray = [[NSMutableArray alloc] init];
+    _motionParamAddress = [[NSMutableArray alloc] init];
+    
+    for (int i=0; i<dspFaust->getParamsCount(); i++) {
+        const char *dataParamMotion = dspFaust->getMetadata(i, "showName");
+        if (strcmp(dataParamMotion,"") != 0) {
+            motionParamNames.push_back(dataParamMotion);
+            motionParamAddress.push_back(dspFaust->getParamAddress(i));
+        }
+    }
+    for (int i=0; i<motionParamNames.size(); i++) {
+        //printf("%i=%s",i,motionParamNames[i].c_str());
+        [_motionParamArray addObject:[NSString stringWithUTF8String:motionParamNames[i].c_str()]];
+        [_motionParamAddress addObject:[NSString stringWithUTF8String:motionParamAddress[i].c_str()]];
+    }
+    
     NSMutableDictionary *appDefaultsDictionary = [NSMutableDictionary dictionaryWithCapacity:_motionParamAddress.count];
  
     for (int i=0; i<_motionParamAddress.count; i++) {
@@ -211,16 +235,9 @@
     
     [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaultsDictionary];
     
-    for (int i=0; i<_motionParamAddress.count; i++) {
-        
-        dspFaust->setParamValue([_motionParamAddress[i] UTF8String],
-                                      (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
-        
-    }
-    
-    if (_motionParamAddress.count>0) {
-        _motionParam.text = [NSString stringWithFormat:@"%.2f",[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[0]]];
-    }
+}
+
+-(void) loadPossibleOSC {
     
     if (dspFaust->getOSCIsOn()) {
         
@@ -235,6 +252,21 @@
     
 }
 
+-(void) loadPossiblePreset {
+    
+    for (int i=0; i<_motionParamAddress.count; i++) {
+        
+        dspFaust->setParamValue([_motionParamAddress[i] UTF8String],
+                                      (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
+        
+    }
+    
+    if (_motionParamAddress.count>0) {
+        _motionParam.text = [NSString stringWithFormat:@"%.2f",[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[0]]];
+    }
+    
+    
+}
 
 -(void) resetDefaultParams {
     
@@ -294,23 +326,6 @@
 
 - (void) checkAddress {
     
-    std::vector<std::string>motionParamNames;
-    std::vector<std::string>motionParamAddress;
-    _motionParamArray = [[NSMutableArray alloc] init];
-    _motionParamAddress = [[NSMutableArray alloc] init];
-    
-    for (int i=0; i<dspFaust->getParamsCount(); i++) {
-        const char *dataParamMotion = dspFaust->getMetadata(i, "showName");
-        if (strcmp(dataParamMotion,"") != 0) {
-            motionParamNames.push_back(dataParamMotion);
-            motionParamAddress.push_back(dspFaust->getParamAddress(i));
-        }
-    }
-    for (int i=0; i<motionParamNames.size(); i++) {
-        //printf("%i=%s",i,motionParamNames[i].c_str());
-        [_motionParamArray addObject:[NSString stringWithUTF8String:motionParamNames[i].c_str()]];
-        [_motionParamAddress addObject:[NSString stringWithUTF8String:motionParamAddress[i].c_str()]];
-    }
     
     paramsOn = new BOOL[_motionParamAddress.count];
     
