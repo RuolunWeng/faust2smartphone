@@ -48,21 +48,15 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
-    // LOAD preset before start
-    [self loadDefaultParams];
-    
-    //////////////////////////
-    // start FAUST
-    ///////////////////////////
-    dspFaust->start();
-    dspFaustMotion->start();
-    
     ///////////////////////////////////
     // check motion key word in address
     ///////////////////////////////////
     
     dspFaust->checkAdress();
     [self checkAddress];
+    
+    // LOAD preset before start
+    [self loadDefaultParams];
     
     ///////////////////////
     //other Initialization
@@ -81,6 +75,12 @@
     [self startUpdateGUI];
     
     [self displayTitle];
+    
+    //////////////////////////
+    // start FAUST
+    ///////////////////////////
+    dspFaust->start();
+    dspFaustMotion->start();
     
     
     
