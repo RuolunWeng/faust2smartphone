@@ -17,16 +17,32 @@
  ************************************************************************
  ************************************************************************/
 
+#include <cmath>
+#include <cstring>
+
 #include "faust/misc.h"
-#include "faust/gui/UI.h"
-#include "faust/dsp/dsp.h"
-#include "faust/gui/meta.h"
-#include "faust/gui/jsonfaustui.h"
-#include "faust/gui/JSONUI.h"
-#include "faust/gui/MapUI.h"
-#include "faust/gui/GUI.h"
+#include "faust/gui/DecoratorUI.h"
 #include "faust/gui/JSONUIDecoder.h"
+#include "faust/dsp/dsp.h"
 #include "faust/dsp/dsp-adapter.h"
+#include "faust/gui/meta.h"
+
+#include "faust/gui/JSONUI.h"
+#include "faust/gui/GUI.h"
+
+
+// we require macro declarations
+#define FAUST_UIMACROS
+
+// but we will ignore most of them
+#define FAUST_ADDBUTTON(l,f)
+#define FAUST_ADDCHECKBOX(l,f)
+#define FAUST_ADDVERTICALSLIDER(l,f,i,a,b,s)
+#define FAUST_ADDHORIZONTALSLIDER(l,f,i,a,b,s)
+#define FAUST_ADDNUMENTRY(l,f,i,a,b,s)
+#define FAUST_ADDVERTICALBARGRAPH(l,f,a,b)
+#define FAUST_ADDHORIZONTALBARGRAPH(l,f,a,b)
+
 
 #if OSCCTRL
 #define OSC_IP_ADDRESS  "192.168.1.108"
@@ -42,8 +58,6 @@ static void osc_compute_callback(void* arg)
 
 #endif
 
-#include <math.h>
-#include <cmath>
 
 
 //**************************************************************
@@ -139,10 +153,7 @@ void DspFaust::init(audio* driver){
 #if SOUNDFILE
     // Use bundle path
     fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
-    // SoundUI has to be dispatched on all internal voices
-    fPolyEngine->setGroup(false);
     fPolyEngine->buildUserInterface(fSoundInterface);
-    fPolyEngine->setGroup(true);
 #endif
 
 }
