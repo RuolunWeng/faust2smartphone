@@ -378,6 +378,8 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 		elif [ $IOS -eq 1 ]; then
 			echo "Creating a new iOS project in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS/* "$BUILDDIR"
+			cp -r $FAUSTLIB/osclib/faust $BUILDDIR/osclib
+			cp -r $FAUSTLIB/osclib/oscpack $BUILDDIR/osclib
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
 			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
@@ -385,11 +387,15 @@ if [ $REUSE -eq 0 ] || [ ! -d "$BUILDDIR" ]; then
 			echo "Creating a new iOS FAUST PLUGIN project in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS-plugin/* "$BUILDDIR"
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
+			cp -r $FAUSTLIB/osclib/faust $BUILDDIR/osclib
+			cp -r $FAUSTLIB/osclib/oscpack $BUILDDIR/osclib
 			sed -i '' 's,$(TARGET_NAME),'$APPNAME',g' $BUILDDIR/iOS.xcodeproj/project.pbxproj
 			sed -i '' 's,com.AllenSmartFaust,com.AllenSmartFaust.'$APPNAME',g' $BUILDDIR/IOS.xcodeproj/project.pbxproj
 		elif [ $IOSMOTION -eq 1 ]; then
 			echo "Creating a new iOS project with motion support in $BUILDDIR" > $LOG
 			cp -r $FAUSTLIB/smartphone/iOS-motion/* "$BUILDDIR"
+			cp -r $FAUSTLIB/osclib/faust $BUILDDIR/osclib
+			cp -r $FAUSTLIB/osclib/oscpack $BUILDDIR/osclib
 			cp -r $FAUSTLIB/smartphone/compile "$CURRENTFOLDER"
 			if [ $CUEMANAGER -eq 1 ]; then
 			cp -r $FAUSTLIB/smartphone/cueiOS/* "$CURRENTFOLDER"
