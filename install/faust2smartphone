@@ -449,7 +449,8 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
 	faust -lang ocpp -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
-  sed -i '' '/delete reinterpret_cast<FaustPolyEngine*/, /getScreenColor/ d' "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
+	sed -i '' 's,FaustPolyEngine,FaustPolyMotionEngine,g' "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
+    sed -i '' '/delete reinterpret_cast<FaustPolyMotionEngine*/, /getScreenColor/ d' "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	sed -i '' '/__dsp_algebra_api__/, /endif/ d' "$APPFOLDER/cpp/DspFaustMotion.cpp" > $LOG
 	fi
 
@@ -512,8 +513,9 @@ elif [ $IOSMOTION -eq 1 ]; then
 	if [ $CHANGELIB -eq 1 ]; then
 	echo "Updating motion lib for the app" > $LOG
 	faust -lang ocpp -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
-	sed -i '' '/delete reinterpret_cast<FaustPolyEngine*/, /getScreenColor/ d' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
-     echo "#define TARGET_OS_IPHONE 1" | cat - "$APPFOLDER/DspFaustMotion.cpp" > temp && mv temp "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	sed -i '' 's,FaustPolyEngine,FaustPolyMotionEngine,g' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	//sed -i '' '/delete reinterpret_cast<FaustPolyEngine*/, /getScreenColor/ d' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+    echo "#define TARGET_OS_IPHONE 1" | cat - "$APPFOLDER/DspFaustMotion.cpp" > temp && mv temp "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	fi
 	if [ "$OSCMOTIONCTRL" = "1" ]; then
 	sed -i '' 's,GUI::updateAllGuis(),'//',g' $APPFOLDER/DspFaust.cpp

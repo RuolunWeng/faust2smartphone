@@ -14671,7 +14671,7 @@ extern "C" {
 
 using namespace std;
 
-class FaustPolyEngine {
+class FaustPolyMotionEngine {
         
     protected:
 
@@ -14763,12 +14763,12 @@ class FaustPolyEngine {
     
     public:
     
-        FaustPolyEngine(dsp* mono_dsp, audio* driver = NULL, midi_handler* midi = NULL):fMidiUI(&fMidiHandler)
+        FaustPolyMotionEngine(dsp* mono_dsp, audio* driver = NULL, midi_handler* midi = NULL):fMidiUI(&fMidiHandler)
         {
             init(((mono_dsp) ? mono_dsp : new mydsp2()), driver, midi);
         }
     
-        virtual ~FaustPolyEngine()
+        virtual ~FaustPolyMotionEngine()
         {
             delete fDriver;
             delete fFinalDSP;
@@ -15290,14 +15290,14 @@ public:
 using namespace std;
 
 
-class FaustMotionEngine : public FaustPolyEngine
+class FaustMotionEngine : public FaustPolyMotionEngine
 {
 
 public:
 
     myaudio* fDriver;
 
-    FaustMotionEngine(dsp* mono_dsp, myaudio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
+    FaustMotionEngine(dsp* mono_dsp, myaudio* driver = NULL) : FaustPolyMotionEngine(mono_dsp,driver)
     {
         //init(((mono_dsp) ? mono_dsp : new mydsp2()), driver, NULL);
         fDriver = driver;
