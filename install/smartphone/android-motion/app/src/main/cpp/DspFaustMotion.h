@@ -25,7 +25,7 @@
 
 class FaustMotionEngine;
 class OSCUI;
-
+class myaudio;
 
 class DspFaustMotion
 {
@@ -313,6 +313,8 @@ public:
 private:
     FaustMotionEngine *fMotionEngine;
     OSCUI *fMotionOSCUI;
+    
+    void init(myaudio* driver);
 };
 
 #endif
