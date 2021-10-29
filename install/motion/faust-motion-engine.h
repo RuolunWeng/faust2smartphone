@@ -40,7 +40,7 @@ public:
 
     FaustMotionEngine(dsp* mono_dsp, myaudio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
     {
-        init(((mono_dsp) ? mono_dsp : new mydsp()), driver, NULL);
+        //init(((mono_dsp) ? mono_dsp : new mydsp()), driver, NULL);
         fDriver = driver;
     }
 

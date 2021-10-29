@@ -80,7 +80,13 @@ static void osc_compute_callback(void* arg)
 DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
     
     myaudio* driver2= new motion_audio(sample_rate, buffer_size, 0, false, false);
-    fMotionEngine = new FaustMotionEngine(NULL,driver2);
+    
+    init(driver2);
+}
+
+void DspFaustMotion::init(myaudio* driver){
+    
+    fMotionEngine = new FaustMotionEngine(new mydsp(),driver);
     
     // OSC
     #if OSCCTRL
@@ -102,12 +108,11 @@ DspFaustMotion::DspFaustMotion(int sample_rate, int buffer_size){
         argv[9] = "-bundle";
         argv[10] = "0";
         fMotionOSCUI = new OSCUI("Faust", 11, (char**)argv);
-        driver2->addControlCallback(osc_compute_callback, fMotionOSCUI);
+        driver->addControlCallback(osc_compute_callback, fMotionOSCUI);
         fMotionEngine->buildUserInterface(fMotionOSCUI);
     #endif
-
+    
 }
-
 
 
 DspFaustMotion::~DspFaustMotion(){
