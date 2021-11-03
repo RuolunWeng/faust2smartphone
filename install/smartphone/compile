@@ -69,7 +69,7 @@ for p in $FILES; do
 	F=$(basename "$p")
 	P=${F%.dsp}             #APP NAME
 
-	T="faustSmartphone.$P"
+	T="faustSmartphone-$P"
 
      if [ $ANDROID -eq 1 ]; then
 		echo "Starting Android compilation"

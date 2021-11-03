@@ -47,7 +47,7 @@ android {
             sourceSets {
                 main {
                     // let gradle pack the shared library into apk
-                    jniLibs.srcDirs = ['/usr/local/share/faust/osclib/android/libs','lib/libsndfile/lib']
+                    jniLibs.srcDirs = ['lib/liboscfaust/libs','lib/libsndfile/lib']
 
                 }
             }
@@ -57,7 +57,7 @@ android {
         sourceSets {
             main {
                 // let gradle pack the shared library into apk
-                jniLibs.srcDirs = ['/usr/local/share/faust/osclib/android/libs']
+                jniLibs.srcDirs = ['lib/liboscfaust/libs']
 
             }
         }

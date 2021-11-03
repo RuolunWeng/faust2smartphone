@@ -599,7 +599,7 @@
 					"$(PROJECT_DIR)/osclib",
 					"$(PROJECT_DIR)/osclib/oscpack",
 				);
-				OTHER_LDFLAGS = "/usr/local/lib/ios-libsndfile.a";
+				OTHER_LDFLAGS = "iOS/ios-libsndfile.a";
 				PRODUCT_BUNDLE_IDENTIFIER = com.AllenSmartFaust;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
