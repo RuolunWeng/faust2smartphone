@@ -29,6 +29,7 @@ class OSCUI;
 class SoundUI;
 class DspFaustMotion;
 class audio;
+class dsp;
 
 class DspFaust
 {
@@ -464,7 +465,7 @@ private:
     SoundUI* fSoundInterface;
     DspFaustMotion *fDSPFAUSTMOTION;
 
-    void init(audio* driver);
+    void init(dsp* mono_dsp,audio* driver);
 
     float matrixA[3][3];
     float matrixB[3][3];

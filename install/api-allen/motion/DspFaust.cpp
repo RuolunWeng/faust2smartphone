@@ -106,6 +106,15 @@ static void osc_compute_callback(void* arg)
 std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 
+static bool hasCompileOption(char* options, const char* option)
+{
+    char* token;
+    const char* sep = " ";
+    for (token = strtok(options, sep); token; token = strtok(nullptr, sep)) {
+        if (strcmp(token, option) == 0) return true;
+    }
+    return false;
+}
 
 DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_size)
 {
@@ -117,14 +126,14 @@ DspFaust::DspFaust(DspFaustMotion *dspFaustMotion, int sample_rate, int buffer_s
 
     fDSPFAUSTMOTION = dspFaustMotion;
     
-    init(driver);
+    init(new mydsp(),driver);
 
     
 
 }
 
-void DspFaust::init(audio* driver){
-    fPolyEngine = new MyFaustPolyEngine(new mydsp(),driver);
+void DspFaust::init(dsp* mono_dsp,audio* driver){
+    fPolyEngine = new MyFaustPolyEngine(mono_dsp,driver);
 
 // OSC
 #if OSCCTRL
@@ -152,7 +161,22 @@ void DspFaust::init(audio* driver){
 
 #if SOUNDFILE
     // Use bundle path
-    fSoundInterface = new SoundUI(SoundUI::getBinaryPath());
+    // Retrieving DSP object 'compile_options'
+    struct MyMeta : public Meta
+    {
+        string fCompileOptions;
+        void declare(const char* key, const char* value)
+        {
+            if (strcmp(key, "compile_options") == 0) fCompileOptions = value;
+        }
+        MyMeta(){}
+    };
+    
+    MyMeta meta;
+    mono_dsp->metadata(&meta);
+    bool is_double = hasCompileOption((char*)meta.fCompileOptions.c_str(), "-double");
+    //bool is_double = hasCompileOption((char*)getMeta("compile_options"), "-double");
+    fSoundInterface = new SoundUI(SoundUI::getBinaryPath(), -1, nullptr, is_double);
     fPolyEngine->buildUserInterface(fSoundInterface);
 #endif
 
