@@ -8902,33 +8902,33 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox86, "68", "");
 		ui_interface->declare(&fCheckbox86, "motionName", "ventre_cour");
 		ui_interface->addCheckButton("ventre_courOn", &fCheckbox86);
-		ui_interface->declare(&fCheckbox91, "69", "");
-		ui_interface->declare(&fCheckbox91, "motionName", "ventre_rear");
-		ui_interface->addCheckButton("ventre_rearOn", &fCheckbox91);
-		ui_interface->declare(&fCheckbox87, "70", "");
-		ui_interface->declare(&fCheckbox87, "motionName", "ventre_jardin");
-		ui_interface->addCheckButton("ventre_jardinOn", &fCheckbox87);
-		ui_interface->declare(&fCheckbox88, "71", "");
-		ui_interface->declare(&fCheckbox88, "motionName", "ventre_front");
-		ui_interface->addCheckButton("ventre_frontOn", &fCheckbox88);
-		ui_interface->declare(&fCheckbox89, "72", "");
-		ui_interface->declare(&fCheckbox89, "motionName", "ventre_down");
-		ui_interface->addCheckButton("ventre_downOn", &fCheckbox89);
-		ui_interface->declare(&fCheckbox90, "73", "");
-		ui_interface->declare(&fCheckbox90, "motionName", "ventre_up");
-		ui_interface->addCheckButton("ventre_upOn", &fCheckbox90);
-		ui_interface->declare(&fCheckbox8, "74", "");
-		ui_interface->declare(&fCheckbox8, "motionName", "ixpn");
-		ui_interface->addCheckButton("ixpnOn", &fCheckbox8);
+		ui_interface->declare(&fCheckbox87, "69", "");
+		ui_interface->declare(&fCheckbox87, "motionName", "ventre_rear");
+		ui_interface->addCheckButton("ventre_rearOn", &fCheckbox87);
+		ui_interface->declare(&fCheckbox88, "70", "");
+		ui_interface->declare(&fCheckbox88, "motionName", "ventre_jardin");
+		ui_interface->addCheckButton("ventre_jardinOn", &fCheckbox88);
+		ui_interface->declare(&fCheckbox89, "71", "");
+		ui_interface->declare(&fCheckbox89, "motionName", "ventre_front");
+		ui_interface->addCheckButton("ventre_frontOn", &fCheckbox89);
+		ui_interface->declare(&fCheckbox90, "72", "");
+		ui_interface->declare(&fCheckbox90, "motionName", "ventre_down");
+		ui_interface->addCheckButton("ventre_downOn", &fCheckbox90);
+		ui_interface->declare(&fCheckbox91, "73", "");
+		ui_interface->declare(&fCheckbox91, "motionName", "ventre_up");
+		ui_interface->addCheckButton("ventre_upOn", &fCheckbox91);
+		ui_interface->declare(&fCheckbox7, "74", "");
+		ui_interface->declare(&fCheckbox7, "motionName", "ixpn");
+		ui_interface->addCheckButton("ixpnOn", &fCheckbox7);
 		ui_interface->declare(&fCheckbox10, "75", "");
 		ui_interface->declare(&fCheckbox10, "motionName", "iypn");
 		ui_interface->addCheckButton("iypnOn", &fCheckbox10);
 		ui_interface->declare(&fCheckbox13, "76", "");
 		ui_interface->declare(&fCheckbox13, "motionName", "izpn");
 		ui_interface->addCheckButton("izpnOn", &fCheckbox13);
-		ui_interface->declare(&fCheckbox7, "77", "");
-		ui_interface->declare(&fCheckbox7, "motionName", "ixpn_sym");
-		ui_interface->addCheckButton("ixpn_symOn", &fCheckbox7);
+		ui_interface->declare(&fCheckbox8, "77", "");
+		ui_interface->declare(&fCheckbox8, "motionName", "ixpn_sym");
+		ui_interface->addCheckButton("ixpn_symOn", &fCheckbox8);
 		ui_interface->declare(&fCheckbox11, "78", "");
 		ui_interface->declare(&fCheckbox11, "motionName", "iypn_sym");
 		ui_interface->addCheckButton("iypn_symOn", &fCheckbox11);
@@ -9755,7 +9755,7 @@ class mydsp2 : public dsp {
 				fTemp29 = fSlow28 * float(iRec26);
 			}
 			output5[i0] = FAUSTFLOAT(fTemp29);
-			if ((iSlow35 | (iSlow37 | iSlow33))) {
+			if ((iSlow33 | (iSlow35 | iSlow37))) {
 				fVec12[0] = fSlow41;
 				fRec30[0] = 0.0f - fSlow39 * (fSlow40 * fRec30[1] - (fSlow41 + fVec12[1]));
 				fTemp30 = std::min<float>(1.0f, std::max<float>(0.0f, fRec30[0]));
@@ -9764,7 +9764,7 @@ class mydsp2 : public dsp {
 				fTemp31 = fSlow32 * fTemp30;
 			}
 			output6[i0] = FAUSTFLOAT(fTemp31);
-			if ((iSlow45 | (iSlow47 | iSlow43))) {
+			if ((iSlow43 | (iSlow45 | iSlow47))) {
 				fVec13[0] = fSlow48;
 				fRec31[0] = 0.0f - fSlow39 * (fSlow40 * fRec31[1] - (fSlow48 + fVec13[1]));
 				fTemp32 = std::min<float>(1.0f, std::max<float>(0.0f, fRec31[0]));
@@ -9773,7 +9773,7 @@ class mydsp2 : public dsp {
 				fTemp33 = fSlow42 * fTemp32;
 			}
 			output7[i0] = FAUSTFLOAT(fTemp33);
-			if ((iSlow52 | (iSlow54 | iSlow50))) {
+			if ((iSlow50 | (iSlow52 | iSlow54))) {
 				fVec14[0] = fSlow55;
 				fRec32[0] = 0.0f - fSlow39 * (fSlow40 * fRec32[1] - (fSlow55 + fVec14[1]));
 				fTemp34 = std::min<float>(1.0f, std::max<float>(0.0f, fRec32[0]));
@@ -9782,7 +9782,7 @@ class mydsp2 : public dsp {
 				fTemp35 = fSlow49 * fTemp34;
 			}
 			output8[i0] = FAUSTFLOAT(fTemp35);
-			if ((iSlow35 | (iSlow37 | iSlow57))) {
+			if ((iSlow57 | (iSlow35 | iSlow37))) {
 				fVec15[0] = fSlow58;
 				fRec33[0] = 0.0f - fSlow39 * (fSlow40 * fRec33[1] - (fSlow58 + fVec15[1]));
 				fTemp36 = std::min<float>(1.0f, std::max<float>(0.0f, fRec33[0]));
@@ -9791,7 +9791,7 @@ class mydsp2 : public dsp {
 				fTemp37 = fSlow56 * fTemp36;
 			}
 			output9[i0] = FAUSTFLOAT(fTemp37);
-			if ((iSlow45 | (iSlow47 | iSlow60))) {
+			if ((iSlow60 | (iSlow45 | iSlow47))) {
 				fVec16[0] = fSlow61;
 				fRec34[0] = 0.0f - fSlow39 * (fSlow40 * fRec34[1] - (fSlow61 + fVec16[1]));
 				fTemp38 = std::min<float>(1.0f, std::max<float>(0.0f, fRec34[0]));
@@ -9800,7 +9800,7 @@ class mydsp2 : public dsp {
 				fTemp39 = fSlow59 * fTemp38;
 			}
 			output10[i0] = FAUSTFLOAT(fTemp39);
-			if ((iSlow52 | (iSlow54 | iSlow63))) {
+			if ((iSlow63 | (iSlow52 | iSlow54))) {
 				fVec17[0] = fSlow64;
 				fRec35[0] = 0.0f - fSlow39 * (fSlow40 * fRec35[1] - (fSlow64 + fVec17[1]));
 				fTemp40 = std::min<float>(1.0f, std::max<float>(0.0f, fRec35[0]));
@@ -10029,19 +10029,19 @@ class mydsp2 : public dsp {
 				fTemp108 = fSlow123 * fRec86[0];
 			}
 			output37[i0] = FAUSTFLOAT(fTemp108);
-			if ((iSlow150 | (iSlow153 | (iSlow155 | (iSlow157 | (iSlow159 | (iSlow161 | iSlow163))))))) {
+			if ((iSlow153 | (iSlow155 | (iSlow157 | (iSlow159 | (iSlow161 | (iSlow150 | iSlow163))))))) {
 				fTemp109 = float(input0[i0]);
 			}
-			if ((iSlow150 | (iSlow153 | (iSlow155 | (iSlow157 | (iSlow159 | (iSlow161 | iSlow165))))))) {
+			if ((iSlow153 | (iSlow155 | (iSlow157 | (iSlow159 | (iSlow161 | (iSlow150 | iSlow165))))))) {
 				fTemp110 = float(input1[i0]);
 			}
-			if ((iSlow150 | (iSlow155 | (iSlow159 | iSlow161)))) {
+			if ((iSlow155 | (iSlow159 | (iSlow161 | iSlow150)))) {
 				fTemp111 = mydsp2_faustpower2_f(fTemp110);
 			}
-			if ((iSlow150 | (iSlow153 | (iSlow155 | (iSlow157 | (iSlow159 | (iSlow161 | iSlow167))))))) {
+			if ((iSlow153 | (iSlow155 | (iSlow157 | (iSlow159 | (iSlow161 | (iSlow150 | iSlow167))))))) {
 				fTemp112 = float(input2[i0]);
 			}
-			if ((iSlow150 | (iSlow153 | (iSlow155 | iSlow157)))) {
+			if ((iSlow153 | (iSlow155 | (iSlow157 | iSlow150)))) {
 				fTemp113 = mydsp2_faustpower2_f(fTemp112);
 			}
 			if ((iSlow150)) {
@@ -10295,17 +10295,17 @@ class mydsp2 : public dsp {
 				fTemp178 = fSlow229 * fRec117[0];
 			}
 			output67[i0] = FAUSTFLOAT(fTemp178);
-			if ((iSlow240 | (iSlow242 | (iSlow244 | (iSlow246 | (iSlow238 | iSlow248)))))) {
+			if ((iSlow238 | (iSlow240 | (iSlow242 | (iSlow244 | (iSlow246 | iSlow248)))))) {
 				fTemp179 = float(input15[i0]);
 				fTemp180 = float(input16[i0]);
 			}
-			if ((iSlow240 | (iSlow244 | (iSlow246 | iSlow238)))) {
+			if ((iSlow238 | (iSlow242 | (iSlow246 | iSlow248)))) {
 				fTemp181 = mydsp2_faustpower2_f(fTemp180);
 			}
-			if ((iSlow240 | (iSlow242 | (iSlow244 | (iSlow246 | (iSlow238 | iSlow248)))))) {
+			if ((iSlow238 | (iSlow240 | (iSlow242 | (iSlow244 | (iSlow246 | iSlow248)))))) {
 				fTemp182 = float(input17[i0]);
 			}
-			if ((iSlow240 | (iSlow242 | (iSlow238 | iSlow248)))) {
+			if ((iSlow238 | (iSlow240 | (iSlow242 | iSlow244)))) {
 				fTemp183 = mydsp2_faustpower2_f(fTemp182);
 			}
 			if ((iSlow238)) {
@@ -10313,42 +10313,42 @@ class mydsp2 : public dsp {
 				fTemp184 = fSlow237 * fRec118[0];
 			}
 			output68[i0] = FAUSTFLOAT(fTemp184);
-			if ((iSlow242 | (iSlow244 | (iSlow246 | iSlow248)))) {
+			if ((iSlow240 | (iSlow244 | (iSlow246 | iSlow248)))) {
 				fTemp185 = mydsp2_faustpower2_f(fTemp179);
 			}
-			if ((iSlow242 | iSlow248)) {
+			if ((iSlow240 | iSlow244)) {
 				fTemp186 = fTemp183 + fTemp185;
 			}
-			if ((iSlow248)) {
+			if ((iSlow240)) {
 				fRec119[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow168 * std::sqrt(mydsp2_faustpower2_f(fTemp180 + 1.0f) + fTemp186)) + fConst8 * fRec119[1];
-				fTemp187 = fSlow247 * fRec119[0];
+				fTemp187 = fSlow239 * fRec119[0];
 			}
 			output69[i0] = FAUSTFLOAT(fTemp187);
-			if ((iSlow240)) {
+			if ((iSlow242)) {
 				fRec120[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow169 * std::sqrt(mydsp2_faustpower2_f(fTemp179 + -1.0f) + fTemp181 + fTemp183)) + fConst8 * fRec120[1];
-				fTemp188 = fSlow239 * fRec120[0];
+				fTemp188 = fSlow241 * fRec120[0];
 			}
 			output70[i0] = FAUSTFLOAT(fTemp188);
-			if ((iSlow242)) {
+			if ((iSlow244)) {
 				fRec121[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow170 * std::sqrt(fTemp186 + mydsp2_faustpower2_f(fTemp180 + -1.0f))) + fConst8 * fRec121[1];
-				fTemp189 = fSlow241 * fRec121[0];
+				fTemp189 = fSlow243 * fRec121[0];
 			}
 			output71[i0] = FAUSTFLOAT(fTemp189);
-			if ((iSlow244 | iSlow246)) {
+			if ((iSlow246 | iSlow248)) {
 				fTemp190 = fTemp181 + fTemp185;
 			}
-			if ((iSlow244)) {
+			if ((iSlow246)) {
 				fRec122[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow171 * std::sqrt(fTemp190 + mydsp2_faustpower2_f(fTemp182 + 1.0f))) + fConst8 * fRec122[1];
-				fTemp191 = fSlow243 * fRec122[0];
+				fTemp191 = fSlow245 * fRec122[0];
 			}
 			output72[i0] = FAUSTFLOAT(fTemp191);
-			if ((iSlow246)) {
+			if ((iSlow248)) {
 				fRec123[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow172 * std::sqrt(fTemp190 + mydsp2_faustpower2_f(fTemp182 + -1.0f))) + fConst8 * fRec123[1];
-				fTemp192 = fSlow245 * fRec123[0];
+				fTemp192 = fSlow247 * fRec123[0];
 			}
 			output73[i0] = FAUSTFLOAT(fTemp192);
-			if ((iSlow37)) {
-				fTemp193 = fSlow36 * std::min<float>(1.0f, std::max<float>(0.0f, 0.0f - 0.5f * (fTemp36 - (fTemp30 + 1.0f))));
+			if ((iSlow35)) {
+				fTemp193 = fSlow34 * std::min<float>(1.0f, std::max<float>(0.0f, 0.0f - 0.5f * (fTemp36 - (fTemp30 + 1.0f))));
 			}
 			output74[i0] = FAUSTFLOAT(fTemp193);
 			if ((iSlow45)) {
@@ -10359,8 +10359,8 @@ class mydsp2 : public dsp {
 				fTemp195 = fSlow51 * std::min<float>(1.0f, std::max<float>(0.0f, 0.0f - 0.5f * (fTemp40 - (fTemp34 + 1.0f))));
 			}
 			output76[i0] = FAUSTFLOAT(fTemp195);
-			if ((iSlow35)) {
-				fTemp196 = fSlow34 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp30 + fTemp36)));
+			if ((iSlow37)) {
+				fTemp196 = fSlow36 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp30 + fTemp36)));
 			}
 			output77[i0] = FAUSTFLOAT(fTemp196);
 			if ((iSlow47)) {
@@ -10467,27 +10467,27 @@ class mydsp2 : public dsp {
 				fRec29[1] = fRec29[0];
 				iRec25[1] = iRec25[0];
 			}
-			if ((iSlow35 | (iSlow37 | iSlow33))) {
+			if ((iSlow33 | (iSlow35 | iSlow37))) {
 				fVec12[1] = fVec12[0];
 				fRec30[1] = fRec30[0];
 			}
-			if ((iSlow45 | (iSlow47 | iSlow43))) {
+			if ((iSlow43 | (iSlow45 | iSlow47))) {
 				fVec13[1] = fVec13[0];
 				fRec31[1] = fRec31[0];
 			}
-			if ((iSlow52 | (iSlow54 | iSlow50))) {
+			if ((iSlow50 | (iSlow52 | iSlow54))) {
 				fVec14[1] = fVec14[0];
 				fRec32[1] = fRec32[0];
 			}
-			if ((iSlow35 | (iSlow37 | iSlow57))) {
+			if ((iSlow57 | (iSlow35 | iSlow37))) {
 				fVec15[1] = fVec15[0];
 				fRec33[1] = fRec33[0];
 			}
-			if ((iSlow45 | (iSlow47 | iSlow60))) {
+			if ((iSlow60 | (iSlow45 | iSlow47))) {
 				fVec16[1] = fVec16[0];
 				fRec34[1] = fRec34[0];
 			}
-			if ((iSlow52 | (iSlow54 | iSlow63))) {
+			if ((iSlow63 | (iSlow52 | iSlow54))) {
 				fVec17[1] = fVec17[0];
 				fRec35[1] = fRec35[0];
 			}
@@ -10709,19 +10709,19 @@ class mydsp2 : public dsp {
 			if ((iSlow238)) {
 				fRec118[1] = fRec118[0];
 			}
-			if ((iSlow248)) {
+			if ((iSlow240)) {
 				fRec119[1] = fRec119[0];
 			}
-			if ((iSlow240)) {
+			if ((iSlow242)) {
 				fRec120[1] = fRec120[0];
 			}
-			if ((iSlow242)) {
+			if ((iSlow244)) {
 				fRec121[1] = fRec121[0];
 			}
-			if ((iSlow244)) {
+			if ((iSlow246)) {
 				fRec122[1] = fRec122[0];
 			}
-			if ((iSlow246)) {
+			if ((iSlow248)) {
 				fRec123[1] = fRec123[0];
 			}
 		}
@@ -13634,140 +13634,6 @@ class dsp_crossfader: public dsp_binary_combiner {
         virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { compute(count, inputs, outputs); }
 };
 
-#ifndef __dsp_algebra_api__
-#define __dsp_algebra_api__
-
-// DSP algebra API
-/*
- Each operation takes two DSP and a optional Layout and Label parameters, returns the combined DSPs, or null if failure with an error message.
- */
-
-static dsp* createDSPSequencer(dsp* dsp1, dsp* dsp2,
-                               std::string& error,
-                               Layout layout = Layout::kTabGroup,
-                               const std::string& label = "Sequencer")
-{
-    if (dsp1->getNumOutputs() != dsp2->getNumInputs()) {
-        std::stringstream error_aux;
-        error_aux << "Connection error in dsp_sequencer : the number of outputs ("
-                  << dsp1->getNumOutputs() << ") of A "
-                  << "must be equal to the number of inputs (" << dsp2->getNumInputs() << ") of B" << std::endl;
-        error = error_aux.str();
-        return nullptr;
-    } else {
-        return new dsp_sequencer(dsp1, dsp2, 4096, layout, label);
-    }
-}
-
-static dsp* createDSPParallelizer(dsp* dsp1, dsp* dsp2,
-                                  std::string& error,
-                                  Layout layout = Layout::kTabGroup,
-                                  const std::string& label = "Parallelizer")
-{
-    return new dsp_parallelizer(dsp1, dsp2, 4096, layout, label);
-}
-
-static dsp* createDSPSplitter(dsp* dsp1, dsp* dsp2, std::string& error, Layout layout = Layout::kTabGroup, const std::string& label = "Splitter")
-{
-    if (dsp1->getNumOutputs() == 0) {
-        error = "Connection error in dsp_splitter : the first expression has no outputs\n";
-        return nullptr;
-    } else if (dsp2->getNumInputs() == 0) {
-        error = "Connection error in dsp_splitter : the second expression has no inputs\n";
-        return nullptr;
-    } else if (dsp2->getNumInputs() % dsp1->getNumOutputs() != 0) {
-        std::stringstream error_aux;
-        error_aux << "Connection error in dsp_splitter : the number of outputs (" << dsp1->getNumOutputs()
-                  << ") of the first expression should be a divisor of the number of inputs ("
-                  << dsp2->getNumInputs()
-                  << ") of the second expression" << std::endl;
-        error = error_aux.str();
-        return nullptr;
-    } else if (dsp2->getNumInputs() == dsp1->getNumOutputs()) {
-        return new dsp_sequencer(dsp1, dsp2, 4096, layout, label);
-    } else {
-        return new dsp_splitter(dsp1, dsp2, 4096, layout, label);
-    }
-}
-
-static dsp* createDSPMerger(dsp* dsp1, dsp* dsp2,
-                            std::string& error,
-                            Layout layout = Layout::kTabGroup,
-                            const std::string& label = "Merger")
-{
-    if (dsp1->getNumOutputs() == 0) {
-        error = "Connection error in dsp_merger : the first expression has no outputs\n";
-        return nullptr;
-    } else if (dsp2->getNumInputs() == 0) {
-        error = "Connection error in dsp_merger : the second expression has no inputs\n";
-        return nullptr;
-    } else if (dsp1->getNumOutputs() % dsp2->getNumInputs() != 0) {
-        std::stringstream error_aux;
-        error_aux << "Connection error in dsp_merger : the number of outputs (" << dsp1->getNumOutputs()
-                  << ") of the first expression should be a multiple of the number of inputs ("
-                  << dsp2->getNumInputs()
-                  << ") of the second expression" << std::endl;
-        error = error_aux.str();
-        return nullptr;
-    } else if (dsp2->getNumInputs() == dsp1->getNumOutputs()) {
-        return new dsp_sequencer(dsp1, dsp2, 4096, layout, label);
-    } else {
-        return new dsp_merger(dsp1, dsp2, 4096, layout, label);
-    }
-}
-
-static dsp* createDSPRecursiver(dsp* dsp1, dsp* dsp2,
-                                std::string& error,
-                                Layout layout = Layout::kTabGroup,
-                                const std::string& label = "Recursiver")
-{
-    if ((dsp2->getNumInputs() > dsp1->getNumOutputs()) || (dsp2->getNumOutputs() > dsp1->getNumInputs())) {
-        std::stringstream error_aux;
-        error_aux << "Connection error in : dsp_recursiver" << std::endl;
-        if (dsp2->getNumInputs() > dsp1->getNumOutputs()) {
-            error_aux << "The number of outputs " << dsp1->getNumOutputs()
-                      << " of the first expression should be greater or equal to the number of inputs ("
-                      << dsp2->getNumInputs()
-                      << ") of the second expression" << std::endl;
-        }
-        if (dsp2->getNumOutputs() > dsp1->getNumInputs()) {
-            error_aux << "The number of inputs " << dsp1->getNumInputs()
-                      << " of the first expression should be greater or equal to the number of outputs ("
-                      << dsp2->getNumOutputs()
-                      << ") of the second expression" << std::endl;
-        }
-        error = error_aux.str();
-        return nullptr;
-    } else {
-        return new dsp_recursiver(dsp1, dsp2, layout, label);
-    }
-}
-
-static dsp* createDSPCrossfader(dsp* dsp1, dsp* dsp2,
-                                 std::string& error,
-                                 Layout layout = Layout::kTabGroup,
-                                 const std::string& label = "Crossfade")
-{
-    if (dsp1->getNumInputs() != dsp2->getNumInputs()) {
-        std::stringstream error_aux;
-        error_aux << "Connection error in dsp_crossfader : the number of inputs ("
-        << dsp1->getNumInputs() << ") of A "
-        << "must be equal to the number of inputs (" << dsp2->getNumInputs() << ") of B" << std::endl;
-        error = error_aux.str();
-        return nullptr;
-    } else if (dsp1->getNumOutputs() != dsp2->getNumOutputs()) {
-        std::stringstream error_aux;
-        error_aux << "Connection error in dsp_crossfader : the number of outputs ("
-        << dsp1->getNumOutputs() << ") of A "
-        << "must be equal to the number of outputs (" << dsp2->getNumOutputs() << ") of B" << std::endl;
-        error = error_aux.str();
-        return nullptr;
-    } else {
-        return new dsp_crossfader(dsp1, dsp2, layout, label);
-    }
-}
-
-#endif
 
 #endif
 /************************** END dsp-combiner.h **************************/
@@ -15652,59 +15518,6 @@ class FaustPolyMotionEngine {
 extern "C" {
 #endif
     
-    void destroy(void* dsp) { delete reinterpret_cast<FaustPolyMotionEngine*>(dsp); }
-
-    bool start(void* dsp) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->start(); }
-    void stop(void* dsp) { reinterpret_cast<FaustPolyMotionEngine*>(dsp)->stop(); }
-    
-    bool isRunning(void* dsp) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->isRunning(); }
-
-    uintptr_t keyOn(void* dsp, int pitch, int velocity) { return (uintptr_t)reinterpret_cast<FaustPolyMotionEngine*>(dsp)->keyOn(pitch, velocity); }
-    int keyOff(void* dsp, int pitch) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->keyOff(pitch); }
-    
-    void propagateMidi(void* dsp, int count, double time, int type, int channel, int data1, int data2)
-    {
-        reinterpret_cast<FaustPolyMotionEngine*>(dsp)->propagateMidi(count, time, type, channel, data1, data2);
-    }
-
-    const char* getJSONUI(void* dsp) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getJSONUI(); }
-    const char* getJSONMeta(void* dsp) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getJSONMeta(); }
-
-    int getParamsCount(void* dsp) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getParamsCount(); }
-    
-    void setParamValue(void* dsp, const char* address, float value)
-    {
-        reinterpret_cast<FaustPolyMotionEngine*>(dsp)->setParamValue(address, value);
-    }
-    float getParamValue(void* dsp, const char* address) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getParamValue(address); }
-   
-    void setParamIdValue(void* dsp, int id, float value) { reinterpret_cast<FaustPolyMotionEngine*>(dsp)->setParamValue(id, value); }
-    float getParamIdValue(void* dsp, int id) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getParamValue(id); }
-    
-    void setVoiceParamValue(void* dsp, const char* address, uintptr_t voice, float value)
-    {
-        reinterpret_cast<FaustPolyMotionEngine*>(dsp)->setVoiceParamValue(address, voice, value);
-    }
-    float getVoiceParamValue(void* dsp, const char* address, uintptr_t voice)
-    {
-        return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getVoiceParamValue(address, voice);
-    }
-    
-    const char* getParamAddress(void* dsp, int id) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getParamAddress(id); }
-
-    void propagateAcc(void* dsp, int acc, float v) { reinterpret_cast<FaustPolyMotionEngine*>(dsp)->propagateAcc(acc, v); }
-    void setAccConverter(void* dsp, int p, int acc, int curve, float amin, float amid, float amax)
-    {
-        reinterpret_cast<FaustPolyMotionEngine*>(dsp)->setAccConverter(p, acc, curve, amin, amid, amax);
-    }
-    void propagateGyr(void* dsp, int acc, float v) { reinterpret_cast<FaustPolyMotionEngine*>(dsp)->propagateGyr(acc, v); }
-    void setGyrConverter(void* dsp, int p, int gyr, int curve, float amin, float amid, float amax)
-    {
-        reinterpret_cast<FaustPolyMotionEngine*>(dsp)->setGyrConverter(p, gyr, curve, amin, amid, amax);
-    }
-
-    float getCPULoad(void* dsp) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getCPULoad(); }
-    int getScreenColor(void* dsp) { return reinterpret_cast<FaustPolyMotionEngine*>(dsp)->getScreenColor(); }
     
 #ifdef __cplusplus
 }
