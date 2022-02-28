@@ -1,4 +1,3 @@
-#define TARGET_OS_IPHONE 1
 /* ------------------------------------------------------------
 name: "Faust Motion Library [Motion+RotationMatrix]"
 version: "0.7"
