@@ -116,11 +116,11 @@ DspFaust::DspFaust(int sample_rate, int buffer_size)
     audio* driver = new androidaudio(sample_rate, buffer_size);
 #endif
 
-    init(driver);
+    init(new mydsp(),driver);
 }
 
-void DspFaust::init(audio* driver){
-	fPolyEngine = new FaustPolyEngine(NULL,driver);
+void DspFaust::init(dsp* mono_dsp,audio* driver){
+    fPolyEngine = new FaustPolyEngine(mono_dsp,driver);
 
 #if IOS_MIDI_SUPPORT
     fMidiUI = new MidiUI(new rt_midi());

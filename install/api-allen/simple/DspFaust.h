@@ -28,6 +28,7 @@ class MidiUI;
 class OSCUI;
 class SoundUI;
 class audio;
+class dsp;
 
 class DspFaust
 {
@@ -410,7 +411,7 @@ private:
 				SoundUI* fSoundInterface;
 		#endif
 
-    void init(audio* driver);
+    void init(dsp* mono_dsp,audio* driver);
 };
 
 #endif
