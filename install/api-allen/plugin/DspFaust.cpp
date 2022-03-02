@@ -106,7 +106,7 @@ DspFaust::DspFaust(int sample_rate, int buffer_size){
     
     myaudio* driver = new motion_audio(sample_rate, buffer_size, 0, false, false);
     
-    fMotionEngine = new FaustMotionEngine(NULL,driver);
+    fMotionEngine = new FaustMotionEngine(new mydsp(),driver);
 
     //**************************************************************
     // OSC TEST ALLEN
