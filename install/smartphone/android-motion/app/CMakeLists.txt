@@ -8,7 +8,7 @@ add_library( dsp_faust SHARED src/main/cpp/java_interface_wrap.cpp src/main/cpp/
 
 if(OSCCTRL)
 add_library( libOSCFaust SHARED IMPORTED )
-set_target_properties( libOSCFaust PROPERTIES IMPORTED_LOCATION /usr/local/share/faust/osclib/android/libs/${ANDROID_ABI}/libOSCFaust.so )
+set_target_properties( libOSCFaust PROPERTIES IMPORTED_LOCATION ../../../../lib/liboscfaust/libs/${ANDROID_ABI}/libOSCFaust.so )
 endif(OSCCTRL)
 
 if(SOUNDFILE)
