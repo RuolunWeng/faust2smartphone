@@ -1459,7 +1459,8 @@
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, pickerView.frame.size.width, 44)];
     label.backgroundColor = [UIColor grayColor];
     label.textColor = [UIColor whiteColor];
-    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
     
     label.text = [_motionParamArray objectAtIndex:row];
     return label;
