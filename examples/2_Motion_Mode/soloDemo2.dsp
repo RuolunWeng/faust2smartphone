@@ -1,6 +1,6 @@
 declare name 		"SoloDemo2";
-declare version 		"2.0";
-declare author 		"Grame";
+declare version 	"2.0";
+declare author 		"Allen";
 
 
 

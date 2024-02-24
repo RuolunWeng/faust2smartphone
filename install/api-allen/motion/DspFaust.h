@@ -366,6 +366,8 @@ public:
     const char* getMetadata(int, const char*);
 
 
+    const char* getParamShortName(int p);
+    
     //----`void propagateAcc(int acc, float v)`---------------
     // Propagate the RAW value of a specific accelerometer
     // axis to the Faust object.

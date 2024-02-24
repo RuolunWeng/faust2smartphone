@@ -381,6 +381,10 @@ const char* DspFaust::getMetadata(int id, const char* key)
     return fPolyEngine->getMetadata(id, key);
 }
 
+const char* DspFaust::getParamShortName(int p){
+    return fPolyEngine->getParamShortname(p);
+}
+
 void DspFaust::propagateAcc(int acc, float v){
     fPolyEngine->propagateAcc(acc, v);
 }

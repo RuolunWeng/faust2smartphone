@@ -99,7 +99,9 @@
     
 }
 
-
+@property (nonatomic, strong) UIView *additionalButtonView;
+@property (nonatomic, strong) NSMutableDictionary *nameForButton;
+@property (nonatomic, strong) NSMutableDictionary *pathForButton;
 
 @property (retain, nonatomic) IBOutlet UIPickerView *pikerView;
 @property (retain, nonatomic) IBOutlet UITextField *motionParam;

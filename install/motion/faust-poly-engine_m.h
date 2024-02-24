@@ -37,6 +37,7 @@ public:
     MyFaustPolyEngine(dsp* mono_dsp, audio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
     {
         //init(((mono_dsp) ? mono_dsp : new mydsp()), driver, NULL);
+        mono_dsp->metadata(&metadata);
     }
 
     virtual ~MyFaustPolyEngine()
@@ -48,13 +49,23 @@ public:
         const char* getMeta(const char* name)
         {
 
-            if ((*metadata.find(name)) != *metadata.end()) {
-                return (*metadata.find(name)).second;
-            } else {
-
-                return NULL;
-
-            }
+            const char* value= NULL;
+                for (auto& pair : metadata) {
+                    //std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+                    
+                    if (strcmp(name, pair.first) == 0) value= pair.second;
+                    
+                }
+            
+            return value;
+            
+//            if ((*metadata.find(name)) != *metadata.end()) {
+//                return (*metadata.find(name)).second;
+//            } else {
+//
+//                return NULL;
+//
+//            }
         }
 
 };

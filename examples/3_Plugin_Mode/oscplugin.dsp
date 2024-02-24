@@ -1,6 +1,6 @@
 declare name 		"osc";
 declare version 	"1.0";
-declare author 		"Grame";
+declare author 		"Allen";
 declare license 	"BSD";
 declare copyright 	"(c)GRAME 2009";
 

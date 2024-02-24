@@ -1,5 +1,5 @@
 declare name 		"SoloDemo";
-declare version 	"1.0";
+declare version 		"3.0";
 declare author 		"Allen";
 
 
@@ -10,9 +10,9 @@ process = rainGen, windGen, sinusGen :>_,_ ;
 
 
 // declare connection UI
-cueNum = nentry("cue",1,1,3,1);
-touchGate = checkbox("touchgate");
-volume = hslider("screenx",0,0,1,0.01);
+cueNum = nentry("cue [motionButton:trigCue 50 10 50 30 255 0 0] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
+touchGate = checkbox("OnOff [motionButton:toggle 0 10 50 30 0 255 0]");
+volume = hslider("MasterVol [motionButton:touchScreenX 0 40 100 25 0 255 255]",0,0,1,0.01);
 param = hslider("param[motion:ixp]",0,0,1,0.01);
 
 
@@ -41,7 +41,7 @@ rain(density,level) = no.multinoise(2) : par(i, 2, drop) : par(i, 2, *(level))
 
 rainGen  = 	rain (
 				hslider("v:rain/density [showName: rain/density]", 0.3, 0, 1, 0.01),
-				param*(cueNum==1)
+				param*(cueNum==1)* touchGate * volume
 				//hslider("v:rain/volume", 0.5, 0, 1, 0.01)
 			);
 
