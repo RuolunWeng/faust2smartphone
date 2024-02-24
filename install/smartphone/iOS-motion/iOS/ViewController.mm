@@ -59,6 +59,7 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
+
     self.nameForButton = [[NSMutableDictionary alloc] init];
     self.pathForButton = [[NSMutableDictionary alloc] init];
    
@@ -1328,6 +1329,10 @@
         _outPort.hidden=false;
         _setOSC.hidden=false;
         if (_motionParamArray.count != 0) {
+            // Select the first row by default
+            [_pikerView selectRow:0 inComponent:0 animated:NO];
+                // Manually call the delegate method to initialize based on the selected row
+            [self pickerView:_pikerView didSelectRow:0 inComponent:0];
             _pikerView.hidden = false;
             _motionParam.hidden=false;
             _motionParamSend.hidden=false;
@@ -1345,7 +1350,10 @@
         _motionParam.hidden=true;
         _motionParamSend.hidden=true;
         _setRefrence.hidden=true;
-        
+        [_ip resignFirstResponder];
+        [_inPort resignFirstResponder];
+        [_outPort resignFirstResponder];
+        [_motionParam resignFirstResponder];
     }
     
 }
@@ -1417,12 +1425,30 @@
         dspFaust->setParamValue(i, dspFaust->getParamInit(i));
     }
     
-    _motionParam.text = @"Done";
+    //_motionParam.text = @"Done";
+    
+    self.nameForButton = [[NSMutableDictionary alloc] init];
+    self.pathForButton = [[NSMutableDictionary alloc] init];
+   
+    [self.additionalButtonView removeFromSuperview];
+    // 创建另一个标签页
+    // CGFloat offsetHeight = self.tips.frame.size.height;
+    CGFloat additionalButtonViewY = self.tips.frame.origin.y;
+    CGFloat additionalButtonViewHeight = self.view.frame.size.height/2 - additionalButtonViewY;
+    self.additionalButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, additionalButtonViewY, self.view.frame.size.width, additionalButtonViewHeight)];
+    
+    [self.view addSubview:self.additionalButtonView];
     
     dspFaust->checkAdress();
     [self checkAddress];
     
     [self resetDefaultParams];
+    
+    // Select the first row by default
+    [_pikerView selectRow:0 inComponent:0 animated:NO];
+        
+        // Manually call the delegate method to initialize based on the selected row
+    [self pickerView:_pikerView didSelectRow:0 inComponent:0];
     
     
 }
