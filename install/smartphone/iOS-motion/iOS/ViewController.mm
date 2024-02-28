@@ -93,87 +93,91 @@
     [self checkAddress];
     
     
-    ///////////////////////
-    //other Initialization ( motion sensor + etc )
-    ///////////////////////
-    //There are two methods to receive data from CMMotionManager: push and pull.
-    //Using push for now
-    
-    [self startMotion];
-    
-    [self startRotationMatrix];
-    
-    [self startAccelerometer];
-    
-    [self startGyroscope];
-    
-    [self startUpdateGUI];
-    
-    [self displayTitle];
-    
+    if (checkPass) {
+        
+        
+        ///////////////////////
+        //other Initialization ( motion sensor + etc )
+        ///////////////////////
+        //There are two methods to receive data from CMMotionManager: push and pull.
+        //Using push for now
+        
+        [self startMotion];
+        
+        [self startRotationMatrix];
+        
+        [self startAccelerometer];
+        
+        [self startGyroscope];
+        
+        [self startUpdateGUI];
+        
+        [self displayTitle];
+        
 
-    
-    if (dspFaust->getOSCIsOn()) {
-        _ip.enabled=true;
-        _inPort.enabled=true;
-        _outPort.enabled=true;
-        _setOSC.enabled=true;
-        _ip.alpha=1;
-        _inPort.alpha=1;
-        _outPort.alpha=1;
-        _setOSC.alpha=1;
-        _ip.text=oscAddress;
-        _inPort.text=oscInPort;
-        _outPort.text=oscOutPort;
-    } else {
-        _ip.hidden=false;
-        _inPort.enabled=false;
-        _outPort.enabled=false;
-        _setOSC.enabled=false;
-        _ip.alpha=0;
-        _inPort.alpha=0;
-        _outPort.alpha=0;
-        _setOSC.alpha=0;
-        _ip.text=@"NO";
-        _inPort.text=@"NO";
-        _outPort.text=@"NO";
-    }
-    
-    if (cueIsOn) {
-        _cue.hidden=false;
-        _cueNext.hidden=false;
         
-        _cueText.hidden=false;
-        _nextCueText.hidden=false;
+        if (dspFaust->getOSCIsOn()) {
+            _ip.enabled=true;
+            _inPort.enabled=true;
+            _outPort.enabled=true;
+            _setOSC.enabled=true;
+            _ip.alpha=1;
+            _inPort.alpha=1;
+            _outPort.alpha=1;
+            _setOSC.alpha=1;
+            _ip.text=oscAddress;
+            _inPort.text=oscInPort;
+            _outPort.text=oscOutPort;
+        } else {
+            _ip.hidden=false;
+            _inPort.enabled=false;
+            _outPort.enabled=false;
+            _setOSC.enabled=false;
+            _ip.alpha=0;
+            _inPort.alpha=0;
+            _outPort.alpha=0;
+            _setOSC.alpha=0;
+            _ip.text=@"NO";
+            _inPort.text=@"NO";
+            _outPort.text=@"NO";
+        }
         
-        _prevCue.hidden=false;
-        _nextCue.hidden=false;
-    } else {
-        _cue.hidden=true;
-        _cueNext.hidden=true;
+        if (cueIsOn) {
+            _cue.hidden=false;
+            _cueNext.hidden=false;
+            
+            _cueText.hidden=false;
+            _nextCueText.hidden=false;
+            
+            _prevCue.hidden=false;
+            _nextCue.hidden=false;
+        } else {
+            _cue.hidden=true;
+            _cueNext.hidden=true;
+            
+            _cueText.hidden=true;
+            _nextCueText.hidden=true;
+            
+            _prevCue.hidden=true;
+            _nextCue.hidden=true;
+        }
         
-        _cueText.hidden=true;
-        _nextCueText.hidden=true;
+        //if (cueIsOn or touchGateIsOn or screenXIsOn or screenYIsOn) {
+        if (touchGateIsOn or screenYIsOn or screenXIsOn or (cueIsOn and !newCueIsOn)) {
+            _touch.hidden=false;
+        } else {
+            _touch.hidden=true;
+        }
         
-        _prevCue.hidden=true;
-        _nextCue.hidden=true;
-    }
+        if (cueIsOn or stateIsOn) {
+            _init.hidden=false;
+            _tips.hidden=false;
+        } else {
+            _init.hidden=true;
+            _tips.hidden=true;
+        }
     
-    //if (cueIsOn or touchGateIsOn or screenXIsOn or screenYIsOn) {
-    if (touchGateIsOn or screenXIsOn or screenYIsOn) {
-        _touch.hidden=false;
-    } else {
-        _touch.hidden=true;
     }
-    
-    if (cueIsOn or stateIsOn) {
-        _init.hidden=false;
-        _tips.hidden=false;
-    } else {
-        _init.hidden=true;
-        _tips.hidden=true;
-    }
-    
     
 }
 
@@ -287,7 +291,7 @@
     NSLog(@"Button tapped Down for Cue with name: %@", buttonName);
     sender.alpha -= 0.3;
 
-    if (cueIsOn) {
+    if (cueIsOn and newCueIsOn) {
         [self counter];
     }
 }
@@ -627,20 +631,29 @@
                 if (![typeButtonNames containsObject:buttonType]) {
                     // Button name is not in the preset array
                     NSLog(@"Button name is not valid");
+                    _tips.hidden=false;
+                    _tips.text = @"Button name is not valid";
                     return; // or handle the error as needed
                 }
                 
+                if ([buttonType isEqual:@"trigCue"]) {
+                    newCueIsOn = true;
+                }
                 
                 // Use NSScanner to check the type of each component
                 NSScanner *scanner = [NSScanner scannerWithString:components[1]];
                 int x;
                 if (![scanner scanInt:&x]) {
                     NSLog(@"Invalid type for x: %@", components[1]);
+                    _tips.hidden=false;
+                    _tips.text = @"Button Invalid type for x";
                     return;
                 } else {
                     if (x < 0 || x > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", x);
+                        _tips.hidden=false;
+                        _tips.text = @"Button Invalid value for x";
                         return; // or handle the error as needed
                     }
                 }
@@ -649,11 +662,15 @@
                 int y;
                 if (![scanner scanInt:&y]) {
                     NSLog(@"Invalid type for y: %@", components[2]);
+                    _tips.hidden=false;
+                    _tips.text = @"Button Invalid type for y";
                     return;
                 } else {
                     if (y < 0 || y > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", y);
+                        _tips.hidden=false;
+                        _tips.text = @"Button Invalid value for y";
                         return; // or handle the error as needed
                     }
                 }
@@ -662,11 +679,15 @@
                 int width;
                 if (![scanner scanInt:&width]) {
                     NSLog(@"Invalid type for width: %@", components[3]);
+                    _tips.hidden=false;
+                    _tips.text = @"Button Invalid type for width";
                     return;
                 } else {
                     if (width < 0 || width > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", width);
+                        _tips.hidden=false;
+                        _tips.text = @"Button Invalid value for width";
                         return; // or handle the error as needed
                     }
                 }
@@ -675,11 +696,15 @@
                 int height;
                 if (![scanner scanInt:&height]) {
                     NSLog(@"Invalid type for height: %@", components[4]);
+                    _tips.hidden=false;
+                    _tips.text = @"Button Invalid type for height";
                     return;
                 } else {
                     if (height < 0 || height > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", height);
+                        _tips.hidden=false;
+                        _tips.text = @"Button Invalid value for height";
                         return; // or handle the error as needed
                     }
                 }
@@ -687,24 +712,32 @@
                 scanner = [NSScanner scannerWithString:components[5]];
                 int colorR;
                 if (![scanner scanInt:&colorR]) {
-                    NSLog(@"Invalid type for height: %@", components[5]);
+                    NSLog(@"Invalid type for colorR: %@", components[5]);
+                    _tips.hidden=false;
+                    _tips.text = @"Button Invalid type for colorR";
                     return;
                 } else {
                     if (colorR < 0 || colorR > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorR);
+                        _tips.hidden=false;
+                        _tips.text = @"Button Invalid value for colorR";
                         return; // or handle the error as needed
                     }
                 }
                 scanner = [NSScanner scannerWithString:components[6]];
                 int colorG;
                 if (![scanner scanInt:&colorG]) {
-                    NSLog(@"Invalid type for height: %@", components[6]);
+                    NSLog(@"Invalid type for colorG: %@", components[6]);
+                    _tips.hidden=false;
+                    _tips.text = @"Button Invalid type for colorG";
                     return;
                 } else {
                     if (colorG < 0 || colorG > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorG);
+                        _tips.hidden=false;
+                        _tips.text = @"Button Invalid value for colorG";
                         return; // or handle the error as needed
                     }
                 }
@@ -712,11 +745,15 @@
                 int colorB;
                 if (![scanner scanInt:&colorB]) {
                     NSLog(@"Invalid type for height: %@", components[7]);
+                    _tips.hidden=false;
+                    _tips.text = @"Button Invalid type for colorB";
                     return;
                 } else {
                     if (colorB < 0 || colorB > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorB);
+                        _tips.hidden=false;
+                        _tips.text = @"Button Invalid value for colorB";
                         return; // or handle the error as needed
                     }
                 }
@@ -788,6 +825,24 @@
             myCueNumArrary = [[NSMutableArray alloc] init];
             myCueTipsArrary = [[NSMutableArray alloc] init];
             
+            if (strcmp(dspFaust->getMetadata(i, "motionButton"),"") != 0) {
+                // Convert the const char* parameter to an NSString
+                NSString *paramMetaString = [NSString stringWithUTF8String:dspFaust->getMetadata(i, "motionButton")];
+
+                // Split the string by space
+                NSArray *components = [paramMetaString componentsSeparatedByString:@" "];
+                
+                // Extract the values
+                NSString *buttonType = components[0];
+                
+                if (![buttonType isEqual:@"trigCue"]) {
+                    _tips.hidden=false;
+                    _tips.text = @"Cue metadata Only Support 'trigCue' option";
+                    return;
+                }
+                
+            }
+            
             if (strcmp(dspFaust->getMetadata(i, "motionCueManage"),"") != 0) {
                 
                 const char *dataParamMotionCue = dspFaust->getMetadata(i, "motionCueManage");
@@ -811,7 +866,7 @@
 //                        NSString *value = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                         // 获取值并添加 "Tips: " 字符串
                             NSString *rawValue = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                            NSString *value = [NSString stringWithFormat:@"Tips: %@", rawValue];
+                            //NSString *value = [NSString stringWithFormat:@"Tips: %@", rawValue];
                         
                         // 检查键是否是大于等于0的整数
                         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
@@ -819,12 +874,20 @@
                         if (number && number.intValue >= dspFaust->getParamMin(i) && number.intValue <= dspFaust->getParamMax(i)) {
                             
                             [myCueNumArrary addObject:key];
-                            [myCueTipsArrary addObject:value];
+                            [myCueTipsArrary addObject:rawValue];
                         } else {
                             // Integer is not within the valid range
                             NSLog(@"Invalid integer value: %d", number.intValue);
+                            _tips.hidden=false;
+                            _tips.text = @"Invalid value for CUE";
                             return;
                         }
+                    } else {
+                        // Handle incorrect format
+                        NSLog(@"Incorrect format: %@", pair);
+                        _tips.hidden=false;
+                        _tips.text = @"Incorrect Cue metadata format";
+                        return ;
                     }
                 }
                 
@@ -856,18 +919,14 @@
                     
             }
             
-            cueIndex = 0;
-            cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
-            cueIndexNext = 1;
-            cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
-            _cue.text = [NSString stringWithFormat:@"%ld",(long)cueNum];
-            _cueNext.text = [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-            
             if ([myCueTipsArrary count] != [myCueNumArrary count]) {
                 _tips.text = @"!Num of cue and tips must be same!";
+                return;
             } else {
                 _tips.text = [myCueTipsArrary objectAtIndex:0];
             }
+            
+            [self initCue:nil];
             
         } else if ([data hasSuffix:@"/state"]) {
             stateIsOn = true;
@@ -887,6 +946,15 @@
         
     }
     
+    if (!cueIsOn ) {
+        if (newCueIsOn) {
+            _tips.hidden=false;
+            _tips.text = @"Using Cue, but forgot to declare /cue?";
+            return ;
+        }
+    }
+    
+    checkPass = true;
 }
 
 - (void)startMotion
@@ -1187,12 +1255,12 @@
         if (touchGateIsOn) {
             dspFaust->setParamValue(touchGateAddress, 1);
             _touch.alpha=1;
-            if (cueIsOn) {
-                [self counter];
-                //_touch.alpha=1;
-            }
         }
         
+        if (cueIsOn and !newCueIsOn) {
+            [self counter];
+            _touch.alpha=1;
+        }
         
         if (screenXIsOn) {
             dspFaust->setParamValue(screenXAddress, pointX);
@@ -1252,6 +1320,10 @@
             _touch.alpha=0.1;
         }
         
+        if (cueIsOn and !newCueIsOn) {
+            _touch.alpha=0.1;
+        }
+        
         if (screenXIsOn) {
             dspFaust->setParamValue(screenXAddress, pointX);
             _touch.alpha=0.1;
@@ -1286,7 +1358,7 @@
     cueIndex = cueIndexNext;
     cueNum = [[myCueNumArrary objectAtIndex:cueIndex] integerValue];
     _cue.text= [NSString stringWithFormat:@"%ld",(long)cueNum];
-    _tips.text = [myCueTipsArrary objectAtIndex:cueIndex];
+    _tips.text = [NSString stringWithFormat:@"Current Cue: %@", [myCueTipsArrary objectAtIndex:cueIndex]];
     if (cueIsOn) {
         dspFaust->setParamValue(cueAddress, cueNum);
     }
@@ -1370,7 +1442,7 @@
         
         dspFaust->setParamValue(cueAddress, cueNum);
         
-        _tips.text = [myCueTipsArrary objectAtIndex:0];
+        _tips.text = [NSString stringWithFormat:@"Current Cue: %@", [myCueTipsArrary objectAtIndex:cueIndex]];
     }
     
     /*  comment init part for now
@@ -1393,7 +1465,7 @@
         cueIndexNext++;
         cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
         _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-        _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
+        _tips.text = [NSString stringWithFormat:@"Next Cue: %@", [myCueTipsArrary objectAtIndex:cueIndexNext]];
     }
     
 }
@@ -1404,7 +1476,7 @@
         cueIndexNext--;
         cueNumNext = [[myCueNumArrary objectAtIndex:cueIndexNext] integerValue];
         _cueNext.text= [NSString stringWithFormat:@"%ld",(long)cueNumNext];
-        _tips.text = [myCueTipsArrary objectAtIndex:cueIndexNext];
+        _tips.text = [NSString stringWithFormat:@"Next Cue: %@", [myCueTipsArrary objectAtIndex:cueIndexNext]];
     }
 }
 
@@ -1460,7 +1532,7 @@
     label.backgroundColor = [UIColor grayColor];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
     
     label.text = [_motionParamArray objectAtIndex:row];
     return label;

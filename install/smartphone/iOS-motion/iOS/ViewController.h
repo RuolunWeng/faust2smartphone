@@ -74,6 +74,10 @@
     BOOL cueIsOn;
     BOOL stateIsOn;
     
+    BOOL newCueIsOn;
+    
+    BOOL checkPass;
+    
     BOOL setref_compIsOn;
     BOOL setref_rotaIsOn;
     
