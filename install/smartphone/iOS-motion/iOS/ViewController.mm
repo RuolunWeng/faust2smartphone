@@ -244,7 +244,21 @@
 
     // 设置按钮的 frame
     button.frame = CGRectMake(x, y, width, height);
-    [button setTitle:name forState:UIControlStateNormal];
+    if ([buttonType isEqualToString:@"trigCue"]) {
+        [button setTitle:@"TrigCue" forState:UIControlStateNormal];
+    } else {
+        [button setTitle:name forState:UIControlStateNormal];
+    }
+    
+    // Set adjustsFontSizeToFitWidth to true
+    button.titleLabel.adjustsFontSizeToFitWidth = YES;
+    
+    UIFont *font = [UIFont systemFontOfSize:MIN(button.frame.size.width * 0.3, button.frame.size.height * 0.3)];
+
+    // Set the adjusted font for the button's title label
+    button.titleLabel.font = font;
+
+
     [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     button.layer.cornerRadius = 5.0; // 圆角
     // Make sure to enable masksToBounds to apply the corner radius
