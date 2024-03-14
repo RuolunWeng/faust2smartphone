@@ -1,4 +1,4 @@
-declare name 		"SoloDemo2";
+declare name 		"SoloDemo_motion:brasG_front";
 declare version 	"2.0";
 declare author 		"Allen";
 

@@ -1,5 +1,5 @@
-declare name 		"SoloDemo";
-declare version 		"3.0";
+declare name 		"SoloDemo_motionButton:trigCue";
+declare version 	"3.0";
 declare author 		"Allen";
 
 
@@ -10,9 +10,9 @@ process = rainGen, windGen, sinusGen :>_,_ ;
 
 
 // declare connection UI
-cueNum = nentry("cue [motionButton:trigCue 50 10 50 30 255 0 0] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
-touchGate = checkbox("OnOff [motionButton:toggle 0 10 50 30 0 255 0]");
-volume = hslider("MasterVol [motionButton:touchScreenX 0 40 100 25 0 255 255]",0,0,1,0.01);
+cueNum = nentry("cue [motionButton:trigCue Cue 0 0 100 30 255 0 0] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
+touchGate = checkbox("OnOff [motionButton:toggle Master 25 0 50 50 0 255 0]");
+volume = hslider("MasterVol [motionButton:touchScreenX Cue 0 30 100 25 0 255 255]",0,0,1,0.01);
 param = hslider("param[motion:ixp]",0,0,1,0.01);
 
 
