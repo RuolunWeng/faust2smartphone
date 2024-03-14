@@ -10,7 +10,7 @@ process = rainGen, windGen, sinusGen :>_,_ ;
 
 
 // declare connection UI
-cueNum = nentry("Trig_Event [motionButton:trigCounter Master 0 0 100 50 255 255 0] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
+cueNum = nentry("Trig_Event [motionButton:trigCounter Master 0 0 100 50 255 255 0]",0,0,3,1);
 touchGate = checkbox("OnOff [motionButton:toggle Master 0 50 50 50 0 255 0]");
 volume = hslider("MasterVol [motionButton:touchScreenX Master 50 50 50 50 0 255 255]",0,0,1,0.01);
 param = hslider("param[motion:ixp]",0,0,1,0.01);
