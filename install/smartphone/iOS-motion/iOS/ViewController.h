@@ -79,6 +79,7 @@
     BOOL stateIsOn;
     
     BOOL newCueIsOn;
+    BOOL newCounterIsOn;
     
     BOOL checkPass;
     

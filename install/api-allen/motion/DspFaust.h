@@ -1,3 +1,5 @@
+#include <vector>
+#include <string>
 /************************************************************************
  ************************************************************************
  FAUST API Architecture File
@@ -344,6 +346,16 @@ public:
     // * `id`: id of the parameter
     //--------------------------------------------------------
     float getParamInit(int);
+    
+    /**
+     * @brief Get the step value of a parameter.
+     *
+     * @param dsp_ext - pointer to the DSP object
+     * @param p - index of the parameter
+     *
+     * @return The step value of the parameter.
+     */
+    float getParamStep(int p);
 
     //-----`const char* getMetadata(const char* address, const char* key)`-----
     // Returns the metadataof a parameter in function of

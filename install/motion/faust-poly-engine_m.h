@@ -32,7 +32,7 @@ class MyFaustPolyEngine : public FaustPolyEngine
 
 public:
 
-    MY_Meta metadata;
+   MY_Meta metadata;
 
     MyFaustPolyEngine(dsp* mono_dsp, audio* driver = NULL) : FaustPolyEngine(mono_dsp,driver)
     {
@@ -46,19 +46,23 @@ public:
         //delete fFinalDSP;
     }
 
-        const char* getMeta(const char* name)
-        {
+    float getParamStep(int p){
+        return fAPIUI.getParamStep(p);
+    }
+    
+    const char* getMeta(const char* name)
+    {
 
-            const char* value= NULL;
-                for (auto& pair : metadata) {
-                    //std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-                    
-                    if (strcmp(name, pair.first) == 0) value= pair.second;
-                    
-                }
-            
-            return value;
-            
+        const char* value= NULL;
+            for (auto& pair : metadata) {
+                //std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+                
+                if (strcmp(name, pair.first) == 0) value= pair.second;
+                
+            }
+        
+        return value;
+        
 //            if ((*metadata.find(name)) != *metadata.end()) {
 //                return (*metadata.find(name)).second;
 //            } else {
@@ -66,7 +70,7 @@ public:
 //                return NULL;
 //
 //            }
-        }
+    }
 
 };
 

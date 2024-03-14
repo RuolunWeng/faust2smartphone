@@ -177,6 +177,12 @@
             _init.hidden=true;
             _tips.hidden=true;
         }
+        
+        if (cueIsOn or newCounterIsOn) {
+            _tips.hidden=false;
+        } else {
+            _tips.hidden=true;
+        }
     
     }
     
@@ -353,9 +359,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
 
 - (void) checkAddress {
     
-    
-    cueIsOn = false;
-    newCueIsOn = false;
+    self.customCounters = [[NSMutableDictionary alloc] init];
     
     // Preset array of button names
     NSArray *typeButtonNames = @[@"button", @"toggle", @"trigCue", @"touchScreenX", @"touchScreenY",@"trigCounter",@"pad"];
@@ -384,6 +388,15 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                 
                 if ([buttonType isEqual:@"trigCue"]) {
                     newCueIsOn = true;
+                }
+                
+                if ([buttonType isEqual:@"trigCounter"]) {
+                    newCounterIsOn = true;
+                    
+                    // 创建一个计数器，范围为 0 到 10，步长为 1，初始值为 0
+                    CustomCounter *counter = [[CustomCounter alloc] initWithRangeMin:dspFaust->getParamMin(i) max:dspFaust->getParamMax(i) step:dspFaust->getParamStep(i) init:dspFaust->getParamInit(i)];
+                    
+                    [self.customCounters setObject:counter forKey:@(i)];
                 }
                 
                 // Extract the values
@@ -572,6 +585,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
         } else if ([data hasSuffix:@"/cue"]) {
             
             cueIsOn = true;
+            cueAddress = dspFaust->getParamAddress(i);
             
             // TEST
             myCueNumArrary = [[NSMutableArray alloc] init];
@@ -617,7 +631,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                         //                        NSString *value = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                         // 获取值并添加 "Tips: " 字符串
                         NSString *rawValue = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                        NSString *value = [NSString stringWithFormat:@"Tips: %@", rawValue];
+                        NSString *value = [NSString stringWithFormat:@" %@", rawValue];
                         
                         // 检查键是否是大于等于0的整数
                         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
@@ -680,6 +694,8 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
             return;
         }
     }
+    
+    [self initCue:nil];
     
     checkPass = true;
 }
@@ -1398,6 +1414,8 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     if (!titleString) titleString = @"faust2smartphone | Allen";
     
     _titleApp.text = titleString;
+    _titleApp.textAlignment = NSTextAlignmentCenter;
+    _titleApp.adjustsFontSizeToFitWidth = YES;
     
 }
 

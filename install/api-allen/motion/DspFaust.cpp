@@ -371,6 +371,10 @@ float DspFaust::getParamInit(int id){
     return fPolyEngine->getParamInit(id);
 }
 
+float DspFaust::getParamStep(int p){
+    return fPolyEngine->getParamStep(p);
+}
+
 const char* DspFaust::getMetadata(const char* address, const char* key)
 {
     return fPolyEngine->getMetadata(address, key);
