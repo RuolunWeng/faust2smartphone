@@ -60,16 +60,17 @@
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
 
-    self.nameForButton = [[NSMutableDictionary alloc] init];
-    self.pathForButton = [[NSMutableDictionary alloc] init];
    
     // 创建另一个标签页
-    // CGFloat offsetHeight = self.tips.frame.size.height;
-    CGFloat additionalButtonViewY = self.tips.frame.origin.y;
-    CGFloat additionalButtonViewHeight = self.view.frame.size.height/2 - additionalButtonViewY;
-    self.additionalButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, additionalButtonViewY, self.view.frame.size.width, additionalButtonViewHeight)];
+    // between tips and setting button
+    CGFloat additionalButtonViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
+    CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
+    CGFloat additionalButtonViewHeight = additionalButtonViewYMax - additionalButtonViewY;
     
-    [self.view addSubview:self.additionalButtonView];
+    // 创建一个 CustomTabView 实例
+    self.customTabView = [[CustomTabView alloc] initWithFrame:CGRectMake(0, additionalButtonViewY, self.view.frame.size.width, additionalButtonViewHeight)];
+    self.customTabView.delegate = self;
+    [self.view addSubview:self.customTabView];
     
 
     // create default dictionary for preset
@@ -181,310 +182,43 @@
     
 }
 
-- (void)createButtonWithType:(NSString *)buttonType
-                          X:(int)coordinationX
-                          Y:(int)coordinationY
-                      Width:(int)widthPercent
-                     Height:(int)heightPercent
-                       name:(NSString *)name
-                       path:(NSString *)path
-                        tag:(NSInteger)tag
-                   inTabView:(UIView *)tabView
-            selectedColorRed:(int)selectedRedInt
-                        green:(int)selectedGreenInt
-                         blue:(int)selectedBlueInt
-
-{
+- (void)buttonTappedWithPath:(NSString *)path value:(CGFloat)value {
+    // 调用 DSP 相关方法，传递参数
+    CGFloat scaledValue = scaleValue(value, dspFaust->getParamMin([path UTF8String]),
+        dspFaust->getParamMax([path UTF8String]));
     
-    // 创建按钮
-    UIButton *button;
-    CGFloat selectedRed = selectedRedInt / 255.0;
-    CGFloat selectedGreen = selectedGreenInt / 255.0;
-    CGFloat selectedBlue = selectedBlueInt / 255.0;
-
-    if ([buttonType isEqualToString:@"toggle"]) {
-        button = [UIButton buttonWithType:UIButtonTypeCustom];
-        // 设置按钮的选中状态颜色
-        [button setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:selectedRed green:selectedGreen blue:selectedBlue alpha:1.0]] forState:UIControlStateSelected];
-        [button setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.5 green:0.5  blue:0.5  alpha:1.0]] forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(toggleButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    } else if ([buttonType isEqualToString:@"button"]) {
-        button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button addTarget:self action:@selector(buttonTouchDown:event:)  forControlEvents:UIControlEventTouchDown];
-        [button addTarget:self action:@selector(buttonTouchUpInside:event:)  forControlEvents:UIControlEventTouchUpInside];
-        [button setBackgroundColor:[UIColor colorWithRed:selectedRed green:selectedGreen blue:selectedBlue alpha:1.0]];
-//        [button setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:selectedRed green:selectedGreen blue:selectedBlue alpha:1.0]] forState:UIControlStateHighlighted];
-//        [button setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.5 green:0.5  blue:0.5  alpha:1.0]] forState:UIControlStateNormal];
-    } else if ([buttonType isEqualToString:@"trigCue"]) {
-        button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button addTarget:self action:@selector(buttonTouchDownCue:event:)  forControlEvents:UIControlEventTouchDown];
-        [button addTarget:self action:@selector(buttonTouchUpInsideCue:event:)  forControlEvents:UIControlEventTouchUpInside];
-        [button setBackgroundColor:[UIColor colorWithRed:selectedRed green:selectedGreen blue:selectedBlue alpha:1.0]];
-    } else if ([buttonType isEqualToString:@"touchScreenX"]) {
-        button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button addTarget:self action:@selector(buttonTouchDownX:event:)  forControlEvents:UIControlEventTouchDown];
-        [button addTarget:self action:@selector(buttonTouchUpInsideX:event:)  forControlEvents:UIControlEventTouchUpInside];
-        [button addTarget:self action:@selector(buttonTouchDragInsideX:event:)  forControlEvents:UIControlEventTouchDragInside];
-        [button setBackgroundColor:[UIColor colorWithRed:selectedRed green:selectedGreen blue:selectedBlue alpha:1]];
-        button.alpha = 0.3;
-    } else if ([buttonType isEqualToString:@"touchScreenY"]) {
-        button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button addTarget:self action:@selector(buttonTouchDownY:event:)  forControlEvents:UIControlEventTouchDown];
-        [button addTarget:self action:@selector(buttonTouchUpInsideY:event:)  forControlEvents:UIControlEventTouchUpInside];
-        [button addTarget:self action:@selector(buttonTouchDragInsideY:event:)  forControlEvents:UIControlEventTouchDragInside];
-        [button setBackgroundColor:[UIColor colorWithRed:selectedRed green:selectedGreen blue:selectedBlue alpha:1]];
-        button.alpha = 0.3;
-    }
-    
-    // 计算百分比值对应的具体坐标位置
-    CGFloat x = coordinationX * tabView.frame.size.width / 100;
-    CGFloat y = coordinationY * tabView.frame.size.height / 100;
-    CGFloat width = widthPercent * tabView.frame.size.width / 100;
-    CGFloat height = heightPercent * tabView.frame.size.height / 100;
-
-    // 设置按钮的 frame
-    button.frame = CGRectMake(x, y, width, height);
-    if ([buttonType isEqualToString:@"trigCue"]) {
-        [button setTitle:@"TrigCue" forState:UIControlStateNormal];
-    } else {
-        [button setTitle:name forState:UIControlStateNormal];
-    }
-    
-    // Set adjustsFontSizeToFitWidth to true
-    button.titleLabel.adjustsFontSizeToFitWidth = YES;
-    
-    UIFont *font = [UIFont systemFontOfSize:MIN(button.frame.size.width * 0.3, button.frame.size.height * 0.3)];
-
-    // Set the adjusted font for the button's title label
-    button.titleLabel.font = font;
-
-
-    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    button.layer.cornerRadius = 5.0; // 圆角
-    // Make sure to enable masksToBounds to apply the corner radius
-    button.layer.masksToBounds = YES;
-    button.tag = tag; // 设置按钮的标签
-    
-    // 添加按钮到选项卡视图中
-    [tabView addSubview:button];
-    
-    // 保存按钮名称和标签的对应关系
-    [self.nameForButton setObject:name forKey:@(tag)];
-    [self.pathForButton setObject:path forKey:@(tag)];
-    
-    dspFaust->setParamValue([path UTF8String], 0);
+    dspFaust->setParamValue([path UTF8String], scaledValue);
+    //NSLog(@"Button tapped Up with path: %@", path);
 }
 
-- (void)buttonTouchUpInside:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
-    
-    NSLog(@"Button tapped Up with name: %@", buttonName);
-    dspFaust->setParamValue([buttonPath UTF8String], 0);
-    
-    sender.alpha += 0.3;
-
-}
-
-- (void)buttonTouchDown:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
-    
-    NSLog(@"Button tapped Down with name: %@", buttonName);
-    dspFaust->setParamValue([buttonPath UTF8String], 1);
-    
-    sender.alpha -= 0.3;
-
-}
-
-- (void)buttonTouchDownCue:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSLog(@"Button tapped Down for Cue with name: %@", buttonName);
-    sender.alpha -= 0.3;
-
+- (void)buttonTappedCue {
     if (cueIsOn and newCueIsOn) {
         [self counter];
     }
 }
 
-- (void)buttonTouchUpInsideCue:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSLog(@"Button tapped Up for Cue with name: %@", buttonName);
-    sender.alpha += 0.3;
 
-}
-
-- (void)buttonTouchUpInsideY:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
+- (void)buttonTappedCounter:(NSString *)path tag:(NSInteger)ButtonTag {
     
-    // 获取按钮的触摸事件
-    UITouch *touch = [[[event allTouches] allObjects] firstObject];
-    // 获取触摸点位的坐标
-    CGPoint touchPoint = [touch locationInView:sender];
-
-    // 计算normalised坐标
-    CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / sender.frame.size.height min:0 max:1];
-    // 输出触摸点位的x/y坐标
-    NSLog(@"%@: Touch Up: Y = %f (Normalised：Y = %f)", buttonName, touchPoint.y, normalisedY);
-    dspFaust->setParamValue([buttonPath UTF8String], normalisedY);
-    
-    //sender.alpha += 0.3;
-    sender.alpha = normalisedY;
-    sender.alpha += 0.3;
-
-}
-
-
-- (void)buttonTouchUpInsideX:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
-    
-    // 获取按钮的触摸事件
-    UITouch *touch = [[[event allTouches] allObjects] firstObject];
-    // 获取触摸点位的坐标
-    CGPoint touchPoint = [touch locationInView:sender];
-
-    // 计算normalised坐标
-    CGFloat normalisedX = [self clampValue:touchPoint.x / sender.frame.size.width min:0 max:1];
-
-    // 输出触摸点位的x/y坐标
-    NSLog(@"%@: Touch Up: X = %f,(Normalised: X = %f)", buttonName, touchPoint.x, normalisedX);
-    dspFaust->setParamValue([buttonPath UTF8String], normalisedX);
-
-    //sender.alpha += 0.3;
-    sender.alpha = normalisedX;
-    sender.alpha += 0.3;
+    [[self.customCounters objectForKey:@(ButtonTag)] increment];
+    // 调用 DSP 相关方法，传递参数
+    dspFaust->setParamValue([path UTF8String], [[self.customCounters objectForKey:@(ButtonTag)] currentValue]);
+    _tips.text = [NSString stringWithFormat:@"Counter_%@: %0.2f", [path lastPathComponent],[[self.customCounters objectForKey:@(ButtonTag)] currentValue]];
     
 }
 
-- (void)buttonTouchDownY:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
+- (void)buttonCounterReset:(NSString *)path tag:(NSInteger)ButtonTag {
     
-    // 获取按钮的触摸事件
-    UITouch *touch = [[[event allTouches] allObjects] firstObject];
-    // 获取触摸点位的坐标
-    CGPoint touchPoint = [touch locationInView:sender];
-
-    // 计算normalised坐标
-    CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / sender.frame.size.height min:0 max:1];
-    // 输出触摸点位的x/y坐标
-    NSLog(@"%@: Touch Down: Y = %f (Normalised：Y = %f)", buttonName, touchPoint.y, normalisedY);
-    dspFaust->setParamValue([buttonPath UTF8String], normalisedY);
-
-    //sender.alpha -= 0.3;
-    sender.alpha = normalisedY;
-    sender.alpha += 0.3;
-}
-
-
-- (void)buttonTouchDownX:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
-    
-    // 获取按钮的触摸事件
-    UITouch *touch = [[[event allTouches] allObjects] firstObject];
-    // 获取触摸点位的坐标
-    CGPoint touchPoint = [touch locationInView:sender];
-
-    // 计算normalised坐标
-    CGFloat normalisedX = [self clampValue:touchPoint.x / sender.frame.size.width min:0 max:1];
-
-    // 输出触摸点位的x/y坐标
-    NSLog(@"%@: Touch Down: X = %f,(Normalised: X = %f)", buttonName, touchPoint.x, normalisedX);
-    dspFaust->setParamValue([buttonPath UTF8String], normalisedX);
-
-    //sender.alpha -= 0.3;
-    sender.alpha = normalisedX;
-    sender.alpha += 0.3;
-}
-
-- (void)buttonTouchDragInsideY:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
-    
-    // 获取按钮的触摸事件
-    UITouch *touch = [[[event allTouches] allObjects] firstObject];
-    // 获取触摸点位的坐标
-    CGPoint touchPoint = [touch locationInView:sender];
-
-    // 计算normalised坐标
-    CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / sender.frame.size.height min:0 max:1];
-    // 输出触摸点位的x/y坐标
-    NSLog(@"%@: Touch Drag Inside: Y = %f (Normalised：Y = %f)", buttonName, touchPoint.y, normalisedY);
-    dspFaust->setParamValue([buttonPath UTF8String], normalisedY);
-
-    sender.alpha = normalisedY;
-    sender.alpha += 0.3;
-}
-
-
-- (void)buttonTouchDragInsideX:(UIButton *)sender event:(UIEvent *)event {
-    // 处理普通按钮点击事件
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
-    
-    // 获取按钮的触摸事件
-    UITouch *touch = [[[event allTouches] allObjects] firstObject];
-    // 获取触摸点位的坐标
-    CGPoint touchPoint = [touch locationInView:sender];
-
-    // 计算normalised坐标
-    CGFloat normalisedX = [self clampValue:touchPoint.x / sender.frame.size.width min:0 max:1];
-
-    // 输出触摸点位的x/y坐标
-    NSLog(@"%@: Touch Drag Inside: X = %f,(Normalised: X = %f)", buttonName, touchPoint.x, normalisedX);
-    
-    dspFaust->setParamValue([buttonPath UTF8String], normalisedX);
-    
-    sender.alpha = normalisedX;
-    sender.alpha += 0.3;
-
-}
-
-
-
-- (CGFloat)clampValue:(CGFloat)value min:(CGFloat)min max:(CGFloat)max {
-    return fmin(fmax(value, min), max);
-}
-
-- (void)toggleButtonTapped:(UIButton *)sender {
-    sender.selected = !sender.selected;
-    // 获取按钮名称
-    NSString *buttonName = [self.nameForButton objectForKey:@(sender.tag)];
-    NSString *buttonPath = [self.pathForButton objectForKey:@(sender.tag)];
-    
-    if (sender.isSelected) {
-        NSLog(@"Toggled button isSelected with name: %@", buttonName);
-        dspFaust->setParamValue([buttonPath UTF8String], 1);
-    } else {
-        NSLog(@"Toggled button isNotSelected with name: %@", buttonName);
-        dspFaust->setParamValue([buttonPath UTF8String], 0);
-    }
+    [[self.customCounters objectForKey:@(ButtonTag)] reset];
+    // 调用 DSP 相关方法，传递参数
+    dspFaust->setParamValue([path UTF8String], [[self.customCounters objectForKey:@(ButtonTag)] currentValue]);
+    _tips.text = [NSString stringWithFormat:@"Counter_%@: %0.2f", [path lastPathComponent],[[self.customCounters objectForKey:@(ButtonTag)] currentValue]];
     
 }
 
-
-// 定义一个方法，用于生成指定颜色的背景图片
-- (UIImage *)imageWithColor:(UIColor *)color {
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
+// 将0到1之间的浮点数值映射到给定范围内的浮点数值
+CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
+    return min + (max - min) * value;
 }
 
 
@@ -620,8 +354,11 @@
 - (void) checkAddress {
     
     
+    cueIsOn = false;
+    newCueIsOn = false;
+    
     // Preset array of button names
-    NSArray *typeButtonNames = @[@"button", @"toggle", @"trigCue", @"touchScreenX", @"touchScreenY"];
+    NSArray *typeButtonNames = @[@"button", @"toggle", @"trigCue", @"touchScreenX", @"touchScreenY",@"trigCounter",@"pad"];
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
         const char *dataParamMotionButton = dspFaust->getMetadata(i, "motionButton");
@@ -629,161 +366,153 @@
             const char *param = dataParamMotionButton;
             // Convert the const char* parameter to an NSString
             NSString *paramMetaString = [NSString stringWithUTF8String:param];
-            // Convert the const char* parameter to an NSString
-            NSString *paramShortName = [NSString stringWithUTF8String:dspFaust->getParamShortName(i)];
-            // Convert the const char* parameter to an NSString
-            NSString *paramPath = [NSString stringWithUTF8String:dspFaust->getParamAddress(i)];
 
             // Split the string by space
             NSArray *components = [paramMetaString componentsSeparatedByString:@" "];
             
             // Check if the number of components is correct
-            if (components.count == 8) {
+            if (components.count == 9) {
                 // Extract the values
                 NSString *buttonType = components[0];
                 // Check if buttonName is in the preset array
                 if (![typeButtonNames containsObject:buttonType]) {
                     // Button name is not in the preset array
                     NSLog(@"Button name is not valid");
-                    _tips.hidden=false;
-                    _tips.text = @"Button name is not valid";
-                    return; // or handle the error as needed
+                    _tips.text= @"Button name is not valid"; // or handle the error as needed
+                    return;
                 }
                 
                 if ([buttonType isEqual:@"trigCue"]) {
                     newCueIsOn = true;
                 }
                 
+                // Extract the values
+                NSString *tabViewName = components[1];
+                
                 // Use NSScanner to check the type of each component
-                NSScanner *scanner = [NSScanner scannerWithString:components[1]];
+                NSScanner *scanner = [NSScanner scannerWithString:components[2]];
                 int x;
                 if (![scanner scanInt:&x]) {
-                    NSLog(@"Invalid type for x: %@", components[1]);
-                    _tips.hidden=false;
-                    _tips.text = @"Button Invalid type for x";
+                    NSLog(@"Invalid type for x: %@", components[2]);
+                    _tips.text= @"Invalid type for button x";
                     return;
                 } else {
                     if (x < 0 || x > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", x);
-                        _tips.hidden=false;
-                        _tips.text = @"Button Invalid value for x";
-                        return; // or handle the error as needed
+                        _tips.text= @"Invalid integer button x value"; // or handle the error as needed
+                        return;
                     }
                 }
                 
-                scanner = [NSScanner scannerWithString:components[2]];
+                scanner = [NSScanner scannerWithString:components[3]];
                 int y;
                 if (![scanner scanInt:&y]) {
-                    NSLog(@"Invalid type for y: %@", components[2]);
-                    _tips.hidden=false;
-                    _tips.text = @"Button Invalid type for y";
+                    NSLog(@"Invalid type for y: %@", components[3]);
+                    _tips.text= @"Invalid type for button y";
                     return;
                 } else {
                     if (y < 0 || y > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", y);
-                        _tips.hidden=false;
-                        _tips.text = @"Button Invalid value for y";
-                        return; // or handle the error as needed
+                        _tips.text= @"Invalid integer button x value"; // or handle the error as needed
+                        return;
                     }
                 }
                 
-                scanner = [NSScanner scannerWithString:components[3]];
+                scanner = [NSScanner scannerWithString:components[4]];
                 int width;
                 if (![scanner scanInt:&width]) {
-                    NSLog(@"Invalid type for width: %@", components[3]);
-                    _tips.hidden=false;
-                    _tips.text = @"Button Invalid type for width";
+                    NSLog(@"Invalid type for width: %@", components[4]);
+                    _tips.text= @"Invalid type for button width";
                     return;
                 } else {
                     if (width < 0 || width > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", width);
-                        _tips.hidden=false;
-                        _tips.text = @"Button Invalid value for width";
-                        return; // or handle the error as needed
+                        _tips.text= @"Invalid integer button width value"; // or handle the error as needed
+                        return;
                     }
                 }
                 
-                scanner = [NSScanner scannerWithString:components[4]];
+                scanner = [NSScanner scannerWithString:components[5]];
                 int height;
                 if (![scanner scanInt:&height]) {
-                    NSLog(@"Invalid type for height: %@", components[4]);
-                    _tips.hidden=false;
-                    _tips.text = @"Button Invalid type for height";
+                    NSLog(@"Invalid type for height: %@", components[5]);
+                    _tips.text= @"Invalid type for button height";
                     return;
                 } else {
                     if (height < 0 || height > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", height);
-                        _tips.hidden=false;
-                        _tips.text = @"Button Invalid value for height";
-                        return; // or handle the error as needed
+                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        return;
                     }
                 }
 
-                scanner = [NSScanner scannerWithString:components[5]];
+                scanner = [NSScanner scannerWithString:components[6]];
                 int colorR;
                 if (![scanner scanInt:&colorR]) {
-                    NSLog(@"Invalid type for colorR: %@", components[5]);
-                    _tips.hidden=false;
-                    _tips.text = @"Button Invalid type for colorR";
+                    NSLog(@"Invalid type for colorR: %@", components[6]);
+                    _tips.text= @"Invalid type for button colorR";
                     return;
                 } else {
                     if (colorR < 0 || colorR > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorR);
-                        _tips.hidden=false;
-                        _tips.text = @"Button Invalid value for colorR";
-                        return; // or handle the error as needed
+                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        return;
                     }
                 }
-                scanner = [NSScanner scannerWithString:components[6]];
+                scanner = [NSScanner scannerWithString:components[7]];
                 int colorG;
                 if (![scanner scanInt:&colorG]) {
-                    NSLog(@"Invalid type for colorG: %@", components[6]);
-                    _tips.hidden=false;
-                    _tips.text = @"Button Invalid type for colorG";
+                    NSLog(@"Invalid type for colorG: %@", components[7]);
+                    _tips.text= @"Invalid type for button colorG";
                     return;
                 } else {
                     if (colorG < 0 || colorG > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorG);
-                        _tips.hidden=false;
-                        _tips.text = @"Button Invalid value for colorG";
-                        return; // or handle the error as needed
+                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        return;
                     }
                 }
-                scanner = [NSScanner scannerWithString:components[7]];
+                scanner = [NSScanner scannerWithString:components[8]];
                 int colorB;
                 if (![scanner scanInt:&colorB]) {
-                    NSLog(@"Invalid type for height: %@", components[7]);
-                    _tips.hidden=false;
-                    _tips.text = @"Button Invalid type for colorB";
+                    NSLog(@"Invalid type for colorB: %@", components[8]);
+                    _tips.text= @"Invalid type for button colorB";
                     return;
                 } else {
                     if (colorB < 0 || colorB > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorB);
-                        _tips.hidden=false;
-                        _tips.text = @"Button Invalid value for colorB";
-                        return; // or handle the error as needed
+                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        return;
                     }
                 }
                 // Now you have the button name and the coordinates (x, y) and size (width, height) (R G B)
+                // Convert the const char* parameter to an NSString
+                NSString *paramShortName = [NSString stringWithUTF8String:dspFaust->getParamShortName(i)];
+                // Convert the const char* parameter to an NSString
+                NSString *paramPath = [NSString stringWithUTF8String:dspFaust->getParamAddress(i)];
                 
-                [self createButtonWithType:buttonType X:x Y:y Width:width Height:height name:paramShortName path:paramPath tag:i inTabView:self.additionalButtonView selectedColorRed:colorR green:colorG blue:colorB];
-
+                [self.customTabView setContentViewWithButtonType:buttonType X:x Y:y Width:width Height:height name:paramShortName path:paramPath tag:i selectedColorRed:colorR green:colorG blue:colorB ContentViewName:tabViewName];
                 
-            } else {
+            }
+            
+            else {
                 // Handle incorrect format
                 NSLog(@"Incorrect format: %@", paramMetaString);
+                _tips.text= @"Incorrect MotionButton metadata format";
+                return;
             }
             
         }
     }
     
+
     
     paramsOn = new BOOL[_motionParamAddress.count];
     
@@ -831,9 +560,18 @@
         } else if ([data hasSuffix:@"/quaternionz"]) {
             quaternionzIsOn = true;
             quaternionzAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/state"]) {
+            stateIsOn = true;
+            stateAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/setref_comp"]) {
+            setref_compIsOn = true;
+            setref_compAddress = dspFaust->getParamAddress(i);
+        } else if ([data hasSuffix:@"/setref_rota"]) {
+            setref_rotaIsOn = true;
+            setref_rotaAddress = dspFaust->getParamAddress(i);
         } else if ([data hasSuffix:@"/cue"]) {
+            
             cueIsOn = true;
-            cueAddress = dspFaust->getParamAddress(i);
             
             // TEST
             myCueNumArrary = [[NSMutableArray alloc] init];
@@ -850,8 +588,7 @@
                 NSString *buttonType = components[0];
                 
                 if (![buttonType isEqual:@"trigCue"]) {
-                    _tips.hidden=false;
-                    _tips.text = @"Cue metadata Only Support 'trigCue' option";
+                    _tips.text= @"Cue metadata Only Support 'trigCue' option";
                     return;
                 }
                 
@@ -877,10 +614,10 @@
                     if (components.count == 2) {
                         // 获取键和值
                         NSString *key = [components[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-//                        NSString *value = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                        //                        NSString *value = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                         // 获取值并添加 "Tips: " 字符串
-                            NSString *rawValue = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                            //NSString *value = [NSString stringWithFormat:@"Tips: %@", rawValue];
+                        NSString *rawValue = [components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                        NSString *value = [NSString stringWithFormat:@"Tips: %@", rawValue];
                         
                         // 检查键是否是大于等于0的整数
                         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
@@ -888,26 +625,21 @@
                         if (number && number.intValue >= dspFaust->getParamMin(i) && number.intValue <= dspFaust->getParamMax(i)) {
                             
                             [myCueNumArrary addObject:key];
-                            [myCueTipsArrary addObject:rawValue];
+                            [myCueTipsArrary addObject:value];
                         } else {
                             // Integer is not within the valid range
                             NSLog(@"Invalid integer value: %d", number.intValue);
-                            _tips.hidden=false;
-                            _tips.text = @"Invalid value for CUE";
+                            _tips.text= @"Invalid integer Cue meatadata value";
                             return;
                         }
                     } else {
                         // Handle incorrect format
                         NSLog(@"Incorrect format: %@", pair);
-                        _tips.hidden=false;
-                        _tips.text = @"Incorrect Cue metadata format";
-                        return ;
+                        _tips.text= @"Incorrect Cue metadata format";
+                        return;
                     }
                 }
                 
-                // 输出结果
-                NSLog(@"Cue: %@", myCueNumArrary);
-                NSLog(@"Tips: %@", myCueTipsArrary);
                 
             } else {
                 
@@ -918,9 +650,8 @@
                 
                 NSArray *myCues = [myTextCues componentsSeparatedByString:@";\n"];
                 
-                NSLog(@"Cue:%@",myCues);
                 [myCueNumArrary addObjectsFromArray:myCues];
-
+                
                 // load cue Tips
                 NSString *pathTips = [NSString stringWithFormat:@"%@/cueTips.txt", [[NSBundle mainBundle] resourcePath]];
                 
@@ -928,43 +659,25 @@
                 
                 NSArray *myTips = [myTextTips componentsSeparatedByString:@";\n"];
                 
-                NSLog(@"Tips:%@",myTips);
                 [myCueTipsArrary addObjectsFromArray:myTips];
-                    
+                
             }
+            
             
             if ([myCueTipsArrary count] != [myCueNumArrary count]) {
-                _tips.text = @"!Num of cue and tips must be same!";
+                _tips.text= @"!Num of cue and tips must be same!";
                 return;
-            } else {
-                _tips.text = [myCueTipsArrary objectAtIndex:0];
             }
             
-            [self initCue:nil];
-            
-        } else if ([data hasSuffix:@"/state"]) {
-            stateIsOn = true;
-            stateAddress = dspFaust->getParamAddress(i);
-        } else if ([data hasSuffix:@"/setref_comp"]) {
-            setref_compIsOn = true;
-            setref_compAddress = dspFaust->getParamAddress(i);
-        } else if ([data hasSuffix:@"/setref_rota"]) {
-            setref_rotaIsOn = true;
-            setref_rotaAddress = dspFaust->getParamAddress(i);
-        }
         
-        //comment init part for now
-        //else if ([data hasSuffix:@"/init"]) {
-        //initAddress = dspFaust->getParamAddress(i);
-        //}
+        }
         
     }
     
     if (!cueIsOn ) {
         if (newCueIsOn) {
-            _tips.hidden=false;
-            _tips.text = @"Using Cue, but forgot to declare /cue?";
-            return ;
+            _tips.text= @"You're using Cue, but forgot to declare /cue ?";
+            return;
         }
     }
     
@@ -1513,17 +1226,20 @@
     
     //_motionParam.text = @"Done";
     
-    self.nameForButton = [[NSMutableDictionary alloc] init];
-    self.pathForButton = [[NSMutableDictionary alloc] init];
+
    
     [self.additionalButtonView removeFromSuperview];
-    // 创建另一个标签页
-    // CGFloat offsetHeight = self.tips.frame.size.height;
-    CGFloat additionalButtonViewY = self.tips.frame.origin.y;
-    CGFloat additionalButtonViewHeight = self.view.frame.size.height/2 - additionalButtonViewY;
-    self.additionalButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, additionalButtonViewY, self.view.frame.size.width, additionalButtonViewHeight)];
     
-    [self.view addSubview:self.additionalButtonView];
+    // 创建另一个标签页
+    // between tips and setting button
+    CGFloat additionalButtonViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
+    CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
+    CGFloat additionalButtonViewHeight = additionalButtonViewYMax - additionalButtonViewY;
+    
+    // 创建一个 CustomTabView 实例
+    self.customTabView = [[CustomTabView alloc] initWithFrame:CGRectMake(0, additionalButtonViewY, self.view.frame.size.width, additionalButtonViewHeight)];
+    self.customTabView.delegate = self;
+    [self.view addSubview:self.customTabView];
     
     dspFaust->checkAdress();
     [self checkAddress];

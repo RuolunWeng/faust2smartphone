@@ -50,6 +50,8 @@
 		C93C18FC1E5BA389001551E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C93C18F91E5BA389001551E3 /* Main.storyboard */; };
 		C96A74CD1E86EF4D00C6474F /* keyDark.png in Resources */ = {isa = PBXBuildFile; fileRef = C96A74CC1E86EF4D00C6474F /* keyDark.png */; };
 		C9D94E5F1E79631D003A187A /* DspFaustMotion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9D94E5D1E79631D003A187A /* DspFaustMotion.cpp */; };
+		F6823B4B2BA37FC400C9AB86 /* CustomCounter.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6823B472BA37FC400C9AB86 /* CustomCounter.mm */; };
+		F6823B4C2BA37FC400C9AB86 /* CustomTabView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6823B492BA37FC400C9AB86 /* CustomTabView.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -132,6 +134,10 @@
 		C96A74CC1E86EF4D00C6474F /* keyDark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keyDark.png; sourceTree = "<group>"; };
 		C9D94E5D1E79631D003A187A /* DspFaustMotion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DspFaustMotion.cpp; sourceTree = "<group>"; };
 		C9D94E5E1E79631D003A187A /* DspFaustMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DspFaustMotion.h; sourceTree = "<group>"; };
+		F6823B472BA37FC400C9AB86 /* CustomCounter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CustomCounter.mm; sourceTree = "<group>"; };
+		F6823B482BA37FC400C9AB86 /* CustomCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCounter.h; sourceTree = "<group>"; };
+		F6823B492BA37FC400C9AB86 /* CustomTabView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CustomTabView.mm; sourceTree = "<group>"; };
+		F6823B4A2BA37FC400C9AB86 /* CustomTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTabView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,6 +371,10 @@
 				C93C18EC1E5BA375001551E3 /* DspFaust.h */,
 				C93C18F71E5BA389001551E3 /* LaunchScreen.storyboard */,
 				C93C18F91E5BA389001551E3 /* Main.storyboard */,
+				F6823B482BA37FC400C9AB86 /* CustomCounter.h */,
+				F6823B472BA37FC400C9AB86 /* CustomCounter.mm */,
+				F6823B4A2BA37FC400C9AB86 /* CustomTabView.h */,
+				F6823B492BA37FC400C9AB86 /* CustomTabView.mm */,
 				C93C18EB1E5BA375001551E3 /* ViewController.mm */,
 				C93C18F11E5BA375001551E3 /* ViewController.h */,
 				C93C18EE1E5BA375001551E3 /* AppDelegate.h */,
@@ -466,6 +476,7 @@
 				4B3504C61C10A57D009F7680 /* MessageDriven.cpp in Sources */,
 				4B3505441C10A57D009F7680 /* OscOutboundPacketStream.cpp in Sources */,
 				4B3504E41C10A57D009F7680 /* OSCSetup.cpp in Sources */,
+				F6823B4C2BA37FC400C9AB86 /* CustomTabView.mm in Sources */,
 				C9D94E5F1E79631D003A187A /* DspFaustMotion.cpp in Sources */,
 				4B3504F01C10A57D009F7680 /* OSCControler.cpp in Sources */,
 				C93C18F51E5BA375001551E3 /* AppDelegate.mm in Sources */,
@@ -485,6 +496,7 @@
 				4B3504AE1C10A57D009F7680 /* OSCRegexp.cpp in Sources */,
 				4B3505561C10A57D009F7680 /* OscTypes.cpp in Sources */,
 				4B3504C01C10A57D009F7680 /* FaustNode.cpp in Sources */,
+				F6823B4B2BA37FC400C9AB86 /* CustomCounter.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

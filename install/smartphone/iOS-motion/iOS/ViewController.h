@@ -16,7 +16,11 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Accelerate/Accelerate.h"
 
-@interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate > {
+#import "CustomTabView.h"
+
+#import "CustomCounter.h"
+
+@interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate,CustomTabViewDelegate > {
 
     DspFaust *dspFaust;
     DspFaustMotion *dspFaustMotion;
@@ -104,8 +108,11 @@
 }
 
 @property (nonatomic, strong) UIView *additionalButtonView;
-@property (nonatomic, strong) NSMutableDictionary *nameForButton;
-@property (nonatomic, strong) NSMutableDictionary *pathForButton;
+
+@property (nonatomic, strong) CustomTabView *customTabView;
+
+@property (nonatomic, strong) NSMutableDictionary *customCounters;
+
 
 @property (retain, nonatomic) IBOutlet UIPickerView *pikerView;
 @property (retain, nonatomic) IBOutlet UITextField *motionParam;
