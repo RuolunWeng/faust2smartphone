@@ -63,8 +63,10 @@
    
     // 创建另一个标签页
     // between tips and setting button
+    // between tips and setting button
     CGFloat additionalButtonViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
-    CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
+    CGFloat additionalButtonViewYMax = self.customSettingButton.frame.origin.y;
+    //CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
     CGFloat additionalButtonViewHeight = additionalButtonViewYMax - additionalButtonViewY;
     
     // 创建一个 CustomTabView 实例
@@ -143,7 +145,19 @@
             _outPort.text=@"NO";
         }
         
-        if (cueIsOn) {
+        if (stateIsOn) {
+        //if (cueIsOn or stateIsOn) {
+            _init.hidden=false;
+            _tips.hidden=false;
+        } else {
+            _init.hidden=true;
+            _tips.hidden=true;
+        }
+        
+        
+        //
+        //if (cueIsOn) {
+        if ((cueIsOn and !newCueIsOn and !newCounterIsOn)) {
             _cue.hidden=false;
             _cueNext.hidden=false;
             
@@ -152,31 +166,27 @@
             
             _prevCue.hidden=false;
             _nextCue.hidden=false;
+            _init.hidden=false;
         } else {
             _cue.hidden=true;
             _cueNext.hidden=true;
             
             _cueText.hidden=true;
             _nextCueText.hidden=true;
-            
+            _init.hidden=true;
             _prevCue.hidden=true;
             _nextCue.hidden=true;
         }
         
+        
         //if (cueIsOn or touchGateIsOn or screenXIsOn or screenYIsOn) {
-        if (touchGateIsOn or screenYIsOn or screenXIsOn or (cueIsOn and !newCueIsOn)) {
+        //if (touchGateIsOn or screenXIsOn or screenYIsOn) {
+        if (touchGateIsOn or screenYIsOn or screenXIsOn or (cueIsOn and !newCueIsOn and !newCounterIsOn)) {
             _touch.hidden=false;
         } else {
             _touch.hidden=true;
         }
         
-        if (cueIsOn or stateIsOn) {
-            _init.hidden=false;
-            _tips.hidden=false;
-        } else {
-            _init.hidden=true;
-            _tips.hidden=true;
-        }
         
         if (cueIsOn or newCounterIsOn) {
             _tips.hidden=false;
@@ -195,6 +205,10 @@
     
     dspFaust->setParamValue([path UTF8String], scaledValue);
     //NSLog(@"Button tapped Up with path: %@", path);
+    
+    // Save Motion UI Preset
+    [[NSUserDefaults standardUserDefaults] setFloat:scaledValue forKey:path];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)buttonTappedCue {
@@ -203,6 +217,27 @@
     }
 }
 
+
+- (void)buttonTappedNextCue {
+    if (cueIsOn) {
+        [self nextCue:nil];
+    }
+}
+
+- (void)buttonTappedPrevCue {
+    if (cueIsOn) {
+        [self prevCue:nil];
+    }
+}
+
+- (void)buttonTappedInitCue {
+    if (cueIsOn) {
+        [self initCue:nil];
+    }
+}
+- (void)buttonTappedSetRef{
+    [self initFrame];
+}
 
 - (void)buttonTappedCounter:(NSString *)path tag:(NSInteger)ButtonTag {
     
@@ -227,6 +262,75 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     return min + (max - min) * value;
 }
 
+// 将给定范围内的浮点数值映射到0到1之间的浮点数值
+CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
+    return (value - min) / (max - min);
+}
+
+- (IBAction)showCustomSetting:(id)sender {
+//    if (self.dspFaust->isRunningDsp(self.currentDSP)) {
+//        self.dspFaust->stopDsp(self.currentDSP);
+//    }
+    // Initialize UIView
+    // between tips and setting button
+    CGFloat additionalSettingViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
+    CGFloat additionalSettingViewHeight = self.view.frame.size.height - additionalSettingViewY;
+    
+//    self.myCustomSettingView= [[CustomSettingView alloc] initWithFrame:self.view.bounds];
+    self.myCustomSettingView= nil;
+    self.myCustomSettingView= [[CustomSettingView alloc] initWithFrame:CGRectMake(0,additionalSettingViewY,self.view.frame.size.width, additionalSettingViewHeight)];
+    self.myCustomSettingView.backgroundColor = [UIColor blackColor];
+    self.myCustomSettingView.alpha = 0.95;
+    
+    if (dspFaust->getOSCIsOn()) {
+        
+        self.myCustomSettingView.ip.text=[[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
+        self.myCustomSettingView.inPort.text=[[NSUserDefaults standardUserDefaults] stringForKey:@"oscInPort"];
+        self.myCustomSettingView.outPort.text=[[NSUserDefaults standardUserDefaults] stringForKey:@"oscOutPort"];
+        
+    } else {
+        
+        self.myCustomSettingView.ip.hidden = true;
+        self.myCustomSettingView.inPort.hidden = true;
+        self.myCustomSettingView.outPort.hidden = true;
+        self.myCustomSettingView.setOSC.hidden = true;
+    }
+    
+    
+//
+//    self.myCustomSettingView.paramArray1 = self._motionLibParamArray;// [self._motionLibParamArray copy];
+//    self.myCustomSettingView.paramArray2 = self._motionAudioParamArray;// [self._motionAudioParamArray copy];
+    
+    [self.view addSubview:self.myCustomSettingView];
+    self.myCustomSettingView.delegate = self;
+    self.myCustomSettingView.pickerView1.delegate = self;
+//    self.myCustomSettingView.pickerView1.dataSource = self;
+    self.myCustomSettingView.pickerView2.delegate = self;
+//    self.myCustomSettingView.pickerView2.dataSource = self;
+//
+    if (self._motionLibParamArray.count != 0) {
+        // Select the first row by default
+        [self.myCustomSettingView.pickerView1 selectRow:0 inComponent:0 animated:NO];
+        [self pickerView:self.myCustomSettingView.pickerView1 didSelectRow:0 inComponent:0];
+    }  else {
+        self.myCustomSettingView.pickerView1.hidden = YES;
+        self.myCustomSettingView.param1.hidden = YES;
+        self.myCustomSettingView.paramSend1.hidden = YES;
+        self.myCustomSettingView.paramResetSend1.hidden = YES;
+    }
+//
+    if (self._motionAudioParamArray.count != 0) {
+        // Select the first row by default
+        [self.myCustomSettingView.pickerView2 selectRow:0 inComponent:0 animated:NO];
+        [self pickerView:self.myCustomSettingView.pickerView2 didSelectRow:0 inComponent:0];
+    }  else {
+        self.myCustomSettingView.pickerView2.hidden = YES;
+        self.myCustomSettingView.param2.hidden = YES;
+        self.myCustomSettingView.paramSend2.hidden = YES;
+        self.myCustomSettingView.paramResetSend2.hidden = YES;
+    }
+    
+}
 
 - (BOOL) connectedToInternet
 {
@@ -237,36 +341,91 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
 
 -(void) loadDefaultParams {
     
-    std::vector<std::string>motionParamNames;
-    std::vector<std::string>motionParamAddress;
-    _motionParamArray = [[NSMutableArray alloc] init];
-    _motionParamAddress = [[NSMutableArray alloc] init];
+//    std::vector<std::string>motionParamNames;
+//    std::vector<std::string>motionParamAddress;
+//    _motionParamArray = [[NSMutableArray alloc] init];
+//    _motionParamAddress = [[NSMutableArray alloc] init];
+//    
+//    for (int i=0; i<dspFaust->getParamsCount(); i++) {
+//        const char *dataParamMotion = dspFaust->getMetadata(i, "showName");
+//        if (strcmp(dataParamMotion,"") != 0) {
+//            motionParamNames.push_back(dataParamMotion);
+//            motionParamAddress.push_back(dspFaust->getParamAddress(i));
+//        }
+//    }
+//    for (int i=0; i<motionParamNames.size(); i++) {
+//        //printf("%i=%s",i,motionParamNames[i].c_str());
+//        [_motionParamArray addObject:[NSString stringWithUTF8String:motionParamNames[i].c_str()]];
+//        [_motionParamAddress addObject:[NSString stringWithUTF8String:motionParamAddress[i].c_str()]];
+//    }
     
-    for (int i=0; i<dspFaust->getParamsCount(); i++) {
-        const char *dataParamMotion = dspFaust->getMetadata(i, "showName");
-        if (strcmp(dataParamMotion,"") != 0) {
-            motionParamNames.push_back(dataParamMotion);
-            motionParamAddress.push_back(dspFaust->getParamAddress(i));
+    //    NSMutableDictionary *appDefaultsDictionary = [NSMutableDictionary dictionaryWithCapacity:_motionParamAddress.count];
+        // Default ()
+        NSMutableDictionary *appDefaultsDictionary = [NSMutableDictionary dictionaryWithCapacity:100];
+     
+    //    for (int i=0; i<_motionParamAddress.count; i++) {
+    //        [appDefaultsDictionary setValue:
+    //         [NSNumber numberWithFloat:dspFaust->getParamInit([_motionParamAddress[i] UTF8String])] forKey:_motionParamArray[i]];
+    //    }
+        
+        [appDefaultsDictionary setValue:@"192.168.1.20" forKey:@"oscAddress"];
+        [appDefaultsDictionary setValue:@"5510" forKey:@"oscInPort"];
+        [appDefaultsDictionary setValue:@"5511" forKey:@"oscOutPort"];
+        
+        [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaultsDictionary];
+    
+    // INIT MOTION LIB ShowName
+    std::vector<std::string>motionLibParamNames;
+    std::vector<std::string>motionLibParamAddress;
+    
+    self._motionLibParamArray = [[NSMutableArray alloc] init];
+    self._motionLibParamAddress = [[NSMutableArray alloc] init];
+    
+    motionLibParamsOn = new BOOL[self._motionLibParamAddress.count];
+    
+    for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
+        const char *dataParamMotionLib = dspFaustMotion->getMetadata(i, "showName");
+        if (strcmp(dataParamMotionLib,"") != 0) {
+            motionLibParamNames.push_back(dataParamMotionLib);
+            motionLibParamAddress.push_back(dspFaustMotion->getParamAddress(i));
         }
     }
-    for (int i=0; i<motionParamNames.size(); i++) {
+    for (int i=0; i<motionLibParamNames.size(); i++) {
         //printf("%i=%s",i,motionParamNames[i].c_str());
-        [_motionParamArray addObject:[NSString stringWithUTF8String:motionParamNames[i].c_str()]];
-        [_motionParamAddress addObject:[NSString stringWithUTF8String:motionParamAddress[i].c_str()]];
+        [self._motionLibParamArray addObject:[NSString stringWithUTF8String:motionLibParamNames[i].c_str()]];
+        [self._motionLibParamAddress addObject:[NSString stringWithUTF8String:motionLibParamAddress[i].c_str()]];
     }
     
-    NSMutableDictionary *appDefaultsDictionary = [NSMutableDictionary dictionaryWithCapacity:_motionParamAddress.count];
- 
-    for (int i=0; i<_motionParamAddress.count; i++) {
-        [appDefaultsDictionary setValue:
-         [NSNumber numberWithFloat:dspFaust->getParamInit([_motionParamAddress[i] UTF8String])] forKey:_motionParamArray[i]];
+    std::vector<std::string>motionAudioParamNames;
+    std::vector<std::string>motionAudioParamAddress;
+    
+    //std::vector<std::string>motionLibParamNames;
+    //std::vector<std::string>motionLibParamAddress;
+    
+    
+    self._motionAudioParamArray = [[NSMutableArray alloc] init];
+    self._motionAudioParamAddress = [[NSMutableArray alloc] init];
+    
+    //self._motionLibParamArray = [[NSMutableArray alloc] init];
+    //self._motionLibParamAddress = [[NSMutableArray alloc] init];
+    
+    motionAudioParamsOn = new BOOL[self._motionAudioParamAddress.count];
+    
+    //motionLibParamsOn = new BOOL[self._motionLibParamAddress.count];
+    
+    for (int i=0; i<dspFaust->getParamsCount(); i++) {
+        const char *dataParamMotionAudio = dspFaust->getMetadata(i, "showName");
+        if (strcmp(dataParamMotionAudio,"") != 0) {
+            motionAudioParamNames.push_back(dataParamMotionAudio);
+            motionAudioParamAddress.push_back(dspFaust->getParamAddress(i));
+        }
+    }
+    for (int i=0; i<motionAudioParamNames.size(); i++) {
+        //printf("%i=%s",i,motionParamNames[i].c_str());
+        [self._motionAudioParamArray addObject:[NSString stringWithUTF8String:motionAudioParamNames[i].c_str()]];
+        [self._motionAudioParamAddress addObject:[NSString stringWithUTF8String:motionAudioParamAddress[i].c_str()]];
     }
     
-    [appDefaultsDictionary setValue:@"192.168.1.20" forKey:@"oscAddress"];
-    [appDefaultsDictionary setValue:@"5510" forKey:@"oscInPort"];
-    [appDefaultsDictionary setValue:@"5511" forKey:@"oscOutPort"];
-    
-    [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaultsDictionary];
     
 }
 
@@ -287,16 +446,64 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
 
 -(void) loadPossiblePreset {
     
-    for (int i=0; i<_motionParamAddress.count; i++) {
-        
-        dspFaust->setParamValue([_motionParamAddress[i] UTF8String],
-                                      (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
+//    for (int i=0; i<_motionParamAddress.count; i++) {
+//        
+//        dspFaust->setParamValue([_motionParamAddress[i] UTF8String],
+//                                      (float)[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[i]]);
+//        
+//    }
+    
+    // load possible preset for motion lib
+    for (int i=0; i<self._motionLibParamArray.count; i++) {
+        // 从NSUserDefaults中检索motionLibParamAddress的值
+        NSString *motionLibParamValue = [[NSUserDefaults standardUserDefaults] stringForKey:self._motionLibParamArray[i]];
+        // 检查返回的值是否为nil
+        if (motionLibParamValue != nil) {
+            // 键存在并且具有一个相应的值
+            //NSLog(@"Value for motionLibParamAddress exists: %@", motionLibParamAddressValue);
+            dspFaustMotion->setParamValue([self._motionLibParamAddress[i] UTF8String], [motionLibParamValue floatValue]);
+        } else {
+            // 键不存在或者值为nil
+            //NSLog(@"Value for motionLibParamAddress does not exist or is nil");
+        }
         
     }
     
-    if (_motionParamAddress.count>0) {
-        _motionParam.text = [NSString stringWithFormat:@"%.2f",[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[0]]];
+    // load possible preset for motion lib
+    for (int i=0; i<self._motionAudioParamArray.count; i++) {
+        // 从NSUserDefaults中检索motionLibParamAddress的值
+        NSString *motionAudioParamValue = [[NSUserDefaults standardUserDefaults] stringForKey:self._motionAudioParamArray[i]];
+        // 检查返回的值是否为nil
+        if (motionAudioParamValue != nil) {
+            // 键存在并且具有一个相应的值
+            //NSLog(@"Value for motionLibParamAddress exists: %@", motionLibParamAddressValue);
+            dspFaust->setParamValue([self._motionAudioParamAddress[i] UTF8String], [motionAudioParamValue floatValue]);
+        } else {
+            // 键不存在或者值为nil
+            //NSLog(@"Value for motionLibParamAddress does not exist or is nil");
+        }
+        
     }
+    
+    for (int i=0; i<dspFaust->getParamsCount(); i++) {
+        // 从NSUserDefaults中检索motionUIAddress的值
+        NSString *motionUIParamValue = [[NSUserDefaults standardUserDefaults] stringForKey:[NSString stringWithUTF8String:dspFaust->getParamAddress(i)]];
+        
+        // 检查返回的值是否为nil
+        if (motionUIParamValue != nil) {
+            // 键存在并且具有一个相应的值
+            //NSLog(@"Value for motionLibParamAddress exists: %@", [NSString stringWithUTF8String:dspFaust->getParamAddress(i)]);
+            dspFaust->setParamValue(dspFaust->getParamAddress(i), [motionUIParamValue floatValue]);
+        } else {
+            // 键不存在或者值为nil
+            //NSLog(@"Value for motionLibParamAddress does not exist or is nil");
+        }
+        
+    }
+    
+//    if (_motionParamAddress.count>0) {
+//        _motionParam.text = [NSString stringWithFormat:@"%.2f",[[NSUserDefaults standardUserDefaults] floatForKey:_motionParamArray[0]]];
+//    }
     
     
 }
@@ -362,10 +569,10 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     self.customCounters = [[NSMutableDictionary alloc] init];
     
     // Preset array of button names
-    NSArray *typeButtonNames = @[@"button", @"toggle", @"trigCue", @"touchScreenX", @"touchScreenY",@"trigCounter",@"pad"];
+    NSArray *typeButtonNames = @[@"button", @"checkbox", @"trigCue", @"nextCue", @"prevCue", @"initCue", @"setRef", @"hslider", @"vslider",@"trigCounter", @"pad"];
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
-        const char *dataParamMotionButton = dspFaust->getMetadata(i, "motionButton");
+        const char *dataParamMotionButton = dspFaust->getMetadata(i, "motionUI");
         if (strcmp(dataParamMotionButton,"") != 0) {
             const char *param = dataParamMotionButton;
             // Convert the const char* parameter to an NSString
@@ -375,14 +582,14 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
             NSArray *components = [paramMetaString componentsSeparatedByString:@" "];
             
             // Check if the number of components is correct
-            if (components.count == 9) {
+            if (components.count == 10) {
                 // Extract the values
-                NSString *buttonType = components[0];
+                NSString *buttonType = components[1];
                 // Check if buttonName is in the preset array
                 if (![typeButtonNames containsObject:buttonType]) {
                     // Button name is not in the preset array
-                    NSLog(@"Button name is not valid");
-                    _tips.text= @"Button name is not valid"; // or handle the error as needed
+                    NSLog(@"UI TYPE is not valid");
+                    _tips.text= @"UI TYPE is not valid"; // or handle the error as needed
                     return;
                 }
                 
@@ -400,7 +607,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                 }
                 
                 // Extract the values
-                NSString *tabViewName = components[1];
+                NSString *tabViewName = components[0];
                 
                 // Use NSScanner to check the type of each component
                 NSScanner *scanner = [NSScanner scannerWithString:components[2]];
@@ -458,7 +665,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                     if (height < 0 || height > 100) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", height);
-                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        _tips.text= @"Invalid integer button height value"; // or handle the error as needed
                         return;
                     }
                 }
@@ -473,7 +680,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                     if (colorR < 0 || colorR > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorR);
-                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        _tips.text= @"Invalid integer button colorR value"; // or handle the error as needed
                         return;
                     }
                 }
@@ -487,7 +694,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                     if (colorG < 0 || colorG > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorG);
-                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        _tips.text= @"Invalid integer button colorG value"; // or handle the error as needed
                         return;
                     }
                 }
@@ -501,8 +708,20 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                     if (colorB < 0 || colorB > 255) {
                         // Integer is not within the valid range
                         NSLog(@"Invalid integer value: %d", colorB);
-                        _tips.text= @"Invalid integer button value"; // or handle the error as needed
+                        _tips.text= @"Invalid integer button colorB value"; // or handle the error as needed
                         return;
+                    }
+                }
+                scanner = [NSScanner scannerWithString:components[9]];
+                int colorA;
+                if (![scanner scanInt:&colorA]) {
+                    NSLog(@"Invalid type for colorA: %@", components[9]);
+                    _tips.text= @"Invalid type for button colorA";
+                } else {
+                    if (colorA < 0 || colorA > 255) {
+                        // Integer is not within the valid range
+                        NSLog(@"Invalid integer value: %d", colorA);
+                        _tips.text= @"Invalid integer button colorA value range"; // or handle the error as needed
                     }
                 }
                 // Now you have the button name and the coordinates (x, y) and size (width, height) (R G B)
@@ -511,7 +730,25 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
                 // Convert the const char* parameter to an NSString
                 NSString *paramPath = [NSString stringWithUTF8String:dspFaust->getParamAddress(i)];
                 
-                [self.customTabView setContentViewWithButtonType:buttonType X:x Y:y Width:width Height:height name:paramShortName path:paramPath tag:i selectedColorRed:colorR green:colorG blue:colorB ContentViewName:tabViewName];
+                // current init value scale to 0-1
+                NSMutableArray *initValues = [NSMutableArray array];
+                
+                if ([buttonType isEqual:@"pad"]) {
+                    NSString *padXPath = [NSString stringWithFormat:@"%@_X",paramPath];
+                    NSString *padYPath = [NSString stringWithFormat:@"%@_Y",paramPath];
+                    float initValueX = scaleBackValue(dspFaust->getParamValue([padXPath UTF8String]), dspFaust->getParamMin([padXPath UTF8String]), dspFaust->getParamMax([padXPath UTF8String]));
+                    [initValues addObject:@(initValueX)];
+                    float initValueY = scaleBackValue(dspFaust->getParamValue([padYPath UTF8String]), dspFaust->getParamMin([padYPath UTF8String]), dspFaust->getParamMax([padYPath UTF8String]));
+                    [initValues addObject:@(initValueY)];
+                } else {
+                    float initValue = scaleBackValue(dspFaust->getParamValue(i), dspFaust->getParamMin(i), dspFaust->getParamMax(i));
+                    [initValues addObject:@(initValue)];
+                }
+                
+                
+                //NSLog(@"initValue %@: %0.2f",paramShortName, initValue);
+                
+                [self.customTabView setContentViewWithButtonType:buttonType X:x Y:y Width:width Height:height name:paramShortName path:paramPath tag:i selectedColorRed:colorR green:colorG blue:colorB alpha:colorA initValues:initValues ContentViewName:tabViewName];
                 
             }
             
@@ -527,7 +764,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     
 
     
-    paramsOn = new BOOL[_motionParamAddress.count];
+    //paramsOn = new BOOL[_motionParamAddress.count];
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
         NSString *data = [NSString stringWithUTF8String:dspFaust->getParamAddress(i)];
@@ -591,15 +828,15 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
             myCueNumArrary = [[NSMutableArray alloc] init];
             myCueTipsArrary = [[NSMutableArray alloc] init];
             
-            if (strcmp(dspFaust->getMetadata(i, "motionButton"),"") != 0) {
+            if (strcmp(dspFaust->getMetadata(i, "motionUI"),"") != 0) {
                 // Convert the const char* parameter to an NSString
-                NSString *paramMetaString = [NSString stringWithUTF8String:dspFaust->getMetadata(i, "motionButton")];
+                NSString *paramMetaString = [NSString stringWithUTF8String:dspFaust->getMetadata(i, "motionUI")];
 
                 // Split the string by space
                 NSArray *components = [paramMetaString componentsSeparatedByString:@" "];
                 
                 // Extract the values
-                NSString *buttonType = components[0];
+                NSString *buttonType = components[1];
                 
                 if (![buttonType isEqual:@"trigCue"]) {
                     _tips.text= @"Cue metadata Only Support 'trigCue' option";
@@ -698,6 +935,22 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     [self initCue:nil];
     
     checkPass = true;
+}
+
+
+- (void)customSettingViewSetOSCWithAddress:(nonnull NSString *)ip inPort:(nonnull NSString *)inPort outPort:(nonnull NSString *)outPort {
+    
+    dspFaust->setOSCValue([ip cStringUsingEncoding:[NSString defaultCStringEncoding]], [inPort cStringUsingEncoding:[NSString defaultCStringEncoding]], [outPort cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+    
+    _tips.hidden=false;
+    _tips.text = @"Run Piece Again for New OSC Config";
+    
+    [[NSUserDefaults standardUserDefaults] setObject:ip forKey:@"oscAddress"];
+    [[NSUserDefaults standardUserDefaults] setObject:inPort forKey:@"oscInPort"];
+    [[NSUserDefaults standardUserDefaults] setObject:outPort forKey:@"oscOutPort"];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
 }
 
 - (void)startMotion
@@ -1143,7 +1396,7 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
         _inPort.hidden=false;
         _outPort.hidden=false;
         _setOSC.hidden=false;
-        if (_motionParamArray.count != 0) {
+        if (self._motionAudioParamArray.count != 0) {
             // Select the first row by default
             [_pikerView selectRow:0 inComponent:0 animated:NO];
                 // Manually call the delegate method to initialize based on the selected row
@@ -1223,6 +1476,112 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     }
 }
 
+- (IBAction)defaultMotionLibParam:(id)sender {
+
+    // Find the label index of the edited parameter
+    int i = -1;
+    for (i=0; i<self._motionLibParamArray.count; i++) {
+        if (motionLibParamsOn[i]) {
+            break;
+        }
+    }
+    
+    // Find the label of the edited parameter using its index
+    std::string param = [self._motionLibParamArray[i] UTF8String];
+    
+    // Change value of all addresses with the same label
+    for (int i=0; i<self._motionLibParamArray.count; i++) {
+        if ([self._motionLibParamArray[i] UTF8String] ==  param) {
+            dspFaustMotion->setParamValue([self._motionLibParamAddress[i] UTF8String], dspFaustMotion->getParamInit([self._motionLibParamAddress[i] UTF8String]));
+            
+            [[NSUserDefaults standardUserDefaults] setFloat:dspFaustMotion->getParamInit([self._motionLibParamAddress[i] UTF8String]) forKey:self._motionLibParamArray[i]];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+    
+    
+    [self.myCustomSettingView.pickerView1 selectRow:0 inComponent:0 animated:NO];
+    
+    // Manually call the delegate method to initialize based on the selected row
+    [self pickerView:self.myCustomSettingView.pickerView1 didSelectRow:0 inComponent:0];
+    
+}
+
+- (IBAction)defaultMotionAudioParam:(id)sender {
+    
+    
+    [_ip resignFirstResponder];
+    [_inPort resignFirstResponder];
+    [_outPort resignFirstResponder];
+    [_motionParam resignFirstResponder];
+    
+//    for (int i=0; i<self.dspFaustMotion->getParamsCount(); i++) {
+//        self.dspFaustMotion->setParamValue(i, self.dspFaustMotion->getParamInit(i));
+//    }
+    
+    for (int i=0; i<dspFaust->getParamsCount(); i++) {
+        dspFaust->setParamValue(i, dspFaust->getParamInit(i));
+    }
+    
+    _motionParam.text = @"Done";
+    [_pikerView selectRow:0 inComponent:0 animated:NO];
+    
+    // Find the label index of the edited parameter
+    int i = -1;
+    for (i=0; i<self._motionAudioParamArray.count; i++) {
+        if (motionAudioParamsOn[i]) {
+            break;
+        }
+    }
+    
+    // Find the label of the edited parameter using its index
+    std::string param = [self._motionAudioParamArray[i] UTF8String];
+    
+    // Change value of all addresses with the same label
+    for (int i=0; i<self._motionAudioParamArray.count; i++) {
+        if ([self._motionAudioParamArray[i] UTF8String] ==  param) {
+            dspFaust->setParamValue([self._motionAudioParamAddress[i] UTF8String], dspFaust->getParamInit([self._motionAudioParamAddress[i] UTF8String]));
+            
+            [[NSUserDefaults standardUserDefaults] setFloat:dspFaust->getParamInit([self._motionAudioParamAddress[i] UTF8String]) forKey:self._motionAudioParamArray[i]];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+    
+    // Manually call the delegate method to initialize based on the selected row
+    [self pickerView:_pikerView didSelectRow:0 inComponent:0];
+    
+
+    [self.myCustomSettingView.pickerView2 selectRow:0 inComponent:0 animated:NO];
+    
+    // Manually call the delegate method to initialize based on the selected row
+    [self pickerView:self.myCustomSettingView.pickerView2 didSelectRow:0 inComponent:0];
+    
+    
+    [self.customTabView removeFromSuperview];
+    self.customTabView = nil;
+    
+    // between tips and setting button
+    CGFloat additionalButtonViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
+    CGFloat additionalButtonViewYMax = self.customSettingButton.frame.origin.y;
+    //CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
+    CGFloat additionalButtonViewHeight = additionalButtonViewYMax - additionalButtonViewY;
+    
+    // 创建一个 CustomTabView 实例
+    self.customTabView = [[CustomTabView alloc] initWithFrame:CGRectMake(0, additionalButtonViewY, self.view.frame.size.width, additionalButtonViewHeight)];
+    self.customTabView.delegate = self;
+    [self.view addSubview:self.customTabView];
+    
+    
+    dspFaust->checkAdress();
+    [self checkAddress];
+    
+    // 将第一个子视图移到最前面显示
+    [self.view bringSubviewToFront:self.myCustomSettingView];
+    
+    //[self resetDefaultParams];
+    
+    
+}
 
 - (IBAction)defautParam:(id)sender {
     
@@ -1248,8 +1607,13 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     
     // 创建另一个标签页
     // between tips and setting button
+//    CGFloat additionalButtonViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
+//    CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
+//    CGFloat additionalButtonViewHeight = additionalButtonViewYMax - additionalButtonViewY;
+    // between tips and setting button
     CGFloat additionalButtonViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
-    CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
+    CGFloat additionalButtonViewYMax = self.customSettingButton.frame.origin.y;
+    //CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
     CGFloat additionalButtonViewHeight = additionalButtonViewYMax - additionalButtonViewY;
     
     // 创建一个 CustomTabView 实例
@@ -1278,22 +1642,56 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     label.backgroundColor = [UIColor grayColor];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
+    label.adjustsFontSizeToFitWidth = YES;
     
-    label.text = [_motionParamArray objectAtIndex:row];
+    // for setting view
+    if (pickerView.tag == 2) {
+        label.text = [self._motionAudioParamArray objectAtIndex:row];
+    } else if (pickerView.tag == 1) {
+        label.text = [self._motionLibParamArray objectAtIndex:row];
+    } else {
+        label.text = [self._motionAudioParamArray objectAtIndex:row];
+    }
+    
     return label;
 }
 
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     
-    for (int i=0; i< _motionParamArray.count; i++) {
-        paramsOn[i]=false;
+    
+    // for setting view
+    if (pickerView.tag == 1) {
+        
+        for (int i=0; i< self._motionLibParamArray.count; i++) {
+            motionLibParamsOn[i]=false;
+        }
+        
+        motionLibParamsOn[row]=true;
+        
+        self.myCustomSettingView.param1.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue([self._motionLibParamAddress[row] UTF8String])];
+        
+    } else if (pickerView.tag == 2) {
+        
+        for (int i=0; i< self._motionAudioParamArray.count; i++) {
+            motionAudioParamsOn[i]=false;
+        }
+        
+        motionAudioParamsOn[row]=true;
+        
+        [self.myCustomSettingView.param2 setText: [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([self._motionAudioParamAddress[row] UTF8String])]];
+        
+        
+    } else  {
+        for (int i=0; i< self._motionAudioParamArray.count; i++) {
+            motionAudioParamsOn[i]=false;
+        }
+        
+        motionAudioParamsOn[row]=true;
+        
+        _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([self._motionAudioParamAddress[row] UTF8String])];
     }
-    
-    paramsOn[row]=true;
-    
-    _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([_motionParamAddress[row] UTF8String])];
     
 }
 
@@ -1307,49 +1705,120 @@ CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:   (NSInteger)component
 {
     
+    // for setting view
+    if (pickerView.tag == 2) {
+        
+        return self._motionAudioParamArray.count;
+        
+    } else if (pickerView.tag == 1) {
+        
+        return self._motionLibParamArray.count;
+        
+    } else {
+        return self._motionAudioParamArray.count;
+    }
     
-    return _motionParamArray.count;
+    
 }
 
 
 - (NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
     
-    
-    return _motionParamArray[row];
-    
+    // for setting view
+    if (pickerView.tag == 2) {
+        
+        return self._motionAudioParamArray[row];
+        
+    } else if (pickerView.tag == 1) {
+        
+        return self._motionLibParamArray[row];
+        
+    } else {
+        return self._motionAudioParamArray[row];
+    }
+    //return nil;
 }
 
+
 - (IBAction)motionParamSend:(id)sender {
-    
+//    
     [_motionParam resignFirstResponder];
     /*
-     for (int i=0; i< _motionParamArray.count; i++) {
+     for (int i=0; i< self._motionAudioParamArray.count; i++) {
      if (paramsOn[i]) {
-     dspFaustMotion->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
-     [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
+     self.dspFaustMotion->setParamValue([self._motionAudioParamAddress[i] UTF8String], [_motionParam.text floatValue]);
+     [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:self._motionAudioParamArray[i]];
      }
      }
      */
     // Find the label index of the edited parameter
     int i = -1;
-    for (i=0; i<_motionParamArray.count; i++) {
-        if (paramsOn[i]) {
+    for (i=0; i<self._motionAudioParamArray.count; i++) {
+        if (motionAudioParamsOn[i]) {
             break;
         }
     }
     
     // Find the label of the edited parameter using its index
-    std::string param = [_motionParamArray[i] UTF8String];
+    std::string param = [self._motionAudioParamArray[i] UTF8String];
     
     // Change value of all addresses with the same label
-    for (int i=0; i<_motionParamArray.count; i++) {
-        if ([_motionParamArray[i] UTF8String] ==  param) {
-            dspFaust->setParamValue([_motionParamAddress[i] UTF8String], [_motionParam.text floatValue]);
-            [[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:_motionParamArray[i]];
+    for (int i=0; i<self._motionAudioParamArray.count; i++) {
+        if ([self._motionAudioParamArray[i] UTF8String] ==  param) {
+            dspFaust->setParamValue([self._motionAudioParamAddress[i] UTF8String], [_motionParam.text floatValue]);
+            //[[NSUserDefaults standardUserDefaults] setFloat:[_motionParam.text floatValue] forKey:self._motionAudioParamArray[i]];
         }
     }
     
-    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)customSettingViewSetMotionLibParamWithValue:(NSString *)value{
+    
+    // Find the label index of the edited parameter
+    int i = -1;
+    for (i=0; i<self._motionLibParamArray.count; i++) {
+        if (motionLibParamsOn[i]) {
+            break;
+        }
+    }
+    
+    // Find the label of the edited parameter using its index
+    std::string param = [self._motionLibParamArray[i] UTF8String];
+    
+    // Change value of all addresses with the same label
+    for (int i=0; i<self._motionLibParamArray.count; i++) {
+        if ([self._motionLibParamArray[i] UTF8String] ==  param) {
+            dspFaustMotion->setParamValue([self._motionLibParamAddress[i] UTF8String], [value floatValue]);
+            [[NSUserDefaults standardUserDefaults] setFloat:[value floatValue] forKey:self._motionLibParamArray[i]];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+    
+}
+
+- (void)customSettingViewSetParamWithValue:(NSString *)value {
+    
+    // Find the label index of the edited parameter
+    int i = -1;
+    for (i=0; i<self._motionAudioParamArray.count; i++) {
+        if (motionAudioParamsOn[i]) {
+            break;
+        }
+    }
+    
+    // Find the label of the edited parameter using its index
+    std::string param = [self._motionAudioParamArray[i] UTF8String];
+    
+    // Change value of all addresses with the same label
+    for (int i=0; i<self._motionAudioParamArray.count; i++) {
+        if ([self._motionAudioParamArray[i] UTF8String] ==  param) {
+            dspFaust->setParamValue([self._motionAudioParamAddress[i] UTF8String], [value floatValue]);
+            [[NSUserDefaults standardUserDefaults] setFloat:[value floatValue] forKey:self._motionAudioParamArray[i]];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+    
+    
     
 }
 

@@ -20,7 +20,9 @@
 
 #import "CustomCounter.h"
 
-@interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate,CustomTabViewDelegate > {
+#import "CustomSettingView.h"
+
+@interface ViewController : UIViewController < CLLocationManagerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UITextFieldDelegate,CustomTabViewDelegate, CustomSettingViewDelegate > {
 
     DspFaust *dspFaust;
     DspFaustMotion *dspFaustMotion;
@@ -89,10 +91,12 @@
     int cnt;
     int cnt2;
     
-    NSMutableArray *_motionParamArray;
-    NSMutableArray *_motionParamAddress;
-    
-    BOOL* paramsOn;
+//    NSMutableArray *_motionParamArray;
+//    NSMutableArray *_motionParamAddress;
+//    
+//    BOOL* paramsOn;
+    BOOL* motionAudioParamsOn;
+    BOOL* motionLibParamsOn;
     
     NSMutableArray *myCueNumArrary;
     NSInteger cueNum;
@@ -110,10 +114,17 @@
 
 @property (nonatomic, strong) UIView *additionalButtonView;
 
+@property (nonatomic, strong) CustomSettingView *myCustomSettingView;
+
 @property (nonatomic, strong) CustomTabView *customTabView;
 
 @property (nonatomic, strong) NSMutableDictionary *customCounters;
 
+@property (nonatomic, strong) NSMutableArray *_motionLibParamArray;
+@property (nonatomic, strong) NSMutableArray *_motionLibParamAddress;
+
+@property (nonatomic, strong) NSMutableArray *_motionAudioParamArray;
+@property (nonatomic, strong) NSMutableArray *_motionAudioParamAddress;
 
 @property (retain, nonatomic) IBOutlet UIPickerView *pikerView;
 @property (retain, nonatomic) IBOutlet UITextField *motionParam;
@@ -152,6 +163,7 @@
 - (IBAction)setParam:(id)sender;
 @property (retain, nonatomic) IBOutlet UISwitch *setParam;
 @property (retain, nonatomic) IBOutlet UIButton *setOSC;
+@property (retain, nonatomic) IBOutlet UIButton *customSettingButton;
 
 @end
 

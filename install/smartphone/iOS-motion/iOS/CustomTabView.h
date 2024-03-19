@@ -1,6 +1,9 @@
 // CustomTabView.h
 
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+
+#import "CustomButton.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -9,6 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)buttonTappedWithPath:(NSString *)path value:(CGFloat)ButtonValue;
 
 - (void)buttonTappedCue;
+- (void)buttonTappedNextCue;
+- (void)buttonTappedPrevCue;
+- (void)buttonTappedInitCue;
+
+- (void)buttonTappedSetRef;
 
 - (void)buttonTappedCounter:(NSString *)path tag:(NSInteger)ButtonTag;
 
@@ -16,14 +24,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface CustomTabView : UIView
+@interface CustomTabView : UIView < CustomButtonDelegate >
 
 @property (nonatomic, weak) id<CustomTabViewDelegate> delegate;
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, UIView *> *contentViews;
-@property (nonatomic, strong) NSMutableArray *buttons;
-@property (nonatomic, strong) NSMutableDictionary *nameForButton;
-@property (nonatomic, strong) NSMutableDictionary *pathForButton;
+@property (nonatomic, strong) NSMutableArray *tabButtons;
+//@property (nonatomic, strong) NSMutableDictionary *nameForButton;
+//@property (nonatomic, strong) NSMutableDictionary *pathForButton;
+//@property (nonatomic, strong) NSMutableArray *sliderButtons;
+//@property (nonatomic, strong) NSMutableArray *padButtons;
 
 - (void)setContentViewWithButtonType:(NSString *)buttonType
                                    X:(int)coordinationX
@@ -36,6 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
                     selectedColorRed:(int)selectedRedInt
                                 green:(int)selectedGreenInt
                                  blue:(int)selectedBlueInt
+                                alpha:(int)selectedAlphaInt
+                               initValues:(NSArray *)initValues
                      ContentViewName:(NSString *)contentViewName;
 
 @end
