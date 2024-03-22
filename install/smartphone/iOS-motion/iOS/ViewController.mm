@@ -433,7 +433,7 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     
     if (dspFaust->getOSCIsOn()) {
         
-        [self connectedToInternet];
+        //[self connectedToInternet];
         
         oscAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscAddress"];
         oscInPort = [[NSUserDefaults standardUserDefaults] stringForKey:@"oscInPort"];
