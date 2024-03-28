@@ -42,6 +42,8 @@ and follow the installation instruction on its [Github](https://github.com/grame
 In Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
 **Please check the exmaple code in examples/1_Simple_Mode**
+********
+********
 
 ### 2) For Motion lib support Project
 `       fasut2smartphone -iosmotion/-androidmotion toto.dsp`
@@ -160,8 +162,92 @@ touchX = hslider("screenx",0,0,1,0.01);
 touchY = hslider("screeny",0,0,1,0.01);
         
 ```
-**Please check the exmaple code in examples/2_Motion_Mode**
+==NEW==
+**[motionUI] interface support in iOS Motion Mode**
 
+In your FAUST .dsp file, declare [motionUI] interface you need in metadata, which will positioned in the screen. [motionUI] interface's types have normal types and special funtions:
+
+
+###### [motionUI] metadata format:
+```
+[motionUI:TabTitle Types X Y W H R G B A]
+```
+***TabTitle***
+=> [motionUI] could be put in several tabs or the same tab if they have the same title name
+
+***X Y W H R G B A***
+=> [motionUI] frame Coordination X/Y; Width/Height [in percent 0-100]
+=> [motionUI] frame Color in Red/Green/Blue/Alpha [0-255]
+
+###### [motionUI] interface types:
+//_Normal FaustUI-like types_
+***"button"***
+=>  touch down->1, touch up->0
+```
+button01 = button("B1 [motionUI: Buttons button 0 0 50 50 0 255 0 200] [osc:/button01]");
+```
+***"checkbox"***
+=>  touched up->1 (selected), touched up again->0 (unselected), verse versa
+```
+toggle02 = checkbox("T2 [motionUI: Toggles checkbox 50 0 50 50 0 255 0 200] [osc:/toggle02]");
+```
+***"hslider"***
+=>  touch move in the UI horizontally, scaled from MIN to MAX 
+```
+hslider03 = hslider("hslider03 [motionUI: Hsliders hslider 0 50 100 25 255 255 0 200] [osc:/hslider03]",0,0,1,0.001);
+```
+***"vslider"***
+=>  touch move in the UI vertically, scaled from MIN to MAX 
+```
+vslider04 = vslider("vslider04 [motionUI: Vsliders vslider 75 0 25 100 255 255 255 200] [osc:/vslider04]",0,0,1,0.001);
+```
+
+//_Special FaustUI-like types_
+***"trigCounter"***
+=>  "button" trigger, touched up to advance a counter from MIN to MAX in loop
+```
+select_sample = nentry("Trig_Your_Sample [motionUI:SmartFaust trigCounter 50 0 50 50 255 0 0 255]", 1, 1, 10, 1);
+```
+***"pad"***
+touch Pad depending touch position
+=> touch down->1 , touch up->0 (send to FaustUI which declares "pad")
+=> touch move in the UI, coordination X scaled from MIN to MAX sent to FaustUI which declares ending with "_X", coordination Y scaled from MIN to MAX sent to FaustUI which declares ending with "_Y"
+```
+touchGate01 = checkbox("Pad1 [motionUI: Pads pad 0 0 50 50 0 255 255 200] [osc:/pad01]");
+touch01X = hslider("Pad1_X [osc:/pad01x]",0,0,1,0.001);
+touch01Y = hslider("Pad1_Y [osc:/pad01y]",0,0,1,0.001);
+```
+
+//_Special Motion mode actions types_
+***"trigCue"***
+NOTA: an altenative way to not use original Cue Manager interface, Faust UI "/cue" must be declared to activate Cue Manager
+=>  "button" trigger, touched up to trigger "goCue"
+***"nextCue"***
+=>  "button" trigger, touched up to trigger "nextCue"
+***"prevCue"***
+=>  "button" trigger, touched up to trigger "prevCue"
+***"initCue"***
+=>  "button" trigger, touched up to trigger "initCue"
+
+NOTA: special metadata [motionCueManage:] could be declared in Faust UI "/cue" to map Cue Tips and Cue Orders
+```
+cueNum = nentry("cue [motionUI: Cue trigCue 0 0 50 30 255 0 0 150] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
+trigNextCue = button("goNext [motionUI: Cue nextCue 50 30 50 30 255 255 0 150]");
+trigPrevCue = button("goPrev [motionUI: Cue prevCue 0 30 50 30 255 255 0 150]");
+trigInitCue = button("initCue [motionUI: Cue initCue 50 0 50 30 255 255 255 150]");
+```
+
+***"setRef"***
+NOTA: an altenative way to setRef of motion.lib, Faust UI "/setref_rota" need to be declared only if you want to using OSC for example
+=>  "button" trigger, touched up to trigger "setRef"
+```
+trigsetRef = button("setref_rota[osc:/setRef][motionUI: Master setRef 50 0 50 25 0 0 255 255]");
+```
+
+***Please check the exmaple code in examples/2_Motion_Mode***
+
+********
+********
 ### 3) For Faust Non-audio Plugin Support Project
 `       fasut2smartphone -iosplugin/-androidplugin toto.dsp`
 

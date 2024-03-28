@@ -1,4 +1,4 @@
-declare name 		"SoloDemo_motionButton:trigCounter";
+declare name 		"SoloDemo_motionUI:trigCounter";
 declare version 	"4.0";
 declare author 		"Allen";
 
@@ -10,9 +10,9 @@ process = rainGen, windGen, sinusGen :>_,_ ;
 
 
 // declare connection UI
-cueNum = nentry("Trig_Event [motionButton:trigCounter Master 0 0 100 50 255 255 0]",0,0,3,1);
-touchGate = checkbox("OnOff [motionButton:toggle Master 0 50 50 50 0 255 0]");
-volume = hslider("MasterVol [motionButton:touchScreenX Master 50 50 50 50 0 255 255]",0,0,1,0.01);
+cueNum = nentry("Trig_Event [motionUI:Master trigCounter 0 0 100 50 255 255 0 255]",0,0,3,1);
+touchGate = checkbox("OnOff [motionUI:Master checkbox 0 50 50 50 0 255 0 255]");
+volume = hslider("MasterVol [motionUI:Master hslider 50 50 50 50 0 255 255 255]",0,0,1,0.01);
 param = hslider("param[motion:ixp]",0,0,1,0.01);
 
 
