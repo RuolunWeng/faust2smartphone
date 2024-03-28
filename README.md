@@ -163,6 +163,7 @@ touchY = hslider("screeny",0,0,1,0.01);
         
 ```
 ==NEW==
+
 **[motionUI] interface support in iOS Motion Mode**
 
 In your FAUST .dsp file, declare [motionUI] interface you need in metadata, which will positioned in the screen. [motionUI] interface's types have normal types and special funtions:
@@ -181,6 +182,7 @@ In your FAUST .dsp file, declare [motionUI] interface you need in metadata, whic
 
 ###### [motionUI] interface types:
 //_Normal FaustUI-like types_
+
 ***"button"***
 =>  touch down->1, touch up->0
 ```
@@ -203,6 +205,7 @@ vslider04 = vslider("vslider04 [motionUI: Vsliders vslider 75 0 25 100 255 255 2
 ```
 
 //_Special FaustUI-like types_
+
 ***"trigCounter"***
 =>  "button" trigger, touched up to advance a counter from MIN to MAX in loop
 ```
@@ -219,8 +222,11 @@ touch01Y = hslider("Pad1_Y [osc:/pad01y]",0,0,1,0.001);
 ```
 
 //_Special Motion mode actions types_
+
 ***"trigCue"***
+
 NOTA: an altenative way to not use original Cue Manager interface, Faust UI "/cue" must be declared to activate Cue Manager
+
 =>  "button" trigger, touched up to trigger "goCue"
 ***"nextCue"***
 =>  "button" trigger, touched up to trigger "nextCue"
@@ -230,6 +236,7 @@ NOTA: an altenative way to not use original Cue Manager interface, Faust UI "/cu
 =>  "button" trigger, touched up to trigger "initCue"
 
 NOTA: special metadata [motionCueManage:] could be declared in Faust UI "/cue" to map Cue Tips and Cue Orders
+
 ```
 cueNum = nentry("cue [motionUI: Cue trigCue 0 0 50 30 255 0 0 150] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
 trigNextCue = button("goNext [motionUI: Cue nextCue 50 30 50 30 255 255 0 150]");
@@ -238,7 +245,9 @@ trigInitCue = button("initCue [motionUI: Cue initCue 50 0 50 30 255 255 255 150]
 ```
 
 ***"setRef"***
+
 NOTA: an altenative way to setRef of motion.lib, Faust UI "/setref_rota" need to be declared only if you want to using OSC for example
+
 =>  "button" trigger, touched up to trigger "setRef"
 ```
 trigsetRef = button("setref_rota[osc:/setRef][motionUI: Master setRef 50 0 50 25 0 0 255 255]");
