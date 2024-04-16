@@ -448,136 +448,95 @@ void DspFaust::initFrame(){
     matrixB[2][0] =(1/detA)*(a21*a32-a22*a31);
     matrixB[2][1] =(1/detA)*(a12*a31-a11*a32);
     matrixB[2][2] =(1/detA)*(a11*a22-a12*a21);
-    
-    // basic setRef used with SHC & GuitareMotion
-    matrixD[0][0] =a11;
-    matrixD[0][1] =a12;
-    matrixD[0][2] =a13;
-
-    matrixD[1][0] =a21;
-    matrixD[1][1] =a22;
-    matrixD[1][2] =a23;
-
-    matrixD[2][0] =a31;
-    matrixD[2][1] =a32;
-    matrixD[2][2] =a33;
 
 }
 
 
-    void DspFaust::checkAdress() {
+void DspFaust::checkAdress() {
 
-        paramsMotionNum = fDSPFAUSTMOTION->getOutputChannelNum();
+    paramsMotionNum = fDSPFAUSTMOTION->getOutputChannelNum();
 
 
-        for(int i=0; i<fDSPFAUSTMOTION->getParamsCount(); i++){
-            const char* data = fDSPFAUSTMOTION->getMetadata(i, "motionName");
-            if (strcmp(data, "") != 0) {
-                paramsMotionGates.push_back(fDSPFAUSTMOTION->getParamAddress(i));
-                paramsKeys.push_back(data);
-                paramsOn.push_back(false);
-                paramsAddressList.push_back(AddressInit);
+    for(int i=0; i<fDSPFAUSTMOTION->getParamsCount(); i++){
+        const char* data = fDSPFAUSTMOTION->getMetadata(i, "motionName");
+        if (strcmp(data, "") != 0) {
+            paramsMotionGates.push_back(fDSPFAUSTMOTION->getParamAddress(i));
+            paramsKeys.push_back(data);
+            paramsOn.push_back(false);
+            paramsAddressList.push_back(AddressInit);
+        }
+    }
+
+    for(int i=0; i<getParamsCount(); i++){
+        const char* data = getMetadata(i, "motion");
+        for (int p=0; p< paramsMotionNum; p++) {
+            if (MapUI::endsWith(data,paramsKeys[p])) {
+                paramsOn[p] = true;
+                paramsAddressList[p].push_back(getParamAddress(i));
+                fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
             }
         }
 
-        for(int i=0; i<getParamsCount(); i++){
-            const char* data = getMetadata(i, "motion");
-            for (int p=0; p< paramsMotionNum; p++) {
-                if (MapUI::endsWith(data,paramsKeys[p])) {
-                    paramsOn[p] = true;
-                    paramsAddressList[p].push_back(getParamAddress(i));
-                    fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
-                }
+    }
+}
+
+
+void  DspFaust::sendMotion()  {
+
+    for (int i=0; i< paramsMotionNum; i++) {
+        if (paramsOn[i]) {
+            for (int j=0; j< paramsAddressList[i].size(); j++) {
+                setParamValue(paramsAddressList[i][j].c_str(), fDSPFAUSTMOTION->getOutput(i));
             }
 
         }
     }
 
-
-    void  DspFaust::sendMotion()  {
-
-        for (int i=0; i< paramsMotionNum; i++) {
-            if (paramsOn[i]) {
-                for (int j=0; j< paramsAddressList[i].size(); j++) {
-                    setParamValue(paramsAddressList[i][j].c_str(), fDSPFAUSTMOTION->getOutput(i));
-                }
-
-            }
-        }
-
-    }
+}
 
 
-    void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m6,float m7,float m8,float m9){
+void DspFaust::motionRender(float m1,float m2,float m3,float m4,float m5,float m6,float m7,float m8,float m9){
 
-        matrixA[0][0] = m1;
-        matrixA[0][1] = m2;
-        matrixA[0][2] = m3;
-        matrixA[1][0] = m4;
-        matrixA[1][1] = m5;
-        matrixA[1][2] = m6;
-        matrixA[2][0] = m7;
-        matrixA[2][1] = m8;
-        matrixA[2][2] = m9;
+    matrixA[0][0] = m1;
+    matrixA[0][1] = m2;
+    matrixA[0][2] = m3;
+    matrixA[1][0] = m4;
+    matrixA[1][1] = m5;
+    matrixA[1][2] = m6;
+    matrixA[2][0] = m7;
+    matrixA[2][1] = m8;
+    matrixA[2][2] = m9;
 
-        // Initializing elements of matrix mult to 0.
-        // Multiplication de matrix
-        for(int i = 0; i < 3; i++)
+    // Initializing elements of matrix mult to 0.
+    // Multiplication de matrix
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
         {
-            for(int j = 0; j < 3; j++)
-            {
-                matrixC[i][j] = 0;
+            matrixC[i][j] = 0;
+        }
+    }
+
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            for(int k = 0; k < 3; k++){
+                matrixC[i][j] += matrixA[i][k]* matrixB[k][j];
             }
         }
-
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
-                for(int k = 0; k < 3; k++){
-                    matrixC[i][j] += matrixA[i][k]* matrixB[k][j];
-                }
-            }
-        }
-
-    // orientation axe des X
-    //r00_out = r00*r00_Ref + r10*r10_Ref + r20*r20_Ref;
-    //r01_out = r01*r00_Ref + r11*r10_Ref + r21*r20_Ref;
-    //r02_out = r02*r00_Ref + r12*r10_Ref + r22*r20_Ref;
-    float r00_out = m1 * matrixD[0][0] + m4 * matrixD[1][0] + m7 * matrixD[2][0];
-    float r01_out = m2 * matrixD[0][0] + m5 * matrixD[1][0] + m8 * matrixD[2][0];
-    float r02_out = m3 * matrixD[0][0] + m6 * matrixD[1][0] + m9 * matrixD[2][0];
-
-    // orientation axe des Y
-    // r10_out = (r00*r01_Ref + r10*r11_Ref + r20*r21_Ref)*(-1);
-    // r11_out = r01*r01_Ref + r11*r11_Ref + r21*r21_Ref;
-    // r12_out = (r02*r01_Ref + r12*r11_Ref + r22*r21_Ref)*(-1);
-    float r10_out = m1 * matrixD[0][1] + m4 * matrixD[1][1] + m7 * matrixD[2][1];
-    float r11_out = m2 * matrixD[0][1] + m5 * matrixD[1][1] + m8 * matrixD[2][1];
-    float r12_out = m3 * matrixD[0][1] + m6 * matrixD[1][1] + m9 * matrixD[2][1];
-
-    // orientation axe des Z
-    //r20_out = r00*r02_Ref + r10*r12_Ref + r20*r22_Ref;
-    //r21_out = r01*r02_Ref + r11*r12_Ref + r21*r22_Ref;
-    //r22_out = r02*r02_Ref + r12*r12_Ref + r22*r22_Ref;
-    float r20_out = m1 * matrixD[0][2] + m4 * matrixD[1][2] + m7 * matrixD[2][2];
-    float r21_out = m2 * matrixD[0][2] + m5 * matrixD[1][2] + m8 * matrixD[2][2];
-    float r22_out = m3 * matrixD[0][2] + m6 * matrixD[1][2] + m9 * matrixD[2][2];
+    }
 
     // brasG
     fDSPFAUSTMOTION->setInput(0, matrixC[0][0]);
     fDSPFAUSTMOTION->setInput(1, matrixC[0][1]);
     fDSPFAUSTMOTION->setInput(2, matrixC[0][2]);
-
     // pieds
     fDSPFAUSTMOTION->setInput(3, (-1)*matrixC[1][0]);
     fDSPFAUSTMOTION->setInput(4, (-1)*matrixC[1][1]);
     fDSPFAUSTMOTION->setInput(5, (-1)*matrixC[1][2]);
-
     // dos
     fDSPFAUSTMOTION->setInput(6, (-1)*matrixC[2][0]);
     fDSPFAUSTMOTION->setInput(7, (-1)*matrixC[2][1]);
     fDSPFAUSTMOTION->setInput(8, (-1)*matrixC[2][2]);
-
-
     // brasD
     fDSPFAUSTMOTION->setInput(9, (-1)*matrixC[0][0]);
     fDSPFAUSTMOTION->setInput(10, (-1)*matrixC[0][1]);
@@ -590,17 +549,6 @@ void DspFaust::initFrame(){
     fDSPFAUSTMOTION->setInput(15, matrixC[2][0]);
     fDSPFAUSTMOTION->setInput(16, matrixC[2][1]);
     fDSPFAUSTMOTION->setInput(17, matrixC[2][2]);
-
-    // matrix data out usefull SHC or GuitareMotion
-    fDSPFAUSTMOTION->setInput(18, r00_out); // MXx
-    fDSPFAUSTMOTION->setInput(19, r01_out); // MXy
-    fDSPFAUSTMOTION->setInput(20, r02_out); // MXz
-    fDSPFAUSTMOTION->setInput(21, r10_out); // MYx
-    fDSPFAUSTMOTION->setInput(22, r11_out); // MYy
-    fDSPFAUSTMOTION->setInput(23, r12_out); // MYz
-    fDSPFAUSTMOTION->setInput(24, r20_out); // MZx
-    fDSPFAUSTMOTION->setInput(25, r21_out); // MZy
-    fDSPFAUSTMOTION->setInput(26, r22_out); // MZz
 
     fDSPFAUSTMOTION->render();
 

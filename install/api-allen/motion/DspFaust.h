@@ -1,7 +1,5 @@
 #include <vector>
 #include <string>
-#include <vector>
-#include <string>
 /************************************************************************
  ************************************************************************
  FAUST API Architecture File
@@ -483,12 +481,10 @@ private:
 
     void init(dsp* mono_dsp,audio* driver);
 
-    //-------------- dspFaust.h
-    float matrixA[3][3]; // realtime input Data from IMU9
-    float matrixB[3][3]; // matrix setRef with Absolute orientation technique ( like Mpod )
-    float matrixC[3][3]; // Matrix data out use for absolute orientation ( like Mpod )
-    float matrixD[3][3]; // Matrix setRef basic ( usefull for SHC & GuitareMotion )
-    
+    float matrixA[3][3];
+    float matrixB[3][3];
+    float matrixC[3][3];
+
     int paramsMotionNum;
     std::vector<std::string>AddressInit;
     std::vector< std::vector<std::string> >paramsAddressList;
