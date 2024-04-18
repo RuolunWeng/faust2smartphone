@@ -153,9 +153,9 @@ void DspFaust::init(dsp* mono_dsp,audio* driver){
     argv[7] = "-outport";
     argv[8] = OSC_OUT_PORT;
     argv[9] = "-bundle";
-    argv[10] = "0";
+    argv[10] = "1";
     fOSCUI = new OSCUI("Faust", 11, (char**)argv);
-    driver->addControlCallback(osc_compute_callback, fOSCUI);
+    //driver->addControlCallback(osc_compute_callback, fOSCUI);
     fPolyEngine->buildUserInterface(fOSCUI);
 #endif
 
@@ -605,7 +605,11 @@ void DspFaust::initFrame(){
     fDSPFAUSTMOTION->render();
 
     sendMotion();
-
+        
+#if OSCCTRL
+    fOSCUI->endBundle();
+#endif
+    
     GUI::updateAllGuis();
 
 }

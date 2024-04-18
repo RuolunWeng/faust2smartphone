@@ -8275,210 +8275,95 @@ class mydsp2 : public dsp {
 	float fTempPerm107;
 	float fRec67[2];
 	float fTempPerm108;
-	FAUSTFLOAT fCheckbox45;
-	float fConst8;
-	float fConst9;
-	FAUSTFLOAT fHslider37;
-	FAUSTFLOAT fCheckbox46;
-	FAUSTFLOAT fCheckbox47;
-	FAUSTFLOAT fCheckbox48;
-	FAUSTFLOAT fCheckbox49;
-	FAUSTFLOAT fCheckbox50;
 	float fTempPerm109;
 	float fTempPerm110;
 	float fTempPerm111;
 	float fTempPerm112;
 	float fTempPerm113;
-	float fRec68[2];
 	float fTempPerm114;
-	FAUSTFLOAT fHslider38;
+	FAUSTFLOAT fCheckbox45;
 	float fTempPerm115;
-	float fRec69[2];
+	FAUSTFLOAT fCheckbox46;
 	float fTempPerm116;
-	FAUSTFLOAT fHslider39;
-	float fRec70[2];
+	FAUSTFLOAT fCheckbox47;
+	FAUSTFLOAT fHslider37;
+	FAUSTFLOAT fCheckbox48;
+	FAUSTFLOAT fCheckbox49;
+	FAUSTFLOAT fCheckbox50;
 	float fTempPerm117;
-	FAUSTFLOAT fHslider40;
-	float fRec71[2];
 	float fTempPerm118;
-	FAUSTFLOAT fHslider41;
-	float fRec72[2];
 	float fTempPerm119;
-	FAUSTFLOAT fHslider42;
-	float fRec73[2];
 	float fTempPerm120;
 	FAUSTFLOAT fCheckbox51;
 	FAUSTFLOAT fCheckbox52;
 	FAUSTFLOAT fCheckbox53;
-	FAUSTFLOAT fCheckbox54;
-	FAUSTFLOAT fCheckbox55;
-	FAUSTFLOAT fCheckbox56;
 	float fTempPerm121;
 	float fTempPerm122;
 	float fTempPerm123;
 	float fTempPerm124;
+	FAUSTFLOAT fCheckbox54;
+	FAUSTFLOAT fCheckbox55;
+	FAUSTFLOAT fCheckbox56;
 	float fTempPerm125;
-	float fRec74[2];
 	float fTempPerm126;
 	float fTempPerm127;
 	float fTempPerm128;
-	float fRec75[2];
-	float fTempPerm129;
-	float fRec76[2];
-	float fTempPerm130;
-	float fRec77[2];
-	float fTempPerm131;
-	float fTempPerm132;
-	float fRec78[2];
-	float fTempPerm133;
-	float fRec79[2];
-	float fTempPerm134;
 	FAUSTFLOAT fCheckbox57;
 	FAUSTFLOAT fCheckbox58;
 	FAUSTFLOAT fCheckbox59;
 	FAUSTFLOAT fCheckbox60;
+	float fTempPerm129;
+	float fTempPerm130;
+	float fTempPerm131;
+	float fTempPerm132;
 	FAUSTFLOAT fCheckbox61;
 	FAUSTFLOAT fCheckbox62;
 	FAUSTFLOAT fCheckbox63;
+	float fTempPerm133;
+	float fTempPerm134;
 	float fTempPerm135;
-	FAUSTFLOAT fCheckbox64;
 	float fTempPerm136;
+	FAUSTFLOAT fCheckbox64;
+	FAUSTFLOAT fCheckbox65;
+	FAUSTFLOAT fCheckbox66;
 	float fTempPerm137;
 	float fTempPerm138;
 	float fTempPerm139;
-	float fRec80[2];
 	float fTempPerm140;
-	float fTempPerm141;
-	float fRec81[2];
-	float fTempPerm142;
-	float fRec82[2];
-	float fTempPerm143;
-	float fRec83[2];
-	float fTempPerm144;
-	float fRec84[2];
-	float fTempPerm145;
-	float fRec85[2];
-	float fTempPerm146;
-	FAUSTFLOAT fCheckbox65;
-	FAUSTFLOAT fCheckbox66;
 	FAUSTFLOAT fCheckbox67;
 	FAUSTFLOAT fCheckbox68;
 	FAUSTFLOAT fCheckbox69;
 	FAUSTFLOAT fCheckbox70;
-	float fTempPerm147;
-	float fTempPerm148;
-	float fTempPerm149;
-	float fTempPerm150;
-	float fTempPerm151;
-	float fRec86[2];
-	float fTempPerm152;
-	float fTempPerm153;
-	float fRec87[2];
-	float fTempPerm154;
-	float fRec88[2];
-	float fTempPerm155;
-	float fRec89[2];
-	float fTempPerm156;
-	float fRec90[2];
-	float fTempPerm157;
-	float fRec91[2];
-	float fTempPerm158;
+	float fTempPerm141;
+	float fTempPerm142;
+	float fTempPerm143;
+	float fTempPerm144;
 	FAUSTFLOAT fCheckbox71;
 	FAUSTFLOAT fCheckbox72;
 	FAUSTFLOAT fCheckbox73;
+	float fTempPerm145;
+	float fTempPerm146;
+	float fTempPerm147;
+	float fTempPerm148;
 	FAUSTFLOAT fCheckbox74;
 	FAUSTFLOAT fCheckbox75;
 	FAUSTFLOAT fCheckbox76;
-	float fTempPerm159;
-	float fTempPerm160;
-	float fTempPerm161;
-	float fTempPerm162;
-	float fTempPerm163;
-	float fRec92[2];
-	float fTempPerm164;
-	float fTempPerm165;
-	float fRec93[2];
-	float fTempPerm166;
-	float fRec94[2];
-	float fTempPerm167;
-	float fRec95[2];
-	float fTempPerm168;
-	float fRec96[2];
-	float fTempPerm169;
-	float fRec97[2];
-	float fTempPerm170;
-	FAUSTFLOAT fCheckbox77;
-	FAUSTFLOAT fCheckbox78;
-	FAUSTFLOAT fCheckbox79;
-	FAUSTFLOAT fCheckbox80;
-	FAUSTFLOAT fCheckbox81;
-	FAUSTFLOAT fCheckbox82;
-	float fTempPerm171;
-	float fTempPerm172;
-	float fTempPerm173;
-	float fTempPerm174;
-	float fTempPerm175;
-	float fRec98[2];
-	float fTempPerm176;
-	float fTempPerm177;
-	float fTempPerm178;
-	float fRec99[2];
-	float fTempPerm179;
-	float fRec100[2];
-	float fTempPerm180;
-	float fRec101[2];
-	float fTempPerm181;
-	float fTempPerm182;
-	float fRec102[2];
-	float fTempPerm183;
-	float fRec103[2];
-	float fTempPerm184;
-	float fTempPerm185;
-	float fTempPerm186;
-	float fTempPerm187;
-	float fTempPerm188;
-	float fTempPerm189;
-	float fTempPerm190;
-	float fTempPerm191;
-	float fTempPerm192;
-	FAUSTFLOAT fCheckbox83;
-	FAUSTFLOAT fHslider43;
-	FAUSTFLOAT fCheckbox84;
-	float fTempPerm193;
-	float fTempPerm194;
-	FAUSTFLOAT fCheckbox85;
-	float fTempPerm195;
-	float fTempPerm196;
-	FAUSTFLOAT fCheckbox86;
-	float fTempPerm197;
-	float fTempPerm198;
-	FAUSTFLOAT fCheckbox87;
-	FAUSTFLOAT fCheckbox88;
-	float fTempPerm199;
-	float fTempPerm200;
-	FAUSTFLOAT fCheckbox89;
-	float fTempPerm201;
-	float fTempPerm202;
-	FAUSTFLOAT fCheckbox90;
-	float fTempPerm203;
-	float fTempPerm204;
-	FAUSTFLOAT fCheckbox91;
-	FAUSTFLOAT fCheckbox92;
-	float fTempPerm205;
-	float fTempPerm206;
-	FAUSTFLOAT fCheckbox93;
-	float fTempPerm207;
-	float fTempPerm208;
-	FAUSTFLOAT fCheckbox94;
-	float fTempPerm209;
-	float fTempPerm210;
-	float fRec104[2];
-	float fTempPerm211;
-	float fRec105[2];
-	float fTempPerm212;
-	float fRec106[2];
-	float fTempPerm213;
-	float fTempPerm214;
+	float fTempPerm149;
+	float fTempPerm150;
+	float fTempPerm151;
+	float fTempPerm152;
+	float fConst8;
+	float fConst9;
+	FAUSTFLOAT fHslider38;
+	float fRec68[2];
+	float fTempPerm153;
+	FAUSTFLOAT fHslider39;
+	float fRec69[2];
+	float fTempPerm154;
+	FAUSTFLOAT fHslider40;
+	float fRec70[2];
+	float fTempPerm155;
+	float fTempPerm156;
 	
  public:
 	mydsp2() {}
@@ -8535,7 +8420,7 @@ class mydsp2 : public dsp {
 		return 27;
 	}
 	virtual int getNumOutputs() {
-		return 95;
+		return 77;
 	}
 	
 	static void classInit(int sample_rate) {
@@ -8639,17 +8524,12 @@ class mydsp2 : public dsp {
 		fCheckbox44 = FAUSTFLOAT(0.0f);
 		fHslider36 = FAUSTFLOAT(0.0f);
 		fCheckbox45 = FAUSTFLOAT(0.0f);
-		fHslider37 = FAUSTFLOAT(1.0f);
 		fCheckbox46 = FAUSTFLOAT(0.0f);
 		fCheckbox47 = FAUSTFLOAT(0.0f);
+		fHslider37 = FAUSTFLOAT(1.0f);
 		fCheckbox48 = FAUSTFLOAT(0.0f);
 		fCheckbox49 = FAUSTFLOAT(0.0f);
 		fCheckbox50 = FAUSTFLOAT(0.0f);
-		fHslider38 = FAUSTFLOAT(1.0f);
-		fHslider39 = FAUSTFLOAT(1.0f);
-		fHslider40 = FAUSTFLOAT(1.0f);
-		fHslider41 = FAUSTFLOAT(1.0f);
-		fHslider42 = FAUSTFLOAT(1.0f);
 		fCheckbox51 = FAUSTFLOAT(0.0f);
 		fCheckbox52 = FAUSTFLOAT(0.0f);
 		fCheckbox53 = FAUSTFLOAT(0.0f);
@@ -8676,25 +8556,9 @@ class mydsp2 : public dsp {
 		fCheckbox74 = FAUSTFLOAT(0.0f);
 		fCheckbox75 = FAUSTFLOAT(0.0f);
 		fCheckbox76 = FAUSTFLOAT(0.0f);
-		fCheckbox77 = FAUSTFLOAT(0.0f);
-		fCheckbox78 = FAUSTFLOAT(0.0f);
-		fCheckbox79 = FAUSTFLOAT(0.0f);
-		fCheckbox80 = FAUSTFLOAT(0.0f);
-		fCheckbox81 = FAUSTFLOAT(0.0f);
-		fCheckbox82 = FAUSTFLOAT(0.0f);
-		fCheckbox83 = FAUSTFLOAT(0.0f);
-		fHslider43 = FAUSTFLOAT(1.0f);
-		fCheckbox84 = FAUSTFLOAT(0.0f);
-		fCheckbox85 = FAUSTFLOAT(0.0f);
-		fCheckbox86 = FAUSTFLOAT(0.0f);
-		fCheckbox87 = FAUSTFLOAT(0.0f);
-		fCheckbox88 = FAUSTFLOAT(0.0f);
-		fCheckbox89 = FAUSTFLOAT(0.0f);
-		fCheckbox90 = FAUSTFLOAT(0.0f);
-		fCheckbox91 = FAUSTFLOAT(0.0f);
-		fCheckbox92 = FAUSTFLOAT(0.0f);
-		fCheckbox93 = FAUSTFLOAT(0.0f);
-		fCheckbox94 = FAUSTFLOAT(0.0f);
+		fHslider38 = FAUSTFLOAT(1.0f);
+		fHslider39 = FAUSTFLOAT(1.0f);
+		fHslider40 = FAUSTFLOAT(1.0f);
 	}
 	
 	virtual void instanceClear() {
@@ -9079,224 +8943,58 @@ class mydsp2 : public dsp {
 		fTempPerm111 = 0.0f;
 		fTempPerm112 = 0.0f;
 		fTempPerm113 = 0.0f;
-		for (int l89 = 0; l89 < 2; l89 = l89 + 1) {
-			fRec68[l89] = 0.0f;
-		}
 		fTempPerm114 = 0.0f;
 		fTempPerm115 = 0.0f;
-		for (int l90 = 0; l90 < 2; l90 = l90 + 1) {
-			fRec69[l90] = 0.0f;
-		}
 		fTempPerm116 = 0.0f;
-		for (int l91 = 0; l91 < 2; l91 = l91 + 1) {
-			fRec70[l91] = 0.0f;
-		}
 		fTempPerm117 = 0.0f;
-		for (int l92 = 0; l92 < 2; l92 = l92 + 1) {
-			fRec71[l92] = 0.0f;
-		}
 		fTempPerm118 = 0.0f;
-		for (int l93 = 0; l93 < 2; l93 = l93 + 1) {
-			fRec72[l93] = 0.0f;
-		}
 		fTempPerm119 = 0.0f;
-		for (int l94 = 0; l94 < 2; l94 = l94 + 1) {
-			fRec73[l94] = 0.0f;
-		}
 		fTempPerm120 = 0.0f;
 		fTempPerm121 = 0.0f;
 		fTempPerm122 = 0.0f;
 		fTempPerm123 = 0.0f;
 		fTempPerm124 = 0.0f;
 		fTempPerm125 = 0.0f;
-		for (int l95 = 0; l95 < 2; l95 = l95 + 1) {
-			fRec74[l95] = 0.0f;
-		}
 		fTempPerm126 = 0.0f;
 		fTempPerm127 = 0.0f;
 		fTempPerm128 = 0.0f;
-		for (int l96 = 0; l96 < 2; l96 = l96 + 1) {
-			fRec75[l96] = 0.0f;
-		}
 		fTempPerm129 = 0.0f;
-		for (int l97 = 0; l97 < 2; l97 = l97 + 1) {
-			fRec76[l97] = 0.0f;
-		}
 		fTempPerm130 = 0.0f;
-		for (int l98 = 0; l98 < 2; l98 = l98 + 1) {
-			fRec77[l98] = 0.0f;
-		}
 		fTempPerm131 = 0.0f;
 		fTempPerm132 = 0.0f;
-		for (int l99 = 0; l99 < 2; l99 = l99 + 1) {
-			fRec78[l99] = 0.0f;
-		}
 		fTempPerm133 = 0.0f;
-		for (int l100 = 0; l100 < 2; l100 = l100 + 1) {
-			fRec79[l100] = 0.0f;
-		}
 		fTempPerm134 = 0.0f;
 		fTempPerm135 = 0.0f;
 		fTempPerm136 = 0.0f;
 		fTempPerm137 = 0.0f;
 		fTempPerm138 = 0.0f;
 		fTempPerm139 = 0.0f;
-		for (int l101 = 0; l101 < 2; l101 = l101 + 1) {
-			fRec80[l101] = 0.0f;
-		}
 		fTempPerm140 = 0.0f;
 		fTempPerm141 = 0.0f;
-		for (int l102 = 0; l102 < 2; l102 = l102 + 1) {
-			fRec81[l102] = 0.0f;
-		}
 		fTempPerm142 = 0.0f;
-		for (int l103 = 0; l103 < 2; l103 = l103 + 1) {
-			fRec82[l103] = 0.0f;
-		}
 		fTempPerm143 = 0.0f;
-		for (int l104 = 0; l104 < 2; l104 = l104 + 1) {
-			fRec83[l104] = 0.0f;
-		}
 		fTempPerm144 = 0.0f;
-		for (int l105 = 0; l105 < 2; l105 = l105 + 1) {
-			fRec84[l105] = 0.0f;
-		}
 		fTempPerm145 = 0.0f;
-		for (int l106 = 0; l106 < 2; l106 = l106 + 1) {
-			fRec85[l106] = 0.0f;
-		}
 		fTempPerm146 = 0.0f;
 		fTempPerm147 = 0.0f;
 		fTempPerm148 = 0.0f;
 		fTempPerm149 = 0.0f;
 		fTempPerm150 = 0.0f;
 		fTempPerm151 = 0.0f;
-		for (int l107 = 0; l107 < 2; l107 = l107 + 1) {
-			fRec86[l107] = 0.0f;
-		}
 		fTempPerm152 = 0.0f;
+		for (int l89 = 0; l89 < 2; l89 = l89 + 1) {
+			fRec68[l89] = 0.0f;
+		}
 		fTempPerm153 = 0.0f;
-		for (int l108 = 0; l108 < 2; l108 = l108 + 1) {
-			fRec87[l108] = 0.0f;
+		for (int l90 = 0; l90 < 2; l90 = l90 + 1) {
+			fRec69[l90] = 0.0f;
 		}
 		fTempPerm154 = 0.0f;
-		for (int l109 = 0; l109 < 2; l109 = l109 + 1) {
-			fRec88[l109] = 0.0f;
+		for (int l91 = 0; l91 < 2; l91 = l91 + 1) {
+			fRec70[l91] = 0.0f;
 		}
 		fTempPerm155 = 0.0f;
-		for (int l110 = 0; l110 < 2; l110 = l110 + 1) {
-			fRec89[l110] = 0.0f;
-		}
 		fTempPerm156 = 0.0f;
-		for (int l111 = 0; l111 < 2; l111 = l111 + 1) {
-			fRec90[l111] = 0.0f;
-		}
-		fTempPerm157 = 0.0f;
-		for (int l112 = 0; l112 < 2; l112 = l112 + 1) {
-			fRec91[l112] = 0.0f;
-		}
-		fTempPerm158 = 0.0f;
-		fTempPerm159 = 0.0f;
-		fTempPerm160 = 0.0f;
-		fTempPerm161 = 0.0f;
-		fTempPerm162 = 0.0f;
-		fTempPerm163 = 0.0f;
-		for (int l113 = 0; l113 < 2; l113 = l113 + 1) {
-			fRec92[l113] = 0.0f;
-		}
-		fTempPerm164 = 0.0f;
-		fTempPerm165 = 0.0f;
-		for (int l114 = 0; l114 < 2; l114 = l114 + 1) {
-			fRec93[l114] = 0.0f;
-		}
-		fTempPerm166 = 0.0f;
-		for (int l115 = 0; l115 < 2; l115 = l115 + 1) {
-			fRec94[l115] = 0.0f;
-		}
-		fTempPerm167 = 0.0f;
-		for (int l116 = 0; l116 < 2; l116 = l116 + 1) {
-			fRec95[l116] = 0.0f;
-		}
-		fTempPerm168 = 0.0f;
-		for (int l117 = 0; l117 < 2; l117 = l117 + 1) {
-			fRec96[l117] = 0.0f;
-		}
-		fTempPerm169 = 0.0f;
-		for (int l118 = 0; l118 < 2; l118 = l118 + 1) {
-			fRec97[l118] = 0.0f;
-		}
-		fTempPerm170 = 0.0f;
-		fTempPerm171 = 0.0f;
-		fTempPerm172 = 0.0f;
-		fTempPerm173 = 0.0f;
-		fTempPerm174 = 0.0f;
-		fTempPerm175 = 0.0f;
-		for (int l119 = 0; l119 < 2; l119 = l119 + 1) {
-			fRec98[l119] = 0.0f;
-		}
-		fTempPerm176 = 0.0f;
-		fTempPerm177 = 0.0f;
-		fTempPerm178 = 0.0f;
-		for (int l120 = 0; l120 < 2; l120 = l120 + 1) {
-			fRec99[l120] = 0.0f;
-		}
-		fTempPerm179 = 0.0f;
-		for (int l121 = 0; l121 < 2; l121 = l121 + 1) {
-			fRec100[l121] = 0.0f;
-		}
-		fTempPerm180 = 0.0f;
-		for (int l122 = 0; l122 < 2; l122 = l122 + 1) {
-			fRec101[l122] = 0.0f;
-		}
-		fTempPerm181 = 0.0f;
-		fTempPerm182 = 0.0f;
-		for (int l123 = 0; l123 < 2; l123 = l123 + 1) {
-			fRec102[l123] = 0.0f;
-		}
-		fTempPerm183 = 0.0f;
-		for (int l124 = 0; l124 < 2; l124 = l124 + 1) {
-			fRec103[l124] = 0.0f;
-		}
-		fTempPerm184 = 0.0f;
-		fTempPerm185 = 0.0f;
-		fTempPerm186 = 0.0f;
-		fTempPerm187 = 0.0f;
-		fTempPerm188 = 0.0f;
-		fTempPerm189 = 0.0f;
-		fTempPerm190 = 0.0f;
-		fTempPerm191 = 0.0f;
-		fTempPerm192 = 0.0f;
-		fTempPerm193 = 0.0f;
-		fTempPerm194 = 0.0f;
-		fTempPerm195 = 0.0f;
-		fTempPerm196 = 0.0f;
-		fTempPerm197 = 0.0f;
-		fTempPerm198 = 0.0f;
-		fTempPerm199 = 0.0f;
-		fTempPerm200 = 0.0f;
-		fTempPerm201 = 0.0f;
-		fTempPerm202 = 0.0f;
-		fTempPerm203 = 0.0f;
-		fTempPerm204 = 0.0f;
-		fTempPerm205 = 0.0f;
-		fTempPerm206 = 0.0f;
-		fTempPerm207 = 0.0f;
-		fTempPerm208 = 0.0f;
-		fTempPerm209 = 0.0f;
-		fTempPerm210 = 0.0f;
-		for (int l125 = 0; l125 < 2; l125 = l125 + 1) {
-			fRec104[l125] = 0.0f;
-		}
-		fTempPerm211 = 0.0f;
-		for (int l126 = 0; l126 < 2; l126 = l126 + 1) {
-			fRec105[l126] = 0.0f;
-		}
-		fTempPerm212 = 0.0f;
-		for (int l127 = 0; l127 < 2; l127 = l127 + 1) {
-			fRec106[l127] = 0.0f;
-		}
-		fTempPerm213 = 0.0f;
-		fTempPerm214 = 0.0f;
 	}
 	
 	virtual void init(int sample_rate) {
@@ -9350,73 +9048,12 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox15, "09", "");
 		ui_interface->declare(&fCheckbox15, "motionName", "ixn");
 		ui_interface->addCheckButton("ixnOn", &fCheckbox15);
-		ui_interface->declare(&fHslider0, "101", "");
-		ui_interface->declare(&fHslider0, "showName", "highPass");
-		ui_interface->addHorizontalSlider("hp_Param", &fHslider0, FAUSTFLOAT(5e+01f), FAUSTFLOAT(1.0f), FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider2, "102", "");
-		ui_interface->declare(&fHslider2, "showName", "shockThred");
-		ui_interface->addHorizontalSlider("shock_thr_Param", &fHslider2, FAUSTFLOAT(0.75f), FAUSTFLOAT(0.1f), FAUSTFLOAT(3.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider3, "103", "");
-		ui_interface->declare(&fHslider3, "showName", "antirebond");
-		ui_interface->declare(&fHslider3, "unit", "ms");
-		ui_interface->addHorizontalSlider("antirebon_Param", &fHslider3, FAUSTFLOAT(75.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fHslider9, "104", "");
-		ui_interface->declare(&fHslider9, "showName", "lowPass");
-		ui_interface->addHorizontalSlider("lp_Param", &fHslider9, FAUSTFLOAT(1.5f), FAUSTFLOAT(0.1f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider16, "105", "");
-		ui_interface->declare(&fHslider16, "showName", "osfproj");
-		ui_interface->addHorizontalSlider("osfproj_Param", &fHslider16, FAUSTFLOAT(0.08f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.33f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider25, "106", "");
-		ui_interface->declare(&fHslider25, "showName", "accThred");
-		ui_interface->addHorizontalSlider("tacc_thr_Param", &fHslider25, FAUSTFLOAT(0.1f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider23, "107", "");
-		ui_interface->declare(&fHslider23, "showName", "accGain");
-		ui_interface->addHorizontalSlider("tacc_gain_Param", &fHslider23, FAUSTFLOAT(1.35f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider27, "108", "");
-		ui_interface->declare(&fHslider27, "showName", "accEvUp");
-		ui_interface->addHorizontalSlider("tacc_up_Param", &fHslider27, FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fHslider26, "109", "");
-		ui_interface->declare(&fHslider26, "showName", "accEvDown");
-		ui_interface->addHorizontalSlider("tacc_down_Param", &fHslider26, FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
 		ui_interface->declare(&fCheckbox16, "10", "");
 		ui_interface->declare(&fCheckbox16, "motionName", "iyn");
 		ui_interface->addCheckButton("iynOn", &fCheckbox16);
-		ui_interface->declare(&fHslider32, "110", "");
-		ui_interface->declare(&fHslider32, "showName", "gyoThred");
-		ui_interface->addHorizontalSlider("tgyr_thr_Param", &fHslider32, FAUSTFLOAT(0.01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.001f));
-		ui_interface->declare(&fHslider30, "111", "");
-		ui_interface->declare(&fHslider30, "showName", "gyoGain");
-		ui_interface->addHorizontalSlider("tgyr_gain_Param", &fHslider30, FAUSTFLOAT(0.79f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider34, "112", "");
-		ui_interface->declare(&fHslider34, "showName", "gyoEvUp");
-		ui_interface->addHorizontalSlider("tgyr_up_Param", &fHslider34, FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fHslider33, "113", "");
-		ui_interface->declare(&fHslider33, "showName", "gyoEvDown");
-		ui_interface->addHorizontalSlider("tgyr_down_Param", &fHslider33, FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fHslider37, "114", "");
-		ui_interface->declare(&fHslider37, "showName", "shapeCour");
-		ui_interface->addHorizontalSlider("shapeCour_Param", &fHslider37, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider38, "115", "");
-		ui_interface->declare(&fHslider38, "showName", "shapeRear");
-		ui_interface->addHorizontalSlider("shapeRear_Param", &fHslider38, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider39, "116", "");
-		ui_interface->declare(&fHslider39, "showName", "shapeJardin");
-		ui_interface->addHorizontalSlider("shapeJardin_Param", &fHslider39, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider40, "117", "");
-		ui_interface->declare(&fHslider40, "showName", "shapeFront");
-		ui_interface->addHorizontalSlider("shapeFront_Param", &fHslider40, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider41, "118", "");
-		ui_interface->declare(&fHslider41, "showName", "shapeDown");
-		ui_interface->addHorizontalSlider("shapeDown_Param", &fHslider41, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider42, "119", "");
-		ui_interface->declare(&fHslider42, "showName", "shapeUp");
-		ui_interface->addHorizontalSlider("shapeUp_Param", &fHslider42, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
 		ui_interface->declare(&fCheckbox17, "11", "");
 		ui_interface->declare(&fCheckbox17, "motionName", "izn");
 		ui_interface->addCheckButton("iznOn", &fCheckbox17);
-		ui_interface->declare(&fHslider43, "120", "");
-		ui_interface->declare(&fHslider43, "showName", "gravityGain");
-		ui_interface->addHorizontalSlider("gravityGain_Param", &fHslider43, FAUSTFLOAT(1.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.1f));
 		ui_interface->declare(&fCheckbox18, "12", "");
 		ui_interface->declare(&fCheckbox18, "motionName", "pixp");
 		ui_interface->addCheckButton("pixpOn", &fCheckbox18);
@@ -9441,24 +9078,76 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox28, "19", "");
 		ui_interface->declare(&fCheckbox28, "motionName", "aypn");
 		ui_interface->addCheckButton("aypnOn", &fCheckbox28);
+		ui_interface->declare(&fHslider0, "201", "");
+		ui_interface->declare(&fHslider0, "showName", "highPass");
+		ui_interface->addHorizontalSlider("hp_Param", &fHslider0, FAUSTFLOAT(5e+01f), FAUSTFLOAT(1.0f), FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider2, "202", "");
+		ui_interface->declare(&fHslider2, "showName", "shockThred");
+		ui_interface->addHorizontalSlider("shock_thr_Param", &fHslider2, FAUSTFLOAT(0.75f), FAUSTFLOAT(0.1f), FAUSTFLOAT(3.0f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider3, "203", "");
+		ui_interface->declare(&fHslider3, "showName", "antirebond");
+		ui_interface->declare(&fHslider3, "unit", "ms");
+		ui_interface->addHorizontalSlider("antirebon_Param", &fHslider3, FAUSTFLOAT(75.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
+		ui_interface->declare(&fHslider9, "204", "");
+		ui_interface->declare(&fHslider9, "showName", "lowPass");
+		ui_interface->addHorizontalSlider("lp_Param", &fHslider9, FAUSTFLOAT(1.5f), FAUSTFLOAT(0.1f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider16, "205", "");
+		ui_interface->declare(&fHslider16, "showName", "osfproj");
+		ui_interface->addHorizontalSlider("osfproj_Param", &fHslider16, FAUSTFLOAT(0.08f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.33f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider25, "206", "");
+		ui_interface->declare(&fHslider25, "showName", "accThred");
+		ui_interface->addHorizontalSlider("tacc_thr_Param", &fHslider25, FAUSTFLOAT(0.1f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider23, "207", "");
+		ui_interface->declare(&fHslider23, "showName", "accGain");
+		ui_interface->addHorizontalSlider("tacc_gain_Param", &fHslider23, FAUSTFLOAT(1.35f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5.0f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider27, "208", "");
+		ui_interface->declare(&fHslider27, "showName", "accEvUp");
+		ui_interface->addHorizontalSlider("tacc_up_Param", &fHslider27, FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
+		ui_interface->declare(&fHslider26, "209", "");
+		ui_interface->declare(&fHslider26, "showName", "accEvDown");
+		ui_interface->addHorizontalSlider("tacc_down_Param", &fHslider26, FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
 		ui_interface->declare(&fCheckbox31, "20", "");
 		ui_interface->declare(&fCheckbox31, "motionName", "azpn");
 		ui_interface->addCheckButton("azpnOn", &fCheckbox31);
+		ui_interface->declare(&fHslider32, "210", "");
+		ui_interface->declare(&fHslider32, "showName", "gyoThred");
+		ui_interface->addHorizontalSlider("tgyr_thr_Param", &fHslider32, FAUSTFLOAT(0.01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.001f));
+		ui_interface->declare(&fHslider30, "211", "");
+		ui_interface->declare(&fHslider30, "showName", "gyoGain");
+		ui_interface->addHorizontalSlider("tgyr_gain_Param", &fHslider30, FAUSTFLOAT(0.79f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5.0f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider34, "212", "");
+		ui_interface->declare(&fHslider34, "showName", "gyoEvUp");
+		ui_interface->addHorizontalSlider("tgyr_up_Param", &fHslider34, FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
+		ui_interface->declare(&fHslider33, "213", "");
+		ui_interface->declare(&fHslider33, "showName", "gyoEvDown");
+		ui_interface->addHorizontalSlider("tgyr_down_Param", &fHslider33, FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(5e+03f), FAUSTFLOAT(1.0f));
+		ui_interface->declare(&fHslider38, "216", "");
+		ui_interface->declare(&fHslider38, "showName", "shapeJardin");
+		ui_interface->addHorizontalSlider("shapeJardin_Param", &fHslider38, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider39, "217", "");
+		ui_interface->declare(&fHslider39, "showName", "shapeFront");
+		ui_interface->addHorizontalSlider("shapeFront_Param", &fHslider39, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
+		ui_interface->declare(&fHslider40, "219", "");
+		ui_interface->declare(&fHslider40, "showName", "shapeUp");
+		ui_interface->addHorizontalSlider("shapeUp_Param", &fHslider40, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
 		ui_interface->declare(&fCheckbox26, "21", "");
 		ui_interface->declare(&fCheckbox26, "motionName", "axp");
 		ui_interface->addCheckButton("axpOn", &fCheckbox26);
-		ui_interface->declare(&fCheckbox30, "22", "");
-		ui_interface->declare(&fCheckbox30, "motionName", "ayp");
-		ui_interface->addCheckButton("aypOn", &fCheckbox30);
+		ui_interface->declare(&fHslider37, "220", "");
+		ui_interface->declare(&fHslider37, "showName", "gravityGain");
+		ui_interface->addHorizontalSlider("gravityGain_Param", &fHslider37, FAUSTFLOAT(1.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.1f));
+		ui_interface->declare(&fCheckbox29, "22", "");
+		ui_interface->declare(&fCheckbox29, "motionName", "ayp");
+		ui_interface->addCheckButton("aypOn", &fCheckbox29);
 		ui_interface->declare(&fCheckbox32, "23", "");
 		ui_interface->declare(&fCheckbox32, "motionName", "azp");
 		ui_interface->addCheckButton("azpOn", &fCheckbox32);
 		ui_interface->declare(&fCheckbox27, "24", "");
 		ui_interface->declare(&fCheckbox27, "motionName", "axn");
 		ui_interface->addCheckButton("axnOn", &fCheckbox27);
-		ui_interface->declare(&fCheckbox29, "25", "");
-		ui_interface->declare(&fCheckbox29, "motionName", "ayn");
-		ui_interface->addCheckButton("aynOn", &fCheckbox29);
+		ui_interface->declare(&fCheckbox30, "25", "");
+		ui_interface->declare(&fCheckbox30, "motionName", "ayn");
+		ui_interface->addCheckButton("aynOn", &fCheckbox30);
 		ui_interface->declare(&fCheckbox33, "26", "");
 		ui_interface->declare(&fCheckbox33, "motionName", "azn");
 		ui_interface->addCheckButton("aznOn", &fCheckbox33);
@@ -9474,196 +9163,142 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox42, "30", "");
 		ui_interface->declare(&fCheckbox42, "motionName", "gzpn");
 		ui_interface->addCheckButton("gzpnOn", &fCheckbox42);
-		ui_interface->declare(&fCheckbox37, "31", "");
-		ui_interface->declare(&fCheckbox37, "motionName", "gxp");
-		ui_interface->addCheckButton("gxpOn", &fCheckbox37);
+		ui_interface->declare(&fCheckbox36, "31", "");
+		ui_interface->declare(&fCheckbox36, "motionName", "gxp");
+		ui_interface->addCheckButton("gxpOn", &fCheckbox36);
 		ui_interface->declare(&fCheckbox41, "32", "");
 		ui_interface->declare(&fCheckbox41, "motionName", "gyp");
 		ui_interface->addCheckButton("gypOn", &fCheckbox41);
-		ui_interface->declare(&fCheckbox43, "33", "");
-		ui_interface->declare(&fCheckbox43, "motionName", "gzp");
-		ui_interface->addCheckButton("gzpOn", &fCheckbox43);
-		ui_interface->declare(&fCheckbox36, "34", "");
-		ui_interface->declare(&fCheckbox36, "motionName", "gxn");
-		ui_interface->addCheckButton("gxnOn", &fCheckbox36);
+		ui_interface->declare(&fCheckbox44, "33", "");
+		ui_interface->declare(&fCheckbox44, "motionName", "gzp");
+		ui_interface->addCheckButton("gzpOn", &fCheckbox44);
+		ui_interface->declare(&fCheckbox35, "34", "");
+		ui_interface->declare(&fCheckbox35, "motionName", "gxn");
+		ui_interface->addCheckButton("gxnOn", &fCheckbox35);
 		ui_interface->declare(&fCheckbox40, "35", "");
 		ui_interface->declare(&fCheckbox40, "motionName", "gyn");
 		ui_interface->addCheckButton("gynOn", &fCheckbox40);
-		ui_interface->declare(&fCheckbox44, "36", "");
-		ui_interface->declare(&fCheckbox44, "motionName", "gzn");
-		ui_interface->addCheckButton("gznOn", &fCheckbox44);
-		ui_interface->declare(&fCheckbox35, "37", "");
-		ui_interface->declare(&fCheckbox35, "motionName", "totalgyro");
-		ui_interface->addCheckButton("totalgyroOn", &fCheckbox35);
-		ui_interface->declare(&fCheckbox45, "38", "");
-		ui_interface->declare(&fCheckbox45, "motionName", "brasG_cour");
-		ui_interface->addCheckButton("brasG_courOn", &fCheckbox45);
-		ui_interface->declare(&fCheckbox47, "39", "");
-		ui_interface->declare(&fCheckbox47, "motionName", "brasG_rear");
-		ui_interface->addCheckButton("brasG_rearOn", &fCheckbox47);
-		ui_interface->declare(&fCheckbox48, "40", "");
-		ui_interface->declare(&fCheckbox48, "motionName", "brasG_jardin");
-		ui_interface->addCheckButton("brasG_jardinOn", &fCheckbox48);
-		ui_interface->declare(&fCheckbox46, "41", "");
-		ui_interface->declare(&fCheckbox46, "motionName", "brasG_front");
-		ui_interface->addCheckButton("brasG_frontOn", &fCheckbox46);
-		ui_interface->declare(&fCheckbox50, "42", "");
-		ui_interface->declare(&fCheckbox50, "motionName", "brasG_down");
-		ui_interface->addCheckButton("brasG_downOn", &fCheckbox50);
-		ui_interface->declare(&fCheckbox49, "43", "");
-		ui_interface->declare(&fCheckbox49, "motionName", "brasG_up");
-		ui_interface->addCheckButton("brasG_upOn", &fCheckbox49);
-		ui_interface->declare(&fCheckbox51, "44", "");
-		ui_interface->declare(&fCheckbox51, "motionName", "pieds_cour");
-		ui_interface->addCheckButton("pieds_courOn", &fCheckbox51);
-		ui_interface->declare(&fCheckbox53, "45", "");
-		ui_interface->declare(&fCheckbox53, "motionName", "pieds_rear");
-		ui_interface->addCheckButton("pieds_rearOn", &fCheckbox53);
-		ui_interface->declare(&fCheckbox55, "46", "");
-		ui_interface->declare(&fCheckbox55, "motionName", "pieds_jardin");
-		ui_interface->addCheckButton("pieds_jardinOn", &fCheckbox55);
-		ui_interface->declare(&fCheckbox54, "47", "");
-		ui_interface->declare(&fCheckbox54, "motionName", "pieds_front");
-		ui_interface->addCheckButton("pieds_frontOn", &fCheckbox54);
-		ui_interface->declare(&fCheckbox52, "48", "");
-		ui_interface->declare(&fCheckbox52, "motionName", "pieds_down");
-		ui_interface->addCheckButton("pieds_downOn", &fCheckbox52);
-		ui_interface->declare(&fCheckbox56, "49", "");
-		ui_interface->declare(&fCheckbox56, "motionName", "pieds_up");
-		ui_interface->addCheckButton("pieds_upOn", &fCheckbox56);
-		ui_interface->declare(&fCheckbox57, "50", "");
-		ui_interface->declare(&fCheckbox57, "motionName", "dos_cour");
-		ui_interface->addCheckButton("dos_courOn", &fCheckbox57);
-		ui_interface->declare(&fCheckbox58, "51", "");
-		ui_interface->declare(&fCheckbox58, "motionName", "dos_rear");
-		ui_interface->addCheckButton("dos_rearOn", &fCheckbox58);
-		ui_interface->declare(&fCheckbox62, "52", "");
-		ui_interface->declare(&fCheckbox62, "motionName", "dos_jardin");
-		ui_interface->addCheckButton("dos_jardinOn", &fCheckbox62);
-		ui_interface->declare(&fCheckbox60, "53", "");
-		ui_interface->declare(&fCheckbox60, "motionName", "dos_front");
-		ui_interface->addCheckButton("dos_frontOn", &fCheckbox60);
-		ui_interface->declare(&fCheckbox61, "54", "");
-		ui_interface->declare(&fCheckbox61, "motionName", "dos_down");
-		ui_interface->addCheckButton("dos_downOn", &fCheckbox61);
-		ui_interface->declare(&fCheckbox59, "55", "");
-		ui_interface->declare(&fCheckbox59, "motionName", "dos_up");
-		ui_interface->addCheckButton("dos_upOn", &fCheckbox59);
-		ui_interface->declare(&fCheckbox65, "56", "");
-		ui_interface->declare(&fCheckbox65, "motionName", "brasD_cour");
-		ui_interface->addCheckButton("brasD_courOn", &fCheckbox65);
-		ui_interface->declare(&fCheckbox66, "57", "");
-		ui_interface->declare(&fCheckbox66, "motionName", "brasD_rear");
-		ui_interface->addCheckButton("brasD_rearOn", &fCheckbox66);
-		ui_interface->declare(&fCheckbox69, "58", "");
-		ui_interface->declare(&fCheckbox69, "motionName", "brasD_jardin");
-		ui_interface->addCheckButton("brasD_jardinOn", &fCheckbox69);
-		ui_interface->declare(&fCheckbox68, "59", "");
-		ui_interface->declare(&fCheckbox68, "motionName", "brasD_front");
-		ui_interface->addCheckButton("brasD_frontOn", &fCheckbox68);
-		ui_interface->declare(&fCheckbox70, "60", "");
-		ui_interface->declare(&fCheckbox70, "motionName", "brasD_down");
-		ui_interface->addCheckButton("brasD_downOn", &fCheckbox70);
-		ui_interface->declare(&fCheckbox67, "61", "");
-		ui_interface->declare(&fCheckbox67, "motionName", "brasD_up");
-		ui_interface->addCheckButton("brasD_upOn", &fCheckbox67);
-		ui_interface->declare(&fCheckbox71, "62", "");
-		ui_interface->declare(&fCheckbox71, "motionName", "tete_cour");
-		ui_interface->addCheckButton("tete_courOn", &fCheckbox71);
-		ui_interface->declare(&fCheckbox72, "63", "");
-		ui_interface->declare(&fCheckbox72, "motionName", "tete_rear");
-		ui_interface->addCheckButton("tete_rearOn", &fCheckbox72);
-		ui_interface->declare(&fCheckbox73, "64", "");
-		ui_interface->declare(&fCheckbox73, "motionName", "tete_jardin");
-		ui_interface->addCheckButton("tete_jardinOn", &fCheckbox73);
-		ui_interface->declare(&fCheckbox75, "65", "");
-		ui_interface->declare(&fCheckbox75, "motionName", "tete_front");
-		ui_interface->addCheckButton("tete_frontOn", &fCheckbox75);
-		ui_interface->declare(&fCheckbox76, "66", "");
-		ui_interface->declare(&fCheckbox76, "motionName", "tete_down");
-		ui_interface->addCheckButton("tete_downOn", &fCheckbox76);
-		ui_interface->declare(&fCheckbox74, "67", "");
-		ui_interface->declare(&fCheckbox74, "motionName", "tete_up");
-		ui_interface->addCheckButton("tete_upOn", &fCheckbox74);
-		ui_interface->declare(&fCheckbox77, "68", "");
-		ui_interface->declare(&fCheckbox77, "motionName", "ventre_cour");
-		ui_interface->addCheckButton("ventre_courOn", &fCheckbox77);
-		ui_interface->declare(&fCheckbox79, "69", "");
-		ui_interface->declare(&fCheckbox79, "motionName", "ventre_rear");
-		ui_interface->addCheckButton("ventre_rearOn", &fCheckbox79);
-		ui_interface->declare(&fCheckbox78, "70", "");
-		ui_interface->declare(&fCheckbox78, "motionName", "ventre_jardin");
-		ui_interface->addCheckButton("ventre_jardinOn", &fCheckbox78);
-		ui_interface->declare(&fCheckbox81, "71", "");
-		ui_interface->declare(&fCheckbox81, "motionName", "ventre_front");
-		ui_interface->addCheckButton("ventre_frontOn", &fCheckbox81);
-		ui_interface->declare(&fCheckbox80, "72", "");
-		ui_interface->declare(&fCheckbox80, "motionName", "ventre_down");
-		ui_interface->addCheckButton("ventre_downOn", &fCheckbox80);
-		ui_interface->declare(&fCheckbox82, "73", "");
-		ui_interface->declare(&fCheckbox82, "motionName", "ventre_up");
-		ui_interface->addCheckButton("ventre_upOn", &fCheckbox82);
-		ui_interface->declare(&fCheckbox8, "74", "");
-		ui_interface->declare(&fCheckbox8, "motionName", "ixpn");
-		ui_interface->addCheckButton("ixpnOn", &fCheckbox8);
-		ui_interface->declare(&fCheckbox11, "75", "");
+		ui_interface->declare(&fCheckbox43, "36", "");
+		ui_interface->declare(&fCheckbox43, "motionName", "gzn");
+		ui_interface->addCheckButton("gznOn", &fCheckbox43);
+		ui_interface->declare(&fCheckbox37, "37", "");
+		ui_interface->declare(&fCheckbox37, "motionName", "totalgyro");
+		ui_interface->addCheckButton("totalgyroOn", &fCheckbox37);
+		ui_interface->declare(&fCheckbox7, "38", "");
+		ui_interface->declare(&fCheckbox7, "motionName", "ixpn");
+		ui_interface->addCheckButton("ixpnOn", &fCheckbox7);
+		ui_interface->declare(&fCheckbox11, "39", "");
 		ui_interface->declare(&fCheckbox11, "motionName", "iypn");
 		ui_interface->addCheckButton("iypnOn", &fCheckbox11);
-		ui_interface->declare(&fCheckbox13, "76", "");
+		ui_interface->declare(&fCheckbox13, "40", "");
 		ui_interface->declare(&fCheckbox13, "motionName", "izpn");
 		ui_interface->addCheckButton("izpnOn", &fCheckbox13);
-		ui_interface->declare(&fCheckbox7, "77", "");
-		ui_interface->declare(&fCheckbox7, "motionName", "ixpn_sym");
-		ui_interface->addCheckButton("ixpn_symOn", &fCheckbox7);
-		ui_interface->declare(&fCheckbox10, "78", "");
+		ui_interface->declare(&fCheckbox8, "41", "");
+		ui_interface->declare(&fCheckbox8, "motionName", "ixpn_sym");
+		ui_interface->addCheckButton("ixpn_symOn", &fCheckbox8);
+		ui_interface->declare(&fCheckbox10, "42", "");
 		ui_interface->declare(&fCheckbox10, "motionName", "iypn_sym");
 		ui_interface->addCheckButton("iypn_symOn", &fCheckbox10);
-		ui_interface->declare(&fCheckbox14, "79", "");
+		ui_interface->declare(&fCheckbox14, "43", "");
 		ui_interface->declare(&fCheckbox14, "motionName", "izpn_sym");
 		ui_interface->addCheckButton("izpn_symOn", &fCheckbox14);
-		ui_interface->declare(&fCheckbox63, "80", "");
-		ui_interface->declare(&fCheckbox63, "motionName", "dosx");
-		ui_interface->addCheckButton("dosxOn", &fCheckbox63);
-		ui_interface->declare(&fCheckbox64, "81", "");
-		ui_interface->declare(&fCheckbox64, "motionName", "dosy");
-		ui_interface->addCheckButton("dosyOn", &fCheckbox64);
-		ui_interface->declare(&fCheckbox83, "82", "");
-		ui_interface->declare(&fCheckbox83, "motionName", "MXx");
-		ui_interface->addCheckButton("MXxOn", &fCheckbox83);
-		ui_interface->declare(&fCheckbox85, "83", "");
-		ui_interface->declare(&fCheckbox85, "motionName", "MXy");
-		ui_interface->addCheckButton("MXyOn", &fCheckbox85);
-		ui_interface->declare(&fCheckbox86, "84", "");
-		ui_interface->declare(&fCheckbox86, "motionName", "MXz");
-		ui_interface->addCheckButton("MXzOn", &fCheckbox86);
-		ui_interface->declare(&fCheckbox87, "85", "");
-		ui_interface->declare(&fCheckbox87, "motionName", "MYx");
-		ui_interface->addCheckButton("MYxOn", &fCheckbox87);
-		ui_interface->declare(&fCheckbox89, "86", "");
-		ui_interface->declare(&fCheckbox89, "motionName", "MYy");
-		ui_interface->addCheckButton("MYyOn", &fCheckbox89);
-		ui_interface->declare(&fCheckbox90, "87", "");
-		ui_interface->declare(&fCheckbox90, "motionName", "MYz");
-		ui_interface->addCheckButton("MYzOn", &fCheckbox90);
-		ui_interface->declare(&fCheckbox91, "88", "");
-		ui_interface->declare(&fCheckbox91, "motionName", "MZx");
-		ui_interface->addCheckButton("MZxOn", &fCheckbox91);
-		ui_interface->declare(&fCheckbox93, "89", "");
-		ui_interface->declare(&fCheckbox93, "motionName", "MZy");
-		ui_interface->addCheckButton("MZyOn", &fCheckbox93);
-		ui_interface->declare(&fCheckbox94, "90", "");
-		ui_interface->declare(&fCheckbox94, "motionName", "MZz");
-		ui_interface->addCheckButton("MZzOn", &fCheckbox94);
-		ui_interface->declare(&fCheckbox84, "91", "");
-		ui_interface->declare(&fCheckbox84, "motionName", "AmpX");
-		ui_interface->addCheckButton("AmpXOn", &fCheckbox84);
-		ui_interface->declare(&fCheckbox88, "92", "");
-		ui_interface->declare(&fCheckbox88, "motionName", "AmpY");
-		ui_interface->addCheckButton("AmpYOn", &fCheckbox88);
-		ui_interface->declare(&fCheckbox92, "93", "");
-		ui_interface->declare(&fCheckbox92, "motionName", "AmpZ");
-		ui_interface->addCheckButton("AmpZOn", &fCheckbox92);
-		ui_interface->declare(&fCheckbox38, "94", "");
+		ui_interface->declare(&fCheckbox45, "44", "");
+		ui_interface->declare(&fCheckbox45, "motionName", "dosx");
+		ui_interface->addCheckButton("dosxOn", &fCheckbox45);
+		ui_interface->declare(&fCheckbox46, "45", "");
+		ui_interface->declare(&fCheckbox46, "motionName", "dosy");
+		ui_interface->addCheckButton("dosyOn", &fCheckbox46);
+		ui_interface->declare(&fCheckbox47, "46", "");
+		ui_interface->declare(&fCheckbox47, "motionName", "MXxraw");
+		ui_interface->addCheckButton("MXxrawOn", &fCheckbox47);
+		ui_interface->declare(&fCheckbox49, "47", "");
+		ui_interface->declare(&fCheckbox49, "motionName", "MXxneg");
+		ui_interface->addCheckButton("MXxnegOn", &fCheckbox49);
+		ui_interface->declare(&fCheckbox50, "48", "");
+		ui_interface->declare(&fCheckbox50, "motionName", "MXxpos");
+		ui_interface->addCheckButton("MXxposOn", &fCheckbox50);
+		ui_interface->declare(&fCheckbox51, "49", "");
+		ui_interface->declare(&fCheckbox51, "motionName", "MXyraw");
+		ui_interface->addCheckButton("MXyrawOn", &fCheckbox51);
+		ui_interface->declare(&fCheckbox52, "50", "");
+		ui_interface->declare(&fCheckbox52, "motionName", "MXyneg");
+		ui_interface->addCheckButton("MXynegOn", &fCheckbox52);
+		ui_interface->declare(&fCheckbox53, "51", "");
+		ui_interface->declare(&fCheckbox53, "motionName", "MXypos");
+		ui_interface->addCheckButton("MXyposOn", &fCheckbox53);
+		ui_interface->declare(&fCheckbox54, "52", "");
+		ui_interface->declare(&fCheckbox54, "motionName", "MXzraw");
+		ui_interface->addCheckButton("MXzrawOn", &fCheckbox54);
+		ui_interface->declare(&fCheckbox55, "53", "");
+		ui_interface->declare(&fCheckbox55, "motionName", "MXzneg");
+		ui_interface->addCheckButton("MXznegOn", &fCheckbox55);
+		ui_interface->declare(&fCheckbox56, "54", "");
+		ui_interface->declare(&fCheckbox56, "motionName", "MXzpos");
+		ui_interface->addCheckButton("MXzposOn", &fCheckbox56);
+		ui_interface->declare(&fCheckbox57, "55", "");
+		ui_interface->declare(&fCheckbox57, "motionName", "MYxraw");
+		ui_interface->addCheckButton("MYxrawOn", &fCheckbox57);
+		ui_interface->declare(&fCheckbox58, "56", "");
+		ui_interface->declare(&fCheckbox58, "motionName", "MYxneg");
+		ui_interface->addCheckButton("MYxnegOn", &fCheckbox58);
+		ui_interface->declare(&fCheckbox59, "57", "");
+		ui_interface->declare(&fCheckbox59, "motionName", "MYxpos");
+		ui_interface->addCheckButton("MYxposOn", &fCheckbox59);
+		ui_interface->declare(&fCheckbox61, "58", "");
+		ui_interface->declare(&fCheckbox61, "motionName", "MYyraw");
+		ui_interface->addCheckButton("MYyrawOn", &fCheckbox61);
+		ui_interface->declare(&fCheckbox62, "59", "");
+		ui_interface->declare(&fCheckbox62, "motionName", "MYyneg");
+		ui_interface->addCheckButton("MYynegOn", &fCheckbox62);
+		ui_interface->declare(&fCheckbox63, "60", "");
+		ui_interface->declare(&fCheckbox63, "motionName", "MYypos");
+		ui_interface->addCheckButton("MYyposOn", &fCheckbox63);
+		ui_interface->declare(&fCheckbox64, "61", "");
+		ui_interface->declare(&fCheckbox64, "motionName", "MYzraw");
+		ui_interface->addCheckButton("MYzrawOn", &fCheckbox64);
+		ui_interface->declare(&fCheckbox65, "62", "");
+		ui_interface->declare(&fCheckbox65, "motionName", "MYzneg");
+		ui_interface->addCheckButton("MYznegOn", &fCheckbox65);
+		ui_interface->declare(&fCheckbox66, "63", "");
+		ui_interface->declare(&fCheckbox66, "motionName", "MYzpos");
+		ui_interface->addCheckButton("MYzposOn", &fCheckbox66);
+		ui_interface->declare(&fCheckbox67, "64", "");
+		ui_interface->declare(&fCheckbox67, "motionName", "MZxraw");
+		ui_interface->addCheckButton("MZxrawOn", &fCheckbox67);
+		ui_interface->declare(&fCheckbox69, "65", "");
+		ui_interface->declare(&fCheckbox69, "motionName", "MZxneg");
+		ui_interface->addCheckButton("MZxnegOn", &fCheckbox69);
+		ui_interface->declare(&fCheckbox70, "66", "");
+		ui_interface->declare(&fCheckbox70, "motionName", "MZxpos");
+		ui_interface->addCheckButton("MZxposOn", &fCheckbox70);
+		ui_interface->declare(&fCheckbox71, "67", "");
+		ui_interface->declare(&fCheckbox71, "motionName", "MZyraw");
+		ui_interface->addCheckButton("MZyrawOn", &fCheckbox71);
+		ui_interface->declare(&fCheckbox72, "68", "");
+		ui_interface->declare(&fCheckbox72, "motionName", "MZyneg");
+		ui_interface->addCheckButton("MZynegOn", &fCheckbox72);
+		ui_interface->declare(&fCheckbox73, "69", "");
+		ui_interface->declare(&fCheckbox73, "motionName", "MZypos");
+		ui_interface->addCheckButton("MZyposOn", &fCheckbox73);
+		ui_interface->declare(&fCheckbox74, "70", "");
+		ui_interface->declare(&fCheckbox74, "motionName", "MZzraw");
+		ui_interface->addCheckButton("MZzrawOn", &fCheckbox74);
+		ui_interface->declare(&fCheckbox75, "71", "");
+		ui_interface->declare(&fCheckbox75, "motionName", "MZzneg");
+		ui_interface->addCheckButton("MZznegOn", &fCheckbox75);
+		ui_interface->declare(&fCheckbox76, "72", "");
+		ui_interface->declare(&fCheckbox76, "motionName", "MZzpos");
+		ui_interface->addCheckButton("MZzposOn", &fCheckbox76);
+		ui_interface->declare(&fCheckbox48, "73", "");
+		ui_interface->declare(&fCheckbox48, "motionName", "AmpX");
+		ui_interface->addCheckButton("AmpXOn", &fCheckbox48);
+		ui_interface->declare(&fCheckbox60, "74", "");
+		ui_interface->declare(&fCheckbox60, "motionName", "AmpY");
+		ui_interface->addCheckButton("AmpYOn", &fCheckbox60);
+		ui_interface->declare(&fCheckbox68, "75", "");
+		ui_interface->declare(&fCheckbox68, "motionName", "AmpZ");
+		ui_interface->addCheckButton("AmpZOn", &fCheckbox68);
+		ui_interface->declare(&fCheckbox38, "76", "");
 		ui_interface->declare(&fCheckbox38, "motionName", "gyro_xy");
 		ui_interface->addCheckButton("gyro_xyOn", &fCheckbox38);
 		ui_interface->declare(&fHslider24, "acc", "0 0 -30 0 30");
@@ -9846,24 +9481,6 @@ class mydsp2 : public dsp {
 		FAUSTFLOAT* output74 = outputs[74];
 		FAUSTFLOAT* output75 = outputs[75];
 		FAUSTFLOAT* output76 = outputs[76];
-		FAUSTFLOAT* output77 = outputs[77];
-		FAUSTFLOAT* output78 = outputs[78];
-		FAUSTFLOAT* output79 = outputs[79];
-		FAUSTFLOAT* output80 = outputs[80];
-		FAUSTFLOAT* output81 = outputs[81];
-		FAUSTFLOAT* output82 = outputs[82];
-		FAUSTFLOAT* output83 = outputs[83];
-		FAUSTFLOAT* output84 = outputs[84];
-		FAUSTFLOAT* output85 = outputs[85];
-		FAUSTFLOAT* output86 = outputs[86];
-		FAUSTFLOAT* output87 = outputs[87];
-		FAUSTFLOAT* output88 = outputs[88];
-		FAUSTFLOAT* output89 = outputs[89];
-		FAUSTFLOAT* output90 = outputs[90];
-		FAUSTFLOAT* output91 = outputs[91];
-		FAUSTFLOAT* output92 = outputs[92];
-		FAUSTFLOAT* output93 = outputs[93];
-		FAUSTFLOAT* output94 = outputs[94];
 		float fSlow0 = float(fCheckbox0);
 		int iSlow1 = fSlow0 != 0.0f;
 		float fSlow2 = 1.0f / std::tan(fConst1 * float(fHslider0));
@@ -10113,232 +9730,144 @@ class mydsp2 : public dsp {
 		float fTemp106 = fTempPerm106;
 		float fTemp107 = fTempPerm107;
 		float fTemp108 = fTempPerm108;
-		float fSlow140 = float(fCheckbox45);
-		int iSlow141 = fSlow140 != 0.0f;
-		float fSlow142 = float(fHslider37);
-		float fSlow143 = float(fCheckbox46);
-		int iSlow144 = fSlow143 != 0.0f;
-		float fSlow145 = float(fCheckbox47);
-		int iSlow146 = fSlow145 != 0.0f;
-		float fSlow147 = float(fCheckbox48);
-		int iSlow148 = fSlow147 != 0.0f;
-		float fSlow149 = float(fCheckbox49);
-		int iSlow150 = fSlow149 != 0.0f;
-		float fSlow151 = float(fCheckbox50);
-		int iSlow152 = fSlow151 != 0.0f;
 		float fTemp109 = fTempPerm109;
 		float fTemp110 = fTempPerm110;
 		float fTemp111 = fTempPerm111;
 		float fTemp112 = fTempPerm112;
 		float fTemp113 = fTempPerm113;
 		float fTemp114 = fTempPerm114;
-		float fSlow153 = float(fHslider38);
+		float fSlow140 = float(fCheckbox45);
+		int iSlow141 = fSlow140 != 0.0f;
 		float fTemp115 = fTempPerm115;
+		float fSlow142 = float(fCheckbox46);
+		int iSlow143 = fSlow142 != 0.0f;
 		float fTemp116 = fTempPerm116;
-		float fSlow154 = float(fHslider39);
+		float fSlow144 = float(fCheckbox47);
+		int iSlow145 = fSlow144 != 0.0f;
+		float fSlow146 = float(fHslider37);
+		float fSlow147 = fSlow146 * fSlow144;
+		float fSlow148 = float(fCheckbox48);
+		int iSlow149 = fSlow148 != 0.0f;
+		float fSlow150 = float(fCheckbox49);
+		int iSlow151 = fSlow150 != 0.0f;
+		float fSlow152 = float(fCheckbox50);
+		int iSlow153 = fSlow152 != 0.0f;
 		float fTemp117 = fTempPerm117;
-		float fSlow155 = float(fHslider40);
 		float fTemp118 = fTempPerm118;
-		float fSlow156 = float(fHslider41);
 		float fTemp119 = fTempPerm119;
-		float fSlow157 = float(fHslider42);
+		float fSlow154 = fSlow146 * fSlow152;
 		float fTemp120 = fTempPerm120;
-		float fSlow158 = float(fCheckbox51);
+		float fSlow155 = float(fCheckbox51);
+		int iSlow156 = fSlow155 != 0.0f;
+		float fSlow157 = fSlow146 * fSlow155;
+		float fSlow158 = float(fCheckbox52);
 		int iSlow159 = fSlow158 != 0.0f;
-		float fSlow160 = float(fCheckbox52);
+		float fSlow160 = float(fCheckbox53);
 		int iSlow161 = fSlow160 != 0.0f;
-		float fSlow162 = float(fCheckbox53);
-		int iSlow163 = fSlow162 != 0.0f;
-		float fSlow164 = float(fCheckbox54);
-		int iSlow165 = fSlow164 != 0.0f;
+		float fTemp121 = fTempPerm121;
+		float fTemp122 = fTempPerm122;
+		float fTemp123 = fTempPerm123;
+		float fSlow162 = fSlow146 * fSlow160;
+		float fTemp124 = fTempPerm124;
+		float fSlow163 = float(fCheckbox54);
+		int iSlow164 = fSlow163 != 0.0f;
+		float fSlow165 = fSlow146 * fSlow163;
 		float fSlow166 = float(fCheckbox55);
 		int iSlow167 = fSlow166 != 0.0f;
 		float fSlow168 = float(fCheckbox56);
 		int iSlow169 = fSlow168 != 0.0f;
-		float fTemp121 = fTempPerm121;
-		float fTemp122 = fTempPerm122;
-		float fTemp123 = fTempPerm123;
-		float fTemp124 = fTempPerm124;
 		float fTemp125 = fTempPerm125;
 		float fTemp126 = fTempPerm126;
 		float fTemp127 = fTempPerm127;
+		float fSlow170 = fSlow146 * fSlow168;
 		float fTemp128 = fTempPerm128;
+		float fSlow171 = float(fCheckbox57);
+		int iSlow172 = fSlow171 != 0.0f;
+		float fSlow173 = fSlow146 * fSlow171;
+		float fSlow174 = float(fCheckbox58);
+		int iSlow175 = fSlow174 != 0.0f;
+		float fSlow176 = float(fCheckbox59);
+		int iSlow177 = fSlow176 != 0.0f;
+		float fSlow178 = float(fCheckbox60);
+		int iSlow179 = fSlow178 != 0.0f;
 		float fTemp129 = fTempPerm129;
 		float fTemp130 = fTempPerm130;
 		float fTemp131 = fTempPerm131;
+		float fSlow180 = fSlow146 * fSlow176;
 		float fTemp132 = fTempPerm132;
+		float fSlow181 = float(fCheckbox61);
+		int iSlow182 = fSlow181 != 0.0f;
+		float fSlow183 = fSlow146 * fSlow181;
+		float fSlow184 = float(fCheckbox62);
+		int iSlow185 = fSlow184 != 0.0f;
+		float fSlow186 = float(fCheckbox63);
+		int iSlow187 = fSlow186 != 0.0f;
 		float fTemp133 = fTempPerm133;
 		float fTemp134 = fTempPerm134;
-		float fSlow170 = float(fCheckbox57);
-		int iSlow171 = fSlow170 != 0.0f;
-		float fSlow172 = float(fCheckbox58);
-		int iSlow173 = fSlow172 != 0.0f;
-		float fSlow174 = float(fCheckbox59);
-		int iSlow175 = fSlow174 != 0.0f;
-		float fSlow176 = float(fCheckbox60);
-		int iSlow177 = fSlow176 != 0.0f;
-		float fSlow178 = float(fCheckbox61);
-		int iSlow179 = fSlow178 != 0.0f;
-		float fSlow180 = float(fCheckbox62);
-		int iSlow181 = fSlow180 != 0.0f;
-		float fSlow182 = float(fCheckbox63);
-		int iSlow183 = fSlow182 != 0.0f;
 		float fTemp135 = fTempPerm135;
-		float fSlow184 = float(fCheckbox64);
-		int iSlow185 = fSlow184 != 0.0f;
+		float fSlow188 = fSlow146 * fSlow186;
 		float fTemp136 = fTempPerm136;
+		float fSlow189 = float(fCheckbox64);
+		int iSlow190 = fSlow189 != 0.0f;
+		float fSlow191 = fSlow146 * fSlow189;
+		float fSlow192 = float(fCheckbox65);
+		int iSlow193 = fSlow192 != 0.0f;
+		float fSlow194 = float(fCheckbox66);
+		int iSlow195 = fSlow194 != 0.0f;
 		float fTemp137 = fTempPerm137;
 		float fTemp138 = fTempPerm138;
 		float fTemp139 = fTempPerm139;
+		float fSlow196 = fSlow146 * fSlow194;
 		float fTemp140 = fTempPerm140;
+		float fSlow197 = float(fCheckbox67);
+		int iSlow198 = fSlow197 != 0.0f;
+		float fSlow199 = fSlow146 * fSlow197;
+		float fSlow200 = float(fCheckbox68);
+		int iSlow201 = fSlow200 != 0.0f;
+		float fSlow202 = float(fCheckbox69);
+		int iSlow203 = fSlow202 != 0.0f;
+		float fSlow204 = float(fCheckbox70);
+		int iSlow205 = fSlow204 != 0.0f;
 		float fTemp141 = fTempPerm141;
 		float fTemp142 = fTempPerm142;
 		float fTemp143 = fTempPerm143;
+		float fSlow206 = fSlow146 * fSlow204;
 		float fTemp144 = fTempPerm144;
+		float fSlow207 = float(fCheckbox71);
+		int iSlow208 = fSlow207 != 0.0f;
+		float fSlow209 = fSlow146 * fSlow207;
+		float fSlow210 = float(fCheckbox72);
+		int iSlow211 = fSlow210 != 0.0f;
+		float fSlow212 = float(fCheckbox73);
+		int iSlow213 = fSlow212 != 0.0f;
 		float fTemp145 = fTempPerm145;
 		float fTemp146 = fTempPerm146;
-		float fSlow186 = float(fCheckbox65);
-		int iSlow187 = fSlow186 != 0.0f;
-		float fSlow188 = float(fCheckbox66);
-		int iSlow189 = fSlow188 != 0.0f;
-		float fSlow190 = float(fCheckbox67);
-		int iSlow191 = fSlow190 != 0.0f;
-		float fSlow192 = float(fCheckbox68);
-		int iSlow193 = fSlow192 != 0.0f;
-		float fSlow194 = float(fCheckbox69);
-		int iSlow195 = fSlow194 != 0.0f;
-		float fSlow196 = float(fCheckbox70);
-		int iSlow197 = fSlow196 != 0.0f;
 		float fTemp147 = fTempPerm147;
+		float fSlow214 = fSlow146 * fSlow212;
 		float fTemp148 = fTempPerm148;
+		float fSlow215 = float(fCheckbox74);
+		int iSlow216 = fSlow215 != 0.0f;
+		float fSlow217 = fSlow146 * fSlow215;
+		float fSlow218 = float(fCheckbox75);
+		int iSlow219 = fSlow218 != 0.0f;
+		float fSlow220 = float(fCheckbox76);
+		int iSlow221 = fSlow220 != 0.0f;
 		float fTemp149 = fTempPerm149;
 		float fTemp150 = fTempPerm150;
 		float fTemp151 = fTempPerm151;
+		float fSlow222 = fSlow146 * fSlow220;
 		float fTemp152 = fTempPerm152;
+		float fSlow223 = fSlow146 * fSlow148;
+		float fSlow224 = float(fHslider38);
 		float fTemp153 = fTempPerm153;
+		float fSlow225 = fSlow146 * fSlow178;
+		float fSlow226 = float(fHslider39);
 		float fTemp154 = fTempPerm154;
+		float fSlow227 = fSlow146 * fSlow200;
+		float fSlow228 = float(fHslider40);
 		float fTemp155 = fTempPerm155;
+		float fSlow229 = 5.0f * fSlow116;
 		float fTemp156 = fTempPerm156;
-		float fTemp157 = fTempPerm157;
-		float fTemp158 = fTempPerm158;
-		float fSlow198 = float(fCheckbox71);
-		int iSlow199 = fSlow198 != 0.0f;
-		float fSlow200 = float(fCheckbox72);
-		int iSlow201 = fSlow200 != 0.0f;
-		float fSlow202 = float(fCheckbox73);
-		int iSlow203 = fSlow202 != 0.0f;
-		float fSlow204 = float(fCheckbox74);
-		int iSlow205 = fSlow204 != 0.0f;
-		float fSlow206 = float(fCheckbox75);
-		int iSlow207 = fSlow206 != 0.0f;
-		float fSlow208 = float(fCheckbox76);
-		int iSlow209 = fSlow208 != 0.0f;
-		float fTemp159 = fTempPerm159;
-		float fTemp160 = fTempPerm160;
-		float fTemp161 = fTempPerm161;
-		float fTemp162 = fTempPerm162;
-		float fTemp163 = fTempPerm163;
-		float fTemp164 = fTempPerm164;
-		float fTemp165 = fTempPerm165;
-		float fTemp166 = fTempPerm166;
-		float fTemp167 = fTempPerm167;
-		float fTemp168 = fTempPerm168;
-		float fTemp169 = fTempPerm169;
-		float fTemp170 = fTempPerm170;
-		float fSlow210 = float(fCheckbox77);
-		int iSlow211 = fSlow210 != 0.0f;
-		float fSlow212 = float(fCheckbox78);
-		int iSlow213 = fSlow212 != 0.0f;
-		float fSlow214 = float(fCheckbox79);
-		int iSlow215 = fSlow214 != 0.0f;
-		float fSlow216 = float(fCheckbox80);
-		int iSlow217 = fSlow216 != 0.0f;
-		float fSlow218 = float(fCheckbox81);
-		int iSlow219 = fSlow218 != 0.0f;
-		float fSlow220 = float(fCheckbox82);
-		int iSlow221 = fSlow220 != 0.0f;
-		float fTemp171 = fTempPerm171;
-		float fTemp172 = fTempPerm172;
-		float fTemp173 = fTempPerm173;
-		float fTemp174 = fTempPerm174;
-		float fTemp175 = fTempPerm175;
-		float fTemp176 = fTempPerm176;
-		float fTemp177 = fTempPerm177;
-		float fTemp178 = fTempPerm178;
-		float fTemp179 = fTempPerm179;
-		float fTemp180 = fTempPerm180;
-		float fTemp181 = fTempPerm181;
-		float fTemp182 = fTempPerm182;
-		float fTemp183 = fTempPerm183;
-		float fTemp184 = fTempPerm184;
-		float fTemp185 = fTempPerm185;
-		float fTemp186 = fTempPerm186;
-		float fTemp187 = fTempPerm187;
-		float fTemp188 = fTempPerm188;
-		float fTemp189 = fTempPerm189;
-		float fTemp190 = fTempPerm190;
-		float fTemp191 = fTempPerm191;
-		float fTemp192 = fTempPerm192;
-		float fSlow222 = float(fCheckbox83);
-		int iSlow223 = fSlow222 != 0.0f;
-		float fSlow224 = float(fHslider43);
-		float fSlow225 = fSlow224 * fSlow222;
-		float fSlow226 = float(fCheckbox84);
-		int iSlow227 = fSlow226 != 0.0f;
-		float fTemp193 = fTempPerm193;
-		float fTemp194 = fTempPerm194;
-		float fSlow228 = float(fCheckbox85);
-		int iSlow229 = fSlow228 != 0.0f;
-		float fSlow230 = fSlow224 * fSlow228;
-		float fTemp195 = fTempPerm195;
-		float fTemp196 = fTempPerm196;
-		float fSlow231 = float(fCheckbox86);
-		int iSlow232 = fSlow231 != 0.0f;
-		float fSlow233 = fSlow224 * fSlow231;
-		float fTemp197 = fTempPerm197;
-		float fTemp198 = fTempPerm198;
-		float fSlow234 = float(fCheckbox87);
-		int iSlow235 = fSlow234 != 0.0f;
-		float fSlow236 = fSlow224 * fSlow234;
-		float fSlow237 = float(fCheckbox88);
-		int iSlow238 = fSlow237 != 0.0f;
-		float fTemp199 = fTempPerm199;
-		float fTemp200 = fTempPerm200;
-		float fSlow239 = float(fCheckbox89);
-		int iSlow240 = fSlow239 != 0.0f;
-		float fSlow241 = fSlow224 * fSlow239;
-		float fTemp201 = fTempPerm201;
-		float fTemp202 = fTempPerm202;
-		float fSlow242 = float(fCheckbox90);
-		int iSlow243 = fSlow242 != 0.0f;
-		float fSlow244 = fSlow224 * fSlow242;
-		float fTemp203 = fTempPerm203;
-		float fTemp204 = fTempPerm204;
-		float fSlow245 = float(fCheckbox91);
-		int iSlow246 = fSlow245 != 0.0f;
-		float fSlow247 = fSlow224 * fSlow245;
-		float fSlow248 = float(fCheckbox92);
-		int iSlow249 = fSlow248 != 0.0f;
-		float fTemp205 = fTempPerm205;
-		float fTemp206 = fTempPerm206;
-		float fSlow250 = float(fCheckbox93);
-		int iSlow251 = fSlow250 != 0.0f;
-		float fSlow252 = fSlow224 * fSlow250;
-		float fTemp207 = fTempPerm207;
-		float fTemp208 = fTempPerm208;
-		float fSlow253 = float(fCheckbox94);
-		int iSlow254 = fSlow253 != 0.0f;
-		float fSlow255 = fSlow224 * fSlow253;
-		float fTemp209 = fTempPerm209;
-		float fTemp210 = fTempPerm210;
-		float fSlow256 = fSlow224 * fSlow226;
-		float fTemp211 = fTempPerm211;
-		float fSlow257 = fSlow224 * fSlow237;
-		float fTemp212 = fTempPerm212;
-		float fSlow258 = fSlow224 * fSlow248;
-		float fTemp213 = fTempPerm213;
-		float fSlow259 = 5.0f * fSlow116;
-		float fTemp214 = fTempPerm214;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			int iRec1 = 0;
 			int iRec6 = 0;
@@ -10408,7 +9937,7 @@ class mydsp2 : public dsp {
 			output3[i0] = FAUSTFLOAT(fTemp19);
 			if (iSlow18) {
 				fVec8[0] = fSlow19;
-				fRec23[0] = fSlow3 * (fSlow2 * (fSlow19 - fVec8[1]) - fSlow4 * fRec23[1]);
+				fRec23[0] = -(fSlow3 * (fSlow4 * fRec23[1] - fSlow2 * (fSlow19 - fVec8[1])));
 				iTemp20 = fRec23[0] > fSlow6;
 				iVec9[0] = iTemp20;
 				iTemp21 = iTemp20 > iVec9[1];
@@ -10537,7 +10066,7 @@ class mydsp2 : public dsp {
 				fTemp50 = fSlow76 * fRec42[0];
 			}
 			output18[i0] = FAUSTFLOAT(fTemp50);
-			if (iSlow80 | (iSlow96 | (iSlow98 | iSlow94))) {
+			if (iSlow80 | (iSlow94 | (iSlow96 | iSlow98))) {
 				fVec25[0] = fSlow99;
 				fRec45[0] = fConst4 * (fSlow99 - fVec25[1] + fConst5 * fRec45[1]);
 			}
@@ -10566,11 +10095,11 @@ class mydsp2 : public dsp {
 				fTemp59 = fSlow81 * fRec48[0];
 			}
 			output21[i0] = FAUSTFLOAT(fTemp59);
-			if (iSlow98) {
+			if (iSlow96) {
 				fTemp60 = std::fabs(std::min<float>(1.0f, fSlow78 * std::max<float>(0.0f, fRec45[0] - fSlow86)));
 				fTemp61 = ((fTemp60 > fRec49[1]) ? fSlow92 : fSlow89);
 				fRec49[0] = fTemp60 * (1.0f - fTemp61) + fRec49[1] * fTemp61;
-				fTemp62 = fSlow97 * fRec49[0];
+				fTemp62 = fSlow95 * fRec49[0];
 			}
 			output22[i0] = FAUSTFLOAT(fTemp62);
 			if (iSlow103) {
@@ -10587,11 +10116,11 @@ class mydsp2 : public dsp {
 				fTemp68 = fSlow83 * fRec51[0];
 			}
 			output24[i0] = FAUSTFLOAT(fTemp68);
-			if (iSlow96) {
+			if (iSlow98) {
 				fTemp69 = std::fabs(std::min<float>(1.0f, fSlow78 * std::max<float>(0.0f, -(fSlow86 + fRec45[0]))));
 				fTemp70 = ((fTemp69 > fRec52[1]) ? fSlow92 : fSlow89);
 				fRec52[0] = fTemp69 * (1.0f - fTemp70) + fRec52[1] * fTemp70;
-				fTemp71 = fSlow95 * fRec52[0];
+				fTemp71 = fSlow97 * fRec52[0];
 			}
 			output25[i0] = FAUSTFLOAT(fTemp71);
 			if (iSlow105) {
@@ -10608,7 +10137,7 @@ class mydsp2 : public dsp {
 				fTemp77 = fSlow79 * fRec54[0];
 			}
 			output27[i0] = FAUSTFLOAT(fTemp77);
-			if (iSlow111 | (iSlow113 | (iSlow115 | (iSlow108 | iSlow117)))) {
+			if (iSlow111 | (iSlow108 | (iSlow113 | (iSlow115 | iSlow117)))) {
 				fRec56[0] = fSlow118 + fConst7 * fRec56[1];
 			}
 			if (iSlow108) {
@@ -10618,7 +10147,7 @@ class mydsp2 : public dsp {
 				fTemp80 = fSlow107 * fRec55[0];
 			}
 			output28[i0] = FAUSTFLOAT(fTemp80);
-			if (iSlow129 | (iSlow111 | (iSlow131 | (iSlow127 | iSlow117)))) {
+			if (iSlow129 | (iSlow127 | (iSlow131 | (iSlow115 | iSlow117)))) {
 				fRec58[0] = fSlow132 + fConst7 * fRec58[1];
 			}
 			if (iSlow127) {
@@ -10628,7 +10157,7 @@ class mydsp2 : public dsp {
 				fTemp83 = fSlow126 * fRec57[0];
 			}
 			output29[i0] = FAUSTFLOAT(fTemp83);
-			if (iSlow111 | (iSlow136 | (iSlow134 | iSlow138))) {
+			if (iSlow136 | (iSlow134 | (iSlow138 | iSlow115))) {
 				fRec60[0] = fSlow139 + fConst7 * fRec60[1];
 			}
 			if (iSlow134) {
@@ -10638,11 +10167,11 @@ class mydsp2 : public dsp {
 				fTemp86 = fSlow133 * fRec59[0];
 			}
 			output30[i0] = FAUSTFLOAT(fTemp86);
-			if (iSlow115) {
+			if (iSlow113) {
 				fTemp87 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, fRec56[0] - fSlow119)));
 				fTemp88 = ((fTemp87 > fRec61[1]) ? fSlow125 : fSlow122);
 				fRec61[0] = fTemp87 * (1.0f - fTemp88) + fRec61[1] * fTemp88;
-				fTemp89 = fSlow114 * fRec61[0];
+				fTemp89 = fSlow112 * fRec61[0];
 			}
 			output31[i0] = FAUSTFLOAT(fTemp89);
 			if (iSlow131) {
@@ -10652,18 +10181,18 @@ class mydsp2 : public dsp {
 				fTemp92 = fSlow130 * fRec62[0];
 			}
 			output32[i0] = FAUSTFLOAT(fTemp92);
-			if (iSlow136) {
+			if (iSlow138) {
 				fTemp93 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, fRec60[0] - fSlow119)));
 				fTemp94 = ((fTemp93 > fRec63[1]) ? fSlow125 : fSlow122);
 				fRec63[0] = fTemp93 * (1.0f - fTemp94) + fRec63[1] * fTemp94;
-				fTemp95 = fSlow135 * fRec63[0];
+				fTemp95 = fSlow137 * fRec63[0];
 			}
 			output33[i0] = FAUSTFLOAT(fTemp95);
-			if (iSlow113) {
+			if (iSlow111) {
 				fTemp96 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, -(fSlow119 + fRec56[0]))));
 				fTemp97 = ((fTemp96 > fRec64[1]) ? fSlow125 : fSlow122);
 				fRec64[0] = fTemp96 * (1.0f - fTemp97) + fRec64[1] * fTemp97;
-				fTemp98 = fSlow112 * fRec64[0];
+				fTemp98 = fSlow110 * fRec64[0];
 			}
 			output34[i0] = FAUSTFLOAT(fTemp98);
 			if (iSlow129) {
@@ -10673,427 +10202,209 @@ class mydsp2 : public dsp {
 				fTemp101 = fSlow128 * fRec65[0];
 			}
 			output35[i0] = FAUSTFLOAT(fTemp101);
-			if (iSlow138) {
+			if (iSlow136) {
 				fTemp102 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, -(fSlow119 + fRec60[0]))));
 				fTemp103 = ((fTemp102 > fRec66[1]) ? fSlow125 : fSlow122);
 				fRec66[0] = fTemp102 * (1.0f - fTemp103) + fRec66[1] * fTemp103;
-				fTemp104 = fSlow137 * fRec66[0];
+				fTemp104 = fSlow135 * fRec66[0];
 			}
 			output36[i0] = FAUSTFLOAT(fTemp104);
-			if (iSlow111 | iSlow117) {
+			if (iSlow115 | iSlow117) {
 				fTemp105 = mydsp2_faustpower2_f(fRec56[0]) + mydsp2_faustpower2_f(fRec58[0]);
 			}
-			if (iSlow111) {
+			if (iSlow115) {
 				fTemp106 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, std::sqrt(fTemp105 + mydsp2_faustpower2_f(fRec60[0])) - fSlow119)));
 				fTemp107 = ((fTemp106 > fRec67[1]) ? fSlow125 : fSlow122);
 				fRec67[0] = fTemp106 * (1.0f - fTemp107) + fRec67[1] * fTemp107;
-				fTemp108 = fSlow110 * fRec67[0];
+				fTemp108 = fSlow114 * fRec67[0];
 			}
 			output37[i0] = FAUSTFLOAT(fTemp108);
-			if (iSlow144 | (iSlow141 | (iSlow146 | (iSlow148 | (iSlow150 | iSlow152))))) {
-				fTemp109 = float(input0[i0]);
-				fTemp110 = float(input1[i0]);
-			}
-			if (iSlow141 | (iSlow148 | (iSlow150 | iSlow152))) {
-				fTemp111 = mydsp2_faustpower2_f(fTemp110);
-			}
-			if (iSlow144 | (iSlow141 | (iSlow146 | (iSlow148 | (iSlow150 | iSlow152))))) {
-				fTemp112 = float(input2[i0]);
-			}
-			if (iSlow144 | (iSlow141 | (iSlow146 | iSlow148))) {
-				fTemp113 = mydsp2_faustpower2_f(fTemp112);
-			}
-			if (iSlow141) {
-				fRec68[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow142 * std::sqrt(mydsp2_faustpower2_f(fTemp109 + 1.0f) + fTemp111 + fTemp113)) + fConst8 * fRec68[1];
-				fTemp114 = fSlow140 * fRec68[0];
-			}
-			output38[i0] = FAUSTFLOAT(fTemp114);
-			if (iSlow144 | (iSlow146 | (iSlow150 | iSlow152))) {
-				fTemp115 = mydsp2_faustpower2_f(fTemp109);
-			}
-			if (iSlow146) {
-				fRec69[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow153 * std::sqrt(mydsp2_faustpower2_f(fTemp110 + 1.0f) + fTemp113 + fTemp115)) + fConst8 * fRec69[1];
-				fTemp116 = fSlow145 * fRec69[0];
-			}
-			output39[i0] = FAUSTFLOAT(fTemp116);
-			if (iSlow148) {
-				fRec70[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow154 * std::sqrt(mydsp2_faustpower2_f(fTemp109 + -1.0f) + fTemp111 + fTemp113)) + fConst8 * fRec70[1];
-				fTemp117 = fSlow147 * fRec70[0];
-			}
-			output40[i0] = FAUSTFLOAT(fTemp117);
-			if (iSlow144) {
-				fRec71[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow155 * std::sqrt(fTemp115 + fTemp113 + mydsp2_faustpower2_f(fTemp110 + -1.0f))) + fConst8 * fRec71[1];
-				fTemp118 = fSlow143 * fRec71[0];
-			}
-			output41[i0] = FAUSTFLOAT(fTemp118);
-			if (iSlow152) {
-				fRec72[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow156 * std::sqrt(fTemp115 + fTemp111 + mydsp2_faustpower2_f(fTemp112 + 1.0f))) + fConst8 * fRec72[1];
-				fTemp119 = fSlow151 * fRec72[0];
-			}
-			output42[i0] = FAUSTFLOAT(fTemp119);
-			if (iSlow150) {
-				fRec73[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow157 * std::sqrt(fTemp115 + fTemp111 + mydsp2_faustpower2_f(fTemp112 + -1.0f))) + fConst8 * fRec73[1];
-				fTemp120 = fSlow149 * fRec73[0];
-			}
-			output43[i0] = FAUSTFLOAT(fTemp120);
-			if (iSlow159 | (iSlow161 | (iSlow163 | (iSlow165 | (iSlow167 | iSlow169))))) {
-				fTemp121 = float(input3[i0]);
-				fTemp122 = float(input4[i0]);
-			}
-			if (iSlow159 | (iSlow161 | (iSlow167 | iSlow169))) {
-				fTemp123 = mydsp2_faustpower2_f(fTemp122);
-			}
-			if (iSlow159 | (iSlow161 | (iSlow163 | (iSlow165 | (iSlow167 | iSlow169))))) {
-				fTemp124 = float(input5[i0]);
-			}
-			if (iSlow159 | (iSlow163 | (iSlow165 | iSlow167))) {
-				fTemp125 = mydsp2_faustpower2_f(fTemp124);
-			}
-			if (iSlow159) {
-				fRec74[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow142 * std::sqrt(mydsp2_faustpower2_f(fTemp121 + 1.0f) + fTemp123 + fTemp125)) + fConst8 * fRec74[1];
-				fTemp126 = fSlow158 * fRec74[0];
-			}
-			output44[i0] = FAUSTFLOAT(fTemp126);
-			if (iSlow161 | (iSlow163 | (iSlow165 | iSlow169))) {
-				fTemp127 = mydsp2_faustpower2_f(fTemp121);
-			}
-			if (iSlow163 | iSlow165) {
-				fTemp128 = fTemp125 + fTemp127;
-			}
-			if (iSlow163) {
-				fRec75[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow153 * std::sqrt(mydsp2_faustpower2_f(fTemp122 + 1.0f) + fTemp128)) + fConst8 * fRec75[1];
-				fTemp129 = fSlow162 * fRec75[0];
-			}
-			output45[i0] = FAUSTFLOAT(fTemp129);
-			if (iSlow167) {
-				fRec76[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow154 * std::sqrt(mydsp2_faustpower2_f(fTemp121 + -1.0f) + fTemp123 + fTemp125)) + fConst8 * fRec76[1];
-				fTemp130 = fSlow166 * fRec76[0];
-			}
-			output46[i0] = FAUSTFLOAT(fTemp130);
-			if (iSlow165) {
-				fRec77[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow155 * std::sqrt(fTemp128 + mydsp2_faustpower2_f(fTemp122 + -1.0f))) + fConst8 * fRec77[1];
-				fTemp131 = fSlow164 * fRec77[0];
-			}
-			output47[i0] = FAUSTFLOAT(fTemp131);
-			if (iSlow161 | iSlow169) {
-				fTemp132 = fTemp123 + fTemp127;
-			}
-			if (iSlow161) {
-				fRec78[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow156 * std::sqrt(fTemp132 + mydsp2_faustpower2_f(fTemp124 + 1.0f))) + fConst8 * fRec78[1];
-				fTemp133 = fSlow160 * fRec78[0];
-			}
-			output48[i0] = FAUSTFLOAT(fTemp133);
-			if (iSlow169) {
-				fRec79[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow157 * std::sqrt(fTemp132 + mydsp2_faustpower2_f(fTemp124 + -1.0f))) + fConst8 * fRec79[1];
-				fTemp134 = fSlow168 * fRec79[0];
-			}
-			output49[i0] = FAUSTFLOAT(fTemp134);
-			if (iSlow173 | (iSlow175 | (iSlow177 | (iSlow179 | (iSlow171 | (iSlow181 | iSlow183)))))) {
-				fTemp135 = float(input6[i0]);
-			}
-			if (iSlow173 | (iSlow175 | (iSlow177 | (iSlow179 | (iSlow171 | (iSlow181 | iSlow185)))))) {
-				fTemp136 = float(input7[i0]);
-			}
-			if (iSlow175 | (iSlow179 | (iSlow171 | iSlow181))) {
-				fTemp137 = mydsp2_faustpower2_f(fTemp136);
-			}
-			if (iSlow173 | (iSlow175 | (iSlow177 | (iSlow179 | (iSlow171 | iSlow181))))) {
-				fTemp138 = float(input8[i0]);
-			}
-			if (iSlow173 | (iSlow177 | (iSlow171 | iSlow181))) {
-				fTemp139 = mydsp2_faustpower2_f(fTemp138);
-			}
-			if (iSlow171) {
-				fRec80[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow142 * std::sqrt(mydsp2_faustpower2_f(fTemp135 + 1.0f) + fTemp137 + fTemp139)) + fConst8 * fRec80[1];
-				fTemp140 = fSlow170 * fRec80[0];
-			}
-			output50[i0] = FAUSTFLOAT(fTemp140);
-			if (iSlow173 | (iSlow175 | (iSlow177 | iSlow179))) {
-				fTemp141 = mydsp2_faustpower2_f(fTemp135);
-			}
-			if (iSlow173) {
-				fRec81[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow153 * std::sqrt(mydsp2_faustpower2_f(fTemp136 + 1.0f) + fTemp139 + fTemp141)) + fConst8 * fRec81[1];
-				fTemp142 = fSlow172 * fRec81[0];
-			}
-			output51[i0] = FAUSTFLOAT(fTemp142);
-			if (iSlow181) {
-				fRec82[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow154 * std::sqrt(fTemp139 + fTemp137 + mydsp2_faustpower2_f(fTemp135 + -1.0f))) + fConst8 * fRec82[1];
-				fTemp143 = fSlow180 * fRec82[0];
-			}
-			output52[i0] = FAUSTFLOAT(fTemp143);
-			if (iSlow177) {
-				fRec83[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow155 * std::sqrt(fTemp141 + fTemp139 + mydsp2_faustpower2_f(fTemp136 + -1.0f))) + fConst8 * fRec83[1];
-				fTemp144 = fSlow176 * fRec83[0];
-			}
-			output53[i0] = FAUSTFLOAT(fTemp144);
-			if (iSlow179) {
-				fRec84[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow156 * std::sqrt(fTemp141 + fTemp137 + mydsp2_faustpower2_f(fTemp138 + 1.0f))) + fConst8 * fRec84[1];
-				fTemp145 = fSlow178 * fRec84[0];
-			}
-			output54[i0] = FAUSTFLOAT(fTemp145);
-			if (iSlow175) {
-				fRec85[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow157 * std::sqrt(fTemp141 + fTemp137 + mydsp2_faustpower2_f(fTemp138 + -1.0f))) + fConst8 * fRec85[1];
-				fTemp146 = fSlow174 * fRec85[0];
-			}
-			output55[i0] = FAUSTFLOAT(fTemp146);
-			if (iSlow189 | (iSlow187 | (iSlow191 | (iSlow193 | (iSlow195 | iSlow197))))) {
-				fTemp147 = float(input9[i0]);
-				fTemp148 = float(input10[i0]);
-			}
-			if (iSlow187 | (iSlow191 | (iSlow195 | iSlow197))) {
-				fTemp149 = mydsp2_faustpower2_f(fTemp148);
-			}
-			if (iSlow189 | (iSlow187 | (iSlow191 | (iSlow193 | (iSlow195 | iSlow197))))) {
-				fTemp150 = float(input11[i0]);
-			}
-			if (iSlow189 | (iSlow187 | (iSlow193 | iSlow195))) {
-				fTemp151 = mydsp2_faustpower2_f(fTemp150);
-			}
-			if (iSlow187) {
-				fRec86[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow142 * std::sqrt(mydsp2_faustpower2_f(fTemp147 + 1.0f) + fTemp149 + fTemp151)) + fConst8 * fRec86[1];
-				fTemp152 = fSlow186 * fRec86[0];
-			}
-			output56[i0] = FAUSTFLOAT(fTemp152);
-			if (iSlow189 | (iSlow191 | (iSlow193 | iSlow197))) {
-				fTemp153 = mydsp2_faustpower2_f(fTemp147);
-			}
-			if (iSlow189) {
-				fRec87[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow153 * std::sqrt(mydsp2_faustpower2_f(fTemp148 + 1.0f) + fTemp151 + fTemp153)) + fConst8 * fRec87[1];
-				fTemp154 = fSlow188 * fRec87[0];
-			}
-			output57[i0] = FAUSTFLOAT(fTemp154);
-			if (iSlow195) {
-				fRec88[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow154 * std::sqrt(fTemp151 + fTemp149 + mydsp2_faustpower2_f(fTemp147 + -1.0f))) + fConst8 * fRec88[1];
-				fTemp155 = fSlow194 * fRec88[0];
-			}
-			output58[i0] = FAUSTFLOAT(fTemp155);
-			if (iSlow193) {
-				fRec89[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow155 * std::sqrt(fTemp153 + fTemp151 + mydsp2_faustpower2_f(fTemp148 + -1.0f))) + fConst8 * fRec89[1];
-				fTemp156 = fSlow192 * fRec89[0];
-			}
-			output59[i0] = FAUSTFLOAT(fTemp156);
-			if (iSlow197) {
-				fRec90[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow156 * std::sqrt(fTemp153 + fTemp149 + mydsp2_faustpower2_f(fTemp150 + 1.0f))) + fConst8 * fRec90[1];
-				fTemp157 = fSlow196 * fRec90[0];
-			}
-			output60[i0] = FAUSTFLOAT(fTemp157);
-			if (iSlow191) {
-				fRec91[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow157 * std::sqrt(fTemp153 + fTemp149 + mydsp2_faustpower2_f(fTemp150 + -1.0f))) + fConst8 * fRec91[1];
-				fTemp158 = fSlow190 * fRec91[0];
-			}
-			output61[i0] = FAUSTFLOAT(fTemp158);
-			if (iSlow201 | (iSlow203 | (iSlow199 | (iSlow205 | (iSlow207 | iSlow209))))) {
-				fTemp159 = float(input12[i0]);
-				fTemp160 = float(input13[i0]);
-			}
-			if (iSlow203 | (iSlow199 | (iSlow205 | iSlow209))) {
-				fTemp161 = mydsp2_faustpower2_f(fTemp160);
-			}
-			if (iSlow201 | (iSlow203 | (iSlow199 | (iSlow205 | (iSlow207 | iSlow209))))) {
-				fTemp162 = float(input14[i0]);
-			}
-			if (iSlow201 | (iSlow203 | (iSlow199 | iSlow207))) {
-				fTemp163 = mydsp2_faustpower2_f(fTemp162);
-			}
-			if (iSlow199) {
-				fRec92[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow142 * std::sqrt(mydsp2_faustpower2_f(fTemp159 + 1.0f) + fTemp161 + fTemp163)) + fConst8 * fRec92[1];
-				fTemp164 = fSlow198 * fRec92[0];
-			}
-			output62[i0] = FAUSTFLOAT(fTemp164);
-			if (iSlow201 | (iSlow205 | (iSlow207 | iSlow209))) {
-				fTemp165 = mydsp2_faustpower2_f(fTemp159);
-			}
-			if (iSlow201) {
-				fRec93[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow153 * std::sqrt(fTemp163 + fTemp165 + mydsp2_faustpower2_f(fTemp160 + 1.0f))) + fConst8 * fRec93[1];
-				fTemp166 = fSlow200 * fRec93[0];
-			}
-			output63[i0] = FAUSTFLOAT(fTemp166);
-			if (iSlow203) {
-				fRec94[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow154 * std::sqrt(fTemp163 + fTemp161 + mydsp2_faustpower2_f(fTemp159 + -1.0f))) + fConst8 * fRec94[1];
-				fTemp167 = fSlow202 * fRec94[0];
-			}
-			output64[i0] = FAUSTFLOAT(fTemp167);
-			if (iSlow207) {
-				fRec95[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow155 * std::sqrt(fTemp163 + fTemp165 + mydsp2_faustpower2_f(fTemp160 + -1.0f))) + fConst8 * fRec95[1];
-				fTemp168 = fSlow206 * fRec95[0];
-			}
-			output65[i0] = FAUSTFLOAT(fTemp168);
-			if (iSlow209) {
-				fRec96[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow156 * std::sqrt(fTemp161 + fTemp165 + mydsp2_faustpower2_f(fTemp162 + 1.0f))) + fConst8 * fRec96[1];
-				fTemp169 = fSlow208 * fRec96[0];
-			}
-			output66[i0] = FAUSTFLOAT(fTemp169);
-			if (iSlow205) {
-				fRec97[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow157 * std::sqrt(fTemp161 + fTemp165 + mydsp2_faustpower2_f(fTemp162 + -1.0f))) + fConst8 * fRec97[1];
-				fTemp170 = fSlow204 * fRec97[0];
-			}
-			output67[i0] = FAUSTFLOAT(fTemp170);
-			if (iSlow213 | (iSlow215 | (iSlow217 | (iSlow211 | (iSlow219 | iSlow221))))) {
-				fTemp171 = float(input15[i0]);
-				fTemp172 = float(input16[i0]);
-			}
-			if (iSlow213 | (iSlow217 | (iSlow211 | iSlow221))) {
-				fTemp173 = mydsp2_faustpower2_f(fTemp172);
-			}
-			if (iSlow213 | (iSlow215 | (iSlow217 | (iSlow211 | (iSlow219 | iSlow221))))) {
-				fTemp174 = float(input17[i0]);
-			}
-			if (iSlow213 | (iSlow215 | (iSlow211 | iSlow219))) {
-				fTemp175 = mydsp2_faustpower2_f(fTemp174);
-			}
-			if (iSlow211) {
-				fRec98[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow142 * std::sqrt(mydsp2_faustpower2_f(fTemp171 + 1.0f) + fTemp173 + fTemp175)) + fConst8 * fRec98[1];
-				fTemp176 = fSlow210 * fRec98[0];
-			}
-			output68[i0] = FAUSTFLOAT(fTemp176);
-			if (iSlow215 | (iSlow217 | (iSlow219 | iSlow221))) {
-				fTemp177 = mydsp2_faustpower2_f(fTemp171);
-			}
-			if (iSlow215 | iSlow219) {
-				fTemp178 = fTemp175 + fTemp177;
-			}
-			if (iSlow215) {
-				fRec99[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow153 * std::sqrt(mydsp2_faustpower2_f(fTemp172 + 1.0f) + fTemp178)) + fConst8 * fRec99[1];
-				fTemp179 = fSlow214 * fRec99[0];
-			}
-			output69[i0] = FAUSTFLOAT(fTemp179);
-			if (iSlow213) {
-				fRec100[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow154 * std::sqrt(mydsp2_faustpower2_f(fTemp171 + -1.0f) + fTemp173 + fTemp175)) + fConst8 * fRec100[1];
-				fTemp180 = fSlow212 * fRec100[0];
-			}
-			output70[i0] = FAUSTFLOAT(fTemp180);
-			if (iSlow219) {
-				fRec101[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow155 * std::sqrt(fTemp178 + mydsp2_faustpower2_f(fTemp172 + -1.0f))) + fConst8 * fRec101[1];
-				fTemp181 = fSlow218 * fRec101[0];
-			}
-			output71[i0] = FAUSTFLOAT(fTemp181);
-			if (iSlow217 | iSlow221) {
-				fTemp182 = fTemp173 + fTemp177;
-			}
-			if (iSlow217) {
-				fRec102[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow156 * std::sqrt(fTemp182 + mydsp2_faustpower2_f(fTemp174 + 1.0f))) + fConst8 * fRec102[1];
-				fTemp183 = fSlow216 * fRec102[0];
-			}
-			output72[i0] = FAUSTFLOAT(fTemp183);
-			if (iSlow221) {
-				fRec103[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow157 * std::sqrt(fTemp182 + mydsp2_faustpower2_f(fTemp174 + -1.0f))) + fConst8 * fRec103[1];
-				fTemp184 = fSlow220 * fRec103[0];
-			}
-			output73[i0] = FAUSTFLOAT(fTemp184);
-			if (iSlow28) {
-				fTemp185 = fSlow27 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp36 + (-1.0f - fTemp30))));
-			}
-			output74[i0] = FAUSTFLOAT(fTemp185);
-			if (iSlow38) {
-				fTemp186 = fSlow37 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp38 + (-1.0f - fTemp32))));
-			}
-			output75[i0] = FAUSTFLOAT(fTemp186);
-			if (iSlow43) {
-				fTemp187 = fSlow42 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp40 + (-1.0f - fTemp34))));
-			}
-			output76[i0] = FAUSTFLOAT(fTemp187);
 			if (iSlow26) {
-				fTemp188 = fSlow25 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp30 + fTemp36)));
+				fTemp109 = fSlow25 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp36 + (-1.0f - fTemp30))));
 			}
-			output77[i0] = FAUSTFLOAT(fTemp188);
+			output38[i0] = FAUSTFLOAT(fTemp109);
+			if (iSlow38) {
+				fTemp110 = fSlow37 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp38 + (-1.0f - fTemp32))));
+			}
+			output39[i0] = FAUSTFLOAT(fTemp110);
+			if (iSlow43) {
+				fTemp111 = fSlow42 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp40 + (-1.0f - fTemp34))));
+			}
+			output40[i0] = FAUSTFLOAT(fTemp111);
+			if (iSlow28) {
+				fTemp112 = fSlow27 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp30 + fTemp36)));
+			}
+			output41[i0] = FAUSTFLOAT(fTemp112);
 			if (iSlow36) {
-				fTemp189 = fSlow35 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp32 + fTemp38)));
+				fTemp113 = fSlow35 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp32 + fTemp38)));
 			}
-			output78[i0] = FAUSTFLOAT(fTemp189);
+			output42[i0] = FAUSTFLOAT(fTemp113);
 			if (iSlow45) {
-				fTemp190 = fSlow44 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp34 + fTemp40)));
+				fTemp114 = fSlow44 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp34 + fTemp40)));
 			}
-			output79[i0] = FAUSTFLOAT(fTemp190);
-			if (iSlow183) {
-				fTemp191 = fSlow182 * std::min<float>(1.0f, 1.6666666f * std::max<float>(0.0f, 0.5f * (1.0f - fTemp135) + -0.2f));
+			output43[i0] = FAUSTFLOAT(fTemp114);
+			if (iSlow141) {
+				fTemp115 = fSlow140 * std::min<float>(1.0f, 1.6666666f * std::max<float>(0.0f, 0.5f * (1.0f - float(input6[i0])) + -0.2f));
 			}
-			output80[i0] = FAUSTFLOAT(fTemp191);
+			output44[i0] = FAUSTFLOAT(fTemp115);
+			if (iSlow143) {
+				fTemp116 = fSlow142 * std::min<float>(1.0f, 1.6666666f * std::max<float>(0.0f, 0.5f * (1.0f - float(input7[i0])) + -0.2f));
+			}
+			output45[i0] = FAUSTFLOAT(fTemp116);
+			if (iSlow149 | (iSlow145 | (iSlow151 | iSlow153))) {
+				fTemp117 = float(input18[i0]);
+			}
+			if (iSlow145) {
+				fTemp118 = fSlow147 * fTemp117;
+			}
+			output46[i0] = FAUSTFLOAT(fTemp118);
+			if (iSlow151) {
+				fTemp119 = fSlow150 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp117)));
+			}
+			output47[i0] = FAUSTFLOAT(fTemp119);
+			if (iSlow153) {
+				fTemp120 = fSlow154 * std::max<float>(0.0f, fTemp117);
+			}
+			output48[i0] = FAUSTFLOAT(fTemp120);
+			if (iSlow149 | (iSlow156 | (iSlow159 | iSlow161))) {
+				fTemp121 = float(input19[i0]);
+			}
+			if (iSlow156) {
+				fTemp122 = fSlow157 * fTemp121;
+			}
+			output49[i0] = FAUSTFLOAT(fTemp122);
+			if (iSlow159) {
+				fTemp123 = fSlow158 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp121)));
+			}
+			output50[i0] = FAUSTFLOAT(fTemp123);
+			if (iSlow161) {
+				fTemp124 = fSlow162 * std::max<float>(0.0f, fTemp121);
+			}
+			output51[i0] = FAUSTFLOAT(fTemp124);
+			if (iSlow149 | (iSlow164 | (iSlow167 | iSlow169))) {
+				fTemp125 = float(input20[i0]);
+			}
+			if (iSlow164) {
+				fTemp126 = fSlow165 * fTemp125;
+			}
+			output52[i0] = FAUSTFLOAT(fTemp126);
+			if (iSlow167) {
+				fTemp127 = fSlow166 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp125)));
+			}
+			output53[i0] = FAUSTFLOAT(fTemp127);
+			if (iSlow169) {
+				fTemp128 = fSlow170 * std::max<float>(0.0f, fTemp125);
+			}
+			output54[i0] = FAUSTFLOAT(fTemp128);
+			if (iSlow172 | (iSlow175 | (iSlow177 | iSlow179))) {
+				fTemp129 = float(input21[i0]);
+			}
+			if (iSlow172) {
+				fTemp130 = fSlow173 * fTemp129;
+			}
+			output55[i0] = FAUSTFLOAT(fTemp130);
+			if (iSlow175) {
+				fTemp131 = fSlow174 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp129)));
+			}
+			output56[i0] = FAUSTFLOAT(fTemp131);
+			if (iSlow177) {
+				fTemp132 = fSlow180 * std::max<float>(0.0f, fTemp129);
+			}
+			output57[i0] = FAUSTFLOAT(fTemp132);
+			if (iSlow182 | (iSlow185 | (iSlow187 | iSlow179))) {
+				fTemp133 = float(input22[i0]);
+			}
+			if (iSlow182) {
+				fTemp134 = fSlow183 * fTemp133;
+			}
+			output58[i0] = FAUSTFLOAT(fTemp134);
 			if (iSlow185) {
-				fTemp192 = fSlow184 * std::min<float>(1.0f, 1.6666666f * std::max<float>(0.0f, 0.5f * (1.0f - fTemp136) + -0.2f));
+				fTemp135 = fSlow184 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp133)));
 			}
-			output81[i0] = FAUSTFLOAT(fTemp192);
-			if (iSlow227 | iSlow223) {
-				fTemp193 = float(input18[i0]);
+			output59[i0] = FAUSTFLOAT(fTemp135);
+			if (iSlow187) {
+				fTemp136 = fSlow188 * std::max<float>(0.0f, fTemp133);
 			}
-			if (iSlow223) {
-				fTemp194 = fSlow225 * fTemp193;
+			output60[i0] = FAUSTFLOAT(fTemp136);
+			if (iSlow190 | (iSlow193 | (iSlow195 | iSlow179))) {
+				fTemp137 = float(input23[i0]);
 			}
-			output82[i0] = FAUSTFLOAT(fTemp194);
-			if (iSlow227 | iSlow229) {
-				fTemp195 = float(input19[i0]);
+			if (iSlow190) {
+				fTemp138 = fSlow191 * fTemp137;
 			}
-			if (iSlow229) {
-				fTemp196 = fSlow230 * fTemp195;
+			output61[i0] = FAUSTFLOAT(fTemp138);
+			if (iSlow193) {
+				fTemp139 = fSlow192 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp137)));
 			}
-			output83[i0] = FAUSTFLOAT(fTemp196);
-			if (iSlow227 | iSlow232) {
-				fTemp197 = float(input20[i0]);
+			output62[i0] = FAUSTFLOAT(fTemp139);
+			if (iSlow195) {
+				fTemp140 = fSlow196 * std::max<float>(0.0f, fTemp137);
 			}
-			if (iSlow232) {
-				fTemp198 = fSlow233 * fTemp197;
+			output63[i0] = FAUSTFLOAT(fTemp140);
+			if (iSlow201 | (iSlow198 | (iSlow203 | iSlow205))) {
+				fTemp141 = float(input24[i0]);
 			}
-			output84[i0] = FAUSTFLOAT(fTemp198);
-			if (iSlow238 | iSlow235) {
-				fTemp199 = float(input21[i0]);
+			if (iSlow198) {
+				fTemp142 = fSlow199 * fTemp141;
 			}
-			if (iSlow235) {
-				fTemp200 = fSlow236 * fTemp199;
+			output64[i0] = FAUSTFLOAT(fTemp142);
+			if (iSlow203) {
+				fTemp143 = fSlow202 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp141)));
 			}
-			output85[i0] = FAUSTFLOAT(fTemp200);
-			if (iSlow238 | iSlow240) {
-				fTemp201 = float(input22[i0]);
+			output65[i0] = FAUSTFLOAT(fTemp143);
+			if (iSlow205) {
+				fTemp144 = fSlow206 * std::max<float>(0.0f, fTemp141);
 			}
-			if (iSlow240) {
-				fTemp202 = fSlow241 * fTemp201;
+			output66[i0] = FAUSTFLOAT(fTemp144);
+			if (iSlow201 | (iSlow208 | (iSlow211 | iSlow213))) {
+				fTemp145 = float(input25[i0]);
 			}
-			output86[i0] = FAUSTFLOAT(fTemp202);
-			if (iSlow238 | iSlow243) {
-				fTemp203 = float(input23[i0]);
+			if (iSlow208) {
+				fTemp146 = fSlow209 * fTemp145;
 			}
-			if (iSlow243) {
-				fTemp204 = fSlow244 * fTemp203;
+			output67[i0] = FAUSTFLOAT(fTemp146);
+			if (iSlow211) {
+				fTemp147 = fSlow210 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp145)));
 			}
-			output87[i0] = FAUSTFLOAT(fTemp204);
-			if (iSlow249 | iSlow246) {
-				fTemp205 = float(input24[i0]);
+			output68[i0] = FAUSTFLOAT(fTemp147);
+			if (iSlow213) {
+				fTemp148 = fSlow214 * std::max<float>(0.0f, fTemp145);
 			}
-			if (iSlow246) {
-				fTemp206 = fSlow247 * fTemp205;
+			output69[i0] = FAUSTFLOAT(fTemp148);
+			if (iSlow201 | (iSlow219 | (iSlow221 | iSlow216))) {
+				fTemp149 = float(input26[i0]);
 			}
-			output88[i0] = FAUSTFLOAT(fTemp206);
-			if (iSlow249 | iSlow251) {
-				fTemp207 = float(input25[i0]);
+			if (iSlow216) {
+				fTemp150 = fSlow217 * fTemp149;
 			}
-			if (iSlow251) {
-				fTemp208 = fSlow252 * fTemp207;
+			output70[i0] = FAUSTFLOAT(fTemp150);
+			if (iSlow219) {
+				fTemp151 = fSlow218 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp149)));
 			}
-			output89[i0] = FAUSTFLOAT(fTemp208);
-			if (iSlow249 | iSlow254) {
-				fTemp209 = float(input26[i0]);
+			output71[i0] = FAUSTFLOAT(fTemp151);
+			if (iSlow221) {
+				fTemp152 = fSlow222 * std::max<float>(0.0f, fTemp149);
 			}
-			if (iSlow254) {
-				fTemp210 = fSlow255 * fTemp209;
+			output72[i0] = FAUSTFLOAT(fTemp152);
+			if (iSlow149) {
+				fRec68[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow224 * std::sqrt(mydsp2_faustpower2_f(fTemp117 + -1.0f) + mydsp2_faustpower2_f(fTemp121) + mydsp2_faustpower2_f(fTemp125))) + fConst8 * fRec68[1];
+				fTemp153 = fSlow223 * (1.0f - fRec68[0]);
 			}
-			output90[i0] = FAUSTFLOAT(fTemp210);
-			if (iSlow227) {
-				fRec104[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow154 * std::sqrt(mydsp2_faustpower2_f(fTemp193 + -1.0f) + mydsp2_faustpower2_f(fTemp195) + mydsp2_faustpower2_f(fTemp197))) + fConst8 * fRec104[1];
-				fTemp211 = fSlow256 * (1.0f - fRec104[0]);
+			output73[i0] = FAUSTFLOAT(fTemp153);
+			if (iSlow179) {
+				fRec69[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow226 * std::sqrt(mydsp2_faustpower2_f(fTemp129) + mydsp2_faustpower2_f(fTemp133 + -1.0f) + mydsp2_faustpower2_f(fTemp137))) + fConst8 * fRec69[1];
+				fTemp154 = fSlow225 * (1.0f - fRec69[0]);
 			}
-			output91[i0] = FAUSTFLOAT(fTemp211);
-			if (iSlow238) {
-				fRec105[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow155 * std::sqrt(mydsp2_faustpower2_f(fTemp199) + mydsp2_faustpower2_f(fTemp201 + -1.0f) + mydsp2_faustpower2_f(fTemp203))) + fConst8 * fRec105[1];
-				fTemp212 = fSlow257 * (1.0f - fRec105[0]);
+			output74[i0] = FAUSTFLOAT(fTemp154);
+			if (iSlow201) {
+				fRec70[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow228 * std::sqrt(mydsp2_faustpower2_f(fTemp141) + mydsp2_faustpower2_f(fTemp145) + mydsp2_faustpower2_f(fTemp149 + -1.0f))) + fConst8 * fRec70[1];
+				fTemp155 = fSlow227 * (1.0f - fRec70[0]);
 			}
-			output92[i0] = FAUSTFLOAT(fTemp212);
-			if (iSlow249) {
-				fRec106[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow157 * std::sqrt(mydsp2_faustpower2_f(fTemp205) + mydsp2_faustpower2_f(fTemp207) + mydsp2_faustpower2_f(fTemp209 + -1.0f))) + fConst8 * fRec106[1];
-				fTemp213 = fSlow258 * (1.0f - fRec106[0]);
-			}
-			output93[i0] = FAUSTFLOAT(fTemp213);
+			output75[i0] = FAUSTFLOAT(fTemp155);
 			if (iSlow117) {
-				fTemp214 = fSlow259 * std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, std::sqrt(fTemp105) - fSlow119));
+				fTemp156 = fSlow229 * std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, std::sqrt(fTemp105) - fSlow119));
 			}
-			output94[i0] = FAUSTFLOAT(fTemp214);
+			output76[i0] = FAUSTFLOAT(fTemp156);
 			if (iSlow1) {
 				fVec0[1] = fVec0[0];
 				fRec3[1] = fRec3[0];
@@ -11197,7 +10508,7 @@ class mydsp2 : public dsp {
 			if (iSlow77) {
 				fRec42[1] = fRec42[0];
 			}
-			if (iSlow80 | (iSlow96 | (iSlow98 | iSlow94))) {
+			if (iSlow80 | (iSlow94 | (iSlow96 | iSlow98))) {
 				fVec25[1] = fVec25[0];
 				fRec45[1] = fRec45[0];
 			}
@@ -11214,7 +10525,7 @@ class mydsp2 : public dsp {
 			if (iSlow82) {
 				fRec48[1] = fRec48[0];
 			}
-			if (iSlow98) {
+			if (iSlow96) {
 				fRec49[1] = fRec49[0];
 			}
 			if (iSlow103) {
@@ -11223,7 +10534,7 @@ class mydsp2 : public dsp {
 			if (iSlow84) {
 				fRec51[1] = fRec51[0];
 			}
-			if (iSlow96) {
+			if (iSlow98) {
 				fRec52[1] = fRec52[0];
 			}
 			if (iSlow105) {
@@ -11232,161 +10543,53 @@ class mydsp2 : public dsp {
 			if (iSlow80) {
 				fRec54[1] = fRec54[0];
 			}
-			if (iSlow111 | (iSlow113 | (iSlow115 | (iSlow108 | iSlow117)))) {
+			if (iSlow111 | (iSlow108 | (iSlow113 | (iSlow115 | iSlow117)))) {
 				fRec56[1] = fRec56[0];
 			}
 			if (iSlow108) {
 				fRec55[1] = fRec55[0];
 			}
-			if (iSlow129 | (iSlow111 | (iSlow131 | (iSlow127 | iSlow117)))) {
+			if (iSlow129 | (iSlow127 | (iSlow131 | (iSlow115 | iSlow117)))) {
 				fRec58[1] = fRec58[0];
 			}
 			if (iSlow127) {
 				fRec57[1] = fRec57[0];
 			}
-			if (iSlow111 | (iSlow136 | (iSlow134 | iSlow138))) {
+			if (iSlow136 | (iSlow134 | (iSlow138 | iSlow115))) {
 				fRec60[1] = fRec60[0];
 			}
 			if (iSlow134) {
 				fRec59[1] = fRec59[0];
 			}
-			if (iSlow115) {
+			if (iSlow113) {
 				fRec61[1] = fRec61[0];
 			}
 			if (iSlow131) {
 				fRec62[1] = fRec62[0];
 			}
-			if (iSlow136) {
+			if (iSlow138) {
 				fRec63[1] = fRec63[0];
 			}
-			if (iSlow113) {
+			if (iSlow111) {
 				fRec64[1] = fRec64[0];
 			}
 			if (iSlow129) {
 				fRec65[1] = fRec65[0];
 			}
-			if (iSlow138) {
+			if (iSlow136) {
 				fRec66[1] = fRec66[0];
 			}
-			if (iSlow111) {
+			if (iSlow115) {
 				fRec67[1] = fRec67[0];
 			}
-			if (iSlow141) {
+			if (iSlow149) {
 				fRec68[1] = fRec68[0];
 			}
-			if (iSlow146) {
+			if (iSlow179) {
 				fRec69[1] = fRec69[0];
 			}
-			if (iSlow148) {
-				fRec70[1] = fRec70[0];
-			}
-			if (iSlow144) {
-				fRec71[1] = fRec71[0];
-			}
-			if (iSlow152) {
-				fRec72[1] = fRec72[0];
-			}
-			if (iSlow150) {
-				fRec73[1] = fRec73[0];
-			}
-			if (iSlow159) {
-				fRec74[1] = fRec74[0];
-			}
-			if (iSlow163) {
-				fRec75[1] = fRec75[0];
-			}
-			if (iSlow167) {
-				fRec76[1] = fRec76[0];
-			}
-			if (iSlow165) {
-				fRec77[1] = fRec77[0];
-			}
-			if (iSlow161) {
-				fRec78[1] = fRec78[0];
-			}
-			if (iSlow169) {
-				fRec79[1] = fRec79[0];
-			}
-			if (iSlow171) {
-				fRec80[1] = fRec80[0];
-			}
-			if (iSlow173) {
-				fRec81[1] = fRec81[0];
-			}
-			if (iSlow181) {
-				fRec82[1] = fRec82[0];
-			}
-			if (iSlow177) {
-				fRec83[1] = fRec83[0];
-			}
-			if (iSlow179) {
-				fRec84[1] = fRec84[0];
-			}
-			if (iSlow175) {
-				fRec85[1] = fRec85[0];
-			}
-			if (iSlow187) {
-				fRec86[1] = fRec86[0];
-			}
-			if (iSlow189) {
-				fRec87[1] = fRec87[0];
-			}
-			if (iSlow195) {
-				fRec88[1] = fRec88[0];
-			}
-			if (iSlow193) {
-				fRec89[1] = fRec89[0];
-			}
-			if (iSlow197) {
-				fRec90[1] = fRec90[0];
-			}
-			if (iSlow191) {
-				fRec91[1] = fRec91[0];
-			}
-			if (iSlow199) {
-				fRec92[1] = fRec92[0];
-			}
 			if (iSlow201) {
-				fRec93[1] = fRec93[0];
-			}
-			if (iSlow203) {
-				fRec94[1] = fRec94[0];
-			}
-			if (iSlow207) {
-				fRec95[1] = fRec95[0];
-			}
-			if (iSlow209) {
-				fRec96[1] = fRec96[0];
-			}
-			if (iSlow205) {
-				fRec97[1] = fRec97[0];
-			}
-			if (iSlow211) {
-				fRec98[1] = fRec98[0];
-			}
-			if (iSlow215) {
-				fRec99[1] = fRec99[0];
-			}
-			if (iSlow213) {
-				fRec100[1] = fRec100[0];
-			}
-			if (iSlow219) {
-				fRec101[1] = fRec101[0];
-			}
-			if (iSlow217) {
-				fRec102[1] = fRec102[0];
-			}
-			if (iSlow221) {
-				fRec103[1] = fRec103[0];
-			}
-			if (iSlow227) {
-				fRec104[1] = fRec104[0];
-			}
-			if (iSlow238) {
-				fRec105[1] = fRec105[0];
-			}
-			if (iSlow249) {
-				fRec106[1] = fRec106[0];
+				fRec70[1] = fRec70[0];
 			}
 		}
 		iTempPerm0 = iTemp0;
@@ -11546,64 +10749,6 @@ class mydsp2 : public dsp {
 		fTempPerm154 = fTemp154;
 		fTempPerm155 = fTemp155;
 		fTempPerm156 = fTemp156;
-		fTempPerm157 = fTemp157;
-		fTempPerm158 = fTemp158;
-		fTempPerm159 = fTemp159;
-		fTempPerm160 = fTemp160;
-		fTempPerm161 = fTemp161;
-		fTempPerm162 = fTemp162;
-		fTempPerm163 = fTemp163;
-		fTempPerm164 = fTemp164;
-		fTempPerm165 = fTemp165;
-		fTempPerm166 = fTemp166;
-		fTempPerm167 = fTemp167;
-		fTempPerm168 = fTemp168;
-		fTempPerm169 = fTemp169;
-		fTempPerm170 = fTemp170;
-		fTempPerm171 = fTemp171;
-		fTempPerm172 = fTemp172;
-		fTempPerm173 = fTemp173;
-		fTempPerm174 = fTemp174;
-		fTempPerm175 = fTemp175;
-		fTempPerm176 = fTemp176;
-		fTempPerm177 = fTemp177;
-		fTempPerm178 = fTemp178;
-		fTempPerm179 = fTemp179;
-		fTempPerm180 = fTemp180;
-		fTempPerm181 = fTemp181;
-		fTempPerm182 = fTemp182;
-		fTempPerm183 = fTemp183;
-		fTempPerm184 = fTemp184;
-		fTempPerm185 = fTemp185;
-		fTempPerm186 = fTemp186;
-		fTempPerm187 = fTemp187;
-		fTempPerm188 = fTemp188;
-		fTempPerm189 = fTemp189;
-		fTempPerm190 = fTemp190;
-		fTempPerm191 = fTemp191;
-		fTempPerm192 = fTemp192;
-		fTempPerm193 = fTemp193;
-		fTempPerm194 = fTemp194;
-		fTempPerm195 = fTemp195;
-		fTempPerm196 = fTemp196;
-		fTempPerm197 = fTemp197;
-		fTempPerm198 = fTemp198;
-		fTempPerm199 = fTemp199;
-		fTempPerm200 = fTemp200;
-		fTempPerm201 = fTemp201;
-		fTempPerm202 = fTemp202;
-		fTempPerm203 = fTemp203;
-		fTempPerm204 = fTemp204;
-		fTempPerm205 = fTemp205;
-		fTempPerm206 = fTemp206;
-		fTempPerm207 = fTemp207;
-		fTempPerm208 = fTemp208;
-		fTempPerm209 = fTemp209;
-		fTempPerm210 = fTemp210;
-		fTempPerm211 = fTemp211;
-		fTempPerm212 = fTemp212;
-		fTempPerm213 = fTemp213;
-		fTempPerm214 = fTemp214;
 	}
 
 };
