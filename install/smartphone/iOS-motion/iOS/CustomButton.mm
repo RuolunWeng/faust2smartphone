@@ -73,8 +73,6 @@
             [self setupTrigCounterButton];
         }
         
-        // Set adjustsFontSizeToFitWidth to true
-        self.titleLabel.adjustsFontSizeToFitWidth = YES;
 
         UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:MIN(self.frame.size.width * 0.3, self.frame.size.height * 0.3)];
 
@@ -88,7 +86,12 @@
         self.layer.cornerRadius = 5.0; // 圆角
         // Make sure to enable masksToBounds to apply the corner radius
         self.layer.masksToBounds = YES;
-        self.multipleTouchEnabled = YES;
+        
+        // Set adjustsFontSizeToFitWidth to true
+        self.titleLabel.adjustsFontSizeToFitWidth = YES;
+//        [self.titleLabel sizeToFit];
+//        
+//        [self setNeedsDisplay];
         
         
     }
@@ -131,6 +134,9 @@
         verticalLine.frame = CGRectMake(lineInitX, 0, self.lineWidth, self.frame.size.height);
         
     }
+    
+    [self.titleLabel sizeToFit];
+    [self setNeedsDisplay];
     
 }
 
@@ -280,7 +286,7 @@
             // Handle touch event for the button
             // 处理普通按钮点击事件
 
-            NSLog(@"Button tapped Down with name: %@, path: %@", self.nameForButton, self.pathForButton);
+            //NSLog(@"Button tapped Down with name: %@, path: %@", self.nameForButton, self.pathForButton);
             [self.delegate buttonTappedWithPath:self.pathForButton value:1];
             
             self.layer.borderColor= self.selectedColor.CGColor;
@@ -303,7 +309,7 @@
             // Handle touch event for the button
             // 处理trigCue按钮点击事件
 
-            NSLog(@"Button tapped Down for Cue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
+            //NSLog(@"Button tapped Down for Cue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
 //            self.alpha -= 0.3;
             
@@ -328,7 +334,7 @@
             // Handle touch event for the button
             // 处理trigCue按钮点击事件
 
-            NSLog(@"Button tapped Down for nextCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
+            //NSLog(@"Button tapped Down for nextCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
 //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
@@ -352,7 +358,7 @@
             // Handle touch event for the button
             // 处理prevCue按钮点击事件
 
-            NSLog(@"Button tapped Down for prevCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
+            //NSLog(@"Button tapped Down for prevCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
 //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
@@ -376,7 +382,7 @@
             // Handle touch event for the button
             // 处理initCue按钮点击事件
 
-            NSLog(@"Button tapped Down for initCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
+            //NSLog(@"Button tapped Down for initCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
 //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
@@ -400,7 +406,7 @@
             // Handle touch event for the button
             // 处理setRef按钮点击事件
 
-            NSLog(@"Button tapped Down for setRef Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
+            //NSLog(@"Button tapped Down for setRef Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
 //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
@@ -424,7 +430,7 @@
             // Handle touch event for the button
             // 处理trigCounter按钮点击事件
 
-            NSLog(@"Button tapped Down for Counter Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
+            //NSLog(@"Button tapped Down for Counter Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
 //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
@@ -452,7 +458,7 @@
                 CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
 
                 // 输出触摸点位的x/y坐标
-                NSLog(@"%@: touchScreenX Down: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+                //NSLog(@"%@: touchScreenX Down: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
                 
                 verticalLine.frame = CGRectMake(0, 0, touchPoint.x, self.bounds.size.height);
         //        self.verticalLines[button].frame = CGRectMake(touchPoint.x, 0, 4, button.bounds.size.height);
@@ -467,7 +473,7 @@
                 CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
                 
                 // 输出触摸点位的x/y坐标
-                NSLog(@"%@: touchScreenY Down: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+                //NSLog(@"%@: touchScreenY Down: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
                 
                 
                 // Update the positions of the lines
@@ -492,8 +498,8 @@
             CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
 
             // 输出触摸点位的x/y坐标
-            NSLog(@"%@: Pad TochDown Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
-            NSLog(@"%@: Pad TochDown Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+            //NSLog(@"%@: Pad TochDown Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+            //NSLog(@"%@: Pad TochDown Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
 
             // Update the positions of the lines
             horizontalLine.frame = CGRectMake(0, touchPoint.y, self.bounds.size.width, self.lineWidth);
@@ -507,6 +513,8 @@
         }
         
     }
+    
+    //[self setNeedsDisplay];
 }
 
 - (void) touchesMoved:(NSSet *)touches
@@ -526,7 +534,7 @@
                         CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
 
                         // 输出触摸点位的x/y坐标
-                        NSLog(@"%@: touchScreenX Moved: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+                        //NSLog(@"%@: touchScreenX Moved: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
                         
                         verticalLine.frame = CGRectMake(0, 0, touchPoint.x, self.bounds.size.height);
                 //        self.verticalLines[button].frame = CGRectMake(touchPoint.x, 0, 4, button.bounds.size.height);
@@ -541,7 +549,7 @@
                         CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
                         
                         // 输出触摸点位的x/y坐标
-                        NSLog(@"%@: touchScreenY Moved: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+                        //NSLog(@"%@: touchScreenY Moved: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
                         
                         
                         // Update the positions of the lines
@@ -563,8 +571,8 @@
                     CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
 
                     // 输出触摸点位的x/y坐标
-                    NSLog(@"%@: Pad TochUp Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
-                    NSLog(@"%@: Pad TochUp Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+                    //NSLog(@"%@: Pad TochUp Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+                    //NSLog(@"%@: Pad TochUp Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
 
                     // Update the positions of the lines
                     horizontalLine.frame = CGRectMake(0, touchPoint.y, self.bounds.size.width, self.lineWidth);
@@ -581,7 +589,7 @@
             }
         }
         
-    
+    //[self setNeedsDisplay];
     
 }
 
@@ -597,7 +605,7 @@
                 // Handle touch event for the button
                 // 处理普通按钮点击事件
                 
-                NSLog(@"Button tapped Up with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                //NSLog(@"Button tapped Up with name: %@, path: %@", self.nameForButton, self.pathForButton);
                 [self.delegate buttonTappedWithPath:self.pathForButton value:0];
                 
                 self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -622,10 +630,10 @@
                 self.selected = !self.selected;
                 
                 if (self.isSelected) {
-                    NSLog(@"Toggled button isSelected with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                    //NSLog(@"Toggled button isSelected with name: %@, path: %@", self.nameForButton, self.pathForButton);
                     [self.delegate buttonTappedWithPath:self.pathForButton value:1];
                 } else {
-                    NSLog(@"Toggled button isNotSelected with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                    //NSLog(@"Toggled button isNotSelected with name: %@, path: %@", self.nameForButton, self.pathForButton);
                     [self.delegate buttonTappedWithPath:self.pathForButton value:0];
                 }
                 
@@ -633,7 +641,7 @@
                 // Handle touch event for the button
                 // 处理trigCue按钮点击事件
                 
-                NSLog(@"Button tapped Up for Action Cue with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                //NSLog(@"Button tapped Up for Action Cue with name: %@, path: %@", self.nameForButton, self.pathForButton);
                 
                 //self.alpha += 0.3;
                 self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -654,7 +662,7 @@
                 // Handle touch event for the button
                 // 处理trigCue按钮点击事件
                 
-                NSLog(@"Button tapped Up for Action nextCue with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                //NSLog(@"Button tapped Up for Action nextCue with name: %@, path: %@", self.nameForButton, self.pathForButton);
                 
                 //self.alpha += 0.3;
                 self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -675,7 +683,7 @@
                 // Handle touch event for the button
                 // 处理trigCue按钮点击事件
                 
-                NSLog(@"Button tapped Up for Action prevCue with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                //NSLog(@"Button tapped Up for Action prevCue with name: %@, path: %@", self.nameForButton, self.pathForButton);
                 
                 //self.alpha += 0.3;
                 self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -696,7 +704,7 @@
                 // Handle touch event for the button
                 // 处理trigCue按钮点击事件
                 
-                NSLog(@"Button tapped Up for Action initCue with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                //NSLog(@"Button tapped Up for Action initCue with name: %@, path: %@", self.nameForButton, self.pathForButton);
                 
                 //self.alpha += 0.3;
                 self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -717,7 +725,7 @@
                 // Handle touch event for the button
                 // 处理setRef按钮点击事件
                 
-                NSLog(@"Button tapped Up for Action setRef with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                //NSLog(@"Button tapped Up for Action setRef with name: %@, path: %@", self.nameForButton, self.pathForButton);
                 
                 //self.alpha += 0.3;
                 self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -738,7 +746,7 @@
                 // Handle touch event for the button
                 // 处理trigCounter按钮点击事件
                 
-                NSLog(@"Button tapped Up for Action Counter with name: %@, path: %@", self.nameForButton, self.pathForButton);
+                //NSLog(@"Button tapped Up for Action Counter with name: %@, path: %@", self.nameForButton, self.pathForButton);
                 
                 //self.alpha += 0.3;
                 self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -771,8 +779,8 @@
                 CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
                 
                 // 输出触摸点位的x/y坐标
-                NSLog(@"%@: Pad TochUp Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
-                NSLog(@"%@: Pad TochUp Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+                //NSLog(@"%@: Pad TochUp Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+                //NSLog(@"%@: Pad TochUp Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
                 
                 // Update the positions of the lines
                 horizontalLine.frame = CGRectMake(0, touchPoint.y, self.bounds.size.width, self.lineWidth);
@@ -820,6 +828,9 @@
         }
         
     }
+    
+    
+    //[self setNeedsDisplay];
 }
 
 - (CGFloat)clampValue:(CGFloat)value min:(CGFloat)min max:(CGFloat)max {
