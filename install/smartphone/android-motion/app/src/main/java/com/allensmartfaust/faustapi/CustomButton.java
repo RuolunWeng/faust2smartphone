@@ -592,7 +592,7 @@ public class CustomButton extends View {
 
                 // Calculate the initial positions for lines (assuming lineInits contains X and Y values)
                 float lineInitX = mapValue(initValues.get(0), 0, 1, 0, getWidth());
-                float lineInitY = mapValue(initValues.get(1), 0, 1, 0, getHeight());
+                float lineInitY = mapValue(initValues.get(1), 0, 1, getHeight(), 0);
 
                 // Update the positions of the lines represented by RectF objects
                 horizontalLine = new RectF(0, lineInitY, getWidth(), lineInitY + lineWidth);
