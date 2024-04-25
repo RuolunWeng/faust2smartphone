@@ -123,7 +123,7 @@ public class CustomButton extends View {
         //canvas.drawRoundRect(rectF, 10, 10, paint);
         // Set the paint color for the button background
         //paint.setColor(selected ? selectedColor : Color.GRAY);
-        rectF.set(lineWidth, lineWidth, getWidth() - lineWidth*3, getHeight() - lineWidth*3);
+        rectF.set(lineWidth + lineWidth*2, lineWidth + lineWidth*2, getWidth() - lineWidth*3, getHeight() - lineWidth*3);
         canvas.drawRoundRect(rectF, 10, 10, paint);
 
 
@@ -291,7 +291,7 @@ public class CustomButton extends View {
 
                         // Update the RectF with the new position and size
                         //verticalLine.set(touchX, 0, width, getHeight());
-                        verticalLine.set(0, 0, touchX, getHeight());
+                        verticalLine.set(0 + lineWidth*3, 0 + lineWidth*3, touchX- lineWidth*3, getHeight()- lineWidth*3);
 
                         // Request a redraw of the button
                         invalidate();
@@ -310,7 +310,7 @@ public class CustomButton extends View {
                         //float newHeight = height - touchY;
 
                         // Update the RectF with the new position and size
-                        horizontalLine.set(0, touchY, getWidth(), height);
+                        horizontalLine.set(0 + lineWidth*3, touchY + lineWidth*3, getWidth()- lineWidth*3, height- lineWidth*3);
 
                         // Request a redraw of the button
                         invalidate();
@@ -330,12 +330,12 @@ public class CustomButton extends View {
                         touchY = Math.max(0, Math.min(getHeight(), touchY));
 
                         horizontalLine.left = 0;
-                        horizontalLine.right = getWidth();
-                        horizontalLine.top = touchY - lineWidth / 2;
-                        horizontalLine.bottom = touchY + lineWidth / 2;
+                        horizontalLine.right = getWidth() ;
+                        horizontalLine.top = touchY - (lineWidth / 2);
+                        horizontalLine.bottom = (touchY + lineWidth / 2);
 
-                        verticalLine.left = touchX - lineWidth / 2;
-                        verticalLine.right = touchX + lineWidth / 2;
+                        verticalLine.left = (touchX - lineWidth / 2);
+                        verticalLine.right = (touchX + lineWidth / 2);
                         verticalLine.top = 0;
                         verticalLine.bottom = getHeight();
 
@@ -502,7 +502,7 @@ public class CustomButton extends View {
                 float lineInitX = mapValue(initValues.get(0), 0, 1, 0, getWidth());
 
                 // Update the positions of the lines represented by RectF objects
-                verticalLine = new RectF(0, 0, lineInitX, getHeight());
+                verticalLine = new RectF(0 + lineWidth*3, 0 + lineWidth*3, lineInitX - lineWidth*3, getHeight() - lineWidth*3);
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
@@ -547,7 +547,7 @@ public class CustomButton extends View {
                 float lineInitY = mapValue(initValues.get(0), 0, 1, getHeight(),0);
 
                 // Update the positions of the lines represented by RectF objects
-                horizontalLine = new RectF(0, lineInitY, getWidth(), getHeight());
+                horizontalLine = new RectF(0 + lineWidth*3, lineInitY + lineWidth*3, getWidth() - lineWidth*3, getHeight()- lineWidth*3);
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
@@ -595,8 +595,8 @@ public class CustomButton extends View {
                 float lineInitY = mapValue(initValues.get(1), 0, 1, getHeight(), 0);
 
                 // Update the positions of the lines represented by RectF objects
-                horizontalLine = new RectF(0, lineInitY, getWidth(), lineInitY + lineWidth);
-                verticalLine = new RectF(lineInitX, 0, lineInitX + lineWidth, getHeight());
+                horizontalLine = new RectF(0 , lineInitY , getWidth() , lineInitY + lineWidth);
+                verticalLine = new RectF(lineInitX, 0 , lineInitX + lineWidth, getHeight());
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
