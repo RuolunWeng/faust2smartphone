@@ -10,7 +10,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@android:color/black"
-    tools:context="com.allensmartfaust.faustapi.MainActivity">
+    tools:context="com.soloDemo_Cue_andro.MainActivity">
+
+<!--    <com.soloDemo_Cue_andro.CustomButton
+    android:id="@+id/customButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Custom Button" />-->
+
 
     <TextView
         android:id="@+id/appName"
@@ -42,29 +49,6 @@
         tools:visibility="invisible"
         android:visibility="invisible" />
 
-    <Button
-        android:text="Next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/nextCue"
-        android:layout_alignBaseline="@+id/prevCue"
-        android:layout_alignBottom="@+id/prevCue"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="17dp"
-        android:textSize="45sp"
-        android:visibility="invisible" />
-
-    <Button
-        android:text="init"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nextCue"
-        android:layout_alignEnd="@+id/nextCue"
-        android:layout_marginTop="32dp"
-        android:id="@+id/initCue"
-        android:textSize="45sp"
-        android:visibility="invisible" />
-
     <TextView
         android:text="Tips:"
         android:layout_width="wrap_content"
@@ -77,6 +61,30 @@
         android:textColor="@android:color/background_light"
         android:textAlignment="center"
         android:visibility="invisible" />
+
+    <Button
+        android:text="Next"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/nextCue"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="23dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:textSize="28dp"
+        android:visibility="invisible" />
+
+    <Button
+        android:text="INIT"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/nextCue"
+        android:layout_alignEnd="@+id/nextCue"
+        android:layout_marginTop="20dp"
+        android:id="@+id/initCue"
+        android:textSize="28dp"
+        android:visibility="invisible" />
+
 
     <TextView
         android:text="1"
@@ -134,13 +142,13 @@
 
     <Button
         android:text="prev"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/prevCue"
         android:layout_marginStart="16dp"
         android:layout_marginTop="23dp"
         android:elevation="10dp"
-        android:textSize="45sp"
+        android:textSize="28dp"
         android:layout_below="@+id/textView2"
         android:layout_alignParentStart="true"
         android:visibility="invisible" />
@@ -176,7 +184,8 @@
         android:text="SetParams"
         android:textAlignment="textEnd"
         android:textColor="@android:color/white"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:visibility="invisible"/>
 
 
     <Button
@@ -279,6 +288,40 @@
         android:text="setRef"
         android:textSize="12sp"
         android:visibility="invisible" />
+
+
+    <!-- Transparent ScrollView -->
+    <ScrollView
+        android:id="@+id/transparent_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/SetParamsNew"
+        android:layout_below="@+id/tips"
+        android:background="@android:color/transparent">
+
+        <!-- Add your content inside the ScrollView -->
+
+    </ScrollView>
+
+    <!-- Your other layout components -->
+
+    <include layout="@layout/settings_layout" />
+
+    <!-- Your other layout components -->
+
+    <CheckBox
+        android:id="@+id/SetParamsNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/appName"
+        android:layout_alignParentRight="true"
+        android:minWidth="270px"
+        android:minHeight="100px"
+        android:text="Settings"
+        android:textSize="20dp"
+        android:textAlignment="textEnd"
+        android:textColor="@android:color/holo_green_light"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

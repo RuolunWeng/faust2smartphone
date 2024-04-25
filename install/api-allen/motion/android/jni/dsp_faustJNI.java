@@ -51,6 +51,7 @@ public class dsp_faustJNI {
   public final static native float DspFaust_getParamMax__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2);
   public final static native float DspFaust_getParamInit__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2);
   public final static native float DspFaust_getParamInit__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2);
+  public final static native float DspFaust_getParamStep__SWIG_0(long jarg1, DspFaust jarg1_, int jarg2);
   public final static native String DspFaust_getMetadata__SWIG_0(long jarg1, DspFaust jarg1_, String jarg2, String jarg3);
   public final static native String DspFaust_getMetadata__SWIG_1(long jarg1, DspFaust jarg1_, int jarg2, String jarg3);
   public final static native void DspFaust_propagateAcc(long jarg1, DspFaust jarg1_, int jarg2, float jarg3);

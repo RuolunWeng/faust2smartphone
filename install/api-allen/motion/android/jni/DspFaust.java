@@ -160,6 +160,10 @@ public class DspFaust {
     return dsp_faustJNI.DspFaust_getParamInit__SWIG_1(swigCPtr, this, arg0);
   }
 
+  public float getParamStep(int arg0) {
+    return dsp_faustJNI.DspFaust_getParamStep__SWIG_0(swigCPtr, this, arg0);
+  }
+
   public String getMetadata(String arg0, String arg1) {
     return dsp_faustJNI.DspFaust_getMetadata__SWIG_0(swigCPtr, this, arg0, arg1);
   }

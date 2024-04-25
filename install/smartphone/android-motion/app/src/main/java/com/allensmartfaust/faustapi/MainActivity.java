@@ -1,5 +1,9 @@
 package com.allensmartfaust.faustapi;
 
+import com.allensmartfaust.faustapi.CustomButton;
+import com.allensmartfaust.faustapi.CustomButtonFactory;
+import com.allensmartfaust.faustapi.CustomTabView;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,24 +14,33 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.opengl.Matrix;
 import android.os.Build;
 import android.renderscript.Matrix4f;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +60,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,30 +68,35 @@ import static android.R.color.white;
 import static java.lang.Math.sqrt;
 
 // For audio input request permission
-import android.support.v4.app.ActivityCompat;
+//import android.support.v4.app.ActivityCompat;
 import android.Manifest;
 import android.widget.Toast;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+
 import android.content.pm.PackageManager;
 
 public class MainActivity extends AppCompatActivity
 implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    DspFaust dspFaust;
+    public static DspFaust dspFaust;
     DspFaustMotion dspFaustMotion;
 
     private SensorManager sensorManager;
 
     private SharedPreferences mSharedPref;
 
-    private TextView cue,cueNext,cueText, cueNextText, tips, appName;
+    private TextView cue,cueNext,cueText, cueNextText, appName;
+    public static TextView tips;
     private EditText paramsValue, ipAddress, inputPort, outputPort;
 
     private ImageView touche;
     private Button prevCue, nextCue, initCue, setMotion , defaultParams, setOSC, setRef;
 
+    ScrollView scrollView;
+    CustomTabView motionUItabView;
+    boolean newCueIsOn, newCounterIsOn;
 
-    private CheckBox setParams;
+    private CheckBox setParams, settings;
     private RadioGroup radioGroup;
 
     int scrWidth = 0,scrHeight= 0;
@@ -98,6 +117,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
     float[] rotationMatrix = new float[9];
     float[] mOrientation = new float[3];
     float[] mQuaternion = new float[4];
+    float[] referenceRotationMatrix = new float[9];
 
     String oscAddress;
     int oscInPort;
@@ -253,6 +273,8 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
               }
           }
 
+
+        // Load cues from file
         try {
             InputStream stream = getAssets().open("cuenums.txt");
 
@@ -296,9 +318,6 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
             System.err.println(x);
         }
 
-        System.out.println(cueList);
-        System.out.println(tipsList);
-
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
         display.getMetrics(outMetrics);
@@ -313,6 +332,19 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
         if (sensorManager == null) {
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         }
+
+        if (sensorManager!=null) {
+            sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                    Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+
+            sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                    Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+
+            sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                    Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_FASTEST);
+        }
+
+        touche = (ImageView) findViewById(R.id.touche);
 
         nextCue = (Button) findViewById(R.id.nextCue);
         prevCue = (Button) findViewById(R.id.prevCue);
@@ -329,88 +361,247 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
         cue.setText(cueList.get(cueIndex));
         cueNext.setText(cueList.get(cueIndexNext));
         tips.setText(tipsList.get(cueIndex));
-        appName.setText(getApplicationContext().getPackageName().replace("com."," ").concat(" | Grame"));
+
+        //appName.setText(getApplicationContext().getPackageName().replace("com."," ").concat(" | Grame"));
+        displayTitle();
 
         nextCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (cueIndexNext < cueList.size() -1) {
-                    cueIndexNext++;
-                    cueNext.setText(cueList.get(cueIndexNext));
-                    tips.setText(tipsList.get(cueIndexNext));
-                }
+                nextCue();
             }
         });
 
         prevCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (cueIndexNext > 0) {
-                    cueIndexNext--;
-                    cueNext.setText(cueList.get(cueIndexNext));
-                    tips.setText(tipsList.get(cueIndexNext));
-                }
+                prevCue();
             }
         });
 
         initCue.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                cueIndex = 0;
-                cueIndexNext = 1;
-                cue.setText(cueList.get(cueIndex));
-                cueNext.setText(cueList.get(cueIndexNext));
-                tips.setText(tipsList.get(cueIndex));
+                initCue();
 
             }
         });
 
-        setOSC = (Button) findViewById(R.id.setOSC);
-        ipAddress = (EditText) findViewById(R.id.ipAddress);
-        inputPort = (EditText) findViewById(R.id.inputPort);
-        outputPort = (EditText) findViewById(R.id.outputPort);
 
-        setParams = (CheckBox) findViewById(R.id.SetParams);
-        radioGroup=(RadioGroup)findViewById(R.id.radioGroup);
-        paramsValue = (EditText) findViewById(R.id.paramValue);
-        setMotion = (Button) findViewById(R.id.setMotion);
-        defaultParams =(Button) findViewById(R.id.defaultParams);
-        setRef =(Button) findViewById(R.id.setRef);
+        // Create a ScrollView
+        scrollView = (ScrollView) findViewById(R.id.transparent_scrollview);
 
-        setParams.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final View settingsLayoutRoot = findViewById(R.id.settings_layout_root);
+        settingsLayoutRoot.setBackgroundColor(Color.argb(100,0,0,0));
+        settingsLayoutRoot.setVisibility(View.INVISIBLE);
 
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+        setOSC = (Button) settingsLayoutRoot.findViewById(R.id.setOSC);
+        ipAddress = (EditText) settingsLayoutRoot.findViewById(R.id.ipAddress);
+        inputPort = (EditText) settingsLayoutRoot.findViewById(R.id.inputPort);
+        outputPort = (EditText) settingsLayoutRoot.findViewById(R.id.outputPort);
 
-                if (isChecked) {
-                    if (motionParamArray.size() >0) {
-                        radioGroup.setVisibility(View.VISIBLE);
-                        paramsValue.setVisibility(View.VISIBLE);
-                        setMotion.setVisibility(View.VISIBLE);
-                        defaultParams.setVisibility(View.VISIBLE);
-                    }
-                    setRef.setVisibility(View.VISIBLE);
-                    if (dspFaust.getOSCIsOn()) {
-                        ipAddress.setVisibility(View.VISIBLE);
-                        ipAddress.setText(SharedPrefRead("oscAddress","192.168.1.5"));
-                        inputPort.setVisibility(View.VISIBLE);
-                        inputPort.setText(SharedPrefRead("oscInPort","5510"));
-                        outputPort.setVisibility(View.VISIBLE);
-                        outputPort.setText(SharedPrefRead("oscOutPort","5511"));
-                        setOSC.setVisibility(View.VISIBLE);
-                    }
-                } else {
+        radioGroup=(RadioGroup)settingsLayoutRoot.findViewById(R.id.radioGroup);
+        paramsValue = (EditText) settingsLayoutRoot.findViewById(R.id.paramValue);
+        setMotion = (Button) settingsLayoutRoot.findViewById(R.id.setMotion);
+        defaultParams =(Button) settingsLayoutRoot.findViewById(R.id.defaultParams);
+        setRef =(Button) settingsLayoutRoot.findViewById(R.id.setRef);
 
-                    radioGroup.setVisibility(View.INVISIBLE);
-                    paramsValue.setVisibility(View.INVISIBLE);
-                    setMotion.setVisibility(View.INVISIBLE);
-                    defaultParams.setVisibility(View.INVISIBLE);
-                    ipAddress.setVisibility(View.INVISIBLE);
-                    inputPort.setVisibility(View.INVISIBLE);
-                    outputPort.setVisibility(View.INVISIBLE);
-                    setOSC.setVisibility(View.INVISIBLE);
-                    setRef.setVisibility(View.INVISIBLE);
-                }
+        final RadioGroup radioGroupMotionLib =(RadioGroup)settingsLayoutRoot.findViewById(R.id.radioGroupMotionLib);
+        final EditText paramsValueMotionLib = (EditText) settingsLayoutRoot.findViewById(R.id.paramValueMotionLib);
+        Button setMotionLib = (Button) settingsLayoutRoot.findViewById(R.id.setMotionLib);
+        Button defaultParamsMotionLib =(Button) settingsLayoutRoot.findViewById(R.id.defaultParamsMotionLib);
+
+        final ArrayList<String>  motionLibParamArray = new ArrayList<String>();
+        final ArrayList<String>  motionLibParamAddress = new ArrayList<String>();
+
+        for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
+            String Str = dspFaustMotion.getMetadata(i, "showName");
+            if (!Str.equals("")){
+                motionLibParamArray.add(Str);
+                motionLibParamAddress.add(dspFaustMotion.getParamAddress(i));
             }
         }
-                                             );
+
+        final boolean[] paramsLibOn = new boolean[motionLibParamArray.size()];
+        for(int i = 0; i < motionLibParamArray.size(); i++) {
+            RadioButton rdbtn = new RadioButton(this);
+            rdbtn.setId(i);
+            rdbtn.setTextColor(Color.WHITE);
+            rdbtn.setText(motionLibParamArray.get(i));
+            radioGroupMotionLib.addView(rdbtn);
+        }
+
+        radioGroupMotionLib.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                // This will get the radiobutton that has changed in its check state
+                RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
+                boolean isChecked = checkedRadioButton.isChecked();
+                if (isChecked)
+                {
+                    for (int i=0; i< motionLibParamArray.size(); i++) {
+                        paramsLibOn[i]=false;
+                    }
+                    paramsLibOn[checkedId]=true;
+                    paramsValueMotionLib.setText( String.valueOf(dspFaustMotion.getParamValue(motionLibParamAddress.get(checkedId))));
+                }
+            }
+        });
+
+
+        setMotionLib.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                // Find the label index of the edited parameter
+                int ii = -1;
+                for (ii=0; ii<motionLibParamArray.size(); ii++) {
+                    if (paramsLibOn[ii]) {
+
+                        break;
+                    }
+                }
+
+                String param =  motionLibParamArray.get(ii);
+
+                for (int i=0; i< motionLibParamArray.size(); i++) {
+
+                    if (motionLibParamArray.get(i).equals(param) ){
+                        dspFaustMotion.setParamValue(motionLibParamAddress.get(i), Float.valueOf(paramsValueMotionLib.getText().toString()));
+                        SharedPreWriteFloat(motionLibParamArray.get(i),Float.valueOf(paramsValueMotionLib.getText().toString()));
+                    }
+
+                }
+
+            }
+        });
+
+
+
+        defaultParamsMotionLib.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                for (int i=0; i<motionLibParamAddress.size(); i++){
+                    dspFaustMotion.setParamValue(motionLibParamAddress.get(i), dspFaustMotion.getParamInit(motionLibParamAddress.get(i)));
+                    SharedPreWriteFloat(motionLibParamArray.get(i), dspFaustMotion.getParamInit((motionLibParamAddress.get(i))));
+                }
+
+                // Check if the RadioGroup is found
+                if (radioGroupMotionLib != null) {
+                    // Get the first RadioButton in the RadioGroup
+                    RadioButton firstRadioButton = (RadioButton) radioGroupMotionLib.getChildAt(0);
+                    // Check if the first RadioButton is found
+                    if (firstRadioButton != null) {
+                        // Set the first RadioButton as checked
+                        firstRadioButton.setChecked(true);
+                        paramsValueMotionLib.setText( String.valueOf(dspFaustMotion.getParamValue(motionLibParamAddress.get(0))));
+                    }
+                }
+                Toast.makeText(MainActivity.this, "Reset MotionLib Defaults Params", Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
+
+        final Button initOSC =(Button) settingsLayoutRoot.findViewById(R.id.initOSC);
+
+        settings = (CheckBox) findViewById(R.id.SetParamsNew);
+        settings.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                                                @Override
+                                                public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+
+                                                    if (isChecked) {
+
+                                                        radioGroup.setVisibility(View.INVISIBLE);
+                                                        paramsValue.setVisibility(View.INVISIBLE);
+                                                        setMotion.setVisibility(View.INVISIBLE);
+                                                        defaultParams.setVisibility(View.INVISIBLE);
+                                                        ipAddress.setVisibility(View.INVISIBLE);
+                                                        inputPort.setVisibility(View.INVISIBLE);
+                                                        outputPort.setVisibility(View.INVISIBLE);
+                                                        setOSC.setVisibility(View.INVISIBLE);
+                                                        initOSC.setVisibility(View.INVISIBLE);
+
+                                                        // Check if the RadioGroup is found
+                                                        if (radioGroupMotionLib != null) {
+                                                            // Get the first RadioButton in the RadioGroup
+                                                            RadioButton firstRadioButton = (RadioButton) radioGroupMotionLib.getChildAt(0);
+                                                            // Check if the first RadioButton is found
+                                                            if (firstRadioButton != null) {
+                                                                // Set the first RadioButton as checked
+                                                                firstRadioButton.setChecked(true);
+                                                                paramsValueMotionLib.setText( String.valueOf(dspFaustMotion.getParamValue(motionLibParamAddress.get(0))));
+                                                            }
+                                                        }
+
+                                                        if (motionParamArray.size() >0) {
+                                                            radioGroup.setVisibility(View.VISIBLE);
+                                                            paramsValue.setVisibility(View.VISIBLE);
+                                                            setMotion.setVisibility(View.VISIBLE);
+                                                            defaultParams.setVisibility(View.VISIBLE);
+                                                            // Check if the RadioGroup is found
+                                                            if (radioGroup != null) {
+                                                                // Get the first RadioButton in the RadioGroup
+                                                                RadioButton firstRadioButton = (RadioButton) radioGroup.getChildAt(0);
+                                                                // Check if the first RadioButton is found
+                                                                if (firstRadioButton != null) {
+                                                                    // Set the first RadioButton as checked
+                                                                    firstRadioButton.setChecked(true);
+                                                                    paramsValue.setText( String.valueOf(dspFaust.getParamValue(motionParamAddress.get(0))));
+                                                                }
+                                                            }
+
+                                                        }
+                                                        setRef.setVisibility(View.VISIBLE);
+                                                        if (dspFaust.getOSCIsOn()) {
+                                                            ipAddress.setVisibility(View.VISIBLE);
+                                                            ipAddress.setText(SharedPrefRead("oscAddress","192.168.1.5"));
+                                                            inputPort.setVisibility(View.VISIBLE);
+                                                            inputPort.setText(SharedPrefRead("oscInPort","5510"));
+                                                            outputPort.setVisibility(View.VISIBLE);
+                                                            outputPort.setText(SharedPrefRead("oscOutPort","5511"));
+                                                            setOSC.setVisibility(View.VISIBLE);
+                                                            initOSC.setVisibility(View.VISIBLE);
+                                                        }
+
+                                                        settingsLayoutRoot.setVisibility(View.VISIBLE);
+
+                                                        if(cueIsOn && !newCueIsOn && !newCounterIsOn) {
+                                                            nextCue.setVisibility(View.INVISIBLE);
+                                                            prevCue.setVisibility(View.INVISIBLE);
+                                                            initCue.setVisibility(View.INVISIBLE);
+                                                            cue.setVisibility(View.INVISIBLE);
+                                                            cueNext.setVisibility(View.INVISIBLE);
+                                                            cueText.setVisibility(View.INVISIBLE);
+                                                            cueNextText.setVisibility(View.INVISIBLE);
+                                                            // deactive Touche
+                                                            scrollView.setVisibility(View.VISIBLE);
+
+                                                        } else {
+                                                            scrollView.setVisibility(View.INVISIBLE);
+                                                        }
+
+                                                    } else {
+                                                        settingsLayoutRoot.setVisibility(View.INVISIBLE);
+
+                                                        if(cueIsOn && !newCueIsOn && !newCounterIsOn) {
+                                                            nextCue.setVisibility(View.VISIBLE);
+                                                            prevCue.setVisibility(View.VISIBLE);
+                                                            initCue.setVisibility(View.VISIBLE);
+                                                            cue.setVisibility(View.VISIBLE);
+                                                            cueNext.setVisibility(View.VISIBLE);
+                                                            cueText.setVisibility(View.VISIBLE);
+                                                            cueNextText.setVisibility(View.VISIBLE);
+                                                            // active Touche
+                                                            scrollView.setVisibility(View.INVISIBLE);
+
+                                                        } else {
+                                                            scrollView.setVisibility(View.VISIBLE);
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+        );
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
                                               {
@@ -476,17 +667,41 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
         defaultParams.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                for (int i=0; i<dspFaust.getParamsCount(); i++) {
-                    dspFaust.setParamValue(i, dspFaust.getParamInit(i));
+                //for (int i=0; i<dspFaust.getParamsCount(); i++) {
+                    //dspFaust.setParamValue(i, dspFaust.getParamInit(i));
                     //dspFaustMotion.setParamValue(i, dspFaustMotion.getParamInit(i));
-                }
+                //}
 
-                paramsValue.setText("Done");
-                Toast.makeText(MainActivity.this, "Reset Defaults(restart to use new OSC)", Toast.LENGTH_LONG).show();
+                resetParams();
+
+                // Check if the RadioGroup is found
+                if (radioGroup != null) {
+                    // Get the first RadioButton in the RadioGroup
+                    RadioButton firstRadioButton = (RadioButton) radioGroup.getChildAt(0);
+                    // Check if the first RadioButton is found
+                    if (firstRadioButton != null) {
+                        // Set the first RadioButton as checked
+                        firstRadioButton.setChecked(true);
+                        paramsValue.setText( String.valueOf(dspFaust.getParamValue(motionParamAddress.get(0))));
+                    }
+                }
+                Toast.makeText(MainActivity.this, "Reset Defaults Params", Toast.LENGTH_LONG).show();
                 //checkAddress();
                 dspFaust.checkAdress();
 
-                resetParams();
+
+
+            }
+        });
+
+        initOSC.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                resetOSCParams();
+
+                //paramsValue.setText("Done");
+                Toast.makeText(MainActivity.this, "Restart to use new OSC", Toast.LENGTH_LONG).show();
+
 
             }
         });
@@ -521,6 +736,221 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
             }
         }, 2000);
 
+
+        // Add a view tree observer to your view
+        scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Remove the listener to avoid multiple calls
+                scrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                // Get the width of the view
+                int widthView = scrollView.getWidth();
+                // Get the width of the view
+                int heightView = scrollView.getHeight();
+                int buttonHeight = 130;
+
+                heightView = heightView - buttonHeight;
+
+                // Do something with the width
+                // Handle button click
+                System.out.println("scrollView.getWidth() " + scrollView.getWidth() + "scrollView.getHeight() " + scrollView.getHeight());
+
+
+                motionUItabView = new CustomTabView(scrollView.getContext());
+
+                scrollView.addView(motionUItabView);
+
+                // Preset array of button names
+                String[] typeButtonNames = {"button", "checkbox", "trigCue", "nextCue", "prevCue", "initCue", "setRef", "hslider", "vslider", "trigCounter", "pad"};
+
+                for (int i = 0; i < dspFaust.getParamsCount(); i++) {
+                    String dataParamMotionButton = dspFaust.getMetadata(i, "motionUI");
+                    if (!dataParamMotionButton.isEmpty()) {
+                        String[] components = dataParamMotionButton.split(" ");
+                        if (components.length == 10) {
+                            // Extract the values
+                            String buttonType = components[1];
+                            // Check if buttonName is in the preset array
+                            if (!Arrays.asList(typeButtonNames).contains(buttonType)) {
+                                // Button name is not in the preset array
+                                Log.d("UI TYPE", "is not valid");
+                                tips.setText("UI TYPE is not valid"); // or handle the error as needed
+                                return;
+                            }
+
+                            if (buttonType.equals("trigCue")) {
+                                newCueIsOn = true;
+                            }
+
+                            if (buttonType.equals("trigCounter")) {
+                                newCounterIsOn = true;
+                            }
+
+                            // Extract the values
+                            String tabViewName = components[0];
+                            int x = Integer.parseInt(components[2]);
+                            int y = Integer.parseInt(components[3]);
+                            int width = Integer.parseInt(components[4]);
+                            int height = Integer.parseInt(components[5]);
+                            int colorR = Integer.parseInt(components[6]);
+                            int colorG = Integer.parseInt(components[7]);
+                            int colorB = Integer.parseInt(components[8]);
+                            int colorA = Integer.parseInt(components[9]);
+
+                            // Now you have the button name and the coordinates (x, y) and size (width, height) (R G B)
+                            // Convert the const char* parameter to an NSString
+                            String[] parts = dspFaust.getParamAddress(i).split("/");
+                            String lastElement = parts[parts.length - 1];
+                            String paramShortName = new String(lastElement);
+                            //String paramShortName = new String(dspFaust.getParamShortName(i));
+                            // Convert the const char* parameter to an NSString
+                            String paramPath = new String(dspFaust.getParamAddress(i));
+
+                            // current init value scale to 0-1
+                            ArrayList<Float> initValues = new ArrayList<>();
+
+                            if (buttonType.equals("pad")) {
+                                String padXPath = paramPath + "_X";
+                                String padYPath = paramPath + "_Y";
+                                float initValueX = scaleBackValue(dspFaust.getParamValue(padXPath), dspFaust.getParamMin(padXPath), dspFaust.getParamMax(padXPath));
+                                initValues.add(initValueX);
+                                float initValueY = scaleBackValue(dspFaust.getParamValue(padYPath), dspFaust.getParamMin(padYPath), dspFaust.getParamMax(padYPath));
+                                initValues.add(initValueY);
+                            } else {
+                                float initValue = scaleBackValue(dspFaust.getParamValue(i), dspFaust.getParamMin(i), dspFaust.getParamMax(i));
+                                initValues.add(initValue);
+                                //Log.d(buttonType, initValues.toString());
+                                //Log.d(buttonType, "init is: " + initValues);
+                            }
+
+                            CustomButton motionUI = CustomButtonFactory.createButtonWithParams(
+                                    scrollView.getContext(), buttonType, x*widthView/100, y*heightView/100, width*widthView/100, height*heightView/100, paramShortName, paramPath, i,
+                                    Color.argb(colorA, colorR, colorG, colorB), initValues);
+
+                            motionUItabView.addTab(tabViewName, motionUI);
+
+                            if (buttonType.equals("trigCue")) {
+                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                    @Override
+                                    public void onClick(CustomButton button) {
+                                        Log.d("CustomButton", "TRIG CUE Button clicked");
+                                        // Log other relevant information
+                                        goCue();
+                                    }
+                                });
+                            }
+                            if (buttonType.equals("nextCue")) {
+                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                    @Override
+                                    public void onClick(CustomButton button) {
+                                        Log.d("CustomButton", "Next CUE Button clicked");
+                                        // Log other relevant information
+                                        nextCue();
+                                    }
+                                });
+                            }
+                            if (buttonType.equals("prevCue")) {
+                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                    @Override
+                                    public void onClick(CustomButton button) {
+                                        Log.d("CustomButton", "Prev CUE Button clicked");
+                                        // Log other relevant information
+                                        prevCue();
+                                    }
+                                });
+                            }
+                            if (buttonType.equals("initCue")) {
+                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                    @Override
+                                    public void onClick(CustomButton button) {
+                                        Log.d("CustomButton", "Init CUE Button clicked");
+                                        // Log other relevant information
+                                        initCue();
+                                    }
+                                });
+                            }
+                            if (buttonType.equals("setRef")) {
+                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                    @Override
+                                    public void onClick(CustomButton button) {
+                                        Log.d("CustomButton", "setRef Button clicked");
+                                        // Log other relevant information
+                                        initFrame();
+                                    }
+                                });
+                            }
+
+                            //customTabView.setContentViewWithButtonType(buttonType, x, y, width, height, paramShortName, paramPath, i, colorR, colorG, colorB, colorA, initValues, tabViewName);
+                        } else {
+                            // Handle incorrect format
+                            Log.d("Incorrect format", dataParamMotionButton);
+                            tips.setText("Incorrect MotionButton metadata format");
+                            return;
+                        }
+                    }
+                }
+
+                if (!cueIsOn ) {
+                    if (newCueIsOn) {
+                        tips.setText("You're using Cue, but forgot to declare /cue ?");
+                        return;
+                    }
+                }
+
+
+                if(cueIsOn && !newCueIsOn && !newCounterIsOn) {
+                    nextCue.setVisibility(View.VISIBLE);
+                    prevCue.setVisibility(View.VISIBLE);
+                    initCue.setVisibility(View.VISIBLE);
+                    cue.setVisibility(View.VISIBLE);
+                    cueNext.setVisibility(View.VISIBLE);
+                    cueText.setVisibility(View.VISIBLE);
+                    cueNextText.setVisibility(View.VISIBLE);
+
+                    scrollView.setVisibility(View.INVISIBLE);
+
+                    //tips.setVisibility(View.VISIBLE);
+                } else {
+                    nextCue.setVisibility(View.INVISIBLE);
+                    prevCue.setVisibility(View.INVISIBLE);
+                    initCue.setVisibility(View.INVISIBLE);
+                    cue.setVisibility(View.INVISIBLE);
+                    cueNext.setVisibility(View.INVISIBLE);
+                    cueText.setVisibility(View.INVISIBLE);
+                    cueNextText.setVisibility(View.INVISIBLE);
+
+                    scrollView.setVisibility(View.VISIBLE);
+                    //tips.setVisibility(View.INVISIBLE);
+                }
+
+
+                if (touchGateIsOn || screenYIsOn || screenXIsOn || (cueIsOn && !newCueIsOn && !newCounterIsOn)) {
+
+                    touche.setVisibility(View.INVISIBLE);
+                } else {
+
+                    touche.setVisibility(View.INVISIBLE);
+                }
+
+
+                if (cueIsOn || newCounterIsOn) {
+                    tips.setVisibility(View.VISIBLE);
+                    initCue();
+                } else {
+                    tips.setVisibility(View.INVISIBLE);
+                }
+
+
+
+            }
+        });
+
+        // Handle button click
+        System.out.println("Button created");
+
+
+
     }
 
 
@@ -538,8 +968,8 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
             }
         }
 
-        System.out.println(motionParamArray);
-        System.out.println(motionParamAddress);
+        //System.out.println(motionParamArray);
+        //System.out.println(motionParamAddress);
 
         paramsOn = new boolean[motionParamArray.size()];
 
@@ -553,7 +983,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
         // PRINT ALL PARAMETRE ADDRESS
         for (int i = 0; i < dspFaust.getParamsCount(); i++) {
-            System.out.println(dspFaust.getParamAddress(i));
+            //System.out.println(dspFaust.getParamAddress(i));
 
             String Str = dspFaust.getParamAddress(i);
 
@@ -572,6 +1002,126 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
             } else if (Str.endsWith("/cue")) {
                 cueIsOn = true;
                 cueAddress = dspFaust.getParamAddress(i);
+
+                cueList.clear();
+                tipsList.clear();
+
+                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "motionUI"))) {
+                    // Convert the metadata string to an NSString
+                    String paramMetaString = dspFaust.getMetadata(i, "motionUI");
+
+                    // Split the string by space
+                    String[] components = paramMetaString.split(" ");
+
+                    // Extract the values
+                    String buttonType = components[1];
+
+                    if (!buttonType.equals("trigCue")) {
+                        tips.setText("Cue metadata Only Support 'trigCue' option");
+                        return;
+                    }
+                }
+
+
+                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "motionCueManage"))) {
+                    String dataParamMotionCue = dspFaust.getMetadata(i, "motionCueManage");
+                    //  "{1: 'low'; 2:'mid'; 3: 'hi'}";
+
+                    // Remove unnecessary characters
+                    String cleanedString = dataParamMotionCue.replaceAll("[{}']", "");
+
+                    // Split the string into key-value pairs
+                    String[] pairs = cleanedString.split(";");
+
+                    // Iterate through the key-value pairs and add them to the respective arrays
+                    for (String pair : pairs) {
+                        String[] keyValue = pair.split(":");
+                        if (keyValue.length == 2) {
+                            // Get the key and value
+                            String key = keyValue[0].trim();
+                            String rawValue = keyValue[1].trim();
+                            String value = " " + rawValue;
+
+                            // Check if the key is a non-negative integer
+                            try {
+                                int num = Integer.parseInt(key);
+                                if (num >= dspFaust.getParamMin(i) && num <= dspFaust.getParamMax(i)) {
+                                    cueList.add(key);
+                                    tipsList.add("Cue " + key + " Tip: "+ value);
+                                } else {
+                                    // Integer is not within the valid range
+                                    Log.e("Tag", "Invalid integer value: " + num);
+                                    tips.setText("Invalid integer Cue meatadata value");
+                                    return;
+                                }
+                            } catch (NumberFormatException e) {
+                                // Handle incorrect format
+                                Log.e("Tag", "Incorrect format: " + pair);
+                                tips.setText("Incorrect Cue metadata format");
+                                return;
+                            }
+                        } else {
+                            // Handle incorrect format
+                            Log.e("Tag", "Incorrect format: " + pair);
+                            tips.setText("Incorrect Cue metadata format");
+                            return;
+                        }
+                    }
+                } else {
+                    // Load cues from file
+                    try {
+                        InputStream stream = getAssets().open("cuenums.txt");
+
+                        if (stream != null) {
+                            // prepare the file for reading
+                            InputStreamReader input = new InputStreamReader(stream);
+                            BufferedReader br = new BufferedReader(input);
+                            String line = null;
+                            while ((line=br.readLine()) != null)
+                            {
+                                cueList.add(line);
+                            }
+                            stream.close();
+                        }else{
+                            System.out.println("It's the assests");
+                        }
+
+
+                    } catch (IOException x) {
+                        System.err.println(x);
+                    }
+
+                    try {
+                        InputStream stream = getAssets().open("cuetips.txt");
+
+                        if (stream != null) {
+                            // prepare the file for reading
+                            InputStreamReader input = new InputStreamReader(stream);
+                            BufferedReader br = new BufferedReader(input);
+                            String line = null;
+                            while ((line=br.readLine()) != null)
+                            {
+                                tipsList.add(line);
+                            }
+                            stream.close();
+                        }else{
+                            System.out.println("It's the assests");
+                        }
+
+                    } catch (IOException x) {
+                        System.err.println(x);
+                    }
+
+                }
+
+                if (cueList.size() != tipsList.size()) {
+                    tips.setText("!Num of cue and tips must be same!");
+                    return;
+                }
+
+                System.out.println(cueList);
+                System.out.println(tipsList);
+
             } else if (Str.endsWith("/tip")) {
                 tipIsOn = true;
                 tipAddress = dspFaust.getParamAddress(i);
@@ -621,36 +1171,64 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
         }
 
-        if(cueIsOn) {
-            nextCue.setVisibility(View.VISIBLE);
-            prevCue.setVisibility(View.VISIBLE);
-            initCue.setVisibility(View.VISIBLE);
-            cue.setVisibility(View.VISIBLE);
-            cueNext.setVisibility(View.VISIBLE);
-            cueText.setVisibility(View.VISIBLE);
-            cueNextText.setVisibility(View.VISIBLE);
-            tips.setVisibility(View.VISIBLE);
-        } else {
-            nextCue.setVisibility(View.INVISIBLE);
-            prevCue.setVisibility(View.INVISIBLE);
-            initCue.setVisibility(View.INVISIBLE);
-            cue.setVisibility(View.INVISIBLE);
-            cueNext.setVisibility(View.INVISIBLE);
-            cueText.setVisibility(View.INVISIBLE);
-            cueNextText.setVisibility(View.INVISIBLE);
-            tips.setVisibility(View.INVISIBLE);
-        }
-
 
     }
 
+
+    public float scaleBackValue(float value, float min, float max) {
+        return (value - min) / (max - min);
+    }
+
+    public void goCue(){
+        cueIndex = cueIndexNext;
+        cue.setText(cueList.get(cueIndex));
+        tips.setText(tipsList.get(cueIndexNext));
+
+        dspFaust.setParamValue(cueAddress,Float.valueOf(cueList.get(cueIndex)));
+
+        if (cueIndexNext < cueList.size() - 1) {
+            cueIndexNext++;
+            cueNext.setText(cueList.get(cueIndexNext));
+        }
+    }
+
+    public void nextCue(){
+        if (cueIndexNext < cueList.size() -1) {
+            cueIndexNext++;
+            cueNext.setText(cueList.get(cueIndexNext));
+            tips.setText(tipsList.get(cueIndexNext));
+        }
+    }
+
+    public void prevCue(){
+        if (cueIndexNext > 0) {
+            cueIndexNext--;
+            cueNext.setText(cueList.get(cueIndexNext));
+            tips.setText(tipsList.get(cueIndexNext));
+        }
+    }
+
+    public void initCue(){
+
+        if (cueIsOn) {
+            cueIndex = 0;
+            cueIndexNext = 1;
+            cue.setText(cueList.get(cueIndex));
+            cueNext.setText(cueList.get(cueIndexNext));
+            tips.setText(tipsList.get(cueIndex));
+
+            dspFaust.setParamValue(cueAddress,Float.valueOf(cueList.get(cueIndex)));
+            Log.d("initCue", "initCue");
+        }
+
+    }
 
     @Override
 
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
         int touchCounter = event.getPointerCount();
-        touche = (ImageView) findViewById(R.id.touche);
+        //touche = (ImageView) findViewById(R.id.touche);
 
 
         switch(action) {
@@ -670,18 +1248,9 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                             touche.setVisibility(View.VISIBLE);
                             dspFaust.setParamValue(touchGateAddress, 1);
                         }
-                        if (cueIsOn) {
+                        if (cueIsOn && !newCueIsOn) {
                             touche.setVisibility(View.VISIBLE);
-                            cueIndex = cueIndexNext;
-                            cue.setText(cueList.get(cueIndex));
-                            tips.setText(tipsList.get(cueIndexNext));
-
-                            dspFaust.setParamValue(cueAddress,Float.valueOf(cueList.get(cueIndex)));
-
-                            if (cueIndexNext < cueList.size() - 1) {
-                                cueIndexNext++;
-                                cueNext.setText(cueList.get(cueIndexNext));
-                            }
+                            goCue();
                         }
 
                         if (screenXIsOn) {
@@ -721,15 +1290,6 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                 break;
             }
 
-            case MotionEvent.ACTION_POINTER_DOWN: {
-
-                break;
-            }
-
-            case MotionEvent.ACTION_POINTER_UP: {
-
-                break;
-            }
 
             case MotionEvent.ACTION_UP: {
 
@@ -741,6 +1301,9 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
                         float screenX = pointerIndex / scrWidth;
                         float screenY = pointerIndey/(scrHeight/2);
+                        if (cueIsOn && !newCueIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
+                        }
                         if (touchGateIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                             dspFaust.setParamValue(touchGateAddress, 0);
@@ -763,6 +1326,9 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                             touche.setVisibility(View.INVISIBLE);
                         }
                         if (screenYIsOn) {
+                            touche.setVisibility(View.INVISIBLE);
+                        }
+                        if (cueIsOn && !newCueIsOn) {
                             touche.setVisibility(View.INVISIBLE);
                         }
                     }
@@ -817,12 +1383,45 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
 
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+
+
+
             // Update rotation matrix at sensor rate
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
 
             dspFaust.motionRender(rotationMatrix[0]*(-1.f), rotationMatrix[3]*(-1.f), rotationMatrix[6]*(-1.f),
                                   rotationMatrix[1]*(-1.f), rotationMatrix[4]*(-1.f), rotationMatrix[7]*(-1.f),
                                   rotationMatrix[2]*(-1.f), rotationMatrix[5]*(-1.f), rotationMatrix[8]*(-1.f));
+
+
+            // Apply the reference rotation matrix to the current rotation matrix
+            if (referenceRotationMatrix != null && rotationMatrix != null) {
+                if (referenceRotationMatrix.length == 9 && rotationMatrix.length == 9) {
+                    float[] tempMatrix = new float[9];
+                    float[] invertedReferenceRotationMatrix = new float[9];
+
+                    // Invert the reference rotation matrix
+                    boolean success = invert3x3Matrix(referenceRotationMatrix,invertedReferenceRotationMatrix);
+                    if (!success) {
+                        Log.e("Matrix", "Failed to invert reference rotation matrix");
+                        return; // Exit the method or handle the error accordingly
+                    }
+
+                    // Multiply the current rotation matrix by the inverted reference rotation matrix
+                    multiply3x3Matrices(rotationMatrix, invertedReferenceRotationMatrix, tempMatrix);
+
+                    // Copy the result back to the rotationMatrix
+                    System.arraycopy(tempMatrix, 0, rotationMatrix, 0, tempMatrix.length);
+
+                    // Log the resulting rotation matrix for debugging
+                    //Log.d("Matrix", "Resulting rotation matrix after applying reference matrix: " + Arrays.toString(rotationMatrix));
+                } else {
+                    Log.e("Matrix", "Invalid matrix dimensions");
+                }
+            } else {
+                Log.e("Matrix", "Rotation matrices are null");
+            }
+
 
             SensorManager.getOrientation(rotationMatrix, mOrientation);
 
@@ -990,7 +1589,10 @@ if (sensorManager!=null){
 
   if (dspFaust!=null){
       dspFaust.initFrame();
+  }
 
+  if (rotationMatrix != null) {
+      System.arraycopy(rotationMatrix, 0, referenceRotationMatrix, 0, rotationMatrix.length);
   }
 
 }
@@ -1023,10 +1625,92 @@ SharedPreferences.Editor prefsEditor = mSharedPref.edit();
 prefsEditor.clear().commit();
 }
 
+    // Invert a 3x3 matrix manually
+    public static boolean invert3x3Matrix(float[] src, float[] dst) {
+        if (src.length != 9 || dst.length != 9) {
+            return false; // Invalid matrix dimensions
+        }
+
+        // Calculate the determinant of the matrix
+        float determinant = src[0] * (src[4] * src[8] - src[7] * src[5])
+                - src[1] * (src[3] * src[8] - src[5] * src[6])
+                + src[2] * (src[3] * src[7] - src[4] * src[6]);
+
+        // Check if the determinant is zero (matrix is not invertible)
+        if (determinant == 0.0f) {
+            return false;
+        }
+
+        // Calculate the reciprocal of the determinant
+        float invDet = 1.0f / determinant;
+
+        // Calculate the elements of the inverted matrix
+        dst[0] = (src[4] * src[8] - src[5] * src[7]) * invDet;
+        dst[1] = (src[2] * src[7] - src[1] * src[8]) * invDet;
+        dst[2] = (src[1] * src[5] - src[2] * src[4]) * invDet;
+        dst[3] = (src[5] * src[6] - src[3] * src[8]) * invDet;
+        dst[4] = (src[0] * src[8] - src[2] * src[6]) * invDet;
+        dst[5] = (src[2] * src[3] - src[0] * src[5]) * invDet;
+        dst[6] = (src[3] * src[7] - src[4] * src[6]) * invDet;
+        dst[7] = (src[1] * src[6] - src[0] * src[7]) * invDet;
+        dst[8] = (src[0] * src[4] - src[1] * src[3]) * invDet;
+
+        return true; // Inversion successful
+    }
+
+    private void multiply3x3Matrices(float[] A, float[] B, float[] result) {
+        // Calculate each element of the resulting matrix
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result[i * 3 + j] = A[i * 3] * B[j] + A[i * 3 + 1] * B[j + 3] + A[i * 3 + 2] * B[j + 6];
+            }
+        }
+    }
+
+    private void displayTitle() {
+        String titleString = null;
+
+        // Get the name meta from dspFaust
+        String name = dspFaust.getMeta("name");
+        if (name != null) {
+            titleString = name;
+        }
+
+        // Append author meta to the titleString
+        String author = dspFaust.getMeta("author");
+        if (author != null) {
+            if (titleString != null) {
+                titleString += " | " + author;
+            } else {
+                titleString = author;
+            }
+        }
+
+        // If titleString is still null, set a default title
+        if (titleString == null) {
+            titleString = "faust2smartphone | Allen";
+        }
+
+        // Set the title text to the TextView
+        appName.setText(titleString);
+        appName.setGravity(Gravity.CENTER);
+        appName.setSingleLine(true);
+        appName.setEllipsize(TextUtils.TruncateAt.END);
+    }
+
+    private void saveFaustParams() {
+
+        for (int i=0; i<dspFaust.getParamsCount(); i++){
+            SharedPreWriteFloat(dspFaust.getParamAddress(i), dspFaust.getParamValue(i));
+        }
+
+        Log.d("Faust", "saveFaustParams");
+
+    }
 
 
 
-private void loadDefaultParams() {
+    private void loadDefaultParams() {
 
 for (int i=0; i<motionParamAddress.size(); i++){
 dspFaust.setParamValue(motionParamAddress.get(i),
@@ -1034,33 +1718,48 @@ SharedPrefRead(motionParamArray.get(i),dspFaust.getParamInit(motionParamAddress.
 //SharedPrefRead(motionParamArray.get(i),dspFaustMotion.getParamInit(motionParamAddress.get(i))));
 }
 
+        for (int i=0; i<dspFaust.getParamsCount(); i++){
+            dspFaust.setParamValue(dspFaust.getParamAddress(i), SharedPrefRead(dspFaust.getParamAddress(i),dspFaust.getParamInit(i)));
+        }
+
+        Log.d("Faust", "readFaustParams");
 
 }
+
+    private void resetOSCParams() {
+
+        SharedPrefWriteString("oscAddress", "192.168.1.5");
+        SharedPrefWriteString("oscInPort", "5510");
+        SharedPrefWriteString("oscOutPort", "5511");
+
+        if (dspFaust.getOSCIsOn()) {
+            oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
+            oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
+            oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
+
+            dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
+
+            ipAddress.setText(oscAddress);
+            inputPort.setText(SharedPrefRead("oscInPort","5510"));
+            outputPort.setText(SharedPrefRead("oscOutPort","5511"));
+        }
+
+    }
 
 private void resetParams() {
 
-SharedPreClear();
+//SharedPreClear();
 
-for (int i=0; i<motionParamAddress.size(); i++){
-    SharedPreWriteFloat(motionParamArray.get(i), dspFaust.getParamInit((motionParamAddress.get(i))));
-    //SharedPreWriteFloat(motionParamArray.get(i), dspFaustMotion.getParamInit((motionParamAddress.get(i))));
-}
+    //for (int i=0; i<dspFaust.getParamsCount(); i++){
+        //SharedPreWriteFloat(dspFaust.getParamAddress(i), dspFaust.getParamInit(i));
+    //}
 
-SharedPrefWriteString("oscAddress", "192.168.1.5");
-SharedPrefWriteString("oscInPort", "5510");
-SharedPrefWriteString("oscOutPort", "5511");
+    for (int i=0; i<motionParamAddress.size(); i++){
+        dspFaust.setParamValue(motionParamAddress.get(i), dspFaust.getParamInit(motionParamAddress.get(i)));
+        SharedPreWriteFloat(motionParamArray.get(i), dspFaust.getParamInit((motionParamAddress.get(i))));
+        //SharedPreWriteFloat(motionParamArray.get(i), dspFaustMotion.getParamInit((motionParamAddress.get(i))));
+    }
 
-if (dspFaust.getOSCIsOn()) {
-oscAddress = SharedPrefRead("oscAddress","192.168.1.5");
-oscInPort = Integer.parseInt(SharedPrefRead("oscInPort","5510"));
-oscOutPort = Integer.parseInt(SharedPrefRead("oscOutPort","5511"));
-
-dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
-
-ipAddress.setText(oscAddress);
-inputPort.setText(SharedPrefRead("oscInPort","5510"));
-outputPort.setText(SharedPrefRead("oscOutPort","5511"));
-}
 
 }
 
@@ -1073,10 +1772,9 @@ outputPort.setText(SharedPrefRead("oscOutPort","5511"));
 
         dspFaustMotion.stop();
         dspFaust.stop();
+        saveFaustParams();
 
-        if (sensorManager!=null) {
-        sensorManager.unregisterListener(mSensorListener);
-        }
+
         }
 
     }
@@ -1090,6 +1788,8 @@ outputPort.setText(SharedPrefRead("oscOutPort","5511"));
         if (!dspFaustMotion.isRunning()) {
 
         dspFaustMotion.start();
+
+            Log.d("Faust", "dspFaustMotion onResume");
         }
 
         if (!dspFaust.isRunning()) {
@@ -1103,23 +1803,19 @@ outputPort.setText(SharedPrefRead("oscOutPort","5511"));
 
         dspFaust.setOSCValue(oscAddress, oscInPort, oscOutPort);
 
+            Log.d("Faust", "dspFaust osc onResume");
+
         }
 
+        initFrame();
+
         dspFaust.start();
+
+            Log.d("Faust", "dspFaust onResume");
 
         checkAddress();
         dspFaust.checkAdress();
         loadDefaultParams();
-
-
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-        Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-        Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-        Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_FASTEST);
 
         }
 
@@ -1138,6 +1834,7 @@ outputPort.setText(SharedPrefRead("oscOutPort","5511"));
         }
 
         if (dspFaust != null) {
+            saveFaustParams();
         dspFaust = null;
         }
 

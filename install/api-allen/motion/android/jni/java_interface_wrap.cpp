@@ -824,6 +824,22 @@ SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getParamInit
   return jresult;
 }
 
+SWIGEXPORT jfloat JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getParamStep_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  DspFaust *arg1 = (DspFaust *) 0 ;
+  int arg2 ;
+  float result;
+
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(DspFaust **)&jarg1;
+  arg2 = (int)jarg2;
+  result = (float)(arg1)->getParamStep(arg2);
+  jresult = (jfloat)result;
+  return jresult;
+}
+
 
 SWIGEXPORT jstring JNICALL Java_com_DspFaust_dsp_1faustJNI_DspFaust_1getMetadata_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3) {
   jstring jresult = 0 ;

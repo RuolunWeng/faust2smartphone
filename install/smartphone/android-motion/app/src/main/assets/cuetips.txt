@@ -1,3 +1,4 @@
+FaustTips:init
 FaustTips:part1
 FaustTips:part2
 FaustTips:part3

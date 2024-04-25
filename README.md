@@ -164,7 +164,7 @@ touchY = hslider("screeny",0,0,1,0.01);
 ```
 ==NEW==
 
-**[motionUI] interface support in iOS Motion Mode**
+**[motionUI] interface support in iOS Motion Mode && Android Motion Mode**
 
 In your FAUST .dsp file, declare [motionUI] interface you need in metadata, which will positioned in the screen. [motionUI] interface's types have normal types and special funtions:
 

@@ -601,7 +601,7 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
                     newCounterIsOn = true;
                     
                     // 创建一个计数器，范围为 0 到 10，步长为 1，初始值为 0
-                    CustomCounter *counter = [[CustomCounter alloc] initWithRangeMin:dspFaust->getParamMin(i) max:dspFaust->getParamMax(i) step:dspFaust->getParamStep(i) init:dspFaust->getParamInit(i)];
+                    CustomCounter *counter = [[CustomCounter alloc] initWithRangeMin:dspFaust->getParamMin(i) max:dspFaust->getParamMax(i) step:dspFaust->getParamStep(i) init:dspFaust->getParamValue(i)];
                     
                     [self.customCounters setObject:counter forKey:@(i)];
                 }
