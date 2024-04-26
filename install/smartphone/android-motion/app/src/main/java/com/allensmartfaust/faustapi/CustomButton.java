@@ -123,7 +123,8 @@ public class CustomButton extends View {
         //canvas.drawRoundRect(rectF, 10, 10, paint);
         // Set the paint color for the button background
         //paint.setColor(selected ? selectedColor : Color.GRAY);
-        rectF.set(lineWidth + lineWidth*2, lineWidth + lineWidth*2, getWidth() - lineWidth*3, getHeight() - lineWidth*3);
+        //rectF.set(lineWidth + lineWidth*2, lineWidth + lineWidth*2, getWidth() - lineWidth*3, getHeight() - lineWidth*3);
+        rectF.set(lineWidth , lineWidth , getWidth() , getHeight() );
         canvas.drawRoundRect(rectF, 10, 10, paint);
 
 
@@ -168,7 +169,7 @@ public class CustomButton extends View {
         paint.setTextSize(500);
 
         String buttonText = nameForButton != null ? nameForButton : "";
-
+/*
 // Calculate the maximum text size that fits within the available width
         float textWidth = paint.measureText(buttonText);
         float availableWidth = getWidth();
@@ -180,6 +181,34 @@ public class CustomButton extends View {
 
 // Set the adjusted text size
         paint.setTextSize(textSize*0.95f);
+*/
+        // Define the maximum allowed text size for height constraints
+        float maxHeight = getHeight(); // Set your maximum height constraint
+
+        // Calculate the maximum text size based on width constraint
+        float textWidth = paint.measureText(buttonText);
+        float availableWidth = getWidth(); // Set your available width constraint
+
+        if (textWidth > availableWidth) {
+            // Calculate the new text size to fit the width
+            float widthTextSize = paint.getTextSize() * availableWidth / textWidth;
+
+            // Check if the width-constrained text size fits within the height constraint
+            paint.setTextSize(widthTextSize);
+            float heightTextSize = getMaxTextSizeThatFitsHeight(buttonText, paint, maxHeight);
+
+            // Set the text size to the minimum of width and height constrained text sizes
+            float finalTextSize = Math.min(widthTextSize, heightTextSize)*0.95f;
+            paint.setTextSize(finalTextSize);
+        } else {
+            // Check if the current text size fits within the height constraint
+            float currentTextSize = paint.getTextSize();
+            float heightTextSize = getMaxTextSizeThatFitsHeight(buttonText, paint, maxHeight);
+
+            // Set the text size to the minimum of current and height constrained text sizes
+            float finalTextSize = Math.min(currentTextSize, heightTextSize)*0.95f;
+            paint.setTextSize(finalTextSize);
+        }
 
 // Calculate the position to draw the text
         float x = getWidth() / 2.0f;
@@ -291,7 +320,7 @@ public class CustomButton extends View {
 
                         // Update the RectF with the new position and size
                         //verticalLine.set(touchX, 0, width, getHeight());
-                        verticalLine.set(0 + lineWidth*3, 0 + lineWidth*3, touchX- lineWidth*3, getHeight()- lineWidth*3);
+                        verticalLine.set(0 , 0 + (lineWidth / 2), touchX, getHeight() - (lineWidth / 2));
 
                         // Request a redraw of the button
                         invalidate();
@@ -310,7 +339,7 @@ public class CustomButton extends View {
                         //float newHeight = height - touchY;
 
                         // Update the RectF with the new position and size
-                        horizontalLine.set(0 + lineWidth*3, touchY + lineWidth*3, getWidth()- lineWidth*3, height- lineWidth*3);
+                        horizontalLine.set(0 + (lineWidth / 2), touchY , getWidth() - (lineWidth / 2), height);
 
                         // Request a redraw of the button
                         invalidate();
@@ -502,7 +531,7 @@ public class CustomButton extends View {
                 float lineInitX = mapValue(initValues.get(0), 0, 1, 0, getWidth());
 
                 // Update the positions of the lines represented by RectF objects
-                verticalLine = new RectF(0 + lineWidth*3, 0 + lineWidth*3, lineInitX - lineWidth*3, getHeight() - lineWidth*3);
+                verticalLine = new RectF(0 , 0 + (lineWidth / 2), lineInitX , getHeight() - (lineWidth / 2));
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
@@ -547,7 +576,7 @@ public class CustomButton extends View {
                 float lineInitY = mapValue(initValues.get(0), 0, 1, getHeight(),0);
 
                 // Update the positions of the lines represented by RectF objects
-                horizontalLine = new RectF(0 + lineWidth*3, lineInitY + lineWidth*3, getWidth() - lineWidth*3, getHeight()- lineWidth*3);
+                horizontalLine = new RectF(0 + (lineWidth / 2), lineInitY , getWidth() - (lineWidth / 2), getHeight());
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
@@ -587,6 +616,7 @@ public class CustomButton extends View {
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+
                 // Remove the listener to avoid redundant calls
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
@@ -693,5 +723,24 @@ public class CustomButton extends View {
     }
 
 
+    // Helper function to calculate maximum text size that fits within a specified height
+    private float getMaxTextSizeThatFitsHeight(String text, Paint paint, float maxHeight) {
+        float textSize = paint.getTextSize();
+        while (getTextHeight(text, paint) > maxHeight && textSize > 0) {
+            textSize--;
+            paint.setTextSize(textSize);
+        }
+        return textSize;
+    }
+
+    // Helper function to get the height of the text
+    private float getTextHeight(String text, Paint paint) {
+        Rect textBounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textBounds);
+        return textBounds.height();
+    }
+
+
 }
+
 
