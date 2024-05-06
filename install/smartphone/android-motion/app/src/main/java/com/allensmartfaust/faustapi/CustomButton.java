@@ -26,8 +26,8 @@ public class CustomButton extends View {
     private String nameForButton;
     private String pathForButton;
     private int tag;
-    private int selectedColor, newGrayColor;
-    private int lineWidth = 2;
+    private int selectedColor, newGrayColor, newbgColor, newSelectedColor;
+    private int lineWidth = 6; // utilise pour padding aussi
     private boolean selected = false;
     private Paint paint, padPaint;
     private RectF rectF;
@@ -81,6 +81,10 @@ public class CustomButton extends View {
         int originalAlpha = Color.alpha(color);
         newGrayColor = ColorUtils.setAlphaComponent(Color.GRAY, originalAlpha);
 
+        // Create a new color with the specified alpha value
+        newbgColor = ColorUtils.setAlphaComponent(selectedColor, 50);
+        // Create a new color with the specified alpha value
+        newSelectedColor = ColorUtils.setAlphaComponent(selectedColor, 255);
 
         switch (customButtonType) {
             case "button":
@@ -90,6 +94,9 @@ public class CustomButton extends View {
             case "prevCue":
             case "trigCounter":
             case "setRef":
+                padPaint.setColor(color);
+                paint.setColor(color);
+                break;
             case "pad":
                 paint.setColor(color);
                 break;
@@ -118,17 +125,22 @@ public class CustomButton extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //rectF.set(lineWidth, lineWidth, getWidth() - lineWidth, getHeight() - lineWidth);
 
-        //canvas.drawRoundRect(rectF, 10, 10, paint);
-        // Set the paint color for the button background
-        //paint.setColor(selected ? selectedColor : Color.GRAY);
-        //rectF.set(lineWidth + lineWidth*2, lineWidth + lineWidth*2, getWidth() - lineWidth*3, getHeight() - lineWidth*3);
-        rectF.set(lineWidth , lineWidth , getWidth() , getHeight() );
+        rectF.set(lineWidth , lineWidth , getWidth() - lineWidth, getHeight() - lineWidth);
         canvas.drawRoundRect(rectF, 10, 10, paint);
 
-
         switch (customButtonType) {
+            case "button":
+            case "trigCue":
+            case "nextCue":
+            case "initCue":
+            case "prevCue":
+            case "trigCounter":
+            case "setRef":
+                padPaint.setStyle(Paint.Style.STROKE);
+                // Draw horizontal line
+                canvas.drawRoundRect(rectF, 10, 10, padPaint);
+                break;
             case "vslider":
                 padPaint.setStyle(Paint.Style.FILL);
                 // Draw horizontal line
@@ -150,38 +162,14 @@ public class CustomButton extends View {
                 break;
         }
 
-        /*// Set the paint color for text
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(30); // Adjust the text size as needed
-        paint.setTextAlign(Paint.Align.CENTER);
-
-        // Calculate the position to draw the text
-        float x = getWidth() / 2.0f;
-        float y = getHeight() / 2.0f + ((paint.descent() + paint.ascent()) / 2);
-
-        // Draw the button name in the center of the button
-        String buttonText = nameForButton != null ? nameForButton : "";
-        canvas.drawText(buttonText, x, y, paint);*/
 
         // Set the paint color for text
         paint.setColor(Color.BLACK);
         paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(500);
+        paint.setTextSize(Math.min(getWidth()*0.3f, getHeight()*0.3f));
 
         String buttonText = nameForButton != null ? nameForButton : "";
-/*
-// Calculate the maximum text size that fits within the available width
-        float textWidth = paint.measureText(buttonText);
-        float availableWidth = getWidth();
-        float textSize = paint.getTextSize();
-        if (textWidth > availableWidth) {
-            // Calculate the new text size to fit the width
-            textSize *= availableWidth / textWidth;
-        }
 
-// Set the adjusted text size
-        paint.setTextSize(textSize*0.95f);
-*/
         // Define the maximum allowed text size for height constraints
         float maxHeight = getHeight(); // Set your maximum height constraint
 
@@ -198,7 +186,7 @@ public class CustomButton extends View {
             float heightTextSize = getMaxTextSizeThatFitsHeight(buttonText, paint, maxHeight);
 
             // Set the text size to the minimum of width and height constrained text sizes
-            float finalTextSize = Math.min(widthTextSize, heightTextSize)*0.95f;
+            float finalTextSize = Math.min(widthTextSize, heightTextSize) * 0.95f;
             paint.setTextSize(finalTextSize);
         } else {
             // Check if the current text size fits within the height constraint
@@ -206,15 +194,19 @@ public class CustomButton extends View {
             float heightTextSize = getMaxTextSizeThatFitsHeight(buttonText, paint, maxHeight);
 
             // Set the text size to the minimum of current and height constrained text sizes
-            float finalTextSize = Math.min(currentTextSize, heightTextSize)*0.95f;
+            float finalTextSize = Math.min(currentTextSize, heightTextSize) * 0.95f;
             paint.setTextSize(finalTextSize);
         }
 
-// Calculate the position to draw the text
+        // Optionally, apply other text styling such as bold
+        paint.setFakeBoldText(true);
+
+
+        // Calculate the position to draw the text
         float x = getWidth() / 2.0f;
         float y = getHeight() / 2.0f - ((paint.descent() + paint.ascent()) / 2); // Adjusted y position
 
-// Draw the button name in the center of the button
+        // Draw the button name in the center of the button
         canvas.drawText(buttonText, x, y, paint);
 
 
@@ -242,6 +234,9 @@ public class CustomButton extends View {
                     onTouchListener.onTouchDown(event, this);
                 }
                 switch (customButtonType) {
+                    case "checkbox":
+                        updateButtonSelectedColor(selected);
+                        break;
                     case "button":
                     case "trigCue":
                     case "nextCue":
@@ -249,7 +244,8 @@ public class CustomButton extends View {
                     case "prevCue":
                     case "trigCounter":
                     case "setRef":
-                        paint.setColor(newGrayColor);
+                        padPaint.setStrokeWidth(6);
+                        paint.setColor(newbgColor);
                         break;
                     case "pad":
                     case "vslider":
@@ -262,8 +258,6 @@ public class CustomButton extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                //setSelected(false);
-                //paint.setColor(Color.GRAY);
 
                 switch (customButtonType) {
                     case "checkbox":
@@ -278,6 +272,7 @@ public class CustomButton extends View {
                     case "trigCounter":
                     case "setRef":
                         paint.setColor(selectedColor);
+                        padPaint.setStrokeWidth(0);
                         break;
                     case "pad":
                         paint.setColor(selectedColor);
@@ -306,6 +301,19 @@ public class CustomButton extends View {
                 float touchY = event.getY();
 
                 switch (customButtonType) {
+                    case "checkbox":
+                        updateButtonSelectedColor(selected);
+                        break;
+                    case "button":
+                    case "trigCue":
+                    case "nextCue":
+                    case "initCue":
+                    case "prevCue":
+                    case "trigCounter":
+                    case "setRef":
+                        paint.setColor(newbgColor);
+                        padPaint.setStrokeWidth(6);
+                        break;
                     case "hslider":
                         paint.setColor(newGrayColor);
                         padPaint.setColor(selectedColor);
@@ -320,7 +328,7 @@ public class CustomButton extends View {
 
                         // Update the RectF with the new position and size
                         //verticalLine.set(touchX, 0, width, getHeight());
-                        verticalLine.set(0 , 0 + (lineWidth / 2), touchX, getHeight() - (lineWidth / 2));
+                        verticalLine.set(0 + (lineWidth*2 / 2), 0 + (lineWidth*2 / 2), touchX - (lineWidth *2/ 2), getHeight() - (lineWidth *2/ 2));
 
                         // Request a redraw of the button
                         invalidate();
@@ -339,17 +347,13 @@ public class CustomButton extends View {
                         //float newHeight = height - touchY;
 
                         // Update the RectF with the new position and size
-                        horizontalLine.set(0 + (lineWidth / 2), touchY , getWidth() - (lineWidth / 2), height);
+                        horizontalLine.set(0 + (lineWidth *2/ 2), touchY + (lineWidth *2/ 2), getWidth() - (lineWidth *2/ 2), height - (lineWidth *2/ 2));
 
                         // Request a redraw of the button
                         invalidate();
 
                         break;
                     case "pad":
-                        // Create a new color with the specified alpha value
-                        int newbgColor = ColorUtils.setAlphaComponent(selectedColor, 50);
-                        // Create a new color with the specified alpha value
-                        int newSelectedColor = ColorUtils.setAlphaComponent(selectedColor, 255);
 
                         paint.setColor(newbgColor);
                         padPaint.setColor(newSelectedColor);
@@ -531,7 +535,7 @@ public class CustomButton extends View {
                 float lineInitX = mapValue(initValues.get(0), 0, 1, 0, getWidth());
 
                 // Update the positions of the lines represented by RectF objects
-                verticalLine = new RectF(0 , 0 + (lineWidth / 2), lineInitX , getHeight() - (lineWidth / 2));
+                verticalLine = new RectF(0 + (lineWidth *2/ 2), 0 + (lineWidth *2/ 2), lineInitX - (lineWidth *2/ 2) , getHeight() - (lineWidth *2/ 2));
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
@@ -576,7 +580,7 @@ public class CustomButton extends View {
                 float lineInitY = mapValue(initValues.get(0), 0, 1, getHeight(),0);
 
                 // Update the positions of the lines represented by RectF objects
-                horizontalLine = new RectF(0 + (lineWidth / 2), lineInitY , getWidth() - (lineWidth / 2), getHeight());
+                horizontalLine = new RectF(0 + (lineWidth *2/ 2), lineInitY + (lineWidth *2/ 2) , getWidth() - (lineWidth *2/ 2), getHeight()  - (lineWidth *2/ 2));
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
@@ -625,8 +629,8 @@ public class CustomButton extends View {
                 float lineInitY = mapValue(initValues.get(1), 0, 1, getHeight(), 0);
 
                 // Update the positions of the lines represented by RectF objects
-                horizontalLine = new RectF(0 , lineInitY , getWidth() , lineInitY + lineWidth);
-                verticalLine = new RectF(lineInitX, 0 , lineInitX + lineWidth, getHeight());
+                horizontalLine = new RectF(0 , lineInitY , getWidth() , lineInitY + lineWidth );
+                verticalLine = new RectF(lineInitX , 0 , lineInitX + lineWidth , getHeight());
 
                 // Trigger a redraw to reflect the changes
                 invalidate();
@@ -677,6 +681,7 @@ public class CustomButton extends View {
         setOnTouchListener(new CustomButton.OnTouchListener() {
             @Override
             public void onTouchDown(MotionEvent event, CustomButton button) {
+
                 // Handle ACTION_DOWN event
                 Log.d("CustomButton", "Button clicked: " + pathForButton + " 1");
                 // Log other relevant information
@@ -689,6 +694,7 @@ public class CustomButton extends View {
                 Log.d("CustomButton", "Button clicked: " + pathForButton + " 0");
                 // Log other relevant information
                 MainActivity.dspFaust.setParamValue(pathForButton,0);
+
             }
 
             @Override
