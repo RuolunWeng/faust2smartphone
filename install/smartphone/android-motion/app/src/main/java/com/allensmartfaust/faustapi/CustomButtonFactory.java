@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class CustomButtonFactory {
 
-    //private static int padding = 0; // additional padding , 0 for now
+    private static int padding = 0; // additional padding , 0 for now
 
     public static CustomButton createButton(Context context, AttributeSet attrs) {
         return new CustomButton(context, attrs);
@@ -27,14 +27,10 @@ public class CustomButtonFactory {
         CustomButton button = new CustomButton(context);
         button.setCustomButtonType(buttonType);
         // Create layout parameters with x and y coordinates
-/*        ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(width - padding*2, height- padding*2);
+        ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(width - padding*2, height- padding*2);
         layoutParams.leftMargin = x + padding;
         layoutParams.topMargin = y + padding;
-        button.setLayoutParams(layoutParams);*/
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(width, height);
         button.setLayoutParams(layoutParams);
-        button.setX(x);
-        button.setY(y);
         button.setNameForButton(name);
         button.setPathForButton(path);
         button.setTag(tag);
