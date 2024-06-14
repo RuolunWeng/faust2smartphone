@@ -310,8 +310,8 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
 //
     if (self._motionLibParamArray.count != 0) {
         // Select the first row by default
-        [self.myCustomSettingView.pickerView1 selectRow:0 inComponent:0 animated:NO];
-        [self pickerView:self.myCustomSettingView.pickerView1 didSelectRow:0 inComponent:0];
+        //[self.myCustomSettingView.pickerView1 selectRow:0 inComponent:0 animated:NO];
+        //[self pickerView:self.myCustomSettingView.pickerView1 didSelectRow:0 inComponent:0];
     }  else {
         self.myCustomSettingView.pickerView1.hidden = YES;
         self.myCustomSettingView.param1.hidden = YES;
@@ -321,8 +321,8 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
 //
     if (self._motionAudioParamArray.count != 0) {
         // Select the first row by default
-        [self.myCustomSettingView.pickerView2 selectRow:0 inComponent:0 animated:NO];
-        [self pickerView:self.myCustomSettingView.pickerView2 didSelectRow:0 inComponent:0];
+        //[self.myCustomSettingView.pickerView2 selectRow:0 inComponent:0 animated:NO];
+        //[self pickerView:self.myCustomSettingView.pickerView2 didSelectRow:0 inComponent:0];
     }  else {
         self.myCustomSettingView.pickerView2.hidden = YES;
         self.myCustomSettingView.param2.hidden = YES;
