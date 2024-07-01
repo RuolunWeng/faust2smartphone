@@ -486,14 +486,14 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     }
     
     for (int i=0; i<dspFaust->getParamsCount(); i++) {
-        // 从NSUserDefaults中检索motionUIAddress的值
-        NSString *motionUIParamValue = [[NSUserDefaults standardUserDefaults] stringForKey:[NSString stringWithUTF8String:dspFaust->getParamAddress(i)]];
+        // 从NSUserDefaults中检索touchUIAddress的值
+        NSString *touchUIParamValue = [[NSUserDefaults standardUserDefaults] stringForKey:[NSString stringWithUTF8String:dspFaust->getParamAddress(i)]];
         
         // 检查返回的值是否为nil
-        if (motionUIParamValue != nil) {
+        if (touchUIParamValue != nil) {
             // 键存在并且具有一个相应的值
             //NSLog(@"Value for motionLibParamAddress exists: %@", [NSString stringWithUTF8String:dspFaust->getParamAddress(i)]);
-            dspFaust->setParamValue(dspFaust->getParamAddress(i), [motionUIParamValue floatValue]);
+            dspFaust->setParamValue(dspFaust->getParamAddress(i), [touchUIParamValue floatValue]);
         } else {
             // 键不存在或者值为nil
             //NSLog(@"Value for motionLibParamAddress does not exist or is nil");
@@ -572,7 +572,7 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     NSArray *typeButtonNames = @[@"button", @"checkbox", @"trigCue", @"nextCue", @"prevCue", @"initCue", @"setRef", @"hslider", @"vslider",@"trigCounter", @"pad"];
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
-        const char *dataParamMotionButton = dspFaust->getMetadata(i, "motionUI");
+        const char *dataParamMotionButton = dspFaust->getMetadata(i, "touchUI");
         if (strcmp(dataParamMotionButton,"") != 0) {
             const char *param = dataParamMotionButton;
             // Convert the const char* parameter to an NSString
@@ -828,9 +828,9 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
             myCueNumArrary = [[NSMutableArray alloc] init];
             myCueTipsArrary = [[NSMutableArray alloc] init];
             
-            if (strcmp(dspFaust->getMetadata(i, "motionUI"),"") != 0) {
+            if (strcmp(dspFaust->getMetadata(i, "touchUI"),"") != 0) {
                 // Convert the const char* parameter to an NSString
-                NSString *paramMetaString = [NSString stringWithUTF8String:dspFaust->getMetadata(i, "motionUI")];
+                NSString *paramMetaString = [NSString stringWithUTF8String:dspFaust->getMetadata(i, "touchUI")];
 
                 // Split the string by space
                 NSArray *components = [paramMetaString componentsSeparatedByString:@" "];

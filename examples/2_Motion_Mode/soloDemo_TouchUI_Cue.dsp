@@ -1,5 +1,5 @@
-declare name 		"SoloDemo_motionUI_Cue";
-declare version 	"3.5";
+declare name 		"SoloDemo_touchUI_Cue";
+declare version 	"3.6";
 declare author 		"Allen";
 
 
@@ -14,16 +14,16 @@ process = rainGen, windGen, sinusGen :>_,(_
 
 
 // declare connection UI
-cueNum = nentry("cue [motionUI: Cue trigCue 0 0 50 30 255 0 0 150] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
-trigNextCue = button("goNext [motionUI: Cue nextCue 50 30 50 30 255 255 0 150]");
-trigPrevCue = button("goPrev [motionUI: Cue prevCue 0 30 50 30 255 255 0 150]");
-trigInitCue = button("initCue [motionUI: Cue initCue 50 0 50 30 255 255 255 150]");
+cueNum = nentry("cue [touchUI: Cue trigCue 0 0 50 30 255 0 0 150] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
+trigNextCue = button("goNext [touchUI: Cue nextCue 50 30 50 30 255 255 0 150]");
+trigPrevCue = button("goPrev [touchUI: Cue prevCue 0 30 50 30 255 255 0 150]");
+trigInitCue = button("initCue [touchUI: Cue initCue 50 0 50 30 255 255 255 150]");
 
-trigsetRef = button("setref_rota[osc:/setRef][motionUI: Master setRef 50 0 50 25 0 0 255 255]");
+trigsetRef = button("setref_rota[osc:/setRef][touchUI: Master setRef 50 0 50 25 0 0 255 255]");
 
-touchGate = checkbox("OnOff [motionUI: Master checkbox 0 0 50 25 0 255 0 150]");
-volume = hslider("MasterVol [motionUI: Master hslider 0 25 100 25 0 255 255 150]",0,0,1,0.01);
-param = hslider("param[motion:brasG_front]",0,0,1,0.01);
+touchGate = checkbox("OnOff [touchUI: Master checkbox 0 0 50 25 0 255 0 150]");
+volume = hslider("MasterVol [touchUI: Master hslider 0 25 100 25 0 255 255 150]",0,0,1,0.01);
+param = hslider("param[motion:AmpZ]",0,0,1,0.01);
 
 
 //----------------------`rain`--------------------------

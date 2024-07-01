@@ -94,7 +94,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
     private Button prevCue, nextCue, initCue, setMotion , defaultParams, setOSC, setRef;
 
     ScrollView scrollView;
-    CustomTabView motionUItabView;
+    CustomTabView touchUItabView;
     boolean newCueIsOn, newCounterIsOn;
 
     private CheckBox setParams, settings;
@@ -761,15 +761,15 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                 System.out.println("scrollView.getWidth() " + scrollView.getWidth() + "scrollView.getHeight() " + scrollView.getHeight());
 
 
-                motionUItabView = new CustomTabView(scrollView.getContext());
+                touchUItabView = new CustomTabView(scrollView.getContext());
 
-                scrollView.addView(motionUItabView);
+                scrollView.addView(touchUItabView);
 
                 // Preset array of button names
                 String[] typeButtonNames = {"button", "checkbox", "trigCue", "nextCue", "prevCue", "initCue", "setRef", "hslider", "vslider", "trigCounter", "pad"};
 
                 for (int i = 0; i < dspFaust.getParamsCount(); i++) {
-                    String dataParamMotionButton = dspFaust.getMetadata(i, "motionUI");
+                    String dataParamMotionButton = dspFaust.getMetadata(i, "touchUI");
                     if (!dataParamMotionButton.isEmpty()) {
                         String[] components = dataParamMotionButton.split(" ");
                         if (components.length == 10) {
@@ -828,14 +828,14 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                                 //Log.d(buttonType, "init is: " + initValues);
                             }
 
-                            CustomButton motionUI = CustomButtonFactory.createButtonWithParams(
+                            CustomButton touchUI = CustomButtonFactory.createButtonWithParams(
                                     scrollView.getContext(), buttonType, x*widthView/100, y*heightView/100, width*widthView/100, height*heightView/100, paramShortName, paramPath, i,
                                     Color.argb(colorA, colorR, colorG, colorB), initValues);
 
-                            motionUItabView.addTab(tabViewName, motionUI);
+                            touchUItabView.addTab(tabViewName, touchUI);
 
                             if (buttonType.equals("trigCue")) {
-                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                touchUI.setOnClickListener(new CustomButton.OnClickListener() {
                                     @Override
                                     public void onClick(CustomButton button) {
                                         Log.d("CustomButton", "TRIG CUE Button clicked");
@@ -845,7 +845,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                                 });
                             }
                             if (buttonType.equals("nextCue")) {
-                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                touchUI.setOnClickListener(new CustomButton.OnClickListener() {
                                     @Override
                                     public void onClick(CustomButton button) {
                                         Log.d("CustomButton", "Next CUE Button clicked");
@@ -855,7 +855,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                                 });
                             }
                             if (buttonType.equals("prevCue")) {
-                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                touchUI.setOnClickListener(new CustomButton.OnClickListener() {
                                     @Override
                                     public void onClick(CustomButton button) {
                                         Log.d("CustomButton", "Prev CUE Button clicked");
@@ -865,7 +865,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                                 });
                             }
                             if (buttonType.equals("initCue")) {
-                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                touchUI.setOnClickListener(new CustomButton.OnClickListener() {
                                     @Override
                                     public void onClick(CustomButton button) {
                                         Log.d("CustomButton", "Init CUE Button clicked");
@@ -875,7 +875,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                                 });
                             }
                             if (buttonType.equals("setRef")) {
-                                motionUI.setOnClickListener(new CustomButton.OnClickListener() {
+                                touchUI.setOnClickListener(new CustomButton.OnClickListener() {
                                     @Override
                                     public void onClick(CustomButton button) {
                                         Log.d("CustomButton", "setRef Button clicked");
@@ -1010,9 +1010,9 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                 cueList.clear();
                 tipsList.clear();
 
-                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "motionUI"))) {
+                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "touchUI"))) {
                     // Convert the metadata string to an NSString
-                    String paramMetaString = dspFaust.getMetadata(i, "motionUI");
+                    String paramMetaString = dspFaust.getMetadata(i, "touchUI");
 
                     // Split the string by space
                     String[] components = paramMetaString.split(" ");
