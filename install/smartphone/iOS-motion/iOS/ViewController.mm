@@ -845,9 +845,9 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
                 
             }
             
-            if (strcmp(dspFaust->getMetadata(i, "motionCueManage"),"") != 0) {
+            if (strcmp(dspFaust->getMetadata(i, "touchCueManager"),"") != 0) {
                 
-                const char *dataParamMotionCue = dspFaust->getMetadata(i, "motionCueManage");
+                const char *dataParamMotionCue = dspFaust->getMetadata(i, "touchCueManager");
                 //  "{1: 'low'; 2:'mid'; 3: 'hi'}";
                 
                 NSString *inputNSString = [NSString stringWithUTF8String:dataParamMotionCue];

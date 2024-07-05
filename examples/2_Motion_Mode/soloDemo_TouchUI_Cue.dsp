@@ -14,7 +14,7 @@ process = rainGen, windGen, sinusGen :>_,(_
 
 
 // declare connection UI
-cueNum = nentry("cue [touchUI: Cue trigCue 0 0 50 30 255 0 0 150] [motionCueManage: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
+cueNum = nentry("cue [touchUI: Cue trigCue 0 0 50 30 255 0 0 150] [touchCueManager: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
 trigNextCue = button("goNext [touchUI: Cue nextCue 50 30 50 30 255 255 0 150]");
 trigPrevCue = button("goPrev [touchUI: Cue prevCue 0 30 50 30 255 255 0 150]");
 trigInitCue = button("initCue [touchUI: Cue initCue 50 0 50 30 255 255 255 150]");

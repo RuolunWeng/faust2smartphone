@@ -1027,8 +1027,8 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                 }
 
 
-                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "motionCueManage"))) {
-                    String dataParamMotionCue = dspFaust.getMetadata(i, "motionCueManage");
+                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "touchCueManager"))) {
+                    String dataParamMotionCue = dspFaust.getMetadata(i, "touchCueManager");
                     //  "{1: 'low'; 2:'mid'; 3: 'hi'}";
 
                     // Remove unnecessary characters
