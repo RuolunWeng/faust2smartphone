@@ -496,14 +496,35 @@ void DspFaust::initFrame(){
 
     void  DspFaust::sendMotion()  {
 
-        for (int i=0; i< paramsMotionNum; i++) {
-            if (paramsOn[i]) {
-                for (int j=0; j< paramsAddressList[i].size(); j++) {
-                    setParamValue(paramsAddressList[i][j].c_str(), fDSPFAUSTMOTION->getOutput(i));
-                }
+        //        for (int i=0; i< paramsMotionNum; i++) {
+        //            if (paramsOn[i]) {
+        //                for (int j=0; j< paramsAddressList[i].size(); j++) {
+        //                    setParamValue(paramsAddressList[i][j].c_str(), fDSPFAUSTMOTION->getOutput(i));
+        //                }
+        //
+        //            }
+        //        }
+                for (int i = 0; i < paramsMotionNum; i++) {
+                    if (paramsOn[i]) {
+                        for (int j = 0; j < paramsAddressList[i].size(); j++) {
+                            // Get the parameter address
+                            const char* paramAddress = paramsAddressList[i][j].c_str();
 
-            }
-        }
+                            // Get the min and max values for this parameter
+                            float paramMin = getParamMin(paramAddress);
+                            float paramMax = getParamMax(paramAddress);
+
+                            // Get the output value and scale it
+                            float outputValue = fDSPFAUSTMOTION->getOutput(i);
+
+                            // Scale the output value to the min-max range
+                            float scaledValue = paramMin + (outputValue * (paramMax - paramMin));
+
+                            // Set the scaled value to the parameter
+                            setParamValue(paramAddress, scaledValue);
+                        }
+                    }
+                }
 
     }
 
