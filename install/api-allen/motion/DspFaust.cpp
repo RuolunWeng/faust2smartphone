@@ -516,12 +516,23 @@ void DspFaust::initFrame(){
 
                             // Get the output value and scale it
                             float outputValue = fDSPFAUSTMOTION->getOutput(i);
+                            float normalizedValue;
 
-                            // Scale the output value to the min-max range
-                            float scaledValue = paramMin + (outputValue * (paramMax - paramMin));
+                            // Check if outputValue is in the range [-1, 1] or [0, 1]
+                            if (MapUI::endsWith(paramsKeys[i],"raw")) {
+                                // Scale [-1, 1] range to [paramMin, paramMax]
+                                // Normalize outputValue from [-1, 1] to [0, 1]
+                                normalizedValue = (outputValue + 1.0f) / 2.0f;
+                            } else {
+                                // Already in the range [0, 1], use directly
+                                normalizedValue = outputValue;
+                            }
 
+                            // Scale the normalized value to the [paramMin, paramMax] range
+                            float scaledValue = paramMin + (normalizedValue * (paramMax - paramMin));
                             // Set the scaled value to the parameter
                             setParamValue(paramAddress, scaledValue);
+
                         }
                     }
                 }

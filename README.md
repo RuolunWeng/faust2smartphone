@@ -77,55 +77,44 @@ In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create
 >
 
     //============= ACCELEROMETER SHOCK TRIGGER ===============
-	// setting of user sensibility to trig with a antirebond , p->positive axe; n->nagative axe
+	// setting of user sensibility to trig with a antirebond
+    // s->shock, p->positive axe, n->nagative axe
     - 
         + sxp syp szp
         + sxn syn szn
-    //============= INCLINOMETER TO GRAVITY ===============
-    // accelerometer -> inclinometer
+    //============= INCLINOMETER ===============
+    // simple inclinometer for one axe as vector compared to gravity
+    // i->inclinometer, p->positive axe, n->nagative axe
     - 
         + ixp iyp izp
         + ixn iyn izn
         + ixpn iypn izpn
-    //accelerometer -> inclinometer positive & negative axe sens combined to compare gravity symetric 0->1->0
+    //============= ACCELERATION ===============
+    // a->acceleration, p->positive axe, n->nagative axe, with gravity removed
+	// totalaccel does not depends on specific acceleration, only the quantity of global acceleration create a modulation
     - 
-        + ixpn_sym iypn_sym izpn_sym
-	// accelerometer -> inclinometer -> projection to gravity positive axe sens
-    - 
-        + pixp piyp pizp
-        + pixn piyn pizn
-    //============= ACCELEROMETER TOTAL ACCELERATION with gravity removed ===============
-	// totalmotion don't dpeant of specific orientation, only the quantity of global acceleration create a modulation
-	// normalized 0 to 1
-    - 
-        + axpn aypn azpn
         + axp ayp azp
         + axn ayn azn
+        + axpn aypn azpn
         + totalaccel
     //============= GYROSCOPES ===============
-	// les gyroscopes des iPhones ont un range max de +/- 2000deg/sec => 34,906 radians.s-1
-	// les valeurs reçues par le smartphone sont en radian.s-1
-	// pour un iPhoneSE on obsverve un bruit de +/- 0.01 radian.s-1 ce qui inférieur à 1 degré ( 1 dégré ~ 0.017 radian)
-	// smooth is need to remove artefact from signal/vector_size setting
+    // g->gyroscope, p->positive axe, n->nagative axe
+    // totalgyro does not depends on specific orientation, only the quantity of global orientation create a modulation
     - 
-        + gxpn gypn gzpn
         + gxp gyp gzp
         + gxn gyn gzn
+        + gxpn gypn gzpn
         + totalgyro
-
-	//--------------------------------------------------
+	//=======================================
 	// TREATMENT FOR ROTATION MATRIX 
-	//--------------------------------------------------
-    // Calculate distance for each axe compared to 6 poles
-    // Left Hand => brasG; Right Hand => brasD; Head => tete; Foot => pieds; Chest => ventre; Back => dos
-    // State left => jardin; State right => cour; State up => up; State down => down; State front => front; State back => rear;
+	//=======================================
+    // Calculation of distance for one axe as vector (X Y Z) compared to another axe (x y z)
+    // M->Rotation Matrix; raw->full axe, normalised from -1 to 1; pos->positive axe; neg->nagative axe
     - 
-        + brasG_cour brasG_rear brasG_jardin brasG_front brasG_down brasG_up
-        + pieds_cour pieds_rear pieds_jardin pieds_front pieds_down pieds_up
-        + dos_cour dos_rear dos_jardin dos_front dos_down dos_up
-        + brasD_cour brasD_rear brasD_jardin brasD_front brasD_down brasD_up
-        + tete_cour tete_rear tete_jardin tete_front tete_down tete_up
-        + ventre_cour ventre_rear ventre_jardin ventre_front ventre_down ventre_up
+        + MXzraw MXzpos MXzneg
+        + MYzraw MYzpos MYzneg
+        + MZzraw MZzpos MZzneg
+    //  ... ...
 
 >
 
@@ -139,9 +128,9 @@ In your .dsp file, declare motion controller you need, like:
 
 titi = hslider("titi[motion:ixp]",0,0,1,0.01);
 
-toto = hslider("toto[motion:brasG_cours]",0,0,1,0.01);
+toto = hslider("toto[motion:totalgyro]",0,0,1,0.01);
 
-tata = hslider("tata[motion:ventre_front]",0,0,1,0.01);
+tata = hslider("tata[motion:MXzneg]",0,0,1,0.01);
 
 **********************************
 ** motion support + cue manager **
