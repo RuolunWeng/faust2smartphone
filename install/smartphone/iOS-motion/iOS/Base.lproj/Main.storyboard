@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -255,6 +255,7 @@
                             <constraint firstItem="BtM-Ly-GdL" firstAttribute="leading" secondItem="9qp-Bs-nsp" secondAttribute="trailing" constant="10" id="7QR-ef-NFO"/>
                             <constraint firstAttribute="trailing" secondItem="C8r-PO-wDE" secondAttribute="trailing" constant="-20" id="8jr-4k-DDu"/>
                             <constraint firstItem="Blb-la-lPr" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="AnQ-vt-IIi"/>
+                            <constraint firstAttribute="trailing" secondItem="te4-VZ-eoK" secondAttribute="trailing" id="B3F-Ty-2PV"/>
                             <constraint firstItem="lOb-oV-Xfc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="BdM-HY-TRD"/>
                             <constraint firstItem="jC9-k8-olK" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="20" id="DiM-Ri-bqf"/>
                             <constraint firstItem="yQ4-ZF-l59" firstAttribute="leading" secondItem="FWd-9g-CPP" secondAttribute="trailing" constant="5" id="Dpp-6n-qhR"/>
@@ -263,7 +264,6 @@
                             <constraint firstItem="0e1-ct-rEX" firstAttribute="top" secondItem="FNc-vA-8tG" secondAttribute="bottom" constant="10" id="FeF-jU-60S"/>
                             <constraint firstItem="L8g-4s-ES1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="Fhh-mV-v6h"/>
                             <constraint firstItem="tSk-qQ-9Ir" firstAttribute="top" secondItem="FWd-9g-CPP" secondAttribute="bottom" id="GBp-59-duG"/>
-                            <constraint firstItem="te4-VZ-eoK" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="240" id="IaM-q6-Rg7"/>
                             <constraint firstItem="F6g-Du-fLq" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="Jxd-c4-hxw"/>
                             <constraint firstItem="uXE-wo-FMB" firstAttribute="top" secondItem="FNc-vA-8tG" secondAttribute="bottom" constant="10" id="Le7-P0-uUl"/>
                             <constraint firstAttribute="bottomMargin" secondItem="jC9-k8-olK" secondAttribute="bottom" constant="200" id="Lf3-Jh-F9g"/>
