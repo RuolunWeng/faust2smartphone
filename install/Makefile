@@ -1,10 +1,17 @@
+# Default values
 DESTDIR ?=
-PREFIX ?= /usr/local
+PREFIX ?=
 
-MAKEFILE := Makefile.unix
+# If PREFIX is not set, default to /usr/local
+ifeq ($(PREFIX),)
+    prefix := /usr/local
+else
+    prefix := $(DESTDIR)$(PREFIX)
+endif
 
-prefix := $(DESTDIR)$(PREFIX)
-dest   := $(prefix)/bin
+# Destination bin directory
+dest := $(prefix)/bin
+
 
 help:
 	###############################################
@@ -13,10 +20,13 @@ help:
 	@echo The files will install in the folder of FAUST
 	@echo Make sure you have install Faust first
 	###############################################
-install:
 
+# Install rule
+install:
 	##################################
-	#### Install faust2smartphone ####
+	@echo "Installing faust2smartphone to $(dest)"
+	##################################
+	#### Smart Hand Computer tool ####
 	##################################
 	install faust2smartphone $(dest)
 	rm -rf $(prefix)/share/faust/smartphone

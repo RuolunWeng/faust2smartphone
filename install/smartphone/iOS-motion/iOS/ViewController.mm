@@ -39,10 +39,10 @@
     
     dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
     
-
+    
     self.view.alpha = 0;
     
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -59,8 +59,8 @@
     NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
     NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
     
-
-   
+    
+    
     // 创建另一个标签页
     // between tips and setting button
     // between tips and setting button
@@ -74,7 +74,7 @@
     self.customTabView.delegate = self;
     [self.view addSubview:self.customTabView];
     
-
+    
     // create default dictionary for preset
     [self loadDefaultParams];
     // load possible OSC preset before start
@@ -117,7 +117,7 @@
         
         [self displayTitle];
         
-
+        
         
         if (dspFaust->getOSCIsOn()) {
             _ip.enabled=true;
@@ -146,7 +146,7 @@
         }
         
         if (stateIsOn) {
-        //if (cueIsOn or stateIsOn) {
+            //if (cueIsOn or stateIsOn) {
             _init.hidden=false;
             _tips.hidden=false;
         } else {
@@ -193,7 +193,7 @@
         } else {
             _tips.hidden=true;
         }
-    
+        
     }
     
 }
@@ -201,7 +201,7 @@
 - (void)buttonTappedWithPath:(NSString *)path value:(CGFloat)value {
     // 调用 DSP 相关方法，传递参数
     CGFloat scaledValue = scaleValue(value, dspFaust->getParamMin([path UTF8String]),
-        dspFaust->getParamMax([path UTF8String]));
+                                     dspFaust->getParamMax([path UTF8String]));
     
     dspFaust->setParamValue([path UTF8String], scaledValue);
     //NSLog(@"Button tapped Up with path: %@", path);
@@ -255,6 +255,12 @@
     dspFaust->setParamValue([path UTF8String], [[self.customCounters objectForKey:@(ButtonTag)] currentValue]);
     _tips.text = [NSString stringWithFormat:@"Counter_%@: %0.2f", [path lastPathComponent],[[self.customCounters objectForKey:@(ButtonTag)] currentValue]];
     
+}
+
+- (void)sendValueToVumeter:(CustomButton *)vumeterButton  {
+    // Fetch the value from your data source
+    CGFloat newValue = scaleBackValue(dspFaust->getParamValue([vumeterButton.pathForButton UTF8String]), dspFaust->getParamMin([vumeterButton.pathForButton UTF8String]), dspFaust->getParamMax([vumeterButton.pathForButton UTF8String]));
+    [vumeterButton updateBargraphWithValue:newValue];
 }
 
 // 将0到1之间的浮点数值映射到给定范围内的浮点数值
@@ -569,10 +575,10 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     self.customCounters = [[NSMutableDictionary alloc] init];
     
     // Preset array of button names
-    NSArray *typeButtonNames = @[@"button", @"checkbox", @"trigCue", @"nextCue", @"prevCue", @"initCue", @"setRef", @"hslider", @"vslider",@"trigCounter", @"pad"];
+    NSArray *typeButtonNames = @[@"button", @"checkbox", @"trigCue", @"nextCue", @"prevCue", @"initCue", @"setRef", @"hslider", @"vslider",@"trigCounter", @"pad", @"hbargraph", @"vbargraph"];
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
-        const char *dataParamMotionButton = dspFaust->getMetadata(i, "touchUI");
+        const char *dataParamMotionButton = dspFaust->getMetadata(i, "SHCUI");
         if (strcmp(dataParamMotionButton,"") != 0) {
             const char *param = dataParamMotionButton;
             // Convert the const char* parameter to an NSString
@@ -828,9 +834,9 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
             myCueNumArrary = [[NSMutableArray alloc] init];
             myCueTipsArrary = [[NSMutableArray alloc] init];
             
-            if (strcmp(dspFaust->getMetadata(i, "touchUI"),"") != 0) {
+            if (strcmp(dspFaust->getMetadata(i, "SHCUI"),"") != 0) {
                 // Convert the const char* parameter to an NSString
-                NSString *paramMetaString = [NSString stringWithUTF8String:dspFaust->getMetadata(i, "touchUI")];
+                NSString *paramMetaString = [NSString stringWithUTF8String:dspFaust->getMetadata(i, "SHCUI")];
 
                 // Split the string by space
                 NSArray *components = [paramMetaString componentsSeparatedByString:@" "];
@@ -1232,6 +1238,11 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
         cnt2=1;
     }
     
+    
+    //Vumeter
+    for (CustomButton *button in self.customTabView.customBargraphs) {
+        [self sendValueToVumeter:button];
+    }
 }
 
 - (void) touchesBegan:(NSSet *)touches

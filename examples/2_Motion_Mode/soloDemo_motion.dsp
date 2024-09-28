@@ -1,4 +1,4 @@
-declare name 		"SoloDemo_motion:brasG_front";
+declare name 		"SoloDemo_motion:MYzpos";
 declare version 	"2.0";
 declare author 		"Allen";
 
@@ -9,8 +9,8 @@ process = rainGen :>_,_ ;
 
 
 // declare connection UI
-volume = hslider("volume[motion:brasG_front]",0,0,1,0.01);
-param = hslider("param[motion:brasG_front]",0,0,1,0.01);
+volume = hslider("volume[motion:MYzpos]",0,0,1,0.01);
+param = hslider("param[motion:MYzpos]",0,0,1,0.01);
 
 
 //----------------------`rain`--------------------------

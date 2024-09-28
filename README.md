@@ -153,44 +153,54 @@ touchY = hslider("screeny",0,0,1,0.01);
 ```
 ==NEW==
 
-**[touchUI] interface support in iOS Motion Mode && Android Motion Mode**
+**[SHCUI] interface support in iOS Motion Mode && Android Motion Mode**
 
-In your FAUST .dsp file, declare [touchUI] interface you need in metadata, which will positioned in the screen. [touchUI] interface's types have normal types and special funtions:
+In your FAUST .dsp file, declare [SHCUI] interface you need in metadata, which will positioned in the screen. [SHCUI] interface's types have normal types and special funtions:
 
 
-###### [touchUI] metadata format:
+###### [SHCUI] metadata format:
 ```
-[touchUI:TabTitle Types X Y W H R G B A]
+[SHCUI:TabTitle Types X Y W H R G B A]
 ```
 ***TabTitle***
-=> [touchUI] could be put in several tabs or the same tab if they have the same title name
+=> [SHCUI] could be put in several tabs or the same tab if they have the same title name
 
 ***X Y W H R G B A***
-=> [touchUI] frame Coordination X/Y; Width/Height [in percent 0-100]
-=> [touchUI] frame Color in Red/Green/Blue/Alpha [0-255]
+=> [SHCUI] frame Coordination X/Y; Width/Height [in percent 0-100]
+=> [SHCUI] frame Color in Red/Green/Blue/Alpha [0-255]
 
-###### [touchUI] interface types:
+###### [SHCUI] interface types:
 //_Normal FaustUI-like types_
 
 ***"button"***
 =>  touch down->1, touch up->0
 ```
-button01 = button("B1 [touchUI: Buttons button 0 0 50 50 0 255 0 200] [osc:/button01]");
+button01 = button("B1 [SHCUI: Buttons button 0 0 50 50 0 255 0 200] [osc:/button01]");
 ```
 ***"checkbox"***
 =>  touched up->1 (selected), touched up again->0 (unselected), verse versa
 ```
-toggle02 = checkbox("T2 [touchUI: Toggles checkbox 50 0 50 50 0 255 0 200] [osc:/toggle02]");
+toggle02 = checkbox("T2 [SHCUI: Toggles checkbox 50 0 50 50 0 255 0 200] [osc:/toggle02]");
 ```
 ***"hslider"***
 =>  touch move in the UI horizontally, scaled from MIN to MAX 
 ```
-hslider03 = hslider("hslider03 [touchUI: Hsliders hslider 0 50 100 25 255 255 0 200] [osc:/hslider03]",0,0,1,0.001);
+hslider03 = hslider("hslider03 [SHCUI: Hsliders hslider 0 50 100 25 255 255 0 200] [osc:/hslider03]",0,0,1,0.001);
 ```
 ***"vslider"***
 =>  touch move in the UI vertically, scaled from MIN to MAX 
 ```
-vslider04 = vslider("vslider04 [touchUI: Vsliders vslider 75 0 25 100 255 255 255 200] [osc:/vslider04]",0,0,1,0.001);
+vslider04 = vslider("vslider04 [SHCUI: Vsliders vslider 75 0 25 100 255 255 255 200] [osc:/vslider04]",0,0,1,0.001);
+```
+***"hbargraph"***
+=>  a vumeter horizontally, scaled from MIN to MAX 
+```
+hbargraph01= hslider("MYzpos [SHCUI: Hbargraphs hbargraph 0 66 100 33 255 255 0 200]",0,0,1,0.0001);
+```
+***"vbargraph"***
+=>  a vumeter vertically, scaled from MIN to MAX 
+```
+vbargraph01= hslider("MXzraw [SHCUI: Vbargraphs vbargraph 0 0 33 100 0 255 255 200]",0,-1,1,0.0001);
 ```
 
 //_Special FaustUI-like types_
@@ -198,14 +208,14 @@ vslider04 = vslider("vslider04 [touchUI: Vsliders vslider 75 0 25 100 255 255 25
 ***"trigCounter"***
 =>  "button" trigger, touched up to advance a counter from MIN to MAX in loop
 ```
-select_sample = nentry("Trig_Your_Sample [touchUI:SmartFaust trigCounter 50 0 50 50 255 0 0 255]", 1, 1, 10, 1);
+select_sample = nentry("Trig_Your_Sample [SHCUI:SmartFaust trigCounter 50 0 50 50 255 0 0 255]", 1, 1, 10, 1);
 ```
 ***"pad"***
 touch Pad depending touch position
 => touch down->1 , touch up->0 (send to FaustUI which declares "pad")
 => touch move in the UI, coordination X scaled from MIN to MAX sent to FaustUI which declares ending with "_X", coordination Y scaled from MIN to MAX sent to FaustUI which declares ending with "_Y"
 ```
-touchGate01 = checkbox("Pad1 [touchUI: Pads pad 0 0 50 50 0 255 255 200] [osc:/pad01]");
+touchGate01 = checkbox("Pad1 [SHCUI: Pads pad 0 0 50 50 0 255 255 200] [osc:/pad01]");
 touch01X = hslider("Pad1_X [osc:/pad01x]",0,0,1,0.001);
 touch01Y = hslider("Pad1_Y [osc:/pad01y]",0,0,1,0.001);
 ```
@@ -227,10 +237,10 @@ NOTA: an altenative way to not use original Cue Manager interface, Faust UI "/cu
 NOTA: special metadata [touchCueManager:] could be declared in Faust UI "/cue" to map Cue Tips and Cue Orders
 
 ```
-cueNum = nentry("cue [touchUI: Cue trigCue 0 0 50 30 255 0 0 150] [touchCueManager: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
-trigNextCue = button("goNext [touchUI: Cue nextCue 50 30 50 30 255 255 0 150]");
-trigPrevCue = button("goPrev [touchUI: Cue prevCue 0 30 50 30 255 255 0 150]");
-trigInitCue = button("initCue [touchUI: Cue initCue 50 0 50 30 255 255 255 150]");
+cueNum = nentry("cue [SHCUI: Cue trigCue 0 0 50 30 255 0 0 150] [touchCueManager: {0:'init'; 1:'rainGen'; 2:'windGen'; 3: 'sinusGen'}]",0,0,3,1);
+trigNextCue = button("goNext [SHCUI: Cue nextCue 50 30 50 30 255 255 0 150]");
+trigPrevCue = button("goPrev [SHCUI: Cue prevCue 0 30 50 30 255 255 0 150]");
+trigInitCue = button("initCue [SHCUI: Cue initCue 50 0 50 30 255 255 255 150]");
 ```
 
 ***"setRef"***
@@ -239,7 +249,7 @@ NOTA: an altenative way to setRef of motion.lib, Faust UI "/setref_rota" need to
 
 =>  "button" trigger, touched up to trigger "setRef"
 ```
-trigsetRef = button("setref_rota[osc:/setRef][touchUI: Master setRef 50 0 50 25 0 0 255 255]");
+trigsetRef = button("setref_rota[osc:/setRef][SHCUI: Master setRef 50 0 50 25 0 0 255 255]");
 ```
 
 ***Please check the exmaple code in examples/2_Motion_Mode***

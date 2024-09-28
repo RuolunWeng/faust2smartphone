@@ -71,6 +71,12 @@
             [self setupPadButton];
         } else if ([buttonType isEqualToString:@"trigCounter"]) {
             [self setupTrigCounterButton];
+        } else if ([buttonType isEqualToString:@"hbargraph"]) {
+            [self setupVumeterXButton];
+            //[self setupTouchScreenXButton];
+        } else if ([buttonType isEqualToString:@"vbargraph"]) {
+            //[self setupTouchScreenYButton];
+            [self setupVumeterYButton];
         }
         
 
@@ -133,6 +139,24 @@
    
         verticalLine.frame = CGRectMake(lineInitX, 0, self.lineWidth, self.frame.size.height);
         
+    } else if ([self.customButtonType isEqualToString:@"hbargraph"]) {
+        
+        UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
+        
+        CGFloat lineInitX = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.width);
+        
+        verticalLine.frame = CGRectMake(0, 0, lineInitX, self.frame.size.height);
+           
+        
+    } else if ([self.customButtonType isEqualToString:@"vbargraph"]) {
+        
+        UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
+        
+        CGFloat lineInitY = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.height);
+        
+        horizontalLine.frame = CGRectMake(0, self.frame.size.height-lineInitY, self.frame.size.width, lineInitY);
+            
+        
     }
     
     [self.titleLabel sizeToFit];
@@ -183,6 +207,79 @@
 - (void)setupTrigCounterButton {
     [self setTitle:self.nameForButton forState:UIControlStateNormal];
     [self setBackgroundColor:self.selectedColor];
+    
+}
+
+- (void)setupVumeterXButton {
+    // Set the button title if needed
+    [self setTitle:self.nameForButton forState:UIControlStateNormal];
+    
+    // Initialize a gradient layer if it doesn’t exist
+    CAGradientLayer *gradientLayer = objc_getAssociatedObject(self, "gradientLayerX");
+    if (!gradientLayer) {
+        gradientLayer = [CAGradientLayer layer];
+        gradientLayer.frame = self.bounds;
+        CGFloat red, green, blue, alpha;
+        [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
+        
+        // Create a gradient from gray to the selected color
+        gradientLayer.colors = @[
+            (id)[UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0].CGColor, // Gray color
+            (id)self.selectedColor.CGColor // Selected color
+        ];
+        
+        // Set the direction of the gradient (left to right)
+        gradientLayer.startPoint = CGPointMake(1.0, 0.0); // Left to right
+        gradientLayer.endPoint = CGPointMake(0.0, 0.0);
+        
+        // Calculate the initial position of the vertical line based on lineInits
+        CGFloat lineInitX = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.width);
+        // Dynamically adjust the gradient's stop point based on the vertical line's width
+        CGFloat percentage = lineInitX / self.frame.size.width;
+        gradientLayer.locations = @[@(percentage), @(1.0)];  // Gradient stops at the vertical line position
+        
+        // Add the gradient layer to the button
+        [self.layer insertSublayer:gradientLayer atIndex:0];
+        
+        // Store the gradient layer for future updates
+        objc_setAssociatedObject(self, "gradientLayerX", gradientLayer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+}
+
+- (void)setupVumeterYButton {
+    // Set the button title if needed
+    [self setTitle:self.nameForButton forState:UIControlStateNormal];
+    
+    CGFloat red, green, blue, alpha;
+    [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    
+    // Initialize a gradient layer if it doesn’t exist
+    CAGradientLayer *gradientLayer = objc_getAssociatedObject(self, "gradientLayerY");
+    if (!gradientLayer) {
+        gradientLayer = [CAGradientLayer layer];
+        gradientLayer.frame = self.bounds;
+        
+        // Create a gradient from gray to the selected color
+        gradientLayer.colors = @[
+            (id)[UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0].CGColor, // Gray color at the bottom
+            (id)self.selectedColor.CGColor // Selected color at the top
+        ];
+        
+        // Set the direction of the gradient (bottom to top)
+        gradientLayer.startPoint = CGPointMake(0.0, 0.0); // Bottom
+        gradientLayer.endPoint = CGPointMake(0.0, 1.0);   // Top
+        
+        // Initial line position based on the normalized Y coordinate (0 to 1 scale)
+        CGFloat lineInitY = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.height);
+        // Set gradient stops depending on lineInitY height
+        gradientLayer.locations = @[@(lineInitY / self.frame.size.height), @(1.0)];
+        
+        // Add the gradient layer to the button
+        [self.layer insertSublayer:gradientLayer atIndex:0];
+        
+        // Store the gradient layer for future updates
+        objc_setAssociatedObject(self, "gradientLayerY", gradientLayer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
     
 }
 
@@ -832,6 +929,66 @@
     
     //[self setNeedsDisplay];
 }
+
+- (void)updateBargraphWithValue:(CGFloat)ButtonValue {
+    // Ensure the button is of type 'vumeter'
+    if ([self.customButtonType isEqual:@"hbargraph"]) {
+        // Retrieve the gradient layer
+        CAGradientLayer *gradientLayer = objc_getAssociatedObject(self, "gradientLayerX");
+        
+        if (gradientLayer) {
+            // Normalize the value to a range between 0 and 1
+            CGFloat normalizedX = MIN(MAX(ButtonValue, 0.0), 1.0);  // Clamp between 0 and 1
+            
+            // Optional: Add animation for smooth transition
+            [CATransaction begin];
+            [CATransaction setAnimationDuration:0.001];
+            gradientLayer.locations = @[@(0.0), @(1.0-normalizedX)];
+            [CATransaction commit];
+        }
+    } else if ([self.customButtonType isEqualToString:@"vbargraph"]) {
+            
+        // Get the gradient layer
+        CAGradientLayer *gradientLayer = objc_getAssociatedObject(self, "gradientLayerY");
+        
+        if (gradientLayer) {
+            // Normalize the external value (ButtonValue should be between 0 and 1)
+            CGFloat normalisedY = MIN(MAX(ButtonValue, 0.0), 1.0);  // Clamp between 0 and 1
+            
+            // Optional: Add animation for smooth transition
+            [CATransaction begin];
+            [CATransaction setAnimationDuration:0.001];
+            //gradientLayer.locations = @[@(1.0-normalisedY),@(1.0)];
+            gradientLayer.locations = @[@(0.0),@(1.0-normalisedY)];
+            [CATransaction commit];
+        }
+    }
+}
+//// New method to update vumeter UI based on external value
+//- (void)updateBargraphWithValue:(CGFloat)ButtonValue {
+//    
+//    if ([self.customButtonType isEqual:@"hbargraph"]) {
+//        
+//        UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
+//
+//            // 计算normalised坐标
+//        CGFloat normalisedX = mapValue(ButtonValue, 0, 1, 0, self.frame.size.width);
+//            
+//        verticalLine.frame = CGRectMake(0, 0, normalisedX, self.bounds.size.height);
+//            
+//    } else if ([self.customButtonType isEqual:@"vbargraph"]) {
+//        
+//        UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
+//        
+//            // 计算normalised坐标
+//        CGFloat normalisedY = mapValue(ButtonValue, 0, 1, 0, self.frame.size.height);
+//            
+//            // Update the positions of the lines
+//            horizontalLine.frame =
+//        CGRectMake(0, self.frame.size.height-normalisedY, self.frame.size.width, normalisedY);
+//    }
+//    
+//}
 
 - (CGFloat)clampValue:(CGFloat)value min:(CGFloat)min max:(CGFloat)max {
     return fmin(fmax(value, min), max);

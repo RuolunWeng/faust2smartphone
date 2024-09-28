@@ -72,6 +72,12 @@ public class CustomButtonFactory {
             case "button":
                 button.setupButton();
                 break;
+            case "hbargraph":
+                button.setupVumeterXButton();
+                break;
+            case "vbargraph":
+                button.setupVumeterYButton();
+                break;
             default:
                 break;
         }

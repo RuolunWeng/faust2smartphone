@@ -62,6 +62,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -95,6 +96,7 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     ScrollView scrollView;
     CustomTabView touchUItabView;
+    private List<CustomButton> customBargraphs = new ArrayList<>(); // Declare CustomButton list
     boolean newCueIsOn, newCounterIsOn;
 
     private CheckBox setParams, settings;
@@ -417,9 +419,11 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
         for (int i = 0; i < dspFaustMotion.getParamsCount(); i++) {
             String Str = dspFaustMotion.getMetadata(i, "showName");
-            if (!Str.equals("")){
-                motionLibParamArray.add(Str);
-                motionLibParamAddress.add(dspFaustMotion.getParamAddress(i));
+            if (Str != null) {
+                if (!Str.equals("")){
+                    motionLibParamArray.add(Str);
+                    motionLibParamAddress.add(dspFaustMotion.getParamAddress(i));
+                }
             }
         }
 
@@ -766,11 +770,14 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                 scrollView.addView(touchUItabView);
 
                 // Preset array of button names
-                String[] typeButtonNames = {"button", "checkbox", "trigCue", "nextCue", "prevCue", "initCue", "setRef", "hslider", "vslider", "trigCounter", "pad"};
+                String[] typeButtonNames = {"button", "checkbox", "trigCue", "nextCue", "prevCue", "initCue", "setRef", "hslider", "vslider", "trigCounter", "pad", "hbargraph", "vbargraph"};
 
                 for (int i = 0; i < dspFaust.getParamsCount(); i++) {
-                    String dataParamMotionButton = dspFaust.getMetadata(i, "touchUI");
-                    if (!dataParamMotionButton.isEmpty()) {
+                    String dataParamMotionButton = dspFaust.getMetadata(i, "SHCUI");
+
+                    if (dataParamMotionButton != null) {
+
+                        if (!dataParamMotionButton.isEmpty()) {
                         String[] components = dataParamMotionButton.split(" ");
                         if (components.length == 10) {
                             // Extract the values
@@ -834,6 +841,12 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
                             touchUItabView.addTab(tabViewName, touchUI);
 
+                            if (buttonType.equals("hbargraph")) {
+                                customBargraphs.add(touchUI);
+                            }
+                            if (buttonType.equals("vbargraph")) {
+                                customBargraphs.add(touchUI);
+                            }
                             if (buttonType.equals("trigCue")) {
                                 touchUI.setOnClickListener(new CustomButton.OnClickListener() {
                                     @Override
@@ -892,6 +905,8 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                             tips.setText("Incorrect MotionButton metadata format");
                             return;
                         }
+                    }
+
                     }
                 }
 
@@ -965,11 +980,14 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
         for (int i = 0; i < dspFaust.getParamsCount(); i++) {
             String Str = dspFaust.getMetadata(i, "showName");
             //String Str = dspFaustMotion.getMetadata(i, "showName");
-            if (!Str.equals("")){
-                motionParamArray.add(Str);
-                motionParamAddress.add(dspFaust.getParamAddress(i));
-                //motionParamAddress.add(dspFaustMotion.getParamAddress(i));
+            if (Str != null) {
+                if (!Str.equals("")){
+                    motionParamArray.add(Str);
+                    motionParamAddress.add(dspFaust.getParamAddress(i));
+                    //motionParamAddress.add(dspFaustMotion.getParamAddress(i));
+                }
             }
+
         }
 
         //System.out.println(motionParamArray);
@@ -1010,9 +1028,9 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
                 cueList.clear();
                 tipsList.clear();
 
-                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "touchUI"))) {
+                if (!TextUtils.isEmpty(dspFaust.getMetadata(i, "SHCUI"))) {
                     // Convert the metadata string to an NSString
-                    String paramMetaString = dspFaust.getMetadata(i, "touchUI");
+                    String paramMetaString = dspFaust.getMetadata(i, "SHCUI");
 
                     // Split the string by space
                     String[] components = paramMetaString.split(" ");
@@ -1581,6 +1599,17 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
         }
     } else{
         cnt2=1;
+    }
+
+    for (CustomButton bargraph : customBargraphs) {
+        // Fetch the value from your data source
+        float newValue = scaleBackValue(dspFaust.getParamValue(bargraph.pathForButton), dspFaust.getParamMin(bargraph.pathForButton), dspFaust.getParamMax(bargraph.pathForButton));
+
+        if (bargraph.customButtonType.equals("hbargraph")){
+            bargraph.updateVumeterXButton(newValue);
+        } else if (bargraph.customButtonType.equals("vbargraph")){
+            bargraph.updateVumeterYButton(newValue);
+        }
     }
 
 }

@@ -472,21 +472,26 @@ void DspFaust::initFrame(){
 
         for(int i=0; i<fDSPFAUSTMOTION->getParamsCount(); i++){
             const char* data = fDSPFAUSTMOTION->getMetadata(i, "motionName");
-            if (strcmp(data, "") != 0) {
-                paramsMotionGates.push_back(fDSPFAUSTMOTION->getParamAddress(i));
-                paramsKeys.push_back(data);
-                paramsOn.push_back(false);
-                paramsAddressList.push_back(AddressInit);
+            if (data != nullptr) {
+                if (strcmp(data, "") != 0) {
+                    paramsMotionGates.push_back(fDSPFAUSTMOTION->getParamAddress(i));
+                    paramsKeys.push_back(data);
+                    paramsOn.push_back(false);
+                    paramsAddressList.push_back(AddressInit);
+                }
             }
+
         }
 
         for(int i=0; i<getParamsCount(); i++){
             const char* data = getMetadata(i, "motion");
-            for (int p=0; p< paramsMotionNum; p++) {
-                if (MapUI::endsWith(data,paramsKeys[p])) {
-                    paramsOn[p] = true;
-                    paramsAddressList[p].push_back(getParamAddress(i));
-                    fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
+            if (data != nullptr) {
+                for (int p=0; p< paramsMotionNum; p++) {
+                    if (MapUI::endsWith(data,paramsKeys[p])) {
+                        paramsOn[p] = true;
+                        paramsAddressList[p].push_back(getParamAddress(i));
+                        fDSPFAUSTMOTION->setParamValue(paramsMotionGates[p].c_str(), 1);
+                    }
                 }
             }
 

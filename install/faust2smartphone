@@ -2,8 +2,8 @@
 
 #####################################################################
 #                                                                   #
-#    Generates an API for Android or iOS based on a Faust object    #
-#               (c) Allen and Grame, 2017                           #
+#  Generates an API for Smart Hand Computer based on Faust Language #
+#               (c) Allen @LiSiLoG, 2017-2024                       #
 #                                                                   #
 #####################################################################
 
@@ -40,7 +40,7 @@ OSCMOTIONCTRL="0"
 echoHelp ()
 {
 	echo "===================================="
-	echo "faust2smartphone - Musical Mobile App Project Generator"
+	echo "faust2smartphone - Musical Mobile App(SHC) Project Generator"
 	echo "It converts Faust to a ready-to-edit app project for Android or iOS."
 	echo "===================================="
 	echo "Usage: faust2smartphone '-option' xxx.dsp"
@@ -65,9 +65,10 @@ echoHelp ()
 echoVersion ()
 {
 	echo "===================================="
-	echo "- faust2smartphone -"
+	echo "- faust2smartphone(SHC) -"
 	echo "===================================="
-	echo "- Version: 0.998 -"
+	echo "-     Version: 1.000    -"
+	echo "_2024.10_ [SHCUI:]rework_"
 	echo "===================================="
 }
 

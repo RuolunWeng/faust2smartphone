@@ -47,8 +47,6 @@
 }
 
 
-
-
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     
@@ -59,6 +57,8 @@
         _delegate = nil; // 初始化代理为nil
         self.contentViews = [[NSMutableDictionary alloc] init];
         self.tabButtons = [[NSMutableArray array] init];
+        
+        self.customBargraphs = [[NSMutableArray array] init];
 //        self.nameForButton = [[NSMutableDictionary alloc] init];
 //        self.pathForButton = [[NSMutableDictionary alloc] init];
 //        
@@ -213,6 +213,11 @@
     
     // 添加按钮到选项卡视图中
     [existingContentView addSubview:myButton];
+    
+    if ([buttonType isEqual:@"vbargraph"] or [buttonType isEqual:@"hbargraph"]) {
+        [self.customBargraphs addObject:myButton];
+    }
+    
     
 }
 

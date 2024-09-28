@@ -22,9 +22,9 @@ import java.util.ArrayList;
 
 public class CustomButton extends View {
 
-    private String customButtonType;
+    public String customButtonType;
     private String nameForButton;
-    private String pathForButton;
+    public String pathForButton;
     private int tag;
     private int selectedColor, newGrayColor, newbgColor, newSelectedColor;
     private int lineWidth = 6; // utilise pour padding aussi
@@ -105,6 +105,8 @@ public class CustomButton extends View {
                 break;
             case "vslider":
             case "hslider":
+            case "vbargraph":
+            case "hbargraph":
                 padPaint.setColor(color);
                 paint.setColor(newGrayColor);
                 break;
@@ -142,11 +144,13 @@ public class CustomButton extends View {
                 canvas.drawRoundRect(rectF, 10, 10, padPaint);
                 break;
             case "vslider":
+            case "vbargraph":
                 padPaint.setStyle(Paint.Style.FILL);
                 // Draw horizontal line
                 canvas.drawRoundRect(horizontalLine, 10, 10, padPaint);
                 break;
             case "hslider":
+            case "hbargraph":
                 padPaint.setStyle(Paint.Style.FILL);
                 // Draw horizontal line
                 canvas.drawRoundRect(verticalLine, 10, 10, padPaint);
@@ -707,8 +711,88 @@ public class CustomButton extends View {
     }
 
 
+    public void setupVumeterXButton() {
+        // Remove any touch event listener for vumeter, as it's passive
 
+        paint.setColor(newGrayColor);
+        padPaint.setColor(selectedColor);
+        // Listen for size changes
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Remove the listener to avoid redundant calls
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
+                // Calculate the initial positions for lines (assuming lineInits contains X values)
+                float lineInitX = mapValue(initValues.get(0), 0, 1, 0, getWidth());
+
+                // Update the positions of the lines represented by RectF objects
+                verticalLine = new RectF(0 + (lineWidth * 2 / 2), 0 + (lineWidth * 2 / 2),
+                        lineInitX - (lineWidth * 2 / 2), getHeight() - (lineWidth * 2 / 2));
+
+                // Trigger a redraw to reflect the changes
+                invalidate();
+            }
+        });
+    }
+
+    public void updateVumeterXButton(float value) {
+        // Clamp the incoming value and map it to the view width
+        float normalisedX = clampValue(value, 0, 1);
+        float lineWidthX = mapValue(normalisedX, 0, 1, 0, getWidth());
+
+        paint.setColor(newGrayColor);
+        padPaint.setColor(selectedColor);
+
+        // Update the RectF for the vumeter
+        verticalLine = new RectF(0 + (lineWidth * 2 / 2), 0 + (lineWidth * 2 / 2),
+                lineWidthX - (lineWidth * 2 / 2), getHeight() - (lineWidth * 2 / 2));
+
+        // Redraw the view
+        invalidate();
+    }
+
+    public void setupVumeterYButton() {
+        // Remove any touch event listener for vumeter, as it's passive
+
+        paint.setColor(newGrayColor);
+        padPaint.setColor(selectedColor);
+
+        // Listen for size changes
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Remove the listener to avoid redundant calls
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                // Calculate the initial positions for lines (assuming lineInits contains Y values)
+                float lineInitY = mapValue(initValues.get(0), 0, 1, getHeight(), 0);
+
+                // Update the positions of the lines represented by RectF objects
+                horizontalLine = new RectF(0 + (lineWidth * 2 / 2), lineInitY + (lineWidth * 2 / 2),
+                        getWidth() - (lineWidth * 2 / 2), getHeight() - (lineWidth * 2 / 2));
+
+                // Trigger a redraw to reflect the changes
+                invalidate();
+            }
+        });
+    }
+
+    public void updateVumeterYButton(float value) {
+        // Clamp the incoming value and map it to the view height
+        float normalisedY = clampValue(value, 0, 1);
+        float lineHeightY = mapValue(normalisedY, 0, 1, getHeight(), 0);
+
+        paint.setColor(newGrayColor);
+        padPaint.setColor(selectedColor);
+        
+        // Update the RectF for the vumeter
+        horizontalLine = new RectF(0 + (lineWidth * 2 / 2), lineHeightY + (lineWidth * 2 / 2),
+                getWidth() - (lineWidth * 2 / 2), getHeight() - (lineWidth * 2 / 2));
+
+        // Redraw the view
+        invalidate();
+    }
 
     //
     // Utility functions for mapping and clamping values
@@ -748,5 +832,8 @@ public class CustomButton extends View {
 
 
 }
+
+
+
 
 

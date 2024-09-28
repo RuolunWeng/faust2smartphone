@@ -49,7 +49,7 @@ class com.android.builder.errors.EvalIssueException: NDK at /opt/android/ndk did
 	at org.gradle.internal.event.ListenerBroadcast.dispatch(ListenerBroadcast.java:141)
 	at org.gradle.internal.event.ListenerBroadcast.dispatch(ListenerBroadcast.java:37)
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)
-	at com.sun.proxy.$Proxy42.afterEvaluate(Unknown Source)
+	at com.sun.proxy.$Proxy36.afterEvaluate(Unknown Source)
 	at org.gradle.configuration.project.LifecycleProjectEvaluator$NotifyAfterEvaluate$1.execute(LifecycleProjectEvaluator.java:186)
 	at org.gradle.configuration.project.LifecycleProjectEvaluator$NotifyAfterEvaluate$1.execute(LifecycleProjectEvaluator.java:183)
 	at org.gradle.api.internal.project.DefaultProject.stepEvaluationListener(DefaultProject.java:1454)
