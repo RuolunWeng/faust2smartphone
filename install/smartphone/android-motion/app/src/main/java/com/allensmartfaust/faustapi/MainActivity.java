@@ -1393,13 +1393,13 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             // Update gyr at sensor rate
 
-            dspFaust.propagateGyr(0, event.values[0]);
-            dspFaust.propagateGyr(1, event.values[1]);
-            dspFaust.propagateGyr(2, event.values[2]);
+            dspFaust.propagateGyr(0, -event.values[0]);
+            dspFaust.propagateGyr(1, -event.values[1]);
+            dspFaust.propagateGyr(2, -event.values[2]);
 
-            dspFaustMotion.propagateGyr(0, event.values[0]);
-            dspFaustMotion.propagateGyr(1, event.values[1]);
-            dspFaustMotion.propagateGyr(2, event.values[2]);
+            dspFaustMotion.propagateGyr(0, -event.values[0]);
+            dspFaustMotion.propagateGyr(1, -event.values[1]);
+            dspFaustMotion.propagateGyr(2, -event.values[2]);
 
         }
 
@@ -1411,10 +1411,12 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
             // Update rotation matrix at sensor rate
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
 
-            dspFaust.motionRender(rotationMatrix[0]*(-1.f), rotationMatrix[3]*(-1.f), rotationMatrix[6]*(-1.f),
-                                  rotationMatrix[1]*(-1.f), rotationMatrix[4]*(-1.f), rotationMatrix[7]*(-1.f),
-                                  rotationMatrix[2]*(-1.f), rotationMatrix[5]*(-1.f), rotationMatrix[8]*(-1.f));
-
+            //dspFaust.motionRender(rotationMatrix[0]*(-1.f), rotationMatrix[3]*(-1.f), rotationMatrix[6]*(-1.f),
+            //                      rotationMatrix[1]*(-1.f), rotationMatrix[4]*(-1.f), rotationMatrix[7]*(-1.f),
+            //                      rotationMatrix[2]*(-1.f), rotationMatrix[5]*(-1.f), rotationMatrix[8]*(-1.f));
+            dspFaust.motionRender(rotationMatrix[3]*(-1.f), rotationMatrix[0]*(1.f), rotationMatrix[6]*(-1.f),
+                                rotationMatrix[4]*(-1.f), rotationMatrix[1]*(1.f), rotationMatrix[7]*(-1.f),
+                                rotationMatrix[5]*(-1.f), rotationMatrix[2]*(1.f), rotationMatrix[8]*(-1.f));
 
             // Apply the reference rotation matrix to the current rotation matrix
             if (referenceRotationMatrix != null && rotationMatrix != null) {

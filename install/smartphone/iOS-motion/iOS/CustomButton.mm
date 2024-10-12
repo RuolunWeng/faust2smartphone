@@ -214,19 +214,23 @@
     // Set the button title if needed
     [self setTitle:self.nameForButton forState:UIControlStateNormal];
     
+    CGFloat red, green, blue, alpha;
+    [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    
     // Initialize a gradient layer if it doesn’t exist
     CAGradientLayer *gradientLayer = objc_getAssociatedObject(self, "gradientLayerX");
     if (!gradientLayer) {
         gradientLayer = [CAGradientLayer layer];
         gradientLayer.frame = self.bounds;
-        CGFloat red, green, blue, alpha;
-        [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
-        
-        // Create a gradient from gray to the selected color
-        gradientLayer.colors = @[
-            (id)[UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0].CGColor, // Gray color
-            (id)self.selectedColor.CGColor // Selected color
-        ];
+                
+        // Define colors for the gradient
+        UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
+            
+        // Adjust end color based on the value (scale between 0 to 1)
+        CGFloat endAlpha = [self.lineInits[0] floatValue]*alpha+0.1; // Set alpha based on the current value
+        UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
+        // Apply colors to gradient layer
+        gradientLayer.colors = @[(__bridge id)startColor.CGColor, (__bridge id)endColor.CGColor];
         
         // Set the direction of the gradient (left to right)
         gradientLayer.startPoint = CGPointMake(1.0, 0.0); // Left to right
@@ -244,6 +248,8 @@
         // Store the gradient layer for future updates
         objc_setAssociatedObject(self, "gradientLayerX", gradientLayer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
+    
+    [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.25 green:0.25  blue:0.25  alpha:1]] forState:UIControlStateNormal];
 }
 
 - (void)setupVumeterYButton {
@@ -259,11 +265,14 @@
         gradientLayer = [CAGradientLayer layer];
         gradientLayer.frame = self.bounds;
         
-        // Create a gradient from gray to the selected color
-        gradientLayer.colors = @[
-            (id)[UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0].CGColor, // Gray color at the bottom
-            (id)self.selectedColor.CGColor // Selected color at the top
-        ];
+        // Define colors for the gradient
+        UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
+            
+        // Adjust end color based on the value (scale between 0 to 1)
+        CGFloat endAlpha = [self.lineInits[0] floatValue]*alpha+0.1; // Set alpha based on the current value
+        UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
+        // Apply colors to gradient layer
+        gradientLayer.colors = @[(__bridge id)startColor.CGColor, (__bridge id)endColor.CGColor];
         
         // Set the direction of the gradient (bottom to top)
         gradientLayer.startPoint = CGPointMake(0.0, 0.0); // Bottom
@@ -280,6 +289,8 @@
         // Store the gradient layer for future updates
         objc_setAssociatedObject(self, "gradientLayerY", gradientLayer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
+    
+    [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.25 green:0.25  blue:0.25  alpha:1]] forState:UIControlStateNormal];
     
 }
 
@@ -300,7 +311,7 @@
 
     CGFloat red, green, blue, alpha;
     [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
-    [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.5 green:0.5  blue:0.5  alpha:alpha]] forState:UIControlStateNormal];
+    [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.25 green:0.25  blue:0.25  alpha:alpha]] forState:UIControlStateNormal];
    
 }
 
@@ -320,7 +331,7 @@
 
     CGFloat red, green, blue, alpha;
     [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
-    [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.5 green:0.5  blue:0.5  alpha:alpha]] forState:UIControlStateNormal];
+    [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.25 green:0.25  blue:0.25  alpha:alpha]] forState:UIControlStateNormal];
     
 }
 
@@ -939,6 +950,20 @@
         if (gradientLayer) {
             // Normalize the value to a range between 0 and 1
             CGFloat normalizedX = MIN(MAX(ButtonValue, 0.0), 1.0);  // Clamp between 0 and 1
+        
+            
+            CGFloat red, green, blue, alpha;
+            [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
+            
+            // Define colors for the gradient
+            UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
+                
+            // Adjust end color based on the value (scale between 0 to 1)
+            CGFloat endAlpha = normalizedX*alpha; // Set alpha based on the current value
+            UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
+            
+            // Apply colors to gradient layer
+            gradientLayer.colors = @[(__bridge id)startColor.CGColor, (__bridge id)endColor.CGColor];
             
             // Optional: Add animation for smooth transition
             [CATransaction begin];
@@ -954,6 +979,19 @@
         if (gradientLayer) {
             // Normalize the external value (ButtonValue should be between 0 and 1)
             CGFloat normalisedY = MIN(MAX(ButtonValue, 0.0), 1.0);  // Clamp between 0 and 1
+            
+            CGFloat red, green, blue, alpha;
+            [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
+            
+            // Define colors for the gradient
+            UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
+                
+            // Adjust end color based on the value (scale between 0 to 1)
+            CGFloat endAlpha = (normalisedY)*alpha; // Set alpha based on the current value
+            UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
+            
+            // Apply colors to gradient layer
+            gradientLayer.colors = @[(__bridge id)startColor.CGColor, (__bridge id)endColor.CGColor];
             
             // Optional: Add animation for smooth transition
             [CATransaction begin];
