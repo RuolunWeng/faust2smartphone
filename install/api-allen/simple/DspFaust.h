@@ -407,9 +407,9 @@ private:
     FaustPolyEngine *fPolyEngine;
     MidiUI *fMidiUI;
     OSCUI *fOSCUI;
-		#if SOUNDFILE
-				SoundUI* fSoundInterface;
-		#endif
+#if SOUNDFILE
+		SoundUI* fSoundInterface;
+#endif
 
     void init(dsp* mono_dsp,audio* driver);
 };

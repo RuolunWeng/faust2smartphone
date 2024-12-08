@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableArray *tabButtons;
 
 @property (nonatomic, strong) NSMutableArray *customBargraphs;
+@property (nonatomic, strong) NSMutableArray *customButtons;
 //@property (nonatomic, strong) NSMutableDictionary *nameForButton;
 //@property (nonatomic, strong) NSMutableDictionary *pathForButton;
 //@property (nonatomic, strong) NSMutableArray *sliderButtons;
@@ -53,8 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
                                initValues:(NSArray *)initValues
                      ContentViewName:(NSString *)contentViewName;
 
-// New method to update vumeter UI based on external value
-- (void)updateVumeterWithValue:(CGFloat)ButtonValue tag:(NSInteger)ButtonTag;
 
 @end
 

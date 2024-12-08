@@ -263,6 +263,35 @@
     [vumeterButton updateBargraphWithValue:newValue];
 }
 
+- (void)sendValueToTouchUI:(CustomButton *)TouchUIButton  {
+    
+    // current init value scale to 0-1
+    NSMutableArray *buttonValues = [NSMutableArray array];
+    
+    if (![TouchUIButton.customButtonType isEqualToString:@"pad"]) {
+        // Fetch the value from your data source
+        CGFloat newValue = scaleBackValue(dspFaust->getParamValue([TouchUIButton.pathForButton UTF8String]), dspFaust->getParamMin([TouchUIButton.pathForButton UTF8String]), dspFaust->getParamMax([TouchUIButton.pathForButton UTF8String]));
+        [buttonValues addObject:@(newValue)];
+        [TouchUIButton updateTouchUIWithValue:buttonValues];
+    } else {
+        
+        // Fetch the value from your data source
+        CGFloat padValue = scaleBackValue(dspFaust->getParamValue([TouchUIButton.pathForButton UTF8String]), dspFaust->getParamMin([TouchUIButton.pathForButton UTF8String]), dspFaust->getParamMax([TouchUIButton.pathForButton UTF8String]));
+        [buttonValues addObject:@(padValue)];
+        
+        CGFloat padXValue = scaleBackValue(dspFaust->getParamValue([[NSString stringWithFormat:@"%@_X",TouchUIButton.pathForButton] UTF8String]), dspFaust->getParamMin([[NSString stringWithFormat:@"%@_X",TouchUIButton.pathForButton] UTF8String]), dspFaust->getParamMax([[NSString stringWithFormat:@"%@_X",TouchUIButton.pathForButton] UTF8String]));
+        
+        [buttonValues addObject:@(padXValue)];
+        
+        CGFloat padYValue = scaleBackValue(dspFaust->getParamValue([[NSString stringWithFormat:@"%@_Y",TouchUIButton.pathForButton] UTF8String]), dspFaust->getParamMin([[NSString stringWithFormat:@"%@_Y",TouchUIButton.pathForButton] UTF8String]), dspFaust->getParamMax([[NSString stringWithFormat:@"%@_Y",TouchUIButton.pathForButton] UTF8String]));
+        [buttonValues addObject:@(padYValue)];
+        
+        [TouchUIButton updateTouchUIWithValue:buttonValues];
+        
+    }
+    
+}
+
 // 将0到1之间的浮点数值映射到给定范围内的浮点数值
 CGFloat scaleValue(CGFloat value, CGFloat min, CGFloat max) {
     return min + (max - min) * value;
@@ -391,7 +420,7 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
         const char *dataParamMotionLib = dspFaustMotion->getMetadata(i, "showName");
-        if (strcmp(dataParamMotionLib,"") != 0) {
+        if (dataParamMotionLib &&  strcmp(dataParamMotionLib,"") != 0) {
             motionLibParamNames.push_back(dataParamMotionLib);
             motionLibParamAddress.push_back(dspFaustMotion->getParamAddress(i));
         }
@@ -421,7 +450,7 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     
     for (int i=0; i<dspFaust->getParamsCount(); i++) {
         const char *dataParamMotionAudio = dspFaust->getMetadata(i, "showName");
-        if (strcmp(dataParamMotionAudio,"") != 0) {
+        if (dataParamMotionAudio && strcmp(dataParamMotionAudio,"") != 0) {
             motionAudioParamNames.push_back(dataParamMotionAudio);
             motionAudioParamAddress.push_back(dspFaust->getParamAddress(i));
         }
@@ -579,7 +608,7 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     
     for(int i=0; i<dspFaust->getParamsCount(); i++){
         const char *dataParamMotionButton = dspFaust->getMetadata(i, "SHCUI");
-        if (strcmp(dataParamMotionButton,"") != 0) {
+        if (dataParamMotionButton && strcmp(dataParamMotionButton,"") != 0) {
             const char *param = dataParamMotionButton;
             // Convert the const char* parameter to an NSString
             NSString *paramMetaString = [NSString stringWithUTF8String:param];
@@ -1243,6 +1272,17 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     for (CustomButton *button in self.customTabView.customBargraphs) {
         [self sendValueToVumeter:button];
     }
+    
+    if (dspFaust->getOSCIsOn() or dspFaust->getMIDIIsOn()) {
+        for (CustomButton *button in self.customTabView.customButtons) {
+            if (![self.customTabView.customBargraphs containsObject:button]) {
+                // Perform actions for buttons not in customBargraphs
+                //NSLog(@"Button not in customBargraphs: %@", button);
+                [self sendValueToTouchUI:button];
+            }
+        }
+    }
+
 }
 
 - (void) touchesBegan:(NSSet *)touches

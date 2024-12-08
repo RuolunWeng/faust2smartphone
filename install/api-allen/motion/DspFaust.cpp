@@ -100,6 +100,11 @@ static void osc_compute_callback(void* arg)
 // Interface
 //**************************************************************
 
+#if IOS_MIDI_SUPPORT
+#include "faust/midi/rt-midi.h"
+#include "faust/midi/RtMidi.cpp"
+#endif
+
 #include "DspFaustMotion.h"
 #include "DspFaust.h"
 
@@ -180,6 +185,11 @@ void DspFaust::init(dsp* mono_dsp,audio* driver){
     fPolyEngine->buildUserInterface(fSoundInterface);
 #endif
 
+#if IOS_MIDI_SUPPORT
+    fMidiUI = new MidiUI(new rt_midi());
+	fPolyEngine->buildUserInterface(fMidiUI);
+#endif
+
 }
 
 
@@ -195,12 +205,20 @@ DspFaust::~DspFaust(){
     delete fSoundInterface;
 #endif
 
+#if IOS_MIDI_SUPPORT
+    delete fMidiUI;
+#endif
+
 }
 
 bool DspFaust::start(){
 
 #if OSCCTRL
     fOSCUI->run();
+#endif
+
+#if IOS_MIDI_SUPPORT
+    fMidiUI->run();
 #endif
 
     return fPolyEngine->start();
@@ -210,6 +228,10 @@ void DspFaust::stop(){
 
 #if OSCCTRL
     fOSCUI->stop();
+#endif
+
+#if IOS_MIDI_SUPPORT
+    fMidiUI->stop();
 #endif
 
     fPolyEngine->stop();
@@ -421,6 +443,13 @@ bool DspFaust::getOSCIsOn() {
 #endif
 }
 
+bool DspFaust::getMIDIIsOn() {
+#if IOS_MIDI_SUPPORT
+    return true;
+#else
+    return false;
+#endif
+}
 
 void DspFaust::initFrame(){
 

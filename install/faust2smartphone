@@ -54,7 +54,8 @@ echoHelp ()
 	echo "Option: -updatelib <.lib> for update motion library"
 	echo "Option: -oscall/-oscalias for OSC support"
 	echo "Option: -oscmotion for OSC-Motion"
-	echo "Option: -nvoices: specify the max number of voices for MIDI"
+	echo "Option: -midi for iOS MIDI support"
+	#echo "Option: -nvoices: specify the max number of voices for MIDI"
 	echo "Option: -soundfile for soundfile support"
 	echo "Option: -cuemanager for using Cue Maneger system"
 	echo "Option: -reuse for Uptade the project"
@@ -67,8 +68,8 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone(SHC) -"
 	echo "===================================="
-	echo "-     Version: 1.000    -"
-	echo "_2024.10_ [SHCUI:]rework_"
+	echo "-     Version: 1.001    -"
+	echo "_2024.12_ [midi:]rework_"
 	echo "===================================="
 }
 
@@ -474,7 +475,7 @@ elif [ $IOS -eq 1 ]; then
 	  else
 			echo "Adding DSP with no effect chain to the app" > $LOG
 			faust2api_a $OPTIONS -ios -nodoc "$FILE" > $LOG
-		fi
+	  fi
 	else
 		echo "Adding DSP with effect chain to the app" > $LOG
 		faust2api_a $OPTIONS -ios -midi -nvoices "$NVOICES" -effect "$EFFECT" -nodoc "$FILE" > $LOG
@@ -517,6 +518,9 @@ elif [ $IOSMOTION -eq 1 ]; then
 	faust -i -a $FAUSTLIB/api-allen/motion/DspFaustMotion.cpp -cn mydsp2 "$LIBMOTION" -o "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	sed -i '' 's,FaustPolyEngine,FaustPolyMotionEngine,g' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	sed -i '' '/delete reinterpret_cast<FaustPolyMotionEngine*/, /getScreenColor/ d' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	sed -i '' 's,MidiUI fMidiUI;,//MidiUI fMidiUI;,g' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	sed -i '' 's,fFinalDSP->buildUserInterface(&fMidiUI);,//fFinalDSP->buildUserInterface(&fMidiUI);,g' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
+	sed -i '' 's,:fMidiUI(&fMidiHandler),//:fMidiUI(&fMidiHandler),g' "$APPFOLDER/DspFaustMotion.cpp" > $LOG
     echo "#define TARGET_OS_IPHONE 1" | cat - "$APPFOLDER/DspFaustMotion.cpp" > temp && mv temp "$APPFOLDER/DspFaustMotion.cpp" > $LOG
 	fi
 	if [ "$OSCMOTIONCTRL" = "1" ]; then

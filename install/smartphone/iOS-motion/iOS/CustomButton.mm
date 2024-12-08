@@ -28,8 +28,8 @@
                               name:(NSString *)name
                               path:(NSString *)path
                                tag:(NSInteger)tag
-                      selectedColor:(UIColor *)selectedColor
-                            lineInits:(NSArray *)lineInits
+                     selectedColor:(UIColor *)selectedColor
+                         lineInits:(NSArray *)lineInits
 {
     
     self = [super init];
@@ -48,7 +48,7 @@
         
         // 设置按钮的 frame
         self.frame = CGRectMake(x, y, width, height);
-
+        
         if ([buttonType isEqualToString:@"checkbox"]) {
             [self setupToggleButton];
         } else if ([buttonType isEqualToString:@"button"]) {
@@ -79,25 +79,25 @@
             [self setupVumeterYButton];
         }
         
-
+        
         UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:MIN(self.frame.size.width * 0.3, self.frame.size.height * 0.3)];
-
+        
         // Set the adjusted font for the button's title label
         self.titleLabel.font = font;
         [self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
+        
         self.layer.borderWidth = 2.0; // Set the border width as needed
         self.layer.borderColor = [UIColor blackColor].CGColor; // Set the border color as needed
-
+        
         self.layer.cornerRadius = 5.0; // 圆角
         // Make sure to enable masksToBounds to apply the corner radius
         self.layer.masksToBounds = YES;
         
         // Set adjustsFontSizeToFitWidth to true
         self.titleLabel.adjustsFontSizeToFitWidth = YES;
-//        [self.titleLabel sizeToFit];
-//        
-//        [self setNeedsDisplay];
+        //        [self.titleLabel sizeToFit];
+        //
+        //        [self setNeedsDisplay];
         
         
     }
@@ -115,7 +115,7 @@
         CGFloat lineInitX = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.width);
         
         verticalLine.frame = CGRectMake(0, 0, lineInitX, self.frame.size.height);
-           
+        
         
     } else if ([self.customButtonType isEqualToString:@"vslider"]) {
         
@@ -124,7 +124,7 @@
         CGFloat lineInitY = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.height);
         
         horizontalLine.frame = CGRectMake(0, self.frame.size.height-lineInitY, self.frame.size.width, lineInitY);
-            
+        
         
     } else if ([self.customButtonType isEqualToString:@"pad"]) {
         
@@ -135,8 +135,8 @@
         CGFloat lineInitY = mapValue([self.lineInits[1] floatValue], 0, 1, 0, self.frame.size.height);
         
         horizontalLine.frame = CGRectMake(0, self.frame.size.height- lineInitY, self.frame.size.width, self.lineWidth);
-    
-   
+        
+        
         verticalLine.frame = CGRectMake(lineInitX, 0, self.lineWidth, self.frame.size.height);
         
     } else if ([self.customButtonType isEqualToString:@"hbargraph"]) {
@@ -146,7 +146,7 @@
         CGFloat lineInitX = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.width);
         
         verticalLine.frame = CGRectMake(0, 0, lineInitX, self.frame.size.height);
-           
+        
         
     } else if ([self.customButtonType isEqualToString:@"vbargraph"]) {
         
@@ -155,7 +155,7 @@
         CGFloat lineInitY = mapValue([self.lineInits[0] floatValue], 0, 1, 0, self.frame.size.height);
         
         horizontalLine.frame = CGRectMake(0, self.frame.size.height-lineInitY, self.frame.size.width, lineInitY);
-            
+        
         
     }
     
@@ -222,10 +222,10 @@
     if (!gradientLayer) {
         gradientLayer = [CAGradientLayer layer];
         gradientLayer.frame = self.bounds;
-                
+        
         // Define colors for the gradient
         UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
-            
+        
         // Adjust end color based on the value (scale between 0 to 1)
         CGFloat endAlpha = [self.lineInits[0] floatValue]*alpha+0.1; // Set alpha based on the current value
         UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
@@ -267,7 +267,7 @@
         
         // Define colors for the gradient
         UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
-            
+        
         // Adjust end color based on the value (scale between 0 to 1)
         CGFloat endAlpha = [self.lineInits[0] floatValue]*alpha+0.1; // Set alpha based on the current value
         UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
@@ -308,11 +308,11 @@
         [self addSubview:verticalLine];
         objc_setAssociatedObject(self, "verticalLine", verticalLine, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-
+    
     CGFloat red, green, blue, alpha;
     [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
     [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.25 green:0.25  blue:0.25  alpha:alpha]] forState:UIControlStateNormal];
-   
+    
 }
 
 - (void)setupTouchScreenYButton {
@@ -328,7 +328,7 @@
         [self addSubview:horizontalLine];
         objc_setAssociatedObject(self, "horizontalLine", horizontalLine, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-
+    
     CGFloat red, green, blue, alpha;
     [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
     [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:0.25 green:0.25  blue:0.25  alpha:alpha]] forState:UIControlStateNormal];
@@ -346,27 +346,27 @@
     CGFloat lineInitY = mapValue([self.lineInits[1] floatValue], 0, 1, 0, self.frame.size.height);
     
     if (!horizontalLine) {
-//        horizontalLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height-self.lineWidth*2, self.frame.size.width, self.lineWidth)];
+        //        horizontalLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height-self.lineWidth*2, self.frame.size.width, self.lineWidth)];
         horizontalLine = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height- lineInitY, self.frame.size.width, self.lineWidth)];
         horizontalLine.backgroundColor = [UIColor blackColor];
         [self addSubview:horizontalLine];
         objc_setAssociatedObject(self, "horizontalLine", horizontalLine, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     if (!verticalLine) {
-//        verticalLine = [[UIView alloc] initWithFrame:CGRectMake(self.lineWidth, 0, self.lineWidth, self.frame.size.height)];
+        //        verticalLine = [[UIView alloc] initWithFrame:CGRectMake(self.lineWidth, 0, self.lineWidth, self.frame.size.height)];
         verticalLine = [[UIView alloc] initWithFrame:CGRectMake(lineInitX, 0, self.lineWidth, self.frame.size.height)];
         verticalLine.backgroundColor = [UIColor blackColor];
         [self addSubview:verticalLine];
         objc_setAssociatedObject(self, "verticalLine", verticalLine, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-
+    
     CGFloat red, green, blue, alpha;
     [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
     
     [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:red green:green blue:blue alpha:alpha*0.5]] forState:UIControlStateSelected];
     
     [self setBackgroundImage:[self imageWithColor:self.selectedColor] forState:UIControlStateNormal];
-
+    
 }
 
 
@@ -393,7 +393,7 @@
         if ([self.customButtonType isEqual:@"button"]) {
             // Handle touch event for the button
             // 处理普通按钮点击事件
-
+            
             //NSLog(@"Button tapped Down with name: %@, path: %@", self.nameForButton, self.pathForButton);
             [self.delegate buttonTappedWithPath:self.pathForButton value:1];
             
@@ -405,10 +405,10 @@
             // Extract the RGBA components from the current color
             CGFloat red, green, blue, alpha;
             [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+            
             // Create a new color with adjusted alpha value
             UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha / 2.0];
-
+            
             // Assign the new color to the background color property
             self.backgroundColor = newColor;
             
@@ -416,10 +416,10 @@
         } else if ([self.customButtonType isEqual:@"trigCue"]) {
             // Handle touch event for the button
             // 处理trigCue按钮点击事件
-
+            
             //NSLog(@"Button tapped Down for Cue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
-//            self.alpha -= 0.3;
+            //            self.alpha -= 0.3;
             
             self.layer.borderColor= self.selectedColor.CGColor;
             
@@ -429,22 +429,22 @@
             // Extract the RGBA components from the current color
             CGFloat red, green, blue, alpha;
             [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+            
             // Create a new color with adjusted alpha value
             UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha / 2.0];
-
+            
             // Assign the new color to the background color property
             self.backgroundColor = newColor;
-
+            
             [self.delegate buttonTappedCue];
             
         } else if ([self.customButtonType isEqual:@"nextCue"]) {
             // Handle touch event for the button
             // 处理trigCue按钮点击事件
-
+            
             //NSLog(@"Button tapped Down for nextCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
-//            self.alpha -= 0.3;
+            //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
             
             // Get the current background color
@@ -453,22 +453,22 @@
             // Extract the RGBA components from the current color
             CGFloat red, green, blue, alpha;
             [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+            
             // Create a new color with adjusted alpha value
             UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha / 2.0];
-
+            
             // Assign the new color to the background color property
             self.backgroundColor = newColor;
-
+            
             [self.delegate buttonTappedNextCue];
             
         } else if ([self.customButtonType isEqual:@"prevCue"]) {
             // Handle touch event for the button
             // 处理prevCue按钮点击事件
-
+            
             //NSLog(@"Button tapped Down for prevCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
-//            self.alpha -= 0.3;
+            //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
             
             // Get the current background color
@@ -477,22 +477,22 @@
             // Extract the RGBA components from the current color
             CGFloat red, green, blue, alpha;
             [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+            
             // Create a new color with adjusted alpha value
             UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha / 2.0];
-
+            
             // Assign the new color to the background color property
             self.backgroundColor = newColor;
-
+            
             [self.delegate buttonTappedPrevCue];
             
         } else if ([self.customButtonType isEqual:@"initCue"]) {
             // Handle touch event for the button
             // 处理initCue按钮点击事件
-
+            
             //NSLog(@"Button tapped Down for initCue Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
-//            self.alpha -= 0.3;
+            //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
             
             // Get the current background color
@@ -501,22 +501,22 @@
             // Extract the RGBA components from the current color
             CGFloat red, green, blue, alpha;
             [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+            
             // Create a new color with adjusted alpha value
             UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha / 2.0];
-
+            
             // Assign the new color to the background color property
             self.backgroundColor = newColor;
-
+            
             [self.delegate buttonTappedInitCue];
             
         } else if ([self.customButtonType isEqual:@"setRef"]) {
             // Handle touch event for the button
             // 处理setRef按钮点击事件
-
+            
             //NSLog(@"Button tapped Down for setRef Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
-//            self.alpha -= 0.3;
+            //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
             
             // Get the current background color
@@ -525,22 +525,22 @@
             // Extract the RGBA components from the current color
             CGFloat red, green, blue, alpha;
             [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+            
             // Create a new color with adjusted alpha value
             UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha / 2.0];
-
+            
             // Assign the new color to the background color property
             self.backgroundColor = newColor;
-
+            
             [self.delegate buttonTappedSetRef];
             
         } else if ([self.customButtonType isEqual:@"trigCounter"]) {
             // Handle touch event for the button
             // 处理trigCounter按钮点击事件
-
+            
             //NSLog(@"Button tapped Down for Counter Action with name: %@, path: %@", self.nameForButton, self.pathForButton);
             
-//            self.alpha -= 0.3;
+            //            self.alpha -= 0.3;
             self.layer.borderColor= self.selectedColor.CGColor;
             
             // Get the current background color
@@ -549,66 +549,66 @@
             // Extract the RGBA components from the current color
             CGFloat red, green, blue, alpha;
             [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+            
             // Create a new color with adjusted alpha value
             UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha / 2.0];
-
+            
             // Assign the new color to the background color property
             self.backgroundColor = newColor;
-
+            
             [self.delegate buttonTappedCounter:self.pathForButton tag:self.tag];
             
         } else if ([self.customButtonType isEqual:@"hslider"]) {
             
             UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
-
-                // 计算normalised坐标
-                CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
-
-                // 输出触摸点位的x/y坐标
-                //NSLog(@"%@: touchScreenX Down: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
-                
-                verticalLine.frame = CGRectMake(0, 0, touchPoint.x, self.bounds.size.height);
-        //        self.verticalLines[button].frame = CGRectMake(touchPoint.x, 0, 4, button.bounds.size.height);
-                
-                [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedX];
-                
+            
+            // 计算normalised坐标
+            CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
+            
+            // 输出触摸点位的x/y坐标
+            //NSLog(@"%@: touchScreenX Down: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+            
+            verticalLine.frame = CGRectMake(0, 0, touchPoint.x, self.bounds.size.height);
+            //        self.verticalLines[button].frame = CGRectMake(touchPoint.x, 0, 4, button.bounds.size.height);
+            
+            [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedX];
+            
         } else if ([self.customButtonType isEqual:@"vslider"]) {
             
             UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
             
-                // 计算normalised坐标
-                CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
-                
-                // 输出触摸点位的x/y坐标
-                //NSLog(@"%@: touchScreenY Down: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
-                
-                
-                // Update the positions of the lines
-                horizontalLine.frame = CGRectMake(0,
-                                                  touchPoint.y, self.bounds.size.width, self.bounds.size.height-touchPoint.y);
-                
-                [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedY];
+            // 计算normalised坐标
+            CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
+            
+            // 输出触摸点位的x/y坐标
+            //NSLog(@"%@: touchScreenY Down: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+            
+            
+            // Update the positions of the lines
+            horizontalLine.frame = CGRectMake(0,
+                                              touchPoint.y, self.bounds.size.width, self.bounds.size.height-touchPoint.y);
+            
+            [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedY];
             
         } else if ([self.customButtonType isEqual:@"pad"]) {
             // Get or create the horizontal and vertical lines associated with this button
             UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
             UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
-                    
+            
             self.selected = YES;
             [self.delegate buttonTappedWithPath:self.pathForButton value:1];
-                    
+            
             NSString *padXPath = [NSString stringWithFormat:@"%@_X",self.pathForButton];
             NSString *padYPath = [NSString stringWithFormat:@"%@_Y",self.pathForButton];
-
+            
             // 计算normalised坐标
             CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
             CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
-
+            
             // 输出触摸点位的x/y坐标
             //NSLog(@"%@: Pad TochDown Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
             //NSLog(@"%@: Pad TochDown Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
-
+            
             // Update the positions of the lines
             horizontalLine.frame = CGRectMake(0, touchPoint.y, self.bounds.size.width, self.lineWidth);
             verticalLine.frame = CGRectMake(touchPoint.x, 0, self.lineWidth, self.bounds.size.height);
@@ -634,69 +634,69 @@
         // Determine if touch point is still inside button's bounds
         if (CGRectContainsPoint(self.bounds, touchPoint)) {
             
-                if ([self.customButtonType isEqual:@"hslider"]) {
-                    
-                    UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
-
-                        // 计算normalised坐标
-                        CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
-
-                        // 输出触摸点位的x/y坐标
-                        //NSLog(@"%@: touchScreenX Moved: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
-                        
-                        verticalLine.frame = CGRectMake(0, 0, touchPoint.x, self.bounds.size.height);
-                //        self.verticalLines[button].frame = CGRectMake(touchPoint.x, 0, 4, button.bounds.size.height);
-                        
-                        [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedX];
-                        
-                } else if ([self.customButtonType isEqual:@"vslider"]) {
-                    
-                    UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
-                    
-                        // 计算normalised坐标
-                        CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
-                        
-                        // 输出触摸点位的x/y坐标
-                        //NSLog(@"%@: touchScreenY Moved: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
-                        
-                        
-                        // Update the positions of the lines
-                        horizontalLine.frame = CGRectMake(0,
-                                                          touchPoint.y, self.bounds.size.width, self.bounds.size.height-touchPoint.y);
-                        
-                        [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedY];
-                    
-                } else if ([self.customButtonType isEqual:@"pad"]) {
-                    // Get or create the horizontal and vertical lines associated with this button
-                    UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
-                    UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
-                            
-                    NSString *padXPath = [NSString stringWithFormat:@"%@_X",self.pathForButton];
-                    NSString *padYPath = [NSString stringWithFormat:@"%@_Y",self.pathForButton];
-
-                    // 计算normalised坐标
-                    CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
-                    CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
-
-                    // 输出触摸点位的x/y坐标
-                    //NSLog(@"%@: Pad TochUp Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
-                    //NSLog(@"%@: Pad TochUp Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
-
-                    // Update the positions of the lines
-                    horizontalLine.frame = CGRectMake(0, touchPoint.y, self.bounds.size.width, self.lineWidth);
-                    verticalLine.frame = CGRectMake(touchPoint.x, 0, self.lineWidth, self.bounds.size.height);
-                    horizontalLine.backgroundColor = self.selectedColor;
-                    verticalLine.backgroundColor = self.selectedColor;
-                    
-                    [self.delegate buttonTappedWithPath:padXPath value:normalisedX];
-                    [self.delegate buttonTappedWithPath:padYPath value:normalisedY];
-                }
-            
-            
+            if ([self.customButtonType isEqual:@"hslider"]) {
                 
+                UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
+                
+                // 计算normalised坐标
+                CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
+                
+                // 输出触摸点位的x/y坐标
+                //NSLog(@"%@: touchScreenX Moved: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+                
+                verticalLine.frame = CGRectMake(0, 0, touchPoint.x, self.bounds.size.height);
+                //        self.verticalLines[button].frame = CGRectMake(touchPoint.x, 0, 4, button.bounds.size.height);
+                
+                [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedX];
+                
+            } else if ([self.customButtonType isEqual:@"vslider"]) {
+                
+                UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
+                
+                // 计算normalised坐标
+                CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
+                
+                // 输出触摸点位的x/y坐标
+                //NSLog(@"%@: touchScreenY Moved: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+                
+                
+                // Update the positions of the lines
+                horizontalLine.frame = CGRectMake(0,
+                                                  touchPoint.y, self.bounds.size.width, self.bounds.size.height-touchPoint.y);
+                
+                [self.delegate buttonTappedWithPath:self.pathForButton value:normalisedY];
+                
+            } else if ([self.customButtonType isEqual:@"pad"]) {
+                // Get or create the horizontal and vertical lines associated with this button
+                UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
+                UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
+                
+                NSString *padXPath = [NSString stringWithFormat:@"%@_X",self.pathForButton];
+                NSString *padYPath = [NSString stringWithFormat:@"%@_Y",self.pathForButton];
+                
+                // 计算normalised坐标
+                CGFloat normalisedX = [self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
+                CGFloat normalisedY = [self clampValue:1.0f - touchPoint.y / self.frame.size.height min:0 max:1];
+                
+                // 输出触摸点位的x/y坐标
+                //NSLog(@"%@: Pad TochUp Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+                //NSLog(@"%@: Pad TochUp Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+                
+                // Update the positions of the lines
+                horizontalLine.frame = CGRectMake(0, touchPoint.y, self.bounds.size.width, self.lineWidth);
+                verticalLine.frame = CGRectMake(touchPoint.x, 0, self.lineWidth, self.bounds.size.height);
+                horizontalLine.backgroundColor = self.selectedColor;
+                verticalLine.backgroundColor = self.selectedColor;
+                
+                [self.delegate buttonTappedWithPath:padXPath value:normalisedX];
+                [self.delegate buttonTappedWithPath:padYPath value:normalisedY];
             }
+            
+            
+            
         }
-        
+    }
+    
     //[self setNeedsDisplay];
     
 }
@@ -723,10 +723,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 
@@ -759,10 +759,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 
@@ -780,10 +780,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 
@@ -801,10 +801,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 
@@ -822,10 +822,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 
@@ -843,10 +843,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 
@@ -864,10 +864,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 
@@ -923,10 +923,10 @@
                 // Extract the RGBA components from the current color
                 CGFloat red, green, blue, alpha;
                 [currentColor getRed:&red green:&green blue:&blue alpha:&alpha];
-
+                
                 // Create a new color with adjusted alpha value
                 UIColor *newColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha* 2.0];
-
+                
                 // Assign the new color to the background color property
                 self.backgroundColor = newColor;
                 //self.alpha += 0.3;
@@ -950,14 +950,14 @@
         if (gradientLayer) {
             // Normalize the value to a range between 0 and 1
             CGFloat normalizedX = MIN(MAX(ButtonValue, 0.0), 1.0);  // Clamp between 0 and 1
-        
+            
             
             CGFloat red, green, blue, alpha;
             [self.selectedColor getRed:&red green:&green blue:&blue alpha:&alpha];
             
             // Define colors for the gradient
             UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
-                
+            
             // Adjust end color based on the value (scale between 0 to 1)
             CGFloat endAlpha = normalizedX*alpha; // Set alpha based on the current value
             UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
@@ -972,7 +972,7 @@
             [CATransaction commit];
         }
     } else if ([self.customButtonType isEqualToString:@"vbargraph"]) {
-            
+        
         // Get the gradient layer
         CAGradientLayer *gradientLayer = objc_getAssociatedObject(self, "gradientLayerY");
         
@@ -985,7 +985,7 @@
             
             // Define colors for the gradient
             UIColor *startColor = [UIColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.0];  // Gray base color
-                
+            
             // Adjust end color based on the value (scale between 0 to 1)
             CGFloat endAlpha = (normalisedY)*alpha; // Set alpha based on the current value
             UIColor *endColor = [self.selectedColor colorWithAlphaComponent:endAlpha]; // Adjust selected color based on value
@@ -1002,6 +1002,68 @@
         }
     }
 }
+
+- (void)updateTouchUIWithValue:(NSArray*)ButtonValues {
+    
+    //
+    if ([self.customButtonType isEqual:@"hslider"]) {
+        
+        UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
+        
+        // 计算normalised坐标
+        CGFloat normalisedX = mapValue([ButtonValues[0] floatValue], 0, 1, 0, self.frame.size.width);//[self clampValue:touchPoint.x / self.frame.size.width min:0 max:1];
+        
+        // 输出触摸点位的x/y坐标
+        //NSLog(@"%@: touchScreenX Down: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+        
+        verticalLine.frame = CGRectMake(0, 0, normalisedX, self.bounds.size.height);
+        
+        
+    } else if ([self.customButtonType isEqual:@"vslider"]) {
+        
+        UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
+        
+        CGFloat normalisedY = mapValue([ButtonValues[0] floatValue], 0, 1, 0, self.frame.size.height);
+        
+        horizontalLine.frame = CGRectMake(0, self.frame.size.height-normalisedY, self.frame.size.width, normalisedY);
+            
+    } else if ([self.customButtonType isEqual:@"checkbox"]) {
+        
+        if ([ButtonValues[0] floatValue] == 0) {
+            self.selected = false;
+        } else {
+            self.selected = true;
+        }
+        
+    } else if ([self.customButtonType isEqual:@"buttton"] ) {
+        
+        
+    } else if ([self.customButtonType isEqual:@"pad"] ) {
+        
+        if ([ButtonValues[0] floatValue] == 0) {
+            self.selected = false;
+        } else {
+            self.selected = true;
+        }
+        
+        UIView *horizontalLine = objc_getAssociatedObject(self, "horizontalLine");
+        UIView *verticalLine = objc_getAssociatedObject(self, "verticalLine");
+        
+        // 计算normalised坐标
+        CGFloat normalisedX = mapValue([ButtonValues[1] floatValue], 0, 1, 0, self.frame.size.width);
+        CGFloat normalisedY = mapValue([ButtonValues[2] floatValue], 0, 1, 0, self.frame.size.height);
+        
+        // 输出触摸点位的x/y坐标
+        //NSLog(@"%@: Pad TochUp Inside: X = %f,(Normalised: X = %f)", self.nameForButton, touchPoint.x, normalisedX);
+        //NSLog(@"%@: Pad TochUp Inside: Y = %f,(Normalised: Y = %f)", self.nameForButton, touchPoint.y, normalisedY);
+        
+        // Update the positions of the lines
+        horizontalLine.frame = CGRectMake(0, self.frame.size.height- normalisedY, self.frame.size.width, self.lineWidth);
+        verticalLine.frame = CGRectMake(normalisedX, 0, self.lineWidth, self.frame.size.height);
+        
+    }
+}
+
 //// New method to update vumeter UI based on external value
 //- (void)updateBargraphWithValue:(CGFloat)ButtonValue {
 //    

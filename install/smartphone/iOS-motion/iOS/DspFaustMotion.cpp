@@ -2,7 +2,7 @@
 /* ------------------------------------------------------------
 name: "Faust Motion Library [Motion+RotationMatrix]"
 version: "0.7d"
-Code generated with Faust 2.72.16 (https://faust.grame.fr)
+Code generated with Faust 2.75.8 (https://faust.grame.fr)
 Compilation options: -a /usr/local/share/faust/api-allen/motion/DspFaustMotion.cpp -lang cpp -i -ct 1 -cn mydsp2 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0
 ------------------------------------------------------------ */
 
@@ -117,12 +117,12 @@ architecture section is not modified.
 #define __export__
 
 // Version as a global string
-#define FAUSTVERSION "2.72.16"
+#define FAUSTVERSION "2.75.8"
 
 // Version as separated [major,minor,patch] values
 #define FAUSTMAJORVERSION 2
-#define FAUSTMINORVERSION 72
-#define FAUSTPATCHVERSION 16
+#define FAUSTMINORVERSION 75
+#define FAUSTPATCHVERSION 8
 
 // Use FAUST_API for code that is part of the external API but is also compiled in faust and libfaust
 // Use LIBFAUST_API for code that is compiled in faust and libfaust
@@ -437,14 +437,14 @@ class FAUST_API dsp {
         virtual void init(int sample_rate) = 0;
 
         /**
-         * Init instance state
+         * Init instance state.
          *
          * @param sample_rate - the sampling rate in Hz
          */
         virtual void instanceInit(int sample_rate) = 0;
     
         /**
-         * Init instance constant state
+         * Init instance constant state.
          *
          * @param sample_rate - the sampling rate in Hz
          */
@@ -461,26 +461,46 @@ class FAUST_API dsp {
          *
          * @return a copy of the instance on success, otherwise a null pointer.
          */
-        virtual dsp* clone() = 0;
+        virtual ::dsp* clone() = 0;
     
         /**
-         * Trigger the Meta* parameter with instance specific calls to 'declare' (key, value) metadata.
+         * Trigger the Meta* m parameter with instance specific calls to 'declare' (key, value) metadata.
          *
          * @param m - the Meta* meta user
          */
         virtual void metadata(Meta* m) = 0;
     
         /**
-         * DSP instance computation, to be called with successive in/out audio buffers.
+         * Read all controllers (buttons, sliders, etc.), and update the DSP state to be used by 'frame' or 'compute'.
+         * This method will be filled with the -ec (--external-control) option.
+         */
+        virtual void control() {}
+    
+        /**
+         * DSP instance computation to process one single frame.
+         *
+         * Note that by default inputs and outputs buffers are supposed to be distinct memory zones,
+         * so one cannot safely write frame(inputs, inputs).
+         * The -inpl option can be used for that, but only in scalar mode for now.
+         * This method will be filled with the -os (--one-sample) option.
+         *
+         * @param inputs - the input audio buffers as an array of FAUSTFLOAT samples (eiher float, double or quad)
+         * @param outputs - the output audio buffers as an array of FAUSTFLOAT samples (eiher float, double or quad)
+         */
+        virtual void frame(FAUSTFLOAT* inputs, FAUSTFLOAT* outputs) {}
+        
+        /**
+         * DSP instance computation to be called with successive in/out audio buffers.
          *
          * Note that by default inputs and outputs buffers are supposed to be distinct memory zones,
          * so one cannot safely write compute(count, inputs, inputs).
          * The -inpl compilation option can be used for that, but only in scalar mode for now.
          *
          * @param count - the number of frames to compute
-         * @param inputs - the input audio buffers as an array of non-interleaved FAUSTFLOAT samples (eiher float, double or quad)
-         * @param outputs - the output audio buffers as an array of non-interleaved FAUSTFLOAT samples (eiher float, double or quad)
-         *
+         * @param inputs - the input audio buffers as an array of non-interleaved FAUSTFLOAT buffers
+         * (containing either float, double or quad samples)
+         * @param outputs - the output audio buffers as an array of non-interleaved FAUSTFLOAT buffers
+         * (containing either float, double or quad samples)
          */
         virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) = 0;
     
@@ -493,7 +513,6 @@ class FAUST_API dsp {
          * @param count - the number of frames to compute
          * @param inputs - the input audio buffers as an array of non-interleaved FAUSTFLOAT samples (either float, double or quad)
          * @param outputs - the output audio buffers as an array of non-interleaved FAUSTFLOAT samples (either float, double or quad)
-         *
          */
         virtual void compute(double /*date_usec*/, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { compute(count, inputs, outputs); }
        
@@ -503,15 +522,15 @@ class FAUST_API dsp {
  * Generic DSP decorator.
  */
 
-class FAUST_API decorator_dsp : public dsp {
+class FAUST_API decorator_dsp : public ::dsp {
 
     protected:
 
-        dsp* fDSP;
+        ::dsp* fDSP;
 
     public:
 
-        decorator_dsp(dsp* dsp = nullptr):fDSP(dsp) {}
+        decorator_dsp(::dsp* dsp = nullptr):fDSP(dsp) {}
         virtual ~decorator_dsp() { delete fDSP; }
 
         virtual int getNumInputs() { return fDSP->getNumInputs(); }
@@ -526,6 +545,8 @@ class FAUST_API decorator_dsp : public dsp {
         virtual decorator_dsp* clone() { return new decorator_dsp(fDSP->clone()); }
         virtual void metadata(Meta* m) { fDSP->metadata(m); }
         // Beware: subclasses usually have to overload the two 'compute' methods
+        virtual void control() { fDSP->control(); }
+        virtual void frame(FAUSTFLOAT* inputs, FAUSTFLOAT* outputs) { fDSP->frame(inputs, outputs); }
         virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { fDSP->compute(count, inputs, outputs); }
         virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { fDSP->compute(date_usec, count, inputs, outputs); }
     
@@ -567,7 +588,7 @@ class FAUST_API dsp_factory {
         virtual std::vector<std::string> getWarningMessages() = 0;
     
         /* Create a new DSP instance, to be deleted with C++ 'delete' */
-        virtual dsp* createDSPInstance() = 0;
+        virtual ::dsp* createDSPInstance() = 0;
     
         /* Static tables initialization, possibly implemened in sub-classes*/
         virtual void classInit(int sample_rate) {};
@@ -2113,7 +2134,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
  (GRAME, Copyright 2015-2019)
  
  Set of conversion objects used to map user interface values (for example a gui slider
- delivering values between 0 and 1) to faust values (for example a vslider between
+ delivering values between 0 and 1) to Faust values (for example a vslider between
  20 and 20000) using a log scale.
  
  -- Utilities
@@ -2136,10 +2157,10 @@ class FAUST_API MapUI : public UI, public PathBuilder
  
  -- ValueConverters used for accelerometers based on 3 points
  
- AccUpConverter(amin, amid, amax, fmin, fmid, fmax)        -- curve 0
- AccDownConverter(amin, amid, amax, fmin, fmid, fmax)      -- curve 1
- AccUpDownConverter(amin, amid, amax, fmin, fmid, fmax)    -- curve 2
- AccDownUpConverter(amin, amid, amax, fmin, fmid, fmax)    -- curve 3
+ UpConverter(amin, amid, amax, fmin, fmid, fmax)        -- curve 0
+ DownConverter(amin, amid, amax, fmin, fmid, fmax)      -- curve 1
+ UpDownConverter(amin, amid, amax, fmin, fmid, fmax)    -- curve 2
+ DownUpConverter(amin, amid, amax, fmin, fmid, fmax)    -- curve 3
  
  -- lists of ZoneControl are used to implement accelerometers metadata for each axes
  
@@ -2373,7 +2394,7 @@ class FAUST_API ExpValueConverter : public LinearValueConverter {
 // Convert accelerometer or gyroscope values to Faust values
 // Using an Up curve (curve 0)
 //--------------------------------------------------------------------------------------
-class FAUST_API AccUpConverter : public UpdatableValueConverter {
+class FAUST_API UpConverter : public UpdatableValueConverter {
 
     private:
 
@@ -2382,7 +2403,7 @@ class FAUST_API AccUpConverter : public UpdatableValueConverter {
 
     public:
 
-        AccUpConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
+        UpConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
             fA2F(amin,amid,amax,fmin,fmid,fmax),
             fF2A(fmin,fmid,fmax,amin,amid,amax)
         {}
@@ -2392,7 +2413,7 @@ class FAUST_API AccUpConverter : public UpdatableValueConverter {
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
-            //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccUpConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
+            //__android_log_print(ANDROID_LOG_ERROR, "Faust", "UpConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
             fA2F = Interpolator3pt(amin, amid, amax, fmin, fmid, fmax);
             fF2A = Interpolator3pt(fmin, fmid, fmax, amin, amid, amax);
         }
@@ -2408,7 +2429,7 @@ class FAUST_API AccUpConverter : public UpdatableValueConverter {
 // Convert accelerometer or gyroscope values to Faust values
 // Using a Down curve (curve 1)
 //--------------------------------------------------------------------------------------
-class FAUST_API AccDownConverter : public UpdatableValueConverter {
+class FAUST_API DownConverter : public UpdatableValueConverter {
 
     private:
 
@@ -2417,7 +2438,7 @@ class FAUST_API AccDownConverter : public UpdatableValueConverter {
 
     public:
 
-        AccDownConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
+        DownConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
             fA2F(amin,amid,amax,fmax,fmid,fmin),
             fF2A(fmin,fmid,fmax,amax,amid,amin)
         {}
@@ -2427,7 +2448,7 @@ class FAUST_API AccDownConverter : public UpdatableValueConverter {
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
-             //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccDownConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
+             //__android_log_print(ANDROID_LOG_ERROR, "Faust", "DownConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
             fA2F = Interpolator3pt(amin, amid, amax, fmax, fmid, fmin);
             fF2A = Interpolator3pt(fmin, fmid, fmax, amax, amid, amin);
         }
@@ -2442,7 +2463,7 @@ class FAUST_API AccDownConverter : public UpdatableValueConverter {
 // Convert accelerometer or gyroscope values to Faust values
 // Using an Up-Down curve (curve 2)
 //--------------------------------------------------------------------------------------
-class FAUST_API AccUpDownConverter : public UpdatableValueConverter {
+class FAUST_API UpDownConverter : public UpdatableValueConverter {
 
     private:
 
@@ -2451,7 +2472,7 @@ class FAUST_API AccUpDownConverter : public UpdatableValueConverter {
 
     public:
 
-        AccUpDownConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
+        UpDownConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
             fA2F(amin,amid,amax,fmin,fmax,fmin),
             fF2A(fmin,fmax,amin,amax)				// Special, pseudo inverse of a non monotonic function
         {}
@@ -2461,7 +2482,7 @@ class FAUST_API AccUpDownConverter : public UpdatableValueConverter {
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
-            //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccUpDownConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
+            //__android_log_print(ANDROID_LOG_ERROR, "Faust", "UpDownConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
             fA2F = Interpolator3pt(amin, amid, amax, fmin, fmax, fmin);
             fF2A = Interpolator(fmin, fmax, amin, amax);
         }
@@ -2476,7 +2497,7 @@ class FAUST_API AccUpDownConverter : public UpdatableValueConverter {
 // Convert accelerometer or gyroscope values to Faust values
 // Using a Down-Up curve (curve 3)
 //--------------------------------------------------------------------------------------
-class FAUST_API AccDownUpConverter : public UpdatableValueConverter {
+class FAUST_API DownUpConverter : public UpdatableValueConverter {
 
     private:
 
@@ -2485,7 +2506,7 @@ class FAUST_API AccDownUpConverter : public UpdatableValueConverter {
 
     public:
 
-        AccDownUpConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
+        DownUpConverter(double amin, double amid, double amax, double fmin, double fmid, double fmax) :
             fA2F(amin,amid,amax,fmax,fmin,fmax),
             fF2A(fmin,fmax,amin,amax)				// Special, pseudo inverse of a non monotonic function
         {}
@@ -2495,7 +2516,7 @@ class FAUST_API AccDownUpConverter : public UpdatableValueConverter {
 
         virtual void setMappingValues(double amin, double amid, double amax, double fmin, double fmid, double fmax)
         {
-            //__android_log_print(ANDROID_LOG_ERROR, "Faust", "AccDownUpConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
+            //__android_log_print(ANDROID_LOG_ERROR, "Faust", "DownUpConverter update %f %f %f %f %f %f", amin,amid,amax,fmin,fmid,fmax);
             fA2F = Interpolator3pt(amin, amid, amax, fmax, fmin, fmax);
             fF2A = Interpolator(fmin, fmax, amin, amax);
         }
@@ -2570,16 +2591,18 @@ class FAUST_API CurveZoneControl : public ZoneControl {
         CurveZoneControl(FAUSTFLOAT* zone, int curve, double amin, double amid, double amax, double min, double init, double max) : ZoneControl(zone), fCurve(0)
         {
             assert(curve >= 0 && curve <= 3);
-            fValueConverters.push_back(new AccUpConverter(amin, amid, amax, min, init, max));
-            fValueConverters.push_back(new AccDownConverter(amin, amid, amax, min, init, max));
-            fValueConverters.push_back(new AccUpDownConverter(amin, amid, amax, min, init, max));
-            fValueConverters.push_back(new AccDownUpConverter(amin, amid, amax, min, init, max));
+            fValueConverters.push_back(new UpConverter(amin, amid, amax, min, init, max));
+            fValueConverters.push_back(new DownConverter(amin, amid, amax, min, init, max));
+            fValueConverters.push_back(new UpDownConverter(amin, amid, amax, min, init, max));
+            fValueConverters.push_back(new DownUpConverter(amin, amid, amax, min, init, max));
             fCurve = curve;
         }
+    
         virtual ~CurveZoneControl()
         {
             for (const auto& it : fValueConverters) { delete it; }
         }
+    
         void update(double v) const { if (fValueConverters[fCurve]->getActive()) *fZone = FAUSTFLOAT(fValueConverters[fCurve]->ui2faust(v)); }
 
         void setMappingValues(int curve, double amin, double amid, double amax, double min, double init, double max)
@@ -4111,10 +4134,15 @@ class GUI : public UI
             }
         }
     
+        // To be implemented when a single global update is needed per updateAllGuis refresh
+        virtual void updateAll()
+        {}
+        
         static void updateAllGuis()
         {
             for (const auto& g : fGuiList) {
                 g->updateAllZones();
+                g->updateAll();
             }
         }
     
@@ -5850,7 +5878,11 @@ class dsp_adapter : public decorator_dsp {
         FAUSTFLOAT** fAdaptedOutputs;
         int fHWInputs;
         int fHWOutputs;
+        int fDSPInputs;
+        int fDSPOutputs;
+    
         int fBufferSize;
+        bool fDelete;
     
         void adaptBuffers(FAUSTFLOAT** inputs, FAUSTFLOAT** outputs)
         {
@@ -5864,19 +5896,22 @@ class dsp_adapter : public decorator_dsp {
     
     public:
     
-        dsp_adapter(dsp* dsp, int hw_inputs, int hw_outputs, int buffer_size):decorator_dsp(dsp)
+        dsp_adapter(::dsp* dsp, int hw_inputs, int hw_outputs, int buffer_size, bool to_delete = true):decorator_dsp(dsp)
         {
             fHWInputs = hw_inputs;
             fHWOutputs = hw_outputs;
+            fDSPInputs = dsp->getNumInputs();
+            fDSPOutputs = dsp->getNumOutputs();
             fBufferSize = buffer_size;
+            fDelete = to_delete;
             
-            fAdaptedInputs = new FAUSTFLOAT*[dsp->getNumInputs()];
+            fAdaptedInputs = new FAUSTFLOAT*[std::max<int>(dsp->getNumInputs(), hw_inputs)];
             for (int i = 0; i < dsp->getNumInputs() - fHWInputs; i++) {
                 fAdaptedInputs[i + fHWInputs] = new FAUSTFLOAT[buffer_size];
                 memset(fAdaptedInputs[i + fHWInputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
             }
             
-            fAdaptedOutputs = new FAUSTFLOAT*[dsp->getNumOutputs()];
+            fAdaptedOutputs = new FAUSTFLOAT*[std::max<int>(dsp->getNumOutputs(), hw_outputs)];
             for (int i = 0; i < dsp->getNumOutputs() - fHWOutputs; i++) {
                 fAdaptedOutputs[i + fHWOutputs] = new FAUSTFLOAT[buffer_size];
                 memset(fAdaptedOutputs[i + fHWOutputs], 0, sizeof(FAUSTFLOAT) * buffer_size);
@@ -5885,15 +5920,18 @@ class dsp_adapter : public decorator_dsp {
     
         virtual ~dsp_adapter()
         {
-            for (int i = 0; i < fDSP->getNumInputs() - fHWInputs; i++) {
+            for (int i = 0; i < fDSPInputs - fHWInputs; i++) {
                 delete [] fAdaptedInputs[i + fHWInputs];
             }
             delete [] fAdaptedInputs;
             
-            for (int i = 0; i < fDSP->getNumOutputs() - fHWOutputs; i++) {
+            for (int i = 0; i < fDSPOutputs - fHWOutputs; i++) {
                 delete [] fAdaptedOutputs[i + fHWOutputs];
             }
             delete [] fAdaptedOutputs;
+        
+            // Decorator should not delete the decorated fDSP
+            if (!fDelete) fDSP = nullptr;
         }
     
         virtual int getNumInputs() { return fHWInputs; }
@@ -5943,7 +5981,7 @@ class dsp_sample_adapter : public decorator_dsp {
     
     public:
     
-        dsp_sample_adapter(dsp* dsp):decorator_dsp(dsp)
+        dsp_sample_adapter(::dsp* dsp):decorator_dsp(dsp)
         {
             fAdaptedInputs = new REAL_INT*[dsp->getNumInputs()];
             for (int i = 0; i < dsp->getNumInputs(); i++) {
@@ -6230,7 +6268,7 @@ struct LowPass6e : public Filter<fVslider0, fVslider1> {
 };
 
 // A "si.bus(N)" like hard-coded class
-struct dsp_bus : public dsp {
+struct dsp_bus : public ::dsp {
     
     int fChannels;
     int fSampleRate;
@@ -6262,7 +6300,7 @@ struct dsp_bus : public dsp {
     virtual void instanceResetUserInterface() {}
     virtual void instanceClear() {}
     
-    virtual dsp* clone() { return new dsp_bus(fChannels); }
+    virtual ::dsp* clone() { return new dsp_bus(fChannels); }
     
     virtual void metadata(Meta* m) {}
     
@@ -6293,7 +6331,7 @@ class sr_sampler : public decorator_dsp {
     
     public:
     
-        sr_sampler(dsp* dsp):decorator_dsp(dsp)
+        sr_sampler(::dsp* dsp):decorator_dsp(dsp)
         {
             for (int chan = 0; chan < fDSP->getNumInputs(); chan++) {
                 fInputLowPass.push_back(FILTER());
@@ -6448,7 +6486,7 @@ class dsp_up_sampler : public sr_sampler<FILTER> {
 
 // Create a UP/DS + Filter adapted DSP
 template <typename REAL>
-dsp* createSRAdapter(dsp* DSP, std::string& error, int ds = 0, int us = 0, int filter = 0)
+dsp* createSRAdapter(::dsp* DSP, std::string& error, int ds = 0, int us = 0, int filter = 0)
 {
     if (ds >= 2) {
         switch (filter) {
@@ -7921,9 +7959,15 @@ class OSCUI : public GUI
             return true;
         }
         
-        void stop()			{ fCtrl->stop(); }
-        void endBundle() 	{ fCtrl->endBundle(); }
-        
+        void stop()          { fCtrl->stop(); }
+        void endBundle()     { fCtrl->endBundle(); }
+    
+        // To be called by updateAllGuis
+        virtual void updateAll()
+        {
+            endBundle();
+        }
+       
         std::string getInfos()          { return fCtrl->getInfos(); }
         
         const char* getRootName()		{ return fCtrl->getRootName(); }
@@ -8366,15 +8410,16 @@ class mydsp2 : public dsp {
 	float fTempPerm156;
 	
  public:
-	mydsp2() {}
-
+	mydsp2() {
+	}
+	
 	void metadata(Meta* m) { 
 		m->declare("analyzers.lib/amp_follower_ar:author", "Jonatan Liljedahl, revised by Romain Michon");
 		m->declare("analyzers.lib/name", "Faust Analyzer Library");
 		m->declare("analyzers.lib/version", "1.2.0");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/tabulateNd", "Copyright (C) 2023 Bart Brouns <bart@magnetophon.nl>");
-		m->declare("basics.lib/version", "1.15.0");
+		m->declare("basics.lib/version", "1.19.1");
 		m->declare("compile_options", "-a /usr/local/share/faust/api-allen/motion/DspFaustMotion.cpp -lang cpp -i -ct 1 -cn mydsp2 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0");
 		m->declare("filename", "motion_v7d.lib");
 		m->declare("filters.lib/dcblockerat:author", "Julius O. Smith III");
@@ -8412,7 +8457,7 @@ class mydsp2 : public dsp {
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
 		m->declare("signals.lib/onePoleSwitching:author", "Jonatan Liljedahl, revised by Dario Sanfilippo");
 		m->declare("signals.lib/onePoleSwitching:licence", "STK-4.3");
-		m->declare("signals.lib/version", "1.5.0");
+		m->declare("signals.lib/version", "1.6.0");
 		m->declare("version", "0.7d");
 	}
 
@@ -9130,9 +9175,9 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fHslider40, "219", "");
 		ui_interface->declare(&fHslider40, "showName", "shapeUp");
 		ui_interface->addHorizontalSlider("shapeUp_Param", &fHslider40, FAUSTFLOAT(1.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fCheckbox26, "21", "");
-		ui_interface->declare(&fCheckbox26, "motionName", "axp");
-		ui_interface->addCheckButton("axpOn", &fCheckbox26);
+		ui_interface->declare(&fCheckbox25, "21", "");
+		ui_interface->declare(&fCheckbox25, "motionName", "axp");
+		ui_interface->addCheckButton("axpOn", &fCheckbox25);
 		ui_interface->declare(&fHslider37, "220", "");
 		ui_interface->declare(&fHslider37, "showName", "gravityGain");
 		ui_interface->addHorizontalSlider("gravityGain_Param", &fHslider37, FAUSTFLOAT(1.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.1f));
@@ -9142,18 +9187,18 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox32, "23", "");
 		ui_interface->declare(&fCheckbox32, "motionName", "azp");
 		ui_interface->addCheckButton("azpOn", &fCheckbox32);
-		ui_interface->declare(&fCheckbox27, "24", "");
-		ui_interface->declare(&fCheckbox27, "motionName", "axn");
-		ui_interface->addCheckButton("axnOn", &fCheckbox27);
+		ui_interface->declare(&fCheckbox26, "24", "");
+		ui_interface->declare(&fCheckbox26, "motionName", "axn");
+		ui_interface->addCheckButton("axnOn", &fCheckbox26);
 		ui_interface->declare(&fCheckbox30, "25", "");
 		ui_interface->declare(&fCheckbox30, "motionName", "ayn");
 		ui_interface->addCheckButton("aynOn", &fCheckbox30);
 		ui_interface->declare(&fCheckbox33, "26", "");
 		ui_interface->declare(&fCheckbox33, "motionName", "azn");
 		ui_interface->addCheckButton("aznOn", &fCheckbox33);
-		ui_interface->declare(&fCheckbox25, "27", "");
-		ui_interface->declare(&fCheckbox25, "motionName", "totalaccel");
-		ui_interface->addCheckButton("totalaccelOn", &fCheckbox25);
+		ui_interface->declare(&fCheckbox27, "27", "");
+		ui_interface->declare(&fCheckbox27, "motionName", "totalaccel");
+		ui_interface->addCheckButton("totalaccelOn", &fCheckbox27);
 		ui_interface->declare(&fCheckbox34, "28", "");
 		ui_interface->declare(&fCheckbox34, "motionName", "gxpn");
 		ui_interface->addCheckButton("gxpnOn", &fCheckbox34);
@@ -9163,42 +9208,42 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox42, "30", "");
 		ui_interface->declare(&fCheckbox42, "motionName", "gzpn");
 		ui_interface->addCheckButton("gzpnOn", &fCheckbox42);
-		ui_interface->declare(&fCheckbox36, "31", "");
-		ui_interface->declare(&fCheckbox36, "motionName", "gxp");
-		ui_interface->addCheckButton("gxpOn", &fCheckbox36);
-		ui_interface->declare(&fCheckbox41, "32", "");
-		ui_interface->declare(&fCheckbox41, "motionName", "gyp");
-		ui_interface->addCheckButton("gypOn", &fCheckbox41);
-		ui_interface->declare(&fCheckbox44, "33", "");
-		ui_interface->declare(&fCheckbox44, "motionName", "gzp");
-		ui_interface->addCheckButton("gzpOn", &fCheckbox44);
+		ui_interface->declare(&fCheckbox37, "31", "");
+		ui_interface->declare(&fCheckbox37, "motionName", "gxp");
+		ui_interface->addCheckButton("gxpOn", &fCheckbox37);
+		ui_interface->declare(&fCheckbox40, "32", "");
+		ui_interface->declare(&fCheckbox40, "motionName", "gyp");
+		ui_interface->addCheckButton("gypOn", &fCheckbox40);
+		ui_interface->declare(&fCheckbox43, "33", "");
+		ui_interface->declare(&fCheckbox43, "motionName", "gzp");
+		ui_interface->addCheckButton("gzpOn", &fCheckbox43);
 		ui_interface->declare(&fCheckbox35, "34", "");
 		ui_interface->declare(&fCheckbox35, "motionName", "gxn");
 		ui_interface->addCheckButton("gxnOn", &fCheckbox35);
-		ui_interface->declare(&fCheckbox40, "35", "");
-		ui_interface->declare(&fCheckbox40, "motionName", "gyn");
-		ui_interface->addCheckButton("gynOn", &fCheckbox40);
-		ui_interface->declare(&fCheckbox43, "36", "");
-		ui_interface->declare(&fCheckbox43, "motionName", "gzn");
-		ui_interface->addCheckButton("gznOn", &fCheckbox43);
-		ui_interface->declare(&fCheckbox37, "37", "");
-		ui_interface->declare(&fCheckbox37, "motionName", "totalgyro");
-		ui_interface->addCheckButton("totalgyroOn", &fCheckbox37);
+		ui_interface->declare(&fCheckbox41, "35", "");
+		ui_interface->declare(&fCheckbox41, "motionName", "gyn");
+		ui_interface->addCheckButton("gynOn", &fCheckbox41);
+		ui_interface->declare(&fCheckbox44, "36", "");
+		ui_interface->declare(&fCheckbox44, "motionName", "gzn");
+		ui_interface->addCheckButton("gznOn", &fCheckbox44);
+		ui_interface->declare(&fCheckbox36, "37", "");
+		ui_interface->declare(&fCheckbox36, "motionName", "totalgyro");
+		ui_interface->addCheckButton("totalgyroOn", &fCheckbox36);
 		ui_interface->declare(&fCheckbox7, "38", "");
 		ui_interface->declare(&fCheckbox7, "motionName", "ixpn");
 		ui_interface->addCheckButton("ixpnOn", &fCheckbox7);
-		ui_interface->declare(&fCheckbox11, "39", "");
-		ui_interface->declare(&fCheckbox11, "motionName", "iypn");
-		ui_interface->addCheckButton("iypnOn", &fCheckbox11);
+		ui_interface->declare(&fCheckbox10, "39", "");
+		ui_interface->declare(&fCheckbox10, "motionName", "iypn");
+		ui_interface->addCheckButton("iypnOn", &fCheckbox10);
 		ui_interface->declare(&fCheckbox13, "40", "");
 		ui_interface->declare(&fCheckbox13, "motionName", "izpn");
 		ui_interface->addCheckButton("izpnOn", &fCheckbox13);
 		ui_interface->declare(&fCheckbox8, "41", "");
 		ui_interface->declare(&fCheckbox8, "motionName", "ixpn_sym");
 		ui_interface->addCheckButton("ixpn_symOn", &fCheckbox8);
-		ui_interface->declare(&fCheckbox10, "42", "");
-		ui_interface->declare(&fCheckbox10, "motionName", "iypn_sym");
-		ui_interface->addCheckButton("iypn_symOn", &fCheckbox10);
+		ui_interface->declare(&fCheckbox11, "42", "");
+		ui_interface->declare(&fCheckbox11, "motionName", "iypn_sym");
+		ui_interface->addCheckButton("iypn_symOn", &fCheckbox11);
 		ui_interface->declare(&fCheckbox14, "43", "");
 		ui_interface->declare(&fCheckbox14, "motionName", "izpn_sym");
 		ui_interface->addCheckButton("izpn_symOn", &fCheckbox14);
@@ -9211,12 +9256,12 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox47, "46", "");
 		ui_interface->declare(&fCheckbox47, "motionName", "MXxraw");
 		ui_interface->addCheckButton("MXxrawOn", &fCheckbox47);
-		ui_interface->declare(&fCheckbox49, "47", "");
-		ui_interface->declare(&fCheckbox49, "motionName", "MXxneg");
-		ui_interface->addCheckButton("MXxnegOn", &fCheckbox49);
-		ui_interface->declare(&fCheckbox50, "48", "");
-		ui_interface->declare(&fCheckbox50, "motionName", "MXxpos");
-		ui_interface->addCheckButton("MXxposOn", &fCheckbox50);
+		ui_interface->declare(&fCheckbox48, "47", "");
+		ui_interface->declare(&fCheckbox48, "motionName", "MXxneg");
+		ui_interface->addCheckButton("MXxnegOn", &fCheckbox48);
+		ui_interface->declare(&fCheckbox49, "48", "");
+		ui_interface->declare(&fCheckbox49, "motionName", "MXxpos");
+		ui_interface->addCheckButton("MXxposOn", &fCheckbox49);
 		ui_interface->declare(&fCheckbox51, "49", "");
 		ui_interface->declare(&fCheckbox51, "motionName", "MXyraw");
 		ui_interface->addCheckButton("MXyrawOn", &fCheckbox51);
@@ -9265,12 +9310,12 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox67, "64", "");
 		ui_interface->declare(&fCheckbox67, "motionName", "MZxraw");
 		ui_interface->addCheckButton("MZxrawOn", &fCheckbox67);
-		ui_interface->declare(&fCheckbox69, "65", "");
-		ui_interface->declare(&fCheckbox69, "motionName", "MZxneg");
-		ui_interface->addCheckButton("MZxnegOn", &fCheckbox69);
-		ui_interface->declare(&fCheckbox70, "66", "");
-		ui_interface->declare(&fCheckbox70, "motionName", "MZxpos");
-		ui_interface->addCheckButton("MZxposOn", &fCheckbox70);
+		ui_interface->declare(&fCheckbox68, "65", "");
+		ui_interface->declare(&fCheckbox68, "motionName", "MZxneg");
+		ui_interface->addCheckButton("MZxnegOn", &fCheckbox68);
+		ui_interface->declare(&fCheckbox69, "66", "");
+		ui_interface->declare(&fCheckbox69, "motionName", "MZxpos");
+		ui_interface->addCheckButton("MZxposOn", &fCheckbox69);
 		ui_interface->declare(&fCheckbox71, "67", "");
 		ui_interface->declare(&fCheckbox71, "motionName", "MZyraw");
 		ui_interface->addCheckButton("MZyrawOn", &fCheckbox71);
@@ -9289,15 +9334,15 @@ class mydsp2 : public dsp {
 		ui_interface->declare(&fCheckbox76, "72", "");
 		ui_interface->declare(&fCheckbox76, "motionName", "MZzpos");
 		ui_interface->addCheckButton("MZzposOn", &fCheckbox76);
-		ui_interface->declare(&fCheckbox48, "73", "");
-		ui_interface->declare(&fCheckbox48, "motionName", "AmpX");
-		ui_interface->addCheckButton("AmpXOn", &fCheckbox48);
+		ui_interface->declare(&fCheckbox50, "73", "");
+		ui_interface->declare(&fCheckbox50, "motionName", "AmpX");
+		ui_interface->addCheckButton("AmpXOn", &fCheckbox50);
 		ui_interface->declare(&fCheckbox60, "74", "");
 		ui_interface->declare(&fCheckbox60, "motionName", "AmpY");
 		ui_interface->addCheckButton("AmpYOn", &fCheckbox60);
-		ui_interface->declare(&fCheckbox68, "75", "");
-		ui_interface->declare(&fCheckbox68, "motionName", "AmpZ");
-		ui_interface->addCheckButton("AmpZOn", &fCheckbox68);
+		ui_interface->declare(&fCheckbox70, "75", "");
+		ui_interface->declare(&fCheckbox70, "motionName", "AmpZ");
+		ui_interface->addCheckButton("AmpZOn", &fCheckbox70);
 		ui_interface->declare(&fCheckbox38, "76", "");
 		ui_interface->declare(&fCheckbox38, "motionName", "gyro_xy");
 		ui_interface->addCheckButton("gyro_xyOn", &fCheckbox38);
@@ -9755,7 +9800,7 @@ class mydsp2 : public dsp {
 		float fTemp117 = fTempPerm117;
 		float fTemp118 = fTempPerm118;
 		float fTemp119 = fTempPerm119;
-		float fSlow154 = fSlow146 * fSlow152;
+		float fSlow154 = fSlow146 * fSlow150;
 		float fTemp120 = fTempPerm120;
 		float fSlow155 = float(fCheckbox51);
 		int iSlow156 = fSlow155 != 0.0f;
@@ -9831,7 +9876,7 @@ class mydsp2 : public dsp {
 		float fTemp141 = fTempPerm141;
 		float fTemp142 = fTempPerm142;
 		float fTemp143 = fTempPerm143;
-		float fSlow206 = fSlow146 * fSlow204;
+		float fSlow206 = fSlow146 * fSlow202;
 		float fTemp144 = fTempPerm144;
 		float fSlow207 = float(fCheckbox71);
 		int iSlow208 = fSlow207 != 0.0f;
@@ -9857,13 +9902,13 @@ class mydsp2 : public dsp {
 		float fTemp151 = fTempPerm151;
 		float fSlow222 = fSlow146 * fSlow220;
 		float fTemp152 = fTempPerm152;
-		float fSlow223 = fSlow146 * fSlow148;
+		float fSlow223 = fSlow146 * fSlow152;
 		float fSlow224 = float(fHslider38);
 		float fTemp153 = fTempPerm153;
 		float fSlow225 = fSlow146 * fSlow178;
 		float fSlow226 = float(fHslider39);
 		float fTemp154 = fTempPerm154;
-		float fSlow227 = fSlow146 * fSlow200;
+		float fSlow227 = fSlow146 * fSlow204;
 		float fSlow228 = float(fHslider40);
 		float fTemp155 = fTempPerm155;
 		float fSlow229 = 5.0f * fSlow116;
@@ -9965,7 +10010,7 @@ class mydsp2 : public dsp {
 				fTemp29 = fSlow20 * float(iRec26);
 			}
 			output5[i0] = FAUSTFLOAT(fTemp29);
-			if (iSlow24 | (iSlow26 | iSlow28)) {
+			if (iSlow26 | (iSlow28 | iSlow24)) {
 				fVec12[0] = fSlow32;
 				fRec30[0] = -(fSlow30 * (fSlow31 * fRec30[1] - (fSlow32 + fVec12[1])));
 				fTemp30 = std::min<float>(1.0f, std::max<float>(0.0f, fRec30[0]));
@@ -9974,7 +10019,7 @@ class mydsp2 : public dsp {
 				fTemp31 = fSlow23 * fTemp30;
 			}
 			output6[i0] = FAUSTFLOAT(fTemp31);
-			if (iSlow34 | (iSlow36 | iSlow38)) {
+			if (iSlow36 | (iSlow38 | iSlow34)) {
 				fVec13[0] = fSlow39;
 				fRec31[0] = -(fSlow30 * (fSlow31 * fRec31[1] - (fSlow39 + fVec13[1])));
 				fTemp32 = std::min<float>(1.0f, std::max<float>(0.0f, fRec31[0]));
@@ -9983,7 +10028,7 @@ class mydsp2 : public dsp {
 				fTemp33 = fSlow33 * fTemp32;
 			}
 			output7[i0] = FAUSTFLOAT(fTemp33);
-			if (iSlow41 | (iSlow43 | iSlow45)) {
+			if (iSlow43 | (iSlow45 | iSlow41)) {
 				fVec14[0] = fSlow46;
 				fRec32[0] = -(fSlow30 * (fSlow31 * fRec32[1] - (fSlow46 + fVec14[1])));
 				fTemp34 = std::min<float>(1.0f, std::max<float>(0.0f, fRec32[0]));
@@ -9992,7 +10037,7 @@ class mydsp2 : public dsp {
 				fTemp35 = fSlow40 * fTemp34;
 			}
 			output8[i0] = FAUSTFLOAT(fTemp35);
-			if (iSlow48 | (iSlow26 | iSlow28)) {
+			if (iSlow26 | (iSlow28 | iSlow48)) {
 				fVec15[0] = fSlow49;
 				fRec33[0] = -(fSlow30 * (fSlow31 * fRec33[1] - (fSlow49 + fVec15[1])));
 				fTemp36 = std::min<float>(1.0f, std::max<float>(0.0f, fRec33[0]));
@@ -10001,7 +10046,7 @@ class mydsp2 : public dsp {
 				fTemp37 = fSlow47 * fTemp36;
 			}
 			output9[i0] = FAUSTFLOAT(fTemp37);
-			if (iSlow51 | (iSlow36 | iSlow38)) {
+			if (iSlow36 | (iSlow38 | iSlow51)) {
 				fVec16[0] = fSlow52;
 				fRec34[0] = -(fSlow30 * (fSlow31 * fRec34[1] - (fSlow52 + fVec16[1])));
 				fTemp38 = std::min<float>(1.0f, std::max<float>(0.0f, fRec34[0]));
@@ -10010,7 +10055,7 @@ class mydsp2 : public dsp {
 				fTemp39 = fSlow50 * fTemp38;
 			}
 			output10[i0] = FAUSTFLOAT(fTemp39);
-			if (iSlow54 | (iSlow43 | iSlow45)) {
+			if (iSlow43 | (iSlow45 | iSlow54)) {
 				fVec17[0] = fSlow55;
 				fRec35[0] = -(fSlow30 * (fSlow31 * fRec35[1] - (fSlow55 + fVec17[1])));
 				fTemp40 = std::min<float>(1.0f, std::max<float>(0.0f, fRec35[0]));
@@ -10055,7 +10100,7 @@ class mydsp2 : public dsp {
 				fTemp47 = fSlow73 * std::min<float>(1.0f, std::max<float>(0.0f, fSlow59 * std::max<float>(0.0f, 0.5f * (0.63661975f * std::asin(std::min<float>(1.0f, std::max<float>(-1.0f, fRec41[0]))) + 1.0f) - fSlow58)));
 			}
 			output17[i0] = FAUSTFLOAT(fTemp47);
-			if (iSlow80 | (iSlow77 | (iSlow82 | iSlow84))) {
+			if (iSlow77 | (iSlow80 | (iSlow82 | iSlow84))) {
 				fVec24[0] = fSlow85;
 				fRec43[0] = fConst4 * (fSlow85 - fVec24[1] + fConst5 * fRec43[1]);
 			}
@@ -10066,7 +10111,7 @@ class mydsp2 : public dsp {
 				fTemp50 = fSlow76 * fRec42[0];
 			}
 			output18[i0] = FAUSTFLOAT(fTemp50);
-			if (iSlow80 | (iSlow94 | (iSlow96 | iSlow98))) {
+			if (iSlow94 | (iSlow96 | (iSlow98 | iSlow84))) {
 				fVec25[0] = fSlow99;
 				fRec45[0] = fConst4 * (fSlow99 - fVec25[1] + fConst5 * fRec45[1]);
 			}
@@ -10077,7 +10122,7 @@ class mydsp2 : public dsp {
 				fTemp53 = fSlow93 * fRec44[0];
 			}
 			output19[i0] = FAUSTFLOAT(fTemp53);
-			if (iSlow80 | (iSlow101 | (iSlow103 | iSlow105))) {
+			if (iSlow101 | (iSlow103 | (iSlow105 | iSlow84))) {
 				fVec26[0] = fSlow106;
 				fRec47[0] = fConst4 * (fSlow106 - fVec26[1] + fConst5 * fRec47[1]);
 			}
@@ -10088,11 +10133,11 @@ class mydsp2 : public dsp {
 				fTemp56 = fSlow100 * fRec46[0];
 			}
 			output20[i0] = FAUSTFLOAT(fTemp56);
-			if (iSlow82) {
+			if (iSlow80) {
 				fTemp57 = std::fabs(std::min<float>(1.0f, fSlow78 * std::max<float>(0.0f, fRec43[0] - fSlow86)));
 				fTemp58 = ((fTemp57 > fRec48[1]) ? fSlow92 : fSlow89);
 				fRec48[0] = fTemp57 * (1.0f - fTemp58) + fRec48[1] * fTemp58;
-				fTemp59 = fSlow81 * fRec48[0];
+				fTemp59 = fSlow79 * fRec48[0];
 			}
 			output21[i0] = FAUSTFLOAT(fTemp59);
 			if (iSlow96) {
@@ -10109,11 +10154,11 @@ class mydsp2 : public dsp {
 				fTemp65 = fSlow102 * fRec50[0];
 			}
 			output23[i0] = FAUSTFLOAT(fTemp65);
-			if (iSlow84) {
+			if (iSlow82) {
 				fTemp66 = std::fabs(std::min<float>(1.0f, fSlow78 * std::max<float>(0.0f, -(fSlow86 + fRec43[0]))));
 				fTemp67 = ((fTemp66 > fRec51[1]) ? fSlow92 : fSlow89);
 				fRec51[0] = fTemp66 * (1.0f - fTemp67) + fRec51[1] * fTemp67;
-				fTemp68 = fSlow83 * fRec51[0];
+				fTemp68 = fSlow81 * fRec51[0];
 			}
 			output24[i0] = FAUSTFLOAT(fTemp68);
 			if (iSlow98) {
@@ -10130,14 +10175,14 @@ class mydsp2 : public dsp {
 				fTemp74 = fSlow104 * fRec53[0];
 			}
 			output26[i0] = FAUSTFLOAT(fTemp74);
-			if (iSlow80) {
+			if (iSlow84) {
 				fTemp75 = std::fabs(std::min<float>(1.0f, fSlow78 * std::max<float>(0.0f, std::sqrt(mydsp2_faustpower2_f(fRec43[0]) + mydsp2_faustpower2_f(fRec45[0]) + mydsp2_faustpower2_f(fRec47[0])) - fSlow86)));
 				fTemp76 = ((fTemp75 > fRec54[1]) ? fSlow92 : fSlow89);
 				fRec54[0] = fTemp75 * (1.0f - fTemp76) + fRec54[1] * fTemp76;
-				fTemp77 = fSlow79 * fRec54[0];
+				fTemp77 = fSlow83 * fRec54[0];
 			}
 			output27[i0] = FAUSTFLOAT(fTemp77);
-			if (iSlow111 | (iSlow108 | (iSlow113 | (iSlow115 | iSlow117)))) {
+			if (iSlow111 | (iSlow113 | (iSlow108 | (iSlow115 | iSlow117)))) {
 				fRec56[0] = fSlow118 + fConst7 * fRec56[1];
 			}
 			if (iSlow108) {
@@ -10147,7 +10192,7 @@ class mydsp2 : public dsp {
 				fTemp80 = fSlow107 * fRec55[0];
 			}
 			output28[i0] = FAUSTFLOAT(fTemp80);
-			if (iSlow129 | (iSlow127 | (iSlow131 | (iSlow115 | iSlow117)))) {
+			if (iSlow129 | (iSlow131 | (iSlow113 | (iSlow127 | iSlow117)))) {
 				fRec58[0] = fSlow132 + fConst7 * fRec58[1];
 			}
 			if (iSlow127) {
@@ -10157,7 +10202,7 @@ class mydsp2 : public dsp {
 				fTemp83 = fSlow126 * fRec57[0];
 			}
 			output29[i0] = FAUSTFLOAT(fTemp83);
-			if (iSlow136 | (iSlow134 | (iSlow138 | iSlow115))) {
+			if (iSlow136 | (iSlow138 | (iSlow113 | iSlow134))) {
 				fRec60[0] = fSlow139 + fConst7 * fRec60[1];
 			}
 			if (iSlow134) {
@@ -10167,25 +10212,25 @@ class mydsp2 : public dsp {
 				fTemp86 = fSlow133 * fRec59[0];
 			}
 			output30[i0] = FAUSTFLOAT(fTemp86);
-			if (iSlow113) {
+			if (iSlow115) {
 				fTemp87 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, fRec56[0] - fSlow119)));
 				fTemp88 = ((fTemp87 > fRec61[1]) ? fSlow125 : fSlow122);
 				fRec61[0] = fTemp87 * (1.0f - fTemp88) + fRec61[1] * fTemp88;
-				fTemp89 = fSlow112 * fRec61[0];
+				fTemp89 = fSlow114 * fRec61[0];
 			}
 			output31[i0] = FAUSTFLOAT(fTemp89);
-			if (iSlow131) {
+			if (iSlow129) {
 				fTemp90 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, fRec58[0] - fSlow119)));
 				fTemp91 = ((fTemp90 > fRec62[1]) ? fSlow125 : fSlow122);
 				fRec62[0] = fTemp90 * (1.0f - fTemp91) + fRec62[1] * fTemp91;
-				fTemp92 = fSlow130 * fRec62[0];
+				fTemp92 = fSlow128 * fRec62[0];
 			}
 			output32[i0] = FAUSTFLOAT(fTemp92);
-			if (iSlow138) {
+			if (iSlow136) {
 				fTemp93 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, fRec60[0] - fSlow119)));
 				fTemp94 = ((fTemp93 > fRec63[1]) ? fSlow125 : fSlow122);
 				fRec63[0] = fTemp93 * (1.0f - fTemp94) + fRec63[1] * fTemp94;
-				fTemp95 = fSlow137 * fRec63[0];
+				fTemp95 = fSlow135 * fRec63[0];
 			}
 			output33[i0] = FAUSTFLOAT(fTemp95);
 			if (iSlow111) {
@@ -10195,36 +10240,36 @@ class mydsp2 : public dsp {
 				fTemp98 = fSlow110 * fRec64[0];
 			}
 			output34[i0] = FAUSTFLOAT(fTemp98);
-			if (iSlow129) {
+			if (iSlow131) {
 				fTemp99 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, -(fSlow119 + fRec58[0]))));
 				fTemp100 = ((fTemp99 > fRec65[1]) ? fSlow125 : fSlow122);
 				fRec65[0] = fTemp99 * (1.0f - fTemp100) + fRec65[1] * fTemp100;
-				fTemp101 = fSlow128 * fRec65[0];
+				fTemp101 = fSlow130 * fRec65[0];
 			}
 			output35[i0] = FAUSTFLOAT(fTemp101);
-			if (iSlow136) {
+			if (iSlow138) {
 				fTemp102 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, -(fSlow119 + fRec60[0]))));
 				fTemp103 = ((fTemp102 > fRec66[1]) ? fSlow125 : fSlow122);
 				fRec66[0] = fTemp102 * (1.0f - fTemp103) + fRec66[1] * fTemp103;
-				fTemp104 = fSlow135 * fRec66[0];
+				fTemp104 = fSlow137 * fRec66[0];
 			}
 			output36[i0] = FAUSTFLOAT(fTemp104);
-			if (iSlow115 | iSlow117) {
+			if (iSlow113 | iSlow117) {
 				fTemp105 = mydsp2_faustpower2_f(fRec56[0]) + mydsp2_faustpower2_f(fRec58[0]);
 			}
-			if (iSlow115) {
+			if (iSlow113) {
 				fTemp106 = std::fabs(std::min<float>(1.0f, fSlow109 * std::max<float>(0.0f, std::sqrt(fTemp105 + mydsp2_faustpower2_f(fRec60[0])) - fSlow119)));
 				fTemp107 = ((fTemp106 > fRec67[1]) ? fSlow125 : fSlow122);
 				fRec67[0] = fTemp106 * (1.0f - fTemp107) + fRec67[1] * fTemp107;
-				fTemp108 = fSlow114 * fRec67[0];
+				fTemp108 = fSlow112 * fRec67[0];
 			}
 			output37[i0] = FAUSTFLOAT(fTemp108);
 			if (iSlow26) {
 				fTemp109 = fSlow25 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp36 + (-1.0f - fTemp30))));
 			}
 			output38[i0] = FAUSTFLOAT(fTemp109);
-			if (iSlow38) {
-				fTemp110 = fSlow37 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp38 + (-1.0f - fTemp32))));
+			if (iSlow36) {
+				fTemp110 = fSlow35 * std::min<float>(1.0f, std::max<float>(0.0f, -0.5f * (fTemp38 + (-1.0f - fTemp32))));
 			}
 			output39[i0] = FAUSTFLOAT(fTemp110);
 			if (iSlow43) {
@@ -10235,8 +10280,8 @@ class mydsp2 : public dsp {
 				fTemp112 = fSlow27 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp30 + fTemp36)));
 			}
 			output41[i0] = FAUSTFLOAT(fTemp112);
-			if (iSlow36) {
-				fTemp113 = fSlow35 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp32 + fTemp38)));
+			if (iSlow38) {
+				fTemp113 = fSlow37 * std::min<float>(1.0f, std::max<float>(0.0f, 1.0f - (fTemp32 + fTemp38)));
 			}
 			output42[i0] = FAUSTFLOAT(fTemp113);
 			if (iSlow45) {
@@ -10251,22 +10296,22 @@ class mydsp2 : public dsp {
 				fTemp116 = fSlow142 * std::min<float>(1.0f, 1.6666666f * std::max<float>(0.0f, 0.5f * (1.0f - float(input7[i0])) + -0.2f));
 			}
 			output45[i0] = FAUSTFLOAT(fTemp116);
-			if (iSlow149 | (iSlow145 | (iSlow151 | iSlow153))) {
+			if (iSlow145 | (iSlow149 | (iSlow151 | iSlow153))) {
 				fTemp117 = float(input18[i0]);
 			}
 			if (iSlow145) {
 				fTemp118 = fSlow147 * fTemp117;
 			}
 			output46[i0] = FAUSTFLOAT(fTemp118);
-			if (iSlow151) {
-				fTemp119 = fSlow150 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp117)));
+			if (iSlow149) {
+				fTemp119 = fSlow148 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp117)));
 			}
 			output47[i0] = FAUSTFLOAT(fTemp119);
-			if (iSlow153) {
+			if (iSlow151) {
 				fTemp120 = fSlow154 * std::max<float>(0.0f, fTemp117);
 			}
 			output48[i0] = FAUSTFLOAT(fTemp120);
-			if (iSlow149 | (iSlow156 | (iSlow159 | iSlow161))) {
+			if (iSlow156 | (iSlow159 | (iSlow161 | iSlow153))) {
 				fTemp121 = float(input19[i0]);
 			}
 			if (iSlow156) {
@@ -10281,7 +10326,7 @@ class mydsp2 : public dsp {
 				fTemp124 = fSlow162 * std::max<float>(0.0f, fTemp121);
 			}
 			output51[i0] = FAUSTFLOAT(fTemp124);
-			if (iSlow149 | (iSlow164 | (iSlow167 | iSlow169))) {
+			if (iSlow164 | (iSlow167 | (iSlow169 | iSlow153))) {
 				fTemp125 = float(input20[i0]);
 			}
 			if (iSlow164) {
@@ -10341,22 +10386,22 @@ class mydsp2 : public dsp {
 				fTemp140 = fSlow196 * std::max<float>(0.0f, fTemp137);
 			}
 			output63[i0] = FAUSTFLOAT(fTemp140);
-			if (iSlow201 | (iSlow198 | (iSlow203 | iSlow205))) {
+			if (iSlow198 | (iSlow201 | (iSlow203 | iSlow205))) {
 				fTemp141 = float(input24[i0]);
 			}
 			if (iSlow198) {
 				fTemp142 = fSlow199 * fTemp141;
 			}
 			output64[i0] = FAUSTFLOAT(fTemp142);
-			if (iSlow203) {
-				fTemp143 = fSlow202 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp141)));
+			if (iSlow201) {
+				fTemp143 = fSlow200 * std::fabs(fSlow146 * std::min<float>(0.0f, std::max<float>(-1.0f, fTemp141)));
 			}
 			output65[i0] = FAUSTFLOAT(fTemp143);
-			if (iSlow205) {
+			if (iSlow203) {
 				fTemp144 = fSlow206 * std::max<float>(0.0f, fTemp141);
 			}
 			output66[i0] = FAUSTFLOAT(fTemp144);
-			if (iSlow201 | (iSlow208 | (iSlow211 | iSlow213))) {
+			if (iSlow208 | (iSlow211 | (iSlow213 | iSlow205))) {
 				fTemp145 = float(input25[i0]);
 			}
 			if (iSlow208) {
@@ -10371,7 +10416,7 @@ class mydsp2 : public dsp {
 				fTemp148 = fSlow214 * std::max<float>(0.0f, fTemp145);
 			}
 			output69[i0] = FAUSTFLOAT(fTemp148);
-			if (iSlow201 | (iSlow219 | (iSlow221 | iSlow216))) {
+			if (iSlow216 | (iSlow219 | (iSlow221 | iSlow205))) {
 				fTemp149 = float(input26[i0]);
 			}
 			if (iSlow216) {
@@ -10386,7 +10431,7 @@ class mydsp2 : public dsp {
 				fTemp152 = fSlow222 * std::max<float>(0.0f, fTemp149);
 			}
 			output72[i0] = FAUSTFLOAT(fTemp152);
-			if (iSlow149) {
+			if (iSlow153) {
 				fRec68[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow224 * std::sqrt(mydsp2_faustpower2_f(fTemp117 + -1.0f) + mydsp2_faustpower2_f(fTemp121) + mydsp2_faustpower2_f(fTemp125))) + fConst8 * fRec68[1];
 				fTemp153 = fSlow223 * (1.0f - fRec68[0]);
 			}
@@ -10396,7 +10441,7 @@ class mydsp2 : public dsp {
 				fTemp154 = fSlow225 * (1.0f - fRec69[0]);
 			}
 			output74[i0] = FAUSTFLOAT(fTemp154);
-			if (iSlow201) {
+			if (iSlow205) {
 				fRec70[0] = fConst9 * std::max<float>(0.0f, 1.0f - fSlow228 * std::sqrt(mydsp2_faustpower2_f(fTemp141) + mydsp2_faustpower2_f(fTemp145) + mydsp2_faustpower2_f(fTemp149 + -1.0f))) + fConst8 * fRec70[1];
 				fTemp155 = fSlow227 * (1.0f - fRec70[0]);
 			}
@@ -10453,27 +10498,27 @@ class mydsp2 : public dsp {
 				fRec29[1] = fRec29[0];
 				iRec25[1] = iRec25[0];
 			}
-			if (iSlow24 | (iSlow26 | iSlow28)) {
+			if (iSlow26 | (iSlow28 | iSlow24)) {
 				fVec12[1] = fVec12[0];
 				fRec30[1] = fRec30[0];
 			}
-			if (iSlow34 | (iSlow36 | iSlow38)) {
+			if (iSlow36 | (iSlow38 | iSlow34)) {
 				fVec13[1] = fVec13[0];
 				fRec31[1] = fRec31[0];
 			}
-			if (iSlow41 | (iSlow43 | iSlow45)) {
+			if (iSlow43 | (iSlow45 | iSlow41)) {
 				fVec14[1] = fVec14[0];
 				fRec32[1] = fRec32[0];
 			}
-			if (iSlow48 | (iSlow26 | iSlow28)) {
+			if (iSlow26 | (iSlow28 | iSlow48)) {
 				fVec15[1] = fVec15[0];
 				fRec33[1] = fRec33[0];
 			}
-			if (iSlow51 | (iSlow36 | iSlow38)) {
+			if (iSlow36 | (iSlow38 | iSlow51)) {
 				fVec16[1] = fVec16[0];
 				fRec34[1] = fRec34[0];
 			}
-			if (iSlow54 | (iSlow43 | iSlow45)) {
+			if (iSlow43 | (iSlow45 | iSlow54)) {
 				fVec17[1] = fVec17[0];
 				fRec35[1] = fRec35[0];
 			}
@@ -10501,28 +10546,28 @@ class mydsp2 : public dsp {
 				fVec23[1] = fVec23[0];
 				fRec41[1] = fRec41[0];
 			}
-			if (iSlow80 | (iSlow77 | (iSlow82 | iSlow84))) {
+			if (iSlow77 | (iSlow80 | (iSlow82 | iSlow84))) {
 				fVec24[1] = fVec24[0];
 				fRec43[1] = fRec43[0];
 			}
 			if (iSlow77) {
 				fRec42[1] = fRec42[0];
 			}
-			if (iSlow80 | (iSlow94 | (iSlow96 | iSlow98))) {
+			if (iSlow94 | (iSlow96 | (iSlow98 | iSlow84))) {
 				fVec25[1] = fVec25[0];
 				fRec45[1] = fRec45[0];
 			}
 			if (iSlow94) {
 				fRec44[1] = fRec44[0];
 			}
-			if (iSlow80 | (iSlow101 | (iSlow103 | iSlow105))) {
+			if (iSlow101 | (iSlow103 | (iSlow105 | iSlow84))) {
 				fVec26[1] = fVec26[0];
 				fRec47[1] = fRec47[0];
 			}
 			if (iSlow101) {
 				fRec46[1] = fRec46[0];
 			}
-			if (iSlow82) {
+			if (iSlow80) {
 				fRec48[1] = fRec48[0];
 			}
 			if (iSlow96) {
@@ -10531,7 +10576,7 @@ class mydsp2 : public dsp {
 			if (iSlow103) {
 				fRec50[1] = fRec50[0];
 			}
-			if (iSlow84) {
+			if (iSlow82) {
 				fRec51[1] = fRec51[0];
 			}
 			if (iSlow98) {
@@ -10540,55 +10585,55 @@ class mydsp2 : public dsp {
 			if (iSlow105) {
 				fRec53[1] = fRec53[0];
 			}
-			if (iSlow80) {
+			if (iSlow84) {
 				fRec54[1] = fRec54[0];
 			}
-			if (iSlow111 | (iSlow108 | (iSlow113 | (iSlow115 | iSlow117)))) {
+			if (iSlow111 | (iSlow113 | (iSlow108 | (iSlow115 | iSlow117)))) {
 				fRec56[1] = fRec56[0];
 			}
 			if (iSlow108) {
 				fRec55[1] = fRec55[0];
 			}
-			if (iSlow129 | (iSlow127 | (iSlow131 | (iSlow115 | iSlow117)))) {
+			if (iSlow129 | (iSlow131 | (iSlow113 | (iSlow127 | iSlow117)))) {
 				fRec58[1] = fRec58[0];
 			}
 			if (iSlow127) {
 				fRec57[1] = fRec57[0];
 			}
-			if (iSlow136 | (iSlow134 | (iSlow138 | iSlow115))) {
+			if (iSlow136 | (iSlow138 | (iSlow113 | iSlow134))) {
 				fRec60[1] = fRec60[0];
 			}
 			if (iSlow134) {
 				fRec59[1] = fRec59[0];
 			}
-			if (iSlow113) {
+			if (iSlow115) {
 				fRec61[1] = fRec61[0];
 			}
-			if (iSlow131) {
+			if (iSlow129) {
 				fRec62[1] = fRec62[0];
 			}
-			if (iSlow138) {
+			if (iSlow136) {
 				fRec63[1] = fRec63[0];
 			}
 			if (iSlow111) {
 				fRec64[1] = fRec64[0];
 			}
-			if (iSlow129) {
+			if (iSlow131) {
 				fRec65[1] = fRec65[0];
 			}
-			if (iSlow136) {
+			if (iSlow138) {
 				fRec66[1] = fRec66[0];
 			}
-			if (iSlow115) {
+			if (iSlow113) {
 				fRec67[1] = fRec67[0];
 			}
-			if (iSlow149) {
+			if (iSlow153) {
 				fRec68[1] = fRec68[0];
 			}
 			if (iSlow179) {
 				fRec69[1] = fRec69[0];
 			}
-			if (iSlow201) {
+			if (iSlow205) {
 				fRec70[1] = fRec70[0];
 			}
 		}
@@ -10847,7 +10892,7 @@ class audio {
          *
          * @return true is sucessful, false in case of driver failure.
          **/
-        virtual bool init(const char* name, dsp* dsp) = 0;
+        virtual bool init(const char* name, ::dsp* dsp) = 0;
     
         /**
          * Start audio processing.
@@ -10936,6 +10981,7 @@ architecture section is not modified.
 #include <vector>
 #include <stdio.h>
 #include <map>
+#include <cstring>
 
 
 typedef unsigned int uint;
@@ -10954,7 +11000,7 @@ class APIUI : public PathBuilder, public Meta, public UI
             std::string fLabel;
             std::string fShortname;
             std::string fPath;
-            ValueConverter* fConversion;
+            ValueConverter* fConverter;
             FAUSTFLOAT* fZone;
             FAUSTFLOAT fInit;
             FAUSTFLOAT fMin;
@@ -10965,14 +11011,14 @@ class APIUI : public PathBuilder, public Meta, public UI
             Item(const std::string& label,
                  const std::string& short_name,
                  const std::string& path,
-                 ValueConverter* conversion,
+                 ValueConverter* converter,
                  FAUSTFLOAT* zone,
                  FAUSTFLOAT init,
                  FAUSTFLOAT min,
                  FAUSTFLOAT max,
                  FAUSTFLOAT step,
                  ItemType item_type)
-            :fLabel(label), fShortname(short_name), fPath(path), fConversion(conversion),
+            :fLabel(label), fShortname(short_name), fPath(path), fConverter(converter),
             fZone(zone), fInit(init), fMin(min), fMax(max), fStep(step), fItemType(item_type)
             {}
         };
@@ -11119,8 +11165,8 @@ class APIUI : public PathBuilder, public Meta, public UI
                 int id4 = getZoneIndex(table, p, val);
                 if (id4 != -1) {
                     // Reactivate the one we edit...
-                  table[val][uint(id4)]->setMappingValues(curve, amin, amid, amax, fItems[uint(p)].fMin, fItems[uint(p)].fInit, fItems[uint(p)].fMax);
-                  table[val][uint(id4)]->setActive(true);
+                    table[val][uint(id4)]->setMappingValues(curve, amin, amid, amax, fItems[uint(p)].fMin, fItems[uint(p)].fInit, fItems[uint(p)].fMax);
+                    table[val][uint(id4)]->setActive(true);
                 } else {
                     // Allocate a new CurveZoneControl which is 'active' by default
                     FAUSTFLOAT* zone = fItems[uint(p)].fZone;
@@ -11163,7 +11209,7 @@ class APIUI : public PathBuilder, public Meta, public UI
 
         virtual ~APIUI()
         {
-            for (const auto& it : fItems) delete it.fConversion;
+            for (const auto& it : fItems) delete it.fConverter;
             for (int i = 0; i < 3; i++) {
                 for (const auto& it : fAcc[i]) delete it;
                 for (const auto& it : fGyr[i]) delete it;
@@ -11341,11 +11387,11 @@ class APIUI : public PathBuilder, public Meta, public UI
          * @param p - the UI parameter index
          * @param key - the UI parameter index
          *
-         * @return the param metadata value associate to the key
+         * @return the param metadata value associate to the key or nullptr if the key is not found
          */
         const char* getMetadata(int p, const char* key)
         {
-            return (fMetaData[uint(p)].find(key) != fMetaData[uint(p)].end()) ? fMetaData[uint(p)][key].c_str() : "";
+            return (fMetaData[uint(p)].find(key) != fMetaData[uint(p)].end()) ? fMetaData[uint(p)][key].c_str() : nullptr;
         }
     
         /**
@@ -11446,11 +11492,43 @@ class APIUI : public PathBuilder, public Meta, public UI
             }
         }
 
-        double getParamRatio(int p) { return fItems[uint(p)].fConversion->faust2ui(*fItems[uint(p)].fZone); }
-        void setParamRatio(int p, double r) { *fItems[uint(p)].fZone = FAUSTFLOAT(fItems[uint(p)].fConversion->ui2faust(r)); }
+        /**
+         * Get the param value as a ratio normalized in [0,1] range, taking the scale (linear/log/exp) mapping in account.
+         *
+         * @param p - the UI parameter index
+         *
+         * @return the ratio in [0,1] range.
+         */
+        double getParamRatio(int p) { return fItems[uint(p)].fConverter->faust2ui(*fItems[uint(p)].fZone); }
+    
+        /**
+         * Set the param value as a ratio normalized in [0,1] range, taking the scale (linear/log/exp) mapping in account.
+         *
+         * @param p - the UI parameter index
+         * @param r - the ratio in [0,1] range
+         *
+         */
+        void setParamRatio(int p, double r) { *fItems[uint(p)].fZone = FAUSTFLOAT(fItems[uint(p)].fConverter->ui2faust(r)); }
 
-        double value2ratio(int p, double r)    { return fItems[uint(p)].fConversion->faust2ui(r); }
-        double ratio2value(int p, double r)    { return fItems[uint(p)].fConversion->ui2faust(r); }
+        /**
+         * Convert the param value in a ratio normalized in [0,1] range, taking the scale (linear/log/exp) mapping in account.
+         *
+         * @param p - the UI parameter index
+         * @param v - the UI parameter value
+         *
+         * @return the ratio in [0,1] range.
+         */
+        double value2ratio(int p, double v)    { return fItems[uint(p)].fConverter->faust2ui(v); }
+    
+        /**
+         * Convert the ratio normalized in [0,1] range in the param value, taking the scale (linear/log/exp) mapping in account.
+         *
+         * @param p - the UI parameter index
+         * @param r - the ratio in [0,1] range
+         *
+         * @return the UI parameter value.
+         */
+        double ratio2value(int p, double r)    { return fItems[uint(p)].fConverter->ui2faust(r); }
 
         /**
          * Return the control type (kAcc, kGyr, or -1) for a given parameter.
@@ -11690,6 +11768,7 @@ architecture section is not modified.
 #include <string>
 #include <string.h>
 #include <algorithm>
+#include <cstdint>
 #include <assert.h>
 
 
@@ -13131,12 +13210,12 @@ enum Layout { kVerticalGroup, kHorizontalGroup, kTabGroup };
  * This class serves as the base class for various DSP combiners that work with two DSP modules.
  * It provides common methods for building user interfaces, allocating and deleting channels, and more.
  */
-class dsp_binary_combiner : public dsp {
+class dsp_binary_combiner : public ::dsp {
 
     protected:
 
-        dsp* fDSP1;
-        dsp* fDSP2;
+        ::dsp* fDSP1;
+        ::dsp* fDSP2;
         int fBufferSize;
         Layout fLayout;
         std::string fLabel;
@@ -13189,7 +13268,7 @@ class dsp_binary_combiner : public dsp {
 
      public:
 
-        dsp_binary_combiner(dsp* dsp1, dsp* dsp2, int buffer_size, Layout layout, const std::string& label)
+        dsp_binary_combiner(::dsp* dsp1, ::dsp* dsp2, int buffer_size, Layout layout, const std::string& label)
         :fDSP1(dsp1), fDSP2(dsp2), fBufferSize(buffer_size), fLayout(layout), fLabel(label)
         {}
 
@@ -13254,7 +13333,7 @@ class dsp_sequencer : public dsp_binary_combiner {
 
     public:
 
-        dsp_sequencer(dsp* dsp1, dsp* dsp2,
+        dsp_sequencer(::dsp* dsp1, ::dsp* dsp2,
                       int buffer_size = 4096,
                       Layout layout = Layout::kTabGroup,
                       const std::string& label = "Sequencer")
@@ -13307,7 +13386,7 @@ class dsp_parallelizer : public dsp_binary_combiner {
 
     public:
 
-        dsp_parallelizer(dsp* dsp1, dsp* dsp2,
+        dsp_parallelizer(::dsp* dsp1, ::dsp* dsp2,
                      int buffer_size = 4096,
                      Layout layout = Layout::kTabGroup,
                      const std::string& label = "Parallelizer")
@@ -13371,7 +13450,7 @@ class dsp_splitter : public dsp_binary_combiner {
 
     public:
 
-        dsp_splitter(dsp* dsp1, dsp* dsp2,
+        dsp_splitter(::dsp* dsp1, ::dsp* dsp2,
                      int buffer_size = 4096,
                      Layout layout = Layout::kTabGroup,
                      const std::string& label = "Splitter")
@@ -13395,7 +13474,7 @@ class dsp_splitter : public dsp_binary_combiner {
             buildUserInterfaceAux(ui_interface);
         }
 
-        virtual dsp* clone()
+        virtual ::dsp* clone()
         {
             return new dsp_splitter(fDSP1->clone(), fDSP2->clone(), fBufferSize, fLayout, fLabel);
         }
@@ -13462,7 +13541,7 @@ class dsp_merger : public dsp_binary_combiner {
             buildUserInterfaceAux(ui_interface);
         }
 
-        virtual dsp* clone()
+        virtual ::dsp* clone()
         {
             return new dsp_merger(fDSP1->clone(), fDSP2->clone(), fBufferSize, fLayout, fLabel);
         }
@@ -13505,7 +13584,7 @@ class dsp_recursiver : public dsp_binary_combiner {
 
     public:
 
-        dsp_recursiver(dsp* dsp1, dsp* dsp2,
+        dsp_recursiver(::dsp* dsp1, ::dsp* dsp2,
                        Layout layout = Layout::kTabGroup,
                        const std::string& label = "Recursiver")
         :dsp_binary_combiner(dsp1, dsp2, 1, layout, label)
@@ -13586,7 +13665,7 @@ class dsp_crossfader: public dsp_binary_combiner {
     
     public:
     
-        dsp_crossfader(dsp* dsp1, dsp* dsp2,
+        dsp_crossfader(::dsp* dsp1, ::dsp* dsp2,
                        Layout layout = Layout::kTabGroup,
                        const std::string& label = "Crossfade")
         :dsp_binary_combiner(dsp1, dsp2, 4096, layout, label),fCrossfade(FAUSTFLOAT(0.5))
@@ -13637,7 +13716,7 @@ class dsp_crossfader: public dsp_binary_combiner {
             }
         }
     
-        virtual dsp* clone()
+        virtual ::dsp* clone()
         {
             return new dsp_crossfader(fDSP1->clone(), fDSP2->clone(), fLayout, fLabel);
         }
@@ -13692,10 +13771,10 @@ class dsp_crossfader: public dsp_binary_combiner {
  * @param label The label for the combiner (default: "Sequencer")
  * @return A pointer to the created DSP Sequencer, or nullptr if an error occurs
  */
-static dsp* createDSPSequencer(dsp* dsp1, dsp* dsp2,
-                               std::string& error,
-                               Layout layout = Layout::kTabGroup,
-                               const std::string& label = "Sequencer")
+static ::dsp* createDSPSequencer(::dsp* dsp1, ::dsp* dsp2,
+                                 std::string& error,
+                                 Layout layout = Layout::kTabGroup,
+                                 const std::string& label = "Sequencer")
 {
     if (dsp1->getNumOutputs() != dsp2->getNumInputs()) {
         std::stringstream error_aux;
@@ -13722,10 +13801,10 @@ static dsp* createDSPSequencer(dsp* dsp1, dsp* dsp2,
  * @param label The label for the combiner (default: "Parallelizer")
  * @return A pointer to the created DSP Parallelizer, or nullptr if an error occurs
  */
-static dsp* createDSPParallelizer(dsp* dsp1, dsp* dsp2,
-                                  std::string& error,
-                                  Layout layout = Layout::kTabGroup,
-                                  const std::string& label = "Parallelizer")
+static ::dsp* createDSPParallelizer(::dsp* dsp1, dsp* dsp2,
+                                    std::string& error,
+                                    Layout layout = Layout::kTabGroup,
+                                    const std::string& label = "Parallelizer")
 {
     return new dsp_parallelizer(dsp1, dsp2, 4096, layout, label);
 }
@@ -13743,7 +13822,7 @@ static dsp* createDSPParallelizer(dsp* dsp1, dsp* dsp2,
  * @param label The label for the combiner (default: "Splitter")
  * @return A pointer to the created DSP Splitter, or nullptr if an error occurs
  */
-static dsp* createDSPSplitter(dsp* dsp1, dsp* dsp2, std::string& error, Layout layout = Layout::kTabGroup, const std::string& label = "Splitter")
+static ::dsp* createDSPSplitter(::dsp* dsp1, ::dsp* dsp2, std::string& error, Layout layout = Layout::kTabGroup, const std::string& label = "Splitter")
 {
     if (dsp1->getNumOutputs() == 0) {
         error = "Connection error in dsp_splitter : the first expression has no outputs\n";
@@ -13779,10 +13858,10 @@ static dsp* createDSPSplitter(dsp* dsp1, dsp* dsp2, std::string& error, Layout l
  * @param label The label for the combiner (default: "Merger")
  * @return A pointer to the created DSP Merger, or nullptr if an error occurs
  */
-static dsp* createDSPMerger(dsp* dsp1, dsp* dsp2,
-                            std::string& error,
-                            Layout layout = Layout::kTabGroup,
-                            const std::string& label = "Merger")
+static ::dsp* createDSPMerger(::dsp* dsp1, ::dsp* dsp2,
+                              std::string& error,
+                              Layout layout = Layout::kTabGroup,
+                              const std::string& label = "Merger")
 {
     if (dsp1->getNumOutputs() == 0) {
         error = "Connection error in dsp_merger : the first expression has no outputs\n";
@@ -13818,10 +13897,10 @@ static dsp* createDSPMerger(dsp* dsp1, dsp* dsp2,
  * @param label The label for the combiner (default: "Recursiver")
  * @return A pointer to the created DSP Recursiver, or nullptr if an error occurs
  */
-static dsp* createDSPRecursiver(dsp* dsp1, dsp* dsp2,
-                                std::string& error,
-                                Layout layout = Layout::kTabGroup,
-                                const std::string& label = "Recursiver")
+static ::dsp* createDSPRecursiver(::dsp* dsp1, ::dsp* dsp2,
+                                  std::string& error,
+                                  Layout layout = Layout::kTabGroup,
+                                  const std::string& label = "Recursiver")
 {
     if ((dsp2->getNumInputs() > dsp1->getNumOutputs()) || (dsp2->getNumOutputs() > dsp1->getNumInputs())) {
         std::stringstream error_aux;
@@ -13849,7 +13928,7 @@ static dsp* createDSPRecursiver(dsp* dsp1, dsp* dsp2,
  * Create a DSP Crossfader
  *
  * This method creates a DSP Crossfader, which allows you to crossfade between two DSP modules.
- * The crossfade parameter (as a slider) controls the mix between the two modules' outputs.
+ * The crossfade parameter (as a slider) controls the mix between the two modules outputs.
  * When Crossfade = 1, the first DSP only is computed, when Crossfade = 0,
  * the second DSP only is computed, otherwise both DSPs are computed and mixed.
  *
@@ -13860,10 +13939,10 @@ static dsp* createDSPRecursiver(dsp* dsp1, dsp* dsp2,
  * @param label The label for the crossfade slider (default: "Crossfade")
  * @return A pointer to the created DSP Crossfader, or nullptr if an error occurs
  */
-static dsp* createDSPCrossfader(dsp* dsp1, dsp* dsp2,
-                                std::string& error,
-                                Layout layout = Layout::kTabGroup,
-                                const std::string& label = "Crossfade")
+static ::dsp* createDSPCrossfader(::dsp* dsp1, ::dsp* dsp2,
+                                  std::string& error,
+                                  Layout layout = Layout::kTabGroup,
+                                  const std::string& label = "Crossfade")
 {
     if (dsp1->getNumInputs() != dsp2->getNumInputs()) {
         std::stringstream error_aux;
@@ -13924,7 +14003,7 @@ architecture section is not modified.
  * This class allows a 'proxy' dsp to control a real dsp
  * possibly running somewhere else.
  */
-class proxy_dsp : public dsp {
+class proxy_dsp : public ::dsp {
 
     protected:
     
@@ -14291,7 +14370,7 @@ struct dsp_voice : public MapUI, public decorator_dsp {
     FAUSTFLOAT** fInputsSlice;
     FAUSTFLOAT** fOutputsSlice;
  
-    dsp_voice(dsp* dsp):decorator_dsp(dsp)
+    dsp_voice(::dsp* dsp):decorator_dsp(dsp)
     {
         // Default conversion functions
         fVelFun = [](int velocity) { return double(velocity)/127.0; };
@@ -14442,7 +14521,7 @@ struct dsp_voice_group {
     GroupUI fGroups;
 
     std::vector<dsp_voice*> fVoiceTable; // Individual voices
-    dsp* fVoiceGroup;                    // Voices group to be used for GUI grouped control
+    ::dsp* fVoiceGroup;                  // Voices group to be used for GUI grouped control
 
     FAUSTFLOAT fPanic;  // Panic button value
 
@@ -14545,7 +14624,7 @@ class dsp_poly : public decorator_dsp, public midi, public JSONControl {
     public:
     
     #ifdef EMCC
-        dsp_poly(dsp* dsp):decorator_dsp(dsp), fMIDIUI(&fMidiHandler)
+        dsp_poly(::dsp* dsp):decorator_dsp(dsp), fMIDIUI(&fMidiHandler)
         {
             JSONUI jsonui(getNumInputs(), getNumOutputs());
             buildUserInterface(&jsonui);
@@ -14554,7 +14633,7 @@ class dsp_poly : public decorator_dsp, public midi, public JSONControl {
             buildUserInterface(&fMIDIUI);
         }
     #else
-        dsp_poly(dsp* dsp):decorator_dsp(dsp)
+        dsp_poly(::dsp* dsp):decorator_dsp(dsp)
         {}
     #endif
     
@@ -14821,7 +14900,7 @@ class mydsp2_poly : public dsp_voice_group, public dsp_poly {
          *                If false, all voices can be individually controlled.
          *
          */
-        mydsp2_poly(dsp* dsp,
+        mydsp2_poly(::dsp* dsp,
                    int nvoices,
                    bool control = false,
                    bool group = true)
@@ -15055,7 +15134,7 @@ class dsp_poly_effect : public dsp_poly {
         
     public:
         
-        dsp_poly_effect(dsp_poly* voice, dsp* combined)
+        dsp_poly_effect(dsp_poly* voice, ::dsp* combined)
         :dsp_poly(combined), fPolyDSP(voice)
         {}
         
@@ -15114,7 +15193,7 @@ struct dsp_poly_factory : public dsp_factory {
     dsp_factory* fProcessFactory;
     dsp_factory* fEffectFactory;
     
-    dsp* adaptDSP(dsp* dsp, bool is_double)
+    ::dsp* adaptDSP(::dsp* dsp, bool is_double)
     {
         return (is_double) ? new dsp_sample_adapter<double, float>(dsp) : dsp;
     }
@@ -15169,7 +15248,7 @@ struct dsp_poly_factory : public dsp_factory {
     {
         if (nvoices == -1) {
             // Get 'nvoices' from the metadata declaration
-            dsp* dsp = fProcessFactory->createDSPInstance();
+            ::dsp* dsp = fProcessFactory->createDSPInstance();
             bool midi_sync = false;
             bool midi = false;
             MidiMeta::analyse(dsp, midi, midi_sync, nvoices);
@@ -15185,7 +15264,7 @@ struct dsp_poly_factory : public dsp_factory {
     }
 
     /* Create a new DSP instance, to be deleted with C++ 'delete' */
-    dsp* createDSPInstance()
+    ::dsp* createDSPInstance()
     {
         return fProcessFactory->createDSPInstance();
     }
@@ -15289,7 +15368,7 @@ class FaustPolyMotionEngine {
         audio* fDriver;
     
         midi_handler fMidiHandler;
-        MidiUI fMidiUI;
+        //MidiUI fMidiUI;
     
         void init(dsp* mono_dsp, audio* driver, midi_handler* handler)
         {
@@ -15334,7 +15413,7 @@ class FaustPolyMotionEngine {
                 fFinalDSP = mono_dsp;
             }
             
-            fFinalDSP->buildUserInterface(&fMidiUI);
+            //fFinalDSP->buildUserInterface(fFinalDSP->buildUserInterface(&fMidiUI);fMidiUI);
             fFinalDSP->buildUserInterface(&fAPIUI);
             
             // Retrieving DSP object name
@@ -15367,7 +15446,7 @@ class FaustPolyMotionEngine {
     
     public:
     
-        FaustPolyMotionEngine(dsp* mono_dsp, audio* driver = nullptr, midi_handler* midi = nullptr):fMidiUI(&fMidiHandler)
+        FaustPolyMotionEngine(dsp* mono_dsp, audio* driver = nullptr, midi_handler* midi = nullptr)//:fMidiUI(:fMidiUI(&fMidiHandler)fMidiHandler)
         {
             assert(mono_dsp);
             init(mono_dsp, driver, midi);

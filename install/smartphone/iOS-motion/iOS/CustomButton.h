@@ -51,6 +51,9 @@ NS_ASSUME_NONNULL_BEGIN
 // New method to update vumeter UI based on external value
 - (void)updateBargraphWithValue:(CGFloat)ButtonValue;
 
+// New method to update other UI based on external value
+- (void)updateTouchUIWithValue:(NSArray*)ButtonValues;
+
 @end
 
 NS_ASSUME_NONNULL_END

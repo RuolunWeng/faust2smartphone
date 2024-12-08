@@ -1,5 +1,3 @@
-#include <vector>
-#include <string>
 /************************************************************************
  ************************************************************************
  FAUST API Architecture File
@@ -29,6 +27,7 @@
 class MyFaustPolyEngine;
 class OSCUI;
 class SoundUI;
+class MidiUI;
 class DspFaustMotion;
 class audio;
 class dsp;
@@ -443,6 +442,11 @@ public:
     // Returns OSC is ON or OFF.
     //--------------------------------------------------------
     bool getOSCIsOn();
+    
+    //------------------`bool getMIDIIsOn()`------------------
+    // Returns MIDI is ON or OFF.
+    //--------------------------------------------------------
+    bool getMIDIIsOn();
 
     //----`void motionRender(float m11, float m12, float m13, float m21, float m22, float m23, float m31, float m32, float m33)`-----
     // Calul the Rotaiton matrix value
@@ -477,6 +481,7 @@ private:
     MyFaustPolyEngine *fPolyEngine;
     OSCUI *fOSCUI;
     SoundUI* fSoundInterface;
+    MidiUI *fMidiUI;
     DspFaustMotion *fDSPFAUSTMOTION;
 
     void init(dsp* mono_dsp,audio* driver);

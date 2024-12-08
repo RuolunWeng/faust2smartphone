@@ -1,0 +1,11 @@
+{
+  "ndk": "/Users/wengruolun/Library/Android/sdk/ndk/26.1.10909125",
+  "revision": {
+    "mMajor": 26,
+    "mMinor": 1,
+    "mMicro": 10909125,
+    "mPreview": 0,
+    "mPrecision": "MICRO",
+    "mPreviewSeparator": " "
+  }
+}
