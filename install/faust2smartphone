@@ -46,16 +46,16 @@ echoHelp ()
 	echo "Usage: faust2smartphone '-option' xxx.dsp"
 	echo "===================================="
 	echo "Option: -ios for Xcode simple project"
-	echo "Option: -iosmotion for Xcode project for smartSOLO"
+	echo "Option: -iosmotion for Xcode project for SHC"
 	echo "Option: -iosplugin for Xcode project with faust plugin"
 	echo "Option: -android for Android Studio simple project"
-	echo "Option: -androidmotion for Android Studio project for smartSOLO"
+	echo "Option: -androidmotion for Android Studio project for SHC"
 	echo "Option: -androidplugin for Android Studio with faust plugin"
 	echo "Option: -updatelib <.lib> for update motion library"
 	echo "Option: -oscall/-oscalias for OSC support"
 	echo "Option: -oscmotion for OSC-Motion"
-	echo "Option: -midi for iOS MIDI support"
-	#echo "Option: -nvoices: specify the max number of voices for MIDI"
+	echo "Option: -midi for MIDI support"
+	#echo "Option: -nvoices N specify the max number of voices for MIDI"
 	echo "Option: -soundfile for soundfile support"
 	echo "Option: -cuemanager for using Cue Maneger system"
 	echo "Option: -reuse for Uptade the project"
@@ -132,9 +132,9 @@ do
 			echoHelp
 			exit
 		fi
-  elif [ $p = "-nvoices" ]; then
-		shift
-		NVOICES=$1
+  #elif [ $p = "-nvoices" ]; then
+  #		shift
+  #		NVOICES=$1
   elif [ [${p:0:1} = "-"] ]; then
         OPTIONS="$OPTIONS $p"
 	elif [[ -f "$p" ]]; then

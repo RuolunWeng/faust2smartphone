@@ -11,7 +11,7 @@
 #define ONE_G 9.81
 #define kGUIUpdateRate 30
 
-#define SR 44100
+#define SR 48000
 #define bufferSize 256
 
 

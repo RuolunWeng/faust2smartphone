@@ -43,8 +43,8 @@ echoHelp ()
     echo "To generate and Android API, run: faust2api_a -android yourFaustCode.dsp"
     echo ""
     echo "GLOBAL OPTIONS:"
-    echo "   -nvoices N : creates a polyphonic object with N voices."
-    echo "   -effect <effect.dsp>: adds an effect to the polyphonic synth (this option is ignored if -nvoices is not specified)."
+    #echo "   -nvoices N : creates a polyphonic object with N voices."
+    #echo "   -effect <effect.dsp>: adds an effect to the polyphonic synth (this option is ignored if -nvoices is not specified)."
 	  echo "   -nodoc : prevents documentation from being generated."
     echo ""
     echo "ANDROID-SPECIFIC OPTIONS:"
@@ -99,9 +99,9 @@ do
         MIDI="1"
 	elif [ "$p" = "-nodoc" ]; then
 		NODOC="1"
-    elif [ $p = "-nvoices" ]; then
-		shift
-		NVOICES=$1
+  #elif [ $p = "-nvoices" ]; then
+  #		shift
+  #		NVOICES=$1
     elif [ $p = "-package" ]; then
 	     PACKAGENAME="-1"
   elif [ [${p:0:1} = "-"] ]; then
@@ -169,6 +169,9 @@ if [ $ANDROID -eq 1 ]; then
       sed -i 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
     fi
        fi
+    if [ "$MIDI" = "1" ]; then
+	  echo "#define MIDI_SUPPORT 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+    fi
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     else
     faust $OPTIONS -i -a api-allen/simple/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
@@ -179,6 +182,9 @@ if [ $ANDROID -eq 1 ]; then
  else
    sed -i 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
  fi
+    fi
+    if [ "$MIDI" = "1" ]; then
+	  echo "#define MIDI_SUPPORT 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     fi
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
 
@@ -213,6 +219,9 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
    sed -i 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
  fi
     fi
+    if [ "$MIDI" = "1" ]; then
+	  echo "#define MIDI_SUPPORT 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
+    fi
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     else
     faust $OPTIONS -i -a api-allen/motion/DspFaust.cpp "$FILE" -o "$CPPFOLDER/DspFaust.cpp" || exit
@@ -223,6 +232,9 @@ elif [ $ANDROIDMOTION -eq 1 ]; then
  else
    sed -i 's,__CURRENT_ANDROID_PACKAGE__,com.'$APPNAME',g' $CPPFOLDER/DspFaust.cpp
  fi
+    fi
+    if [ "$MIDI" = "1" ]; then
+	  echo "#define MIDI_SUPPORT 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     fi
     echo "#define ANDROID_DRIVER 1" | cat - "$CPPFOLDER/DspFaust.cpp" > temp && mv temp "$CPPFOLDER/DspFaust.cpp"
     fi
@@ -270,7 +282,7 @@ elif [ $IOS -eq 1 ]; then
   echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     if [ "$MIDI" = "1" ]; then
-	  echo "#define IOS_MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+	  echo "#define MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     else
       faust $OPTIONS -i -a api-allen/simple/DspFaust.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
@@ -287,7 +299,7 @@ elif [ $IOS -eq 1 ]; then
 	echo "#define NVOICES $NVOICES" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     if [ "$MIDI" = "1" ]; then
-	echo "#define IOS_MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+	echo "#define MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     fi
 
@@ -307,20 +319,26 @@ elif [ $IOSMOTION -eq 1 ]; then
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     echo "#define TARGET_OS_IPHONE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     if [ "$SOUNDFILE" = "1" ]; then
-  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
+    if [ "$NVOICES" -gt "0" ]; then
+	  echo "#define NVOICES $NVOICES" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     if [ "$MIDI" = "1" ]; then
-	  echo "#define IOS_MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+	  echo "#define MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     else
       faust $OPTIONS -i -a api-allen/motion/DspFaust.cpp "$FILE" -o "$APIFOLDER/DspFaust.cpp" || exit
     echo "#define IOS_DRIVER 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     echo "#define TARGET_OS_IPHONE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     if [ "$SOUNDFILE" = "1" ]; then
-  echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    echo "#define SOUNDFILE 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+    fi
+    if [ "$NVOICES" -gt "0" ]; then
+	  echo "#define NVOICES $NVOICES" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     if [ "$MIDI" = "1" ]; then
-	  echo "#define IOS_MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
+	  echo "#define MIDI_SUPPORT 1" | cat - "$APIFOLDER/DspFaust.cpp" > temp && mv temp "$APIFOLDER/DspFaust.cpp"
     fi
     fi
 
