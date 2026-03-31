@@ -23,6 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<CustomSettingViewDelegate> delegate;
 
+@property (nonatomic, strong) UISegmentedControl *segmentedControl;
+@property (nonatomic, strong) UIView *infoView;
+@property (nonatomic, strong) UIView *settingsView;
+
 @property (nonatomic, strong) UITextField *ip;
 @property (nonatomic, strong) UITextField *inPort;
 @property (nonatomic, strong) UITextField *outPort;
@@ -36,6 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UITextField *param2;
 @property (nonatomic, strong) UIButton *paramSend2;
 @property (nonatomic, strong) UIButton *paramResetSend2;
+
+@property (nonatomic, strong) UILabel  *noParamLabel1;
+@property (nonatomic, strong) UILabel  *noParamLabel2;
 
 //@property (nonatomic, strong) NSMutableArray *paramArray1;
 //@property (nonatomic, strong) NSMutableArray *paramArray2;

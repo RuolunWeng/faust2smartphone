@@ -339,30 +339,30 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     [self.view addSubview:self.myCustomSettingView];
     self.myCustomSettingView.delegate = self;
     self.myCustomSettingView.pickerView1.delegate = self;
-//    self.myCustomSettingView.pickerView1.dataSource = self;
+    self.myCustomSettingView.pickerView1.dataSource = self;
     self.myCustomSettingView.pickerView2.delegate = self;
-//    self.myCustomSettingView.pickerView2.dataSource = self;
-//
+    self.myCustomSettingView.pickerView2.dataSource = self;
+
     if (self._motionLibParamArray.count != 0) {
-        // Select the first row by default
-        //[self.myCustomSettingView.pickerView1 selectRow:0 inComponent:0 animated:NO];
-        //[self pickerView:self.myCustomSettingView.pickerView1 didSelectRow:0 inComponent:0];
-    }  else {
+        [self.myCustomSettingView.pickerView1 selectRow:0 inComponent:0 animated:NO];
+        [self pickerView:self.myCustomSettingView.pickerView1 didSelectRow:0 inComponent:0];
+    } else {
         self.myCustomSettingView.pickerView1.hidden = YES;
         self.myCustomSettingView.param1.hidden = YES;
         self.myCustomSettingView.paramSend1.hidden = YES;
         self.myCustomSettingView.paramResetSend1.hidden = YES;
+        self.myCustomSettingView.noParamLabel1.hidden = NO;
     }
-//
+
     if (self._motionAudioParamArray.count != 0) {
-        // Select the first row by default
-        //[self.myCustomSettingView.pickerView2 selectRow:0 inComponent:0 animated:NO];
-        //[self pickerView:self.myCustomSettingView.pickerView2 didSelectRow:0 inComponent:0];
-    }  else {
+        [self.myCustomSettingView.pickerView2 selectRow:0 inComponent:0 animated:NO];
+        [self pickerView:self.myCustomSettingView.pickerView2 didSelectRow:0 inComponent:0];
+    } else {
         self.myCustomSettingView.pickerView2.hidden = YES;
         self.myCustomSettingView.param2.hidden = YES;
         self.myCustomSettingView.paramSend2.hidden = YES;
         self.myCustomSettingView.paramResetSend2.hidden = YES;
+        self.myCustomSettingView.noParamLabel2.hidden = NO;
     }
     
 }
@@ -415,9 +415,7 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
     
     self._motionLibParamArray = [[NSMutableArray alloc] init];
     self._motionLibParamAddress = [[NSMutableArray alloc] init];
-    
-    motionLibParamsOn = new BOOL[self._motionLibParamAddress.count];
-    
+
     for (int i=0; i<dspFaustMotion->getParamsCount(); i++) {
         const char *dataParamMotionLib = dspFaustMotion->getMetadata(i, "showName");
         if (dataParamMotionLib &&  strcmp(dataParamMotionLib,"") != 0) {
@@ -426,28 +424,20 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
         }
     }
     for (int i=0; i<motionLibParamNames.size(); i++) {
-        //printf("%i=%s",i,motionParamNames[i].c_str());
         [self._motionLibParamArray addObject:[NSString stringWithUTF8String:motionLibParamNames[i].c_str()]];
         [self._motionLibParamAddress addObject:[NSString stringWithUTF8String:motionLibParamAddress[i].c_str()]];
     }
-    
+    // Allocate AFTER array is filled
+    NSInteger libCount = self._motionLibParamArray.count;
+    motionLibParamsOn = new BOOL[libCount > 0 ? libCount : 1]();
+    for (int i=0; i<libCount; i++) motionLibParamsOn[i] = false;
+
     std::vector<std::string>motionAudioParamNames;
     std::vector<std::string>motionAudioParamAddress;
-    
-    //std::vector<std::string>motionLibParamNames;
-    //std::vector<std::string>motionLibParamAddress;
-    
-    
+
     self._motionAudioParamArray = [[NSMutableArray alloc] init];
     self._motionAudioParamAddress = [[NSMutableArray alloc] init];
-    
-    //self._motionLibParamArray = [[NSMutableArray alloc] init];
-    //self._motionLibParamAddress = [[NSMutableArray alloc] init];
-    
-    motionAudioParamsOn = new BOOL[self._motionAudioParamAddress.count];
-    
-    //motionLibParamsOn = new BOOL[self._motionLibParamAddress.count];
-    
+
     for (int i=0; i<dspFaust->getParamsCount(); i++) {
         const char *dataParamMotionAudio = dspFaust->getMetadata(i, "showName");
         if (dataParamMotionAudio && strcmp(dataParamMotionAudio,"") != 0) {
@@ -456,10 +446,13 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
         }
     }
     for (int i=0; i<motionAudioParamNames.size(); i++) {
-        //printf("%i=%s",i,motionParamNames[i].c_str());
         [self._motionAudioParamArray addObject:[NSString stringWithUTF8String:motionAudioParamNames[i].c_str()]];
         [self._motionAudioParamAddress addObject:[NSString stringWithUTF8String:motionAudioParamAddress[i].c_str()]];
     }
+    // Allocate AFTER array is filled
+    NSInteger audioCount = self._motionAudioParamArray.count;
+    motionAudioParamsOn = new BOOL[audioCount > 0 ? audioCount : 1]();
+    for (int i=0; i<audioCount; i++) motionAudioParamsOn[i] = false;
     
     
 }
@@ -1690,60 +1683,41 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, pickerView.frame.size.width, 44)];
-    label.backgroundColor = [UIColor grayColor];
+    label.backgroundColor = [UIColor clearColor];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:15];
+    label.font = [UIFont boldSystemFontOfSize:16];
     label.adjustsFontSizeToFitWidth = YES;
-    
-    // for setting view
-    if (pickerView.tag == 2) {
-        label.text = [self._motionAudioParamArray objectAtIndex:row];
-    } else if (pickerView.tag == 1) {
-        label.text = [self._motionLibParamArray objectAtIndex:row];
-    } else {
-        label.text = [self._motionAudioParamArray objectAtIndex:row];
-    }
-    
+
+    NSArray *arr = nil;
+    if (pickerView.tag == 1)      arr = self._motionLibParamArray;
+    else if (pickerView.tag == 2) arr = self._motionAudioParamArray;
+    else                          arr = self._motionAudioParamArray;
+    if (arr && row >= 0 && row < (NSInteger)arr.count) label.text = arr[row];
     return label;
 }
 
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    
-    
-    // for setting view
+
     if (pickerView.tag == 1) {
-        
-        for (int i=0; i< self._motionLibParamArray.count; i++) {
-            motionLibParamsOn[i]=false;
-        }
-        
+        if (!self._motionLibParamArray || row >= (NSInteger)self._motionLibParamArray.count) return;
+        for (int i=0; i< self._motionLibParamArray.count; i++) motionLibParamsOn[i]=false;
         motionLibParamsOn[row]=true;
-        
         self.myCustomSettingView.param1.text = [NSString stringWithFormat:@"%.2f", dspFaustMotion->getParamValue([self._motionLibParamAddress[row] UTF8String])];
-        
+
     } else if (pickerView.tag == 2) {
-        
-        for (int i=0; i< self._motionAudioParamArray.count; i++) {
-            motionAudioParamsOn[i]=false;
-        }
-        
+        if (!self._motionAudioParamArray || row >= (NSInteger)self._motionAudioParamArray.count) return;
+        for (int i=0; i< self._motionAudioParamArray.count; i++) motionAudioParamsOn[i]=false;
         motionAudioParamsOn[row]=true;
-        
-        [self.myCustomSettingView.param2 setText: [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([self._motionAudioParamAddress[row] UTF8String])]];
-        
-        
-    } else  {
-        for (int i=0; i< self._motionAudioParamArray.count; i++) {
-            motionAudioParamsOn[i]=false;
-        }
-        
+        [self.myCustomSettingView.param2 setText:[NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([self._motionAudioParamAddress[row] UTF8String])]];
+
+    } else {
+        if (!self._motionAudioParamArray || row >= (NSInteger)self._motionAudioParamArray.count) return;
+        for (int i=0; i< self._motionAudioParamArray.count; i++) motionAudioParamsOn[i]=false;
         motionAudioParamsOn[row]=true;
-        
         _motionParam.text = [NSString stringWithFormat:@"%.2f", dspFaust->getParamValue([self._motionAudioParamAddress[row] UTF8String])];
     }
-    
 }
 
 // number Of Components
@@ -1774,20 +1748,12 @@ CGFloat scaleBackValue(CGFloat value, CGFloat min, CGFloat max) {
 
 
 - (NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
-    
-    // for setting view
-    if (pickerView.tag == 2) {
-        
-        return self._motionAudioParamArray[row];
-        
-    } else if (pickerView.tag == 1) {
-        
-        return self._motionLibParamArray[row];
-        
-    } else {
-        return self._motionAudioParamArray[row];
-    }
-    //return nil;
+    NSArray *arr = nil;
+    if (pickerView.tag == 1)      arr = self._motionLibParamArray;
+    else if (pickerView.tag == 2) arr = self._motionAudioParamArray;
+    else                          arr = self._motionAudioParamArray;
+    if (arr && row >= 0 && row < (NSInteger)arr.count) return arr[row];
+    return @"";
 }
 
 
