@@ -51,6 +51,14 @@ install:
 	rm -rf $(prefix)/share/faust/api-allen
 	cp -r api-allen $(prefix)/share/faust/
 
+	########################################
+	#### iOS 26 patch: LibsndfileReader  ####
+	#### Overwrites system version with  ####
+	#### sf_open_virtual fix for iOS 26  ####
+	#### sandbox fopen() restriction.    ####
+	########################################
+	cp faust/gui/LibsndfileReader.h $(prefix)/include/faust/gui/LibsndfileReader.h
+
 
 uninstall:
 
@@ -63,3 +71,5 @@ uninstall:
 	rm -rf $(prefix)/share/faust/smartphone
 	rm -f $(dest)/faust2api_a
 	rm -f $(dest)/faust2smartphone
+	#### Note: LibsndfileReader.h is NOT restored on uninstall.        ####
+	#### To restore the original, reinstall Faust from the Faust repo. ####

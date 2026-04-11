@@ -68,8 +68,8 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone(SHC) -"
 	echo "===================================="
-	echo "-     Version: 1.001    -"
-	echo "_2024.12_ [midi:]rework_"
+	echo "-     Version: 1.005    -"
+	echo "_2026.04_ UI/sndfile UPDATE _"
 	echo "===================================="
 }
 
@@ -531,6 +531,142 @@ fi
 
 
 ###########################
+# Auto-inject Soundfiles
+###########################
+# When -soundfile is used, parse the generated DspFaust.cpp for all audio file
+# names referenced in addSoundfile() calls, then:
+#   iOS  : copy files into the project folder AND patch project.pbxproj so
+#          Xcode sees them as Resources (no manual drag-and-drop needed).
+#   Android: copy files into app/src/main/assets/ (already picked up by Gradle).
+#
+# File search order: directory of the .dsp file, then current directory.
+
+if [ "$SOUNDFILE" = "1" ]; then
+
+	# ── Determine which DspFaust.cpp was just generated ──────────────────────
+	if [ $ANDROID -eq 1 ] || [ $ANDROIDMOTION -eq 1 ] || [ $ANDROIDPLUGIN -eq 1 ]; then
+		DSPCPP="$APPFOLDER/cpp/DspFaust.cpp"
+	else
+		DSPCPP="$APPFOLDER/DspFaust.cpp"
+	fi
+
+	# ── Extract audio filenames from addSoundfile() calls ────────────────────
+	# addSoundfile("label", "{'a.aif';'b.wav'}", &zone)  or  "single.aif"
+	SOUNDFILE_LIST=""
+	if [ -f "$DSPCPP" ]; then
+		SOUNDFILE_LIST=$(grep -o 'addSoundfile([^)]*)'  "$DSPCPP" \
+			| grep -o "'[^']*'" \
+			| tr -d "'" \
+			| grep -v '^$' \
+			| sort -u)
+	fi
+
+	# ── Locate each audio file and inject it ─────────────────────────────────
+	DSPDIR=$(dirname "$FILE")
+
+	if [ $IOS -eq 1 ] || [ $IOSMOTION -eq 1 ] || [ $IOSPLUGIN -eq 1 ]; then
+
+		PBXPROJ="$BUILDDIR/iOS.xcodeproj/project.pbxproj"
+
+		for SFNAME in $SOUNDFILE_LIST; do
+			# Find the file
+			SFPATH=""
+			if [ -f "$DSPDIR/$SFNAME" ]; then
+				SFPATH="$DSPDIR/$SFNAME"
+			elif [ -f "$SFNAME" ]; then
+				SFPATH="$SFNAME"
+			else
+				echo "Warning: soundfile '$SFNAME' not found, skipping." >&2
+				continue
+			fi
+
+			# Copy into the Xcode project iOS folder
+			cp "$SFPATH" "$APPFOLDER/$SFNAME"
+
+			# Inject into project.pbxproj via Python (avoids sed multiline issues)
+			python3 - "$PBXPROJ" "$SFNAME" <<'PYEOF'
+import sys, hashlib
+
+pbxproj_path = sys.argv[1]
+sfname       = sys.argv[2]
+
+# Detect Xcode file type
+ext = sfname.rsplit('.', 1)[-1].lower()
+ftype_map = {'aif': 'audio.aiff', 'aiff': 'audio.aiff',
+             'wav': 'audio.wav',  'mp3': 'audio.mp3',
+             'ogg': 'audio.other'}
+ftype = ftype_map.get(ext, 'file')
+
+# Generate stable 24-char hex UUIDs from filename
+def make_uuid(seed):
+    return hashlib.md5(seed.encode()).hexdigest()[:24].upper()
+
+uuid_ref = make_uuid('fileref_'   + sfname)
+uuid_bld = make_uuid('buildfile_' + sfname)
+
+with open(pbxproj_path, 'r') as f:
+    lines = f.readlines()
+
+# Skip if already present
+if any(sfname in line for line in lines):
+    sys.exit(0)
+
+# Work line-by-line: insert new line AFTER the matching anchor line.
+# This preserves the anchor line intact and avoids partial-string replacement.
+
+ANCHOR_FILEREF_LINE  = f'\t\tC96A74CC1E86EF4D00C6474F /* keyDark.png */ = {{isa = PBXFileReference; lastKnownFileType = image.png; path = keyDark.png; sourceTree = "<group>"; }};\n'
+ANCHOR_BUILDFILE_LINE = f'\t\tC96A74CD1E86EF4D00C6474F /* keyDark.png in Resources */ = {{isa = PBXBuildFile; fileRef = C96A74CC1E86EF4D00C6474F /* keyDark.png */; }};\n'
+ANCHOR_RES_LINE      = f'\t\t\t\tC96A74CD1E86EF4D00C6474F /* keyDark.png in Resources */,\n'
+ANCHOR_GRP_LINE      = f'\t\t\t\tC96A74CC1E86EF4D00C6474F /* keyDark.png */,\n'
+
+new_fileref   = f'\t\t{uuid_ref} /* {sfname} */ = {{isa = PBXFileReference; lastKnownFileType = {ftype}; path = {sfname}; sourceTree = "<group>"; }};\n'
+new_buildfile = f'\t\t{uuid_bld} /* {sfname} in Resources */ = {{isa = PBXBuildFile; fileRef = {uuid_ref} /* {sfname} */; }};\n'
+new_res_entry = f'\t\t\t\t{uuid_bld} /* {sfname} in Resources */,\n'
+new_grp_entry = f'\t\t\t\t{uuid_ref} /* {sfname} */,\n'
+
+result = []
+for line in lines:
+    result.append(line)
+    if line == ANCHOR_FILEREF_LINE:
+        result.append(new_fileref)
+    elif line == ANCHOR_BUILDFILE_LINE:
+        result.append(new_buildfile)
+    elif line == ANCHOR_RES_LINE:
+        result.append(new_res_entry)
+    elif line == ANCHOR_GRP_LINE:
+        result.append(new_grp_entry)
+
+with open(pbxproj_path, 'w') as f:
+    f.writelines(result)
+
+print(f'  [soundfile] Added to Xcode project: {sfname}')
+PYEOF
+
+		done
+
+	elif [ $ANDROID -eq 1 ] || [ $ANDROIDMOTION -eq 1 ] || [ $ANDROIDPLUGIN -eq 1 ]; then
+
+		ASSETS_DIR="$APPFOLDER/assets"
+		mkdir -p "$ASSETS_DIR"
+
+		for SFNAME in $SOUNDFILE_LIST; do
+			SFPATH=""
+			if [ -f "$DSPDIR/$SFNAME" ]; then
+				SFPATH="$DSPDIR/$SFNAME"
+			elif [ -f "$SFNAME" ]; then
+				SFPATH="$SFNAME"
+			else
+				echo "Warning: soundfile '$SFNAME' not found, skipping." >&2
+				continue
+			fi
+			cp "$SFPATH" "$ASSETS_DIR/$SFNAME"
+			echo "  [soundfile] Copied to Android assets: $SFNAME" > $LOG
+		done
+
+	fi
+fi
+
+###########################
 # Cleaning
 ###########################
 
@@ -542,10 +678,7 @@ else
 	echo "An app project $BUILDDIR was created or updated"
 	echo "A compile file was created. [Compile APP after edit the project]"
 	if [ "$SOUNDFILE" = "1" ]; then
-	echo "=============!!Warning!!============="
-	echo "you have to manually add the needed soundfiles in the project"
-	echo "Drag your songs in Xcode or Android studio/app/src/main/assets folder"
-	echo "=============!!Warning!!============="
+	echo "Soundfiles have been automatically added to the project."
 	fi
 	echo "========================================================"
 fi

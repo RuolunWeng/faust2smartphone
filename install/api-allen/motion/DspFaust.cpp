@@ -67,6 +67,33 @@ static void osc_compute_callback(void* arg)
 // Must be done before <<includeclass>> otherwise the 'Soundfile' type is not known
 
 #if SOUNDFILE
+
+// ── iOS 26 fix (Fix 1) ────────────────────────────────────────────────────────
+// iOS 26 restricts POSIX fopen() access to app bundle files.
+// Declare ios_read_file_to_memory() before SoundUI.h / LibsndfileReader.h so
+// the patched LibsndfileReader (installed via faust2smartphone make install)
+// can call it. The patched LibsndfileReader.h replaces the system version and
+// uses open()/read() + sf_open_virtual() instead of sf_open().
+// See: faust2smartphone/install/faust/gui/LibsndfileReader.h
+// ─────────────────────────────────────────────────────────────────────────────
+#ifdef TARGET_OS_IPHONE
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <vector>
+static bool ios_read_file_to_memory(const std::string& path, std::vector<uint8_t>& buf) {
+    int fd = ::open(path.c_str(), O_RDONLY);
+    if (fd < 0) return false;
+    struct stat st;
+    if (::fstat(fd, &st) < 0) { ::close(fd); return false; }
+    buf.resize((size_t)st.st_size);
+    ssize_t n = ::read(fd, buf.data(), buf.size());
+    ::close(fd);
+    return n == (ssize_t)buf.size();
+}
+#endif
+// ─────────────────────────────────────────────────────────────────────────────
+
 #include "faust/gui/SoundUI.h"
 #endif
 
