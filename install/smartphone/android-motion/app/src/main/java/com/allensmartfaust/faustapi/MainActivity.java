@@ -45,6 +45,11 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.text.InputType;
+import android.view.ViewGroup;
 
 
 import com.DspFaust.DspFaust;
@@ -63,6 +68,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -108,12 +114,17 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
     int blockSize = 256;
     long lastDate=0;
     int updateInterval = (int)(1000.f/(SR/blockSize));
+    int sensorUpdateIntervalMicros;  // Sensor update interval in microseconds (matches iOS)
 
     ArrayList<String> cueList = new ArrayList<String>();
     ArrayList<String> tipsList = new ArrayList<String>();
 
     ArrayList<String>  motionParamArray = new ArrayList<String>();
     ArrayList<String>  motionParamAddress = new ArrayList<String>();
+
+    // Settings panel selected indices
+    private int motionLibSelectedIdx = 0;
+    private int dspParamSelectedIdx = 0;
 
     int cueIndex,cueIndexNext;
 
@@ -339,15 +350,18 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         }
 
+        // Calculate sensor update interval to match iOS behavior
+        calculateSensorUpdateInterval();
+
         if (sensorManager!=null) {
             sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-                    Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+                    Sensor.TYPE_ACCELEROMETER), sensorUpdateIntervalMicros);
 
             sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-                    Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+                    Sensor.TYPE_GYROSCOPE), sensorUpdateIntervalMicros);
 
             sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
-                    Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_FASTEST);
+                    Sensor.TYPE_ROTATION_VECTOR), sensorUpdateIntervalMicros);
         }
 
         touche = (ImageView) findViewById(R.id.touche);
@@ -513,103 +527,15 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
         settings = (CheckBox) findViewById(R.id.SetParamsNew);
         settings.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
                                                 @Override
                                                 public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-
                                                     if (isChecked) {
-
-                                                        radioGroup.setVisibility(View.INVISIBLE);
-                                                        paramsValue.setVisibility(View.INVISIBLE);
-                                                        setMotion.setVisibility(View.INVISIBLE);
-                                                        defaultParams.setVisibility(View.INVISIBLE);
-                                                        ipAddress.setVisibility(View.INVISIBLE);
-                                                        inputPort.setVisibility(View.INVISIBLE);
-                                                        outputPort.setVisibility(View.INVISIBLE);
-                                                        setOSC.setVisibility(View.INVISIBLE);
-                                                        initOSC.setVisibility(View.INVISIBLE);
-
-                                                        // Check if the RadioGroup is found
-                                                        if (radioGroupMotionLib != null) {
-                                                            // Get the first RadioButton in the RadioGroup
-                                                            RadioButton firstRadioButton = (RadioButton) radioGroupMotionLib.getChildAt(0);
-                                                            // Check if the first RadioButton is found
-                                                            if (firstRadioButton != null) {
-                                                                // Set the first RadioButton as checked
-                                                                firstRadioButton.setChecked(true);
-                                                                paramsValueMotionLib.setText( String.valueOf(dspFaustMotion.getParamValue(motionLibParamAddress.get(0))));
-                                                            }
-                                                        }
-
-                                                        if (motionParamArray.size() >0) {
-                                                            radioGroup.setVisibility(View.VISIBLE);
-                                                            paramsValue.setVisibility(View.VISIBLE);
-                                                            setMotion.setVisibility(View.VISIBLE);
-                                                            defaultParams.setVisibility(View.VISIBLE);
-                                                            // Check if the RadioGroup is found
-                                                            if (radioGroup != null) {
-                                                                // Get the first RadioButton in the RadioGroup
-                                                                RadioButton firstRadioButton = (RadioButton) radioGroup.getChildAt(0);
-                                                                // Check if the first RadioButton is found
-                                                                if (firstRadioButton != null) {
-                                                                    // Set the first RadioButton as checked
-                                                                    firstRadioButton.setChecked(true);
-                                                                    paramsValue.setText( String.valueOf(dspFaust.getParamValue(motionParamAddress.get(0))));
-                                                                }
-                                                            }
-
-                                                        }
-                                                        setRef.setVisibility(View.VISIBLE);
-                                                        if (dspFaust.getOSCIsOn()) {
-                                                            ipAddress.setVisibility(View.VISIBLE);
-                                                            ipAddress.setText(SharedPrefRead("oscAddress","192.168.1.5"));
-                                                            inputPort.setVisibility(View.VISIBLE);
-                                                            inputPort.setText(SharedPrefRead("oscInPort","5510"));
-                                                            outputPort.setVisibility(View.VISIBLE);
-                                                            outputPort.setText(SharedPrefRead("oscOutPort","5511"));
-                                                            setOSC.setVisibility(View.VISIBLE);
-                                                            initOSC.setVisibility(View.VISIBLE);
-                                                        }
-
-                                                        settingsLayoutRoot.setVisibility(View.VISIBLE);
-
-                                                        if(cueIsOn && !newCueIsOn && !newCounterIsOn) {
-                                                            nextCue.setVisibility(View.INVISIBLE);
-                                                            prevCue.setVisibility(View.INVISIBLE);
-                                                            initCue.setVisibility(View.INVISIBLE);
-                                                            cue.setVisibility(View.INVISIBLE);
-                                                            cueNext.setVisibility(View.INVISIBLE);
-                                                            cueText.setVisibility(View.INVISIBLE);
-                                                            cueNextText.setVisibility(View.INVISIBLE);
-                                                            // deactive Touche
-                                                            scrollView.setVisibility(View.VISIBLE);
-
-                                                        } else {
-                                                            scrollView.setVisibility(View.INVISIBLE);
-                                                        }
-
-                                                    } else {
-                                                        settingsLayoutRoot.setVisibility(View.INVISIBLE);
-
-                                                        if(cueIsOn && !newCueIsOn && !newCounterIsOn) {
-                                                            nextCue.setVisibility(View.VISIBLE);
-                                                            prevCue.setVisibility(View.VISIBLE);
-                                                            initCue.setVisibility(View.VISIBLE);
-                                                            cue.setVisibility(View.VISIBLE);
-                                                            cueNext.setVisibility(View.VISIBLE);
-                                                            cueText.setVisibility(View.VISIBLE);
-                                                            cueNextText.setVisibility(View.VISIBLE);
-                                                            // active Touche
-                                                            scrollView.setVisibility(View.INVISIBLE);
-
-                                                        } else {
-                                                            scrollView.setVisibility(View.VISIBLE);
-                                                        }
-
+                                                        showSettingView();
+                                                        // Uncheck immediately so it can be checked again
+                                                        buttonView.setChecked(false);
                                                     }
                                                 }
-                                            }
-        );
+                                            });
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
                                               {
@@ -1406,17 +1332,34 @@ implements ActivityCompat.OnRequestPermissionsResultCallback {
 
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
 
-
+            // Task 5.4: Skip motion rendering if DSP is not running to prevent OSC crash
+            // This prevents crashes when sensor events fire while DSP is stopped (e.g., during Settings)
+            if (dspFaust == null || !dspFaust.isRunning()) {
+                Log.d("Faust", "Skipping motion render - DSP not running");
+                return;
+            }
 
             // Update rotation matrix at sensor rate
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
 
-            //dspFaust.motionRender(rotationMatrix[0]*(-1.f), rotationMatrix[3]*(-1.f), rotationMatrix[6]*(-1.f),
-            //                      rotationMatrix[1]*(-1.f), rotationMatrix[4]*(-1.f), rotationMatrix[7]*(-1.f),
-            //                      rotationMatrix[2]*(-1.f), rotationMatrix[5]*(-1.f), rotationMatrix[8]*(-1.f));
-            dspFaust.motionRender(rotationMatrix[3]*(-1.f), rotationMatrix[0]*(1.f), rotationMatrix[6]*(-1.f),
-                                rotationMatrix[4]*(-1.f), rotationMatrix[1]*(1.f), rotationMatrix[7]*(-1.f),
-                                rotationMatrix[5]*(-1.f), rotationMatrix[2]*(1.f), rotationMatrix[8]*(-1.f));
+            // iOS uses raw rotation matrix values (m11, m12, m13, m21, m22, m23, m31, m32, m33)
+            // Android SensorManager.getRotationMatrixFromVector returns matrix in row-major order:
+            // rotationMatrix[0]=m11, rotationMatrix[1]=m12, rotationMatrix[2]=m13,
+            // rotationMatrix[3]=m21, rotationMatrix[4]=m22, rotationMatrix[5]=m23,
+            // rotationMatrix[6]=m31, rotationMatrix[7]=m32, rotationMatrix[8]=m33
+            //
+            // COORDINATE SYSTEM FIX:
+            // Android and iOS have different device coordinate systems.
+            // For DspFaustMotion output parameters, we need to swap X and Y axes.
+            // This is done by swapping the first two columns of the rotation matrix:
+            // - Column 1 (X-axis): rotationMatrix[0], rotationMatrix[3], rotationMatrix[6] <-> Column 2 (Y-axis): rotationMatrix[1], rotationMatrix[4], rotationMatrix[7]
+            // Result: [m12, m11, m13, m22, m21, m23, m32, m31, m33]
+            
+            // Pass to DspFaust.motionRender with X/Y axes swapped
+            dspFaust.motionRender(
+                    rotationMatrix[1], rotationMatrix[0], rotationMatrix[2],  // Swap m11 and m12
+                    rotationMatrix[4], rotationMatrix[3], rotationMatrix[5],  // Swap m21 and m22
+                    rotationMatrix[7], rotationMatrix[6], rotationMatrix[8]); // Swap m31 and m32
 
             // Apply the reference rotation matrix to the current rotation matrix
             if (referenceRotationMatrix != null && rotationMatrix != null) {
@@ -1798,6 +1741,20 @@ private void resetParams() {
 
 }
 
+    /**
+     * Calculate sensor update interval to match iOS behavior.
+     * iOS uses: updateInterval = 1.0/(SR/blockSize)
+     * Convert to microseconds for Android SensorManager.
+     */
+    private void calculateSensorUpdateInterval() {
+        // Match iOS: updateInterval = 1.0/(SR/blockSize)
+        // Convert to microseconds for Android SensorManager
+        float updateIntervalSeconds = 1.0f / (SR / (float)blockSize);
+        sensorUpdateIntervalMicros = (int)(updateIntervalSeconds * 1000000);
+        float updateRateHz = 1000000.0f / sensorUpdateIntervalMicros;
+        Log.d("Faust", "Sensor update interval: " + sensorUpdateIntervalMicros + " μs (" + updateRateHz + " Hz)");
+    }
+
 
 @Override
     protected void onPause() {
@@ -1856,6 +1813,563 @@ private void resetParams() {
 
 
         }
+    }
+
+    // Task 5.5: Handle keyboard lifecycle impact on OSC state
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        
+        if (hasFocus && permissionToRecordAccepted) {
+            // Window focus returned (e.g., keyboard closed)
+            // Verify OSC state and re-initialize if needed
+            // NOTE: setOSCValue() only works when DSP is NOT running
+            // Since DSP is likely running here, we skip OSC re-init
+            // The close handlers already handle OSC re-initialization
+            if (dspFaust != null && dspFaust.getOSCIsOn()) {
+                Log.d("Faust", "Window focus changed, DSP running: " + dspFaust.isRunning());
+                // OSC re-initialization is handled by Settings close handlers
+                // No action needed here
+            }
+        }
+    }
+
+    // ── Setting panel ────────────────────────────────────────────
+
+    private void showSettingView() {
+        // CRITICAL: Do NOT stop/start DSP when opening/closing Settings
+        // DSP stop() calls fOSCUI->stop() which triggers TLS access and causes SIGBUS crash
+        // DSP start() calls fOSCUI->run() which also triggers TLS access
+        // Solution: Keep DSP running, only unregister sensors to prevent motion rendering
+        
+        // Unregister sensors to prevent motion rendering while Settings is open
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(mSensorListener);
+            Log.d("Faust", "Sensors unregistered for Settings");
+        }
+        
+        // Do NOT stop DSP - keep it running to avoid OSC TLS issues
+        // The sensor unregistration prevents motion rendering
+        
+        // Add overlay to the Activity content view
+        final ViewGroup contentView = findViewById(android.R.id.content);
+
+        final FrameLayout overlay = new FrameLayout(this);
+        overlay.setBackgroundColor(Color.argb(240, 10, 10, 10));
+        
+        // Click outside to close
+        overlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentView.removeView(overlay);
+                
+                // Re-register sensors (DSP is still running, no need to restart it)
+                // CRITICAL: Do NOT call dspFaust.start() - it triggers OSC TLS access
+                if (sensorManager != null) {
+                    sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                            Sensor.TYPE_ACCELEROMETER), sensorUpdateIntervalMicros);
+                    sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                            Sensor.TYPE_GYROSCOPE), sensorUpdateIntervalMicros);
+                    sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                            Sensor.TYPE_ROTATION_VECTOR), sensorUpdateIntervalMicros);
+                    Log.d("Faust", "Sensors re-registered after Settings close");
+                }
+                
+                // Refresh SHCUI to fix black screen issue after keyboard input
+                refreshSHCUI();
+                
+                // Multiple delayed refreshes to ensure keyboard is fully closed
+                if (scrollView != null) {
+                    scrollView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshSHCUI();
+                        }
+                    }, 200);
+                    
+                    // Second delayed refresh for slower keyboard animations
+                    scrollView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshSHCUI();
+                        }
+                    }, 400);
+                }
+            }
+        });
+
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(24, 48, 24, 24);
+        
+        // Prevent clicks on container from closing overlay
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Do nothing - just consume the click
+            }
+        });
+
+        // ── Top bar ──────────────────────────────────────────────
+        LinearLayout topBar = new LinearLayout(this);
+        topBar.setOrientation(LinearLayout.HORIZONTAL);
+
+        TextView titleTv = new TextView(this);
+        titleTv.setText("Settings");
+        titleTv.setTextColor(Color.WHITE);
+        titleTv.setTextSize(18);
+        LinearLayout.LayoutParams titleLp = new LinearLayout.LayoutParams(0,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        titleTv.setLayoutParams(titleLp);
+        topBar.addView(titleTv);
+
+        Button closeBtn = new Button(this);
+        closeBtn.setText("✕");
+        closeBtn.setTextColor(Color.WHITE);
+        closeBtn.setBackgroundColor(Color.TRANSPARENT);
+        final FrameLayout finalOverlay = overlay;
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentView.removeView(finalOverlay);
+                
+                // Re-register sensors (DSP is still running, no need to restart it)
+                // CRITICAL: Do NOT call dspFaust.start() - it triggers OSC TLS access
+                if (sensorManager != null) {
+                    sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                            Sensor.TYPE_ACCELEROMETER), sensorUpdateIntervalMicros);
+                    sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                            Sensor.TYPE_GYROSCOPE), sensorUpdateIntervalMicros);
+                    sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(
+                            Sensor.TYPE_ROTATION_VECTOR), sensorUpdateIntervalMicros);
+                    Log.d("Faust", "Sensors re-registered after Settings close");
+                }
+                
+                // Refresh SHCUI to fix black screen issue after keyboard input
+                refreshSHCUI();
+                
+                // Multiple delayed refreshes to ensure keyboard is fully closed
+                if (scrollView != null) {
+                    scrollView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshSHCUI();
+                        }
+                    }, 200);
+                    
+                    // Second delayed refresh for slower keyboard animations
+                    scrollView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshSHCUI();
+                        }
+                    }, 400);
+                }
+            }
+        });
+        topBar.addView(closeBtn);
+        container.addView(topBar);
+
+        // ── Content area ─────────────────────────────────────────
+        ScrollView contentScroll = new ScrollView(this);
+        LinearLayout.LayoutParams scrollLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
+        contentScroll.setLayoutParams(scrollLp);
+
+        LinearLayout settingPage = buildSettingPage();
+        contentScroll.addView(settingPage);
+        container.addView(contentScroll);
+
+        LinearLayout.LayoutParams containerLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        container.setLayoutParams(containerLp);
+        overlay.addView(container);
+        
+        // CRITICAL: Do NOT add OnAttachStateChangeListener - causes SIGBUS crash
+        // Even just logging in onViewDetachedFromWindow triggers OSC TLS access
+        // The overlay detach event itself seems to trigger OSC library cleanup
+        
+        contentView.addView(overlay);
+    }
+
+    private LinearLayout buildSettingPage() {
+        LinearLayout page = new LinearLayout(this);
+        page.setOrientation(LinearLayout.VERTICAL);
+        page.setPadding(0, 8, 0, 8);
+
+        // ── Section 1: Motion Lib Parameters ──────────────────────
+        addSectionTitle(page, "Motion Lib Parameters");
+
+        // Get motion lib parameters with showName metadata
+        ArrayList<String> motionLibNames = new ArrayList<>();
+        ArrayList<String> motionLibAddrs = new ArrayList<>();
+        ArrayList<Float> motionLibMins = new ArrayList<>();
+        ArrayList<Float> motionLibMaxs = new ArrayList<>();
+        ArrayList<Float> motionLibInits = new ArrayList<>();
+
+        if (dspFaustMotion != null) {
+            int motionCount = dspFaustMotion.getParamsCount();
+            for (int i = 0; i < motionCount; i++) {
+                String showName = dspFaustMotion.getMetadata(i, "showName");
+                if (showName == null || showName.isEmpty()) continue;
+                
+                motionLibNames.add(showName);
+                motionLibAddrs.add(dspFaustMotion.getParamAddress(i));
+                motionLibMins.add(dspFaustMotion.getParamMin(i));
+                motionLibMaxs.add(dspFaustMotion.getParamMax(i));
+                motionLibInits.add(dspFaustMotion.getParamInit(i));
+            }
+        }
+
+        if (!motionLibNames.isEmpty()) {
+            Spinner motionSpinner = new Spinner(this);
+            motionSpinner.setPrompt("Select Motion Lib Parameter");
+            ArrayAdapter<String> motionAdapter = createWhiteTextAdapter(motionLibNames);
+            motionSpinner.setAdapter(motionAdapter);
+            motionSpinner.setSelection(Math.min(motionLibSelectedIdx, motionLibNames.size() - 1));
+            
+            // Add margins for spacing
+            LinearLayout.LayoutParams spinnerLp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            spinnerLp.setMargins(0, 8, 0, 8);
+            motionSpinner.setLayoutParams(spinnerLp);
+            
+            page.addView(motionSpinner);
+
+            final EditText motionEt = new EditText(this);
+            motionEt.setTextColor(Color.WHITE);
+            motionEt.setHintTextColor(Color.GRAY);
+            motionEt.setBackgroundColor(Color.argb(180, 40, 40, 40));
+            motionEt.setInputType(InputType.TYPE_CLASS_NUMBER
+                    | InputType.TYPE_NUMBER_FLAG_DECIMAL
+                    | InputType.TYPE_NUMBER_FLAG_SIGNED);
+            motionEt.setPadding(12, 8, 12, 8);
+
+            if (motionLibSelectedIdx < motionLibAddrs.size()) {
+                motionEt.setText(String.valueOf(
+                        dspFaustMotion.getParamValue(motionLibAddrs.get(motionLibSelectedIdx))));
+            }
+
+            final ArrayList<String> finalMotionLibAddrs = motionLibAddrs;
+            final ArrayList<String> finalMotionLibNames = motionLibNames;
+            final ArrayList<Float> finalMotionLibMins = motionLibMins;
+            final ArrayList<Float> finalMotionLibMaxs = motionLibMaxs;
+            final ArrayList<Float> finalMotionLibInits = motionLibInits;
+
+            motionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override public void onItemSelected(AdapterView<?> p, View v, int pos, long id) {
+                    motionLibSelectedIdx = pos;
+                    motionEt.setText(String.valueOf(dspFaustMotion.getParamValue(finalMotionLibAddrs.get(pos))));
+                }
+                @Override public void onNothingSelected(AdapterView<?> p) {}
+            });
+            page.addView(motionEt);
+
+            LinearLayout motionBtns = new LinearLayout(this);
+            motionBtns.setOrientation(LinearLayout.HORIZONTAL);
+
+            final Spinner finalMotionSpinner = motionSpinner;
+            Button motionSet = makeSmallButton("Set", Color.argb(200, 40, 100, 40));
+            motionSet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int idx = finalMotionSpinner.getSelectedItemPosition();
+                    if (idx < 0 || idx >= finalMotionLibAddrs.size()) return;
+                    try {
+                        float val = Float.parseFloat(motionEt.getText().toString());
+                        val = Math.max(finalMotionLibMins.get(idx), Math.min(finalMotionLibMaxs.get(idx), val));
+                        dspFaustMotion.setParamValue(finalMotionLibAddrs.get(idx), val);
+                        SharedPreWriteFloat(finalMotionLibNames.get(idx), val);
+                    } catch (NumberFormatException ignored) {}
+                }
+            });
+
+            Button motionReset = makeSmallButton("↺ Reset", Color.argb(200, 100, 40, 40));
+            motionReset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int idx = finalMotionSpinner.getSelectedItemPosition();
+                    if (idx < 0 || idx >= finalMotionLibAddrs.size()) return;
+                    float init = finalMotionLibInits.get(idx);
+                    dspFaustMotion.setParamValue(finalMotionLibAddrs.get(idx), init);
+                    motionEt.setText(String.valueOf(init));
+                    SharedPreWriteFloat(finalMotionLibNames.get(idx), init);
+                }
+            });
+
+            motionBtns.addView(motionSet);
+            motionBtns.addView(motionReset);
+            page.addView(motionBtns);
+        } else {
+            addGrayNote(page, "No Motion Lib parameters available");
+        }
+
+        // ── Section 2: DSP Parameters ─────────────────────────────
+        addSectionTitle(page, "DSP Parameters");
+
+        if (!motionParamArray.isEmpty()) {
+            Spinner dspSpinner = new Spinner(this);
+            dspSpinner.setPrompt("Select DSP Parameter");
+            ArrayAdapter<String> dspAdapter = createWhiteTextAdapter(motionParamArray);
+            dspSpinner.setAdapter(dspAdapter);
+            dspSpinner.setSelection(Math.min(dspParamSelectedIdx, motionParamArray.size() - 1));
+            
+            // Add margins for spacing
+            LinearLayout.LayoutParams spinnerLp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            spinnerLp.setMargins(0, 8, 0, 8);
+            dspSpinner.setLayoutParams(spinnerLp);
+            
+            page.addView(dspSpinner);
+
+            final EditText dspEt = new EditText(this);
+            dspEt.setTextColor(Color.WHITE);
+            dspEt.setHintTextColor(Color.GRAY);
+            dspEt.setBackgroundColor(Color.argb(180, 40, 40, 40));
+            dspEt.setInputType(InputType.TYPE_CLASS_NUMBER
+                    | InputType.TYPE_NUMBER_FLAG_DECIMAL
+                    | InputType.TYPE_NUMBER_FLAG_SIGNED);
+            dspEt.setPadding(12, 8, 12, 8);
+
+            if (dspParamSelectedIdx < motionParamAddress.size()) {
+                dspEt.setText(String.valueOf(
+                        dspFaust.getParamValue(motionParamAddress.get(dspParamSelectedIdx))));
+            }
+
+            final ArrayList<String> finalMotionParamAddress = motionParamAddress;
+            final ArrayList<String> finalMotionParamArray = motionParamArray;
+
+            dspSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override public void onItemSelected(AdapterView<?> p, View v, int pos, long id) {
+                    dspParamSelectedIdx = pos;
+                    if (pos < finalMotionParamAddress.size()) {
+                        dspEt.setText(String.valueOf(
+                                dspFaust.getParamValue(finalMotionParamAddress.get(pos))));
+                    }
+                }
+                @Override public void onNothingSelected(AdapterView<?> p) {}
+            });
+            page.addView(dspEt);
+
+            LinearLayout dspBtns = new LinearLayout(this);
+            dspBtns.setOrientation(LinearLayout.HORIZONTAL);
+
+            final Spinner finalDspSpinner = dspSpinner;
+            Button dspSet = makeSmallButton("Set", Color.argb(200, 40, 100, 40));
+            dspSet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int idx = finalDspSpinner.getSelectedItemPosition();
+                    if (idx < 0 || idx >= finalMotionParamAddress.size()) return;
+                    try {
+                        float val = Float.parseFloat(dspEt.getText().toString());
+                        dspFaust.setParamValue(finalMotionParamAddress.get(idx), val);
+                        SharedPreWriteFloat(finalMotionParamArray.get(idx), val);
+                    } catch (NumberFormatException ignored) {}
+                }
+            });
+
+            Button dspReset = makeSmallButton("↺ Reset", Color.argb(200, 100, 40, 40));
+            dspReset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int idx = finalDspSpinner.getSelectedItemPosition();
+                    if (idx < 0 || idx >= finalMotionParamAddress.size()) return;
+                    float init = dspFaust.getParamInit(idx);
+                    dspFaust.setParamValue(finalMotionParamAddress.get(idx), init);
+                    dspEt.setText(String.valueOf(init));
+                    SharedPreWriteFloat(finalMotionParamArray.get(idx), init);
+                }
+            });
+
+            dspBtns.addView(dspSet);
+            dspBtns.addView(dspReset);
+            page.addView(dspBtns);
+        } else {
+            addGrayNote(page, "No DSP parameters available");
+        }
+
+        // ── setRef button ─────────────────────────────────────────
+        Button setRefBtn = makeSmallButton("Set Reference Orientation", Color.argb(200, 60, 60, 120));
+        setRefBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initFrame();
+            }
+        });
+        LinearLayout.LayoutParams refLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        refLp.setMargins(0, 16, 0, 4);
+        setRefBtn.setLayoutParams(refLp);
+        page.addView(setRefBtn);
+
+        // ── OSC section (conditional) ─────────────────────────────
+        if (dspFaust != null && dspFaust.getOSCIsOn()) {
+            addSectionTitle(page, "OSC Configuration");
+
+            final EditText etIp  = makeEditRow(page, "IP Address",
+                    SharedPrefRead("oscAddress", "192.168.1.5"));
+            final EditText etIn  = makeEditRow(page, "Input Port",
+                    SharedPrefRead("oscInPort", "5510"));
+            final EditText etOut = makeEditRow(page, "Output Port",
+                    SharedPrefRead("oscOutPort", "5511"));
+
+            Button oscSet = makeSmallButton("Set OSC", Color.argb(200, 40, 100, 100));
+            oscSet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String ip  = etIp.getText().toString().trim();
+                    String in  = etIn.getText().toString().trim();
+                    String out = etOut.getText().toString().trim();
+                    if (ip.isEmpty()) ip = "192.168.1.5";
+                    if (in.isEmpty()) in = "5510";
+                    if (out.isEmpty()) out = "5511";
+                    dspFaust.setOSCValue(ip, in, out);
+                    SharedPrefWriteString("oscAddress", ip);
+                    SharedPrefWriteString("oscInPort", in);
+                    SharedPrefWriteString("oscOutPort", out);
+                    Toast.makeText(MainActivity.this, "OSC set: " + ip + " in=" + in + " out=" + out + "\nRestart app to activate the new config",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            LinearLayout.LayoutParams oscBtnLp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            oscBtnLp.setMargins(0, 8, 0, 4);
+            oscSet.setLayoutParams(oscBtnLp);
+            page.addView(oscSet);
+        }
+
+        // ── Audio info ────────────────────────────────────────────
+        addSectionTitle(page, "Audio");
+        addGrayNote(page, "Sample Rate: " + SR + " Hz    Buffer: " + blockSize + " frames");
+
+        return page;
+    }
+
+    private void addSectionTitle(LinearLayout parent, String title) {
+        TextView tv = new TextView(this);
+        tv.setText(title);
+        tv.setTextColor(Color.WHITE);
+        tv.setTextSize(16);
+        tv.setTypeface(null, android.graphics.Typeface.BOLD);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 16, 0, 8);
+        tv.setLayoutParams(lp);
+        parent.addView(tv);
+    }
+
+    private void addGrayNote(LinearLayout parent, String text) {
+        TextView tv = new TextView(this);
+        tv.setText(text);
+        tv.setTextColor(Color.LTGRAY);
+        tv.setTextSize(13);
+        tv.setTypeface(null, android.graphics.Typeface.ITALIC);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, 4, 0, 4);
+        tv.setLayoutParams(lp);
+        parent.addView(tv);
+    }
+
+    private void refreshSHCUI() {
+        Log.d("Faust", "refreshSHCUI() called - starting SHCUI refresh");
+        
+        // CRITICAL: Directly refresh all CustomButton instances
+        // This fixes the black screen issue by forcing Paint objects to redraw
+        // DO NOT call invalidate() on parent views - this causes buttons to disappear
+        if (touchUItabView != null) {
+            Map<String, FrameLayout> contentLayouts = touchUItabView.getContentLayouts();
+            int buttonCount = 0;
+            
+            for (Map.Entry<String, FrameLayout> entry : contentLayouts.entrySet()) {
+                FrameLayout tabContent = entry.getValue();
+                Log.d("Faust", "Refreshing tab: " + entry.getKey() + " with " + tabContent.getChildCount() + " children");
+                buttonCount += refreshAllCustomButtons(tabContent);
+            }
+            
+            Log.d("Faust", "Refreshed " + buttonCount + " CustomButton instances across " + contentLayouts.size() + " tabs");
+        }
+        
+        Log.d("Faust", "refreshSHCUI() completed");
+    }
+
+    /**
+     * Recursively find and refresh all CustomButton instances in a ViewGroup.
+     * Returns the count of buttons refreshed.
+     */
+    private int refreshAllCustomButtons(ViewGroup viewGroup) {
+        int count = 0;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            
+            if (child instanceof CustomButton) {
+                ((CustomButton) child).forceRedraw();
+                count++;
+                Log.d("Faust", "Refreshed CustomButton: " + ((CustomButton) child).pathForButton);
+            } else if (child instanceof ViewGroup) {
+                // Recursively search in child ViewGroups
+                count += refreshAllCustomButtons((ViewGroup) child);
+            }
+        }
+        return count;
+    }
+
+    private Button makeSmallButton(String text, int bgColor) {
+        Button btn = new Button(this);
+        btn.setText(text);
+        btn.setTextColor(Color.WHITE);
+        btn.setBackgroundColor(bgColor);
+        btn.setTextSize(14);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        lp.setMargins(4, 4, 4, 4);
+        btn.setLayoutParams(lp);
+        return btn;
+    }
+
+    private ArrayAdapter<String> createWhiteTextAdapter(ArrayList<String> items) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, items) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = (TextView) view;
+                textView.setTextColor(Color.WHITE);
+                textView.setTextSize(16);
+                textView.setPadding(12, 12, 12, 12);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textView = (TextView) view;
+                textView.setTextColor(Color.BLACK);
+                textView.setTextSize(16);
+                textView.setPadding(16, 16, 16, 16);
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
+    }
+
+    private EditText makeEditRow(LinearLayout parent, String label, String defaultValue) {
+        TextView labelTv = new TextView(this);
+        labelTv.setText(label);
+        labelTv.setTextColor(Color.LTGRAY);
+        labelTv.setTextSize(13);
+        parent.addView(labelTv);
+
+        EditText et = new EditText(this);
+        et.setText(defaultValue);
+        et.setTextColor(Color.WHITE);
+        et.setBackgroundColor(Color.argb(180, 40, 40, 40));
+        et.setPadding(12, 8, 12, 8);
+        parent.addView(et);
+
+        return et;
     }
 
 @Override

@@ -128,6 +128,10 @@ public class CustomButton extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // CRITICAL: Save the paint color before drawing
+        // onDraw() changes paint color to BLACK for text, which corrupts the button background color
+        int savedPaintColor = paint.getColor();
+
         rectF.set(lineWidth , lineWidth , getWidth() - lineWidth, getHeight() - lineWidth);
         canvas.drawRoundRect(rectF, 10, 10, paint);
 
@@ -213,6 +217,9 @@ public class CustomButton extends View {
         // Draw the button name in the center of the button
         canvas.drawText(buttonText, x, y, paint);
 
+        // CRITICAL: Restore the paint color after drawing text
+        // This prevents the button background from becoming black on next draw
+        paint.setColor(savedPaintColor);
 
     }
 
@@ -828,6 +835,25 @@ public class CustomButton extends View {
         Rect textBounds = new Rect();
         paint.getTextBounds(text, 0, text.length(), textBounds);
         return textBounds.height();
+    }
+
+    /**
+     * Force a complete redraw of this button by resetting Paint colors and invalidating.
+     * This fixes the black screen issue after keyboard closes in Settings.
+     */
+    public void forceRedraw() {
+        // ALWAYS reset the selected color to force Paint objects to update
+        // Even if selectedColor is 0, we need to reset the Paint state
+        setSelectedColor(selectedColor);
+        
+        // Force visibility and alpha
+        setVisibility(View.VISIBLE);
+        setAlpha(1.0f);
+        
+        // Force immediate invalidation
+        invalidate();
+        postInvalidate();
+        requestLayout();
     }
 
 

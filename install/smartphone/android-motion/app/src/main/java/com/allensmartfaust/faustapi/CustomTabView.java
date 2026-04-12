@@ -276,6 +276,14 @@ public class CustomTabView extends LinearLayout {
         }
     }
 
+    /**
+     * Get all content layouts (tabs) in this CustomTabView.
+     * Used for refreshing all buttons after keyboard closes.
+     */
+    public Map<String, FrameLayout> getContentLayouts() {
+        return contentLayouts;
+    }
+
 
 }
 

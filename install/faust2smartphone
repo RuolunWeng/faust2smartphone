@@ -68,7 +68,7 @@ echoVersion ()
 	echo "===================================="
 	echo "- faust2smartphone(SHC) -"
 	echo "===================================="
-	echo "-     Version: 1.005    -"
+	echo "-     Version: 1.006    -"
 	echo "_2026.04_ UI/sndfile UPDATE _"
 	echo "===================================="
 }
