@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "DspFaust.h"
 #import <CoreMotion/CoreMotion.h>
+#import <AVFoundation/AVFoundation.h>
 
 #define kGuiUpdateRate 30
 #define ONE_G 9.81
@@ -32,7 +33,16 @@
     // no sleep mode
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    dspFaust = new DspFaust(SR,bufferSize);
+    // ── iOS 26 Fix: Configure AVAudioSession before DspFaust initialization ──
+    NSError *audioSessionError = nil;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback withOptions:0 error:&audioSessionError];
+    [[AVAudioSession sharedInstance] setPreferredSampleRate:SR error:&audioSessionError];
+    [[AVAudioSession sharedInstance] setActive:YES error:&audioSessionError];
+    int actualSR = (int)[[AVAudioSession sharedInstance] sampleRate];
+    if (actualSR <= 0) actualSR = SR;
+    NSLog(@"AVAudioSession sampleRate: %f → using DSP SR: %d", [AVAudioSession sharedInstance].sampleRate, actualSR);
+    
+    dspFaust = new DspFaust(actualSR,bufferSize);
     
     //////////////////////////////////////////////
     //Cheeck the MetaData in console

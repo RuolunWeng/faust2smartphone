@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import <AVFoundation/AVFoundation.h>
 
 #define ONE_G 9.81
 #define kGUIUpdateRate 30
@@ -31,13 +32,11 @@
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     ////////////////////
-    // init faust motor
+    // init faust motor — deferred to viewDidAppear so AVAudioSession
+    // sample rate is known before DSP initialization.
     ////////////////////
-    
-    dspFaustMotion = new DspFaustMotion(SR/bufferSize,1);
-    //dspFaustMotion = new DspFaustMotion(SR, bufferSize);
-    
-    dspFaust = new DspFaust(dspFaustMotion,SR,bufferSize);
+    dspFaustMotion = nullptr;
+    dspFaust = nullptr;
     
     
     self.view.alpha = 0;
@@ -52,150 +51,95 @@
     
     _pikerView.delegate = self;
     _pikerView.dataSource = self;
-    ////////////////////////////////
-    //Check the MetaData in console
-    ///////////////////////////////
-    
-    NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
-    NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
-    
-    
-    
+
     // 创建另一个标签页
-    // between tips and setting button
-    // between tips and setting button
     CGFloat additionalButtonViewY = self.tips.frame.origin.y + self.tips.frame.size.height;
     CGFloat additionalButtonViewYMax = self.customSettingButton.frame.origin.y;
-    //CGFloat additionalButtonViewYMax = self.ip.frame.origin.y;
     CGFloat additionalButtonViewHeight = additionalButtonViewYMax - additionalButtonViewY;
-    
-    // 创建一个 CustomTabView 实例
+
     self.customTabView = [[CustomTabView alloc] initWithFrame:CGRectMake(0, additionalButtonViewY, self.view.frame.size.width, additionalButtonViewHeight)];
     self.customTabView.delegate = self;
     [self.view addSubview:self.customTabView];
-    
-    
-    // create default dictionary for preset
-    [self loadDefaultParams];
-    // load possible OSC preset before start
-    [self loadPossibleOSC];
-    
-    //////////////////////////
-    // start FAUST
-    ///////////////////////////
-    dspFaust->start();
-    dspFaustMotion->start();
-    
-    // load possible preset after start (crash before start with osc)
-    [self loadPossiblePreset];
-    
-    ///////////////////////////////////
-    // check motion key word in address
-    ///////////////////////////////////
-    dspFaust->checkAdress();
-    [self checkAddress];
-    
-    
-    if (checkPass) {
-        
-        
-        ///////////////////////
-        //other Initialization ( motion sensor + etc )
-        ///////////////////////
-        //There are two methods to receive data from CMMotionManager: push and pull.
-        //Using push for now
-        
-        [self startMotion];
-        
-        [self startRotationMatrix];
-        
-        [self startAccelerometer];
-        
-        [self startGyroscope];
-        
-        [self startUpdateGUI];
-        
-        [self displayTitle];
-        
-        
-        
-        if (dspFaust->getOSCIsOn()) {
-            _ip.enabled=true;
-            _inPort.enabled=true;
-            _outPort.enabled=true;
-            _setOSC.enabled=true;
-            _ip.alpha=1;
-            _inPort.alpha=1;
-            _outPort.alpha=1;
-            _setOSC.alpha=1;
-            _ip.text=oscAddress;
-            _inPort.text=oscInPort;
-            _outPort.text=oscOutPort;
-        } else {
-            _ip.hidden=false;
-            _inPort.enabled=false;
-            _outPort.enabled=false;
-            _setOSC.enabled=false;
-            _ip.alpha=0;
-            _inPort.alpha=0;
-            _outPort.alpha=0;
-            _setOSC.alpha=0;
-            _ip.text=@"NO";
-            _inPort.text=@"NO";
-            _outPort.text=@"NO";
-        }
-        
-        if (stateIsOn) {
-            //if (cueIsOn or stateIsOn) {
-            _init.hidden=false;
-            _tips.hidden=false;
-        } else {
-            _init.hidden=true;
-            _tips.hidden=true;
-        }
-        
-        
-        //
-        //if (cueIsOn) {
-        if ((cueIsOn and !newCueIsOn and !newCounterIsOn)) {
-            _cue.hidden=false;
-            _cueNext.hidden=false;
-            
-            _cueText.hidden=false;
-            _nextCueText.hidden=false;
-            
-            _prevCue.hidden=false;
-            _nextCue.hidden=false;
-            _init.hidden=false;
-        } else {
-            _cue.hidden=true;
-            _cueNext.hidden=true;
-            
-            _cueText.hidden=true;
-            _nextCueText.hidden=true;
-            _init.hidden=true;
-            _prevCue.hidden=true;
-            _nextCue.hidden=true;
-        }
-        
-        
-        //if (cueIsOn or touchGateIsOn or screenXIsOn or screenYIsOn) {
-        //if (touchGateIsOn or screenXIsOn or screenYIsOn) {
-        if (touchGateIsOn or screenYIsOn or screenXIsOn or (cueIsOn and !newCueIsOn and !newCounterIsOn)) {
-            _touch.hidden=false;
-        } else {
-            _touch.hidden=true;
-        }
-        
-        
-        if (cueIsOn or newCounterIsOn) {
-            _tips.hidden=false;
-        } else {
-            _tips.hidden=true;
-        }
-        
-    }
-    
+
+    // ── Step 1: Configure AVAudioSession FIRST to get the actual sample rate ──
+    NSError *audioSessionError = nil;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                     withOptions:0
+                                           error:&audioSessionError];
+    [[AVAudioSession sharedInstance] setPreferredSampleRate:48000.0 error:&audioSessionError];
+    [[AVAudioSession sharedInstance] setActive:YES error:&audioSessionError];
+    int actualSR = (int)[[AVAudioSession sharedInstance] sampleRate];
+    if (actualSR <= 0) actualSR = SR;
+    NSLog(@"AVAudioSession sampleRate: %f → using DSP SR: %d",
+          [AVAudioSession sharedInstance].sampleRate, actualSR);
+
+    // ── Step 2: Create DSP with the actual sample rate ────────────────────────
+    // iOS 26 requires AudioUnit initialization off the main thread (CARP policy).
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dspFaustMotion = new DspFaustMotion(actualSR/bufferSize, 1);
+        dspFaust = new DspFaust(dspFaustMotion, actualSR, bufferSize);
+
+        NSLog(@"Faust Metadata: %s", dspFaust->getJSONUI());
+        NSLog(@"Motion Metadata: %s", dspFaustMotion->getJSONUI());
+
+        // ── Step 3: Load params and OSC (require DSP to be created) ──────────────
+        [self loadDefaultParams];
+        [self loadPossibleOSC];
+
+        //////////////////////////
+        // start FAUST
+        ///////////////////////////
+        dspFaust->start();
+        dspFaustMotion->start();
+
+        // load possible preset after start (crash before start with osc)
+        [self loadPossiblePreset];
+
+        ///////////////////////////////////
+        // check motion key word in address
+        ///////////////////////////////////
+        dspFaust->checkAdress();
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self checkAddress];
+
+            if (checkPass) {
+                [self startMotion];
+                [self startRotationMatrix];
+                [self startAccelerometer];
+                [self startGyroscope];
+                [self startUpdateGUI];
+                [self displayTitle];
+
+                if (dspFaust->getOSCIsOn()) {
+                    _ip.enabled=true; _inPort.enabled=true; _outPort.enabled=true; _setOSC.enabled=true;
+                    _ip.alpha=1; _inPort.alpha=1; _outPort.alpha=1; _setOSC.alpha=1;
+                    _ip.text=oscAddress; _inPort.text=oscInPort; _outPort.text=oscOutPort;
+                } else {
+                    _ip.hidden=false; _inPort.enabled=false; _outPort.enabled=false; _setOSC.enabled=false;
+                    _ip.alpha=0; _inPort.alpha=0; _outPort.alpha=0; _setOSC.alpha=0;
+                    _ip.text=@"NO"; _inPort.text=@"NO"; _outPort.text=@"NO";
+                }
+
+                _init.hidden = !stateIsOn;
+                _tips.hidden = !stateIsOn;
+
+                if (cueIsOn && !newCueIsOn && !newCounterIsOn) {
+                    _cue.hidden=false; _cueNext.hidden=false;
+                    _cueText.hidden=false; _nextCueText.hidden=false;
+                    _prevCue.hidden=false; _nextCue.hidden=false; _init.hidden=false;
+                } else {
+                    _cue.hidden=true; _cueNext.hidden=true;
+                    _cueText.hidden=true; _nextCueText.hidden=true;
+                    _init.hidden=true; _prevCue.hidden=true; _nextCue.hidden=true;
+                }
+
+                _touch.hidden = !(touchGateIsOn || screenYIsOn || screenXIsOn ||
+                                  (cueIsOn && !newCueIsOn && !newCounterIsOn));
+                _tips.hidden = false;
+            }
+        });
+    });
 }
 
 - (void)buttonTappedWithPath:(NSString *)path value:(CGFloat)value {

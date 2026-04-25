@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "DspFaust.h"
 #import <CoreMotion/CoreMotion.h>
+#import <AVFoundation/AVFoundation.h>
 
 #define kMotionUpdateRate 30
 #define kGUIUpdateRate 30
@@ -34,10 +35,19 @@
     const int SR = 44100;
     const int bufferSize = 256;
     
+    // ── iOS 26 Fix: Configure AVAudioSession before DspFaust initialization ──
+    NSError *audioSessionError = nil;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback withOptions:0 error:&audioSessionError];
+    [[AVAudioSession sharedInstance] setPreferredSampleRate:SR error:&audioSessionError];
+    [[AVAudioSession sharedInstance] setActive:YES error:&audioSessionError];
+    int actualSR = (int)[[AVAudioSession sharedInstance] sampleRate];
+    if (actualSR <= 0) actualSR = SR;
+    NSLog(@"AVAudioSession sampleRate: %f → using DSP SR: %d", [AVAudioSession sharedInstance].sampleRate, actualSR);
+    
     [self connectedToInternet];
     
     
-    dspFaust = new DspFaust(SR,bufferSize);
+    dspFaust = new DspFaust(actualSR,bufferSize);
     
     //////////////////////////////////////////////
     //Cheeck the MetaData in console

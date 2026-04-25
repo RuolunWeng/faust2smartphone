@@ -36,6 +36,7 @@
 		65E5ED9514DB037D00136CFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5ED9414DB037D00136CFC /* Foundation.framework */; };
 		65E5ED9714DB037D00136CFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5ED9614DB037D00136CFC /* CoreGraphics.framework */; };
 		65E5EDCE14DB055500136CFC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E5EDCD14DB055500136CFC /* AudioToolbox.framework */; };
+		F6AB770B2F7FF268007001A4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6AB770A2F7FF268007001A4 /* AVFoundation.framework */; };
 		65E85C9B157806C2009F2D7A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65E85C9A157806C2009F2D7A /* QuartzCore.framework */; };
 		65F87431156FFB0C008AE175 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65F87430156FFB0C008AE175 /* CoreMotion.framework */; };
 		6F17F3A620BD217C002CA04A /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F17F3A520BD217C002CA04A /* ExternalAccessory.framework */; };
@@ -117,6 +118,7 @@
 		65E5ED9414DB037D00136CFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		65E5ED9614DB037D00136CFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		65E5EDCD14DB055500136CFC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		F6AB770A2F7FF268007001A4 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		65E85C9A157806C2009F2D7A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		65F87430156FFB0C008AE175 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		6F17F3A520BD217C002CA04A /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
@@ -155,6 +157,7 @@
 				65F87431156FFB0C008AE175 /* CoreMotion.framework in Frameworks */,
 				65D1BD1415668A8A00ADCA32 /* CoreLocation.framework in Frameworks */,
 				65E5EDCE14DB055500136CFC /* AudioToolbox.framework in Frameworks */,
+				F6AB770B2F7FF268007001A4 /* AVFoundation.framework in Frameworks */,
 				65E5ED9314DB037D00136CFC /* UIKit.framework in Frameworks */,
 				65E5ED9514DB037D00136CFC /* Foundation.framework in Frameworks */,
 				6F17F3A620BD217C002CA04A /* ExternalAccessory.framework in Frameworks */,
@@ -358,6 +361,7 @@
 				65F87430156FFB0C008AE175 /* CoreMotion.framework */,
 				65D1BD1315668A8A00ADCA32 /* CoreLocation.framework */,
 				65E5EDCD14DB055500136CFC /* AudioToolbox.framework */,
+				F6AB770A2F7FF268007001A4 /* AVFoundation.framework */,
 				65E5ED9214DB037D00136CFC /* UIKit.framework */,
 				65E5ED9414DB037D00136CFC /* Foundation.framework */,
 				65E5ED9614DB037D00136CFC /* CoreGraphics.framework */,
