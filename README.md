@@ -1,18 +1,44 @@
 # faust2smartphone
 
+**faust2smartphone** is an open-source toolkit for generating interactive
+mobile musical applications from Faust DSP code. It connects Faust with native
+iOS and Android projects, mobile sensors, gesture-to-sound interaction, OSC,
+custom performance interfaces, cue systems, and real-time audio processing.
 
-=========================================
+The project began in 2017 through research on mobile musical instruments and
+the Smart Hand Computer (SHC) framework. It is intended for composers,
+performers, researchers, students, and developers who want to turn Faust DSP
+programs into editable, sensor-enabled mobile applications.
 
-**What is Faust?**
+## Project status
 
-[Faust](https://faust.grame.fr) (Functional Audio Stream) is a functional programming language for sound synthesis and audio processing with a strong focus on the design of synthesizers, musical instruments, audio effects, etc. Faust targets high-performance signal processing applications and audio plug-ins for a variety of platforms and standards.
+faust2smartphone is an actively maintained, long-running research and
+open-source development project. Maintenance follows changes in Faust, iOS,
+Android, native audio APIs, sensor interfaces, and mobile build toolchains.
 
-**What is faust2smartphone?**
+Recent work includes current iOS audio-session and iOS 26 compatibility,
+soundfile support updates, Android motion-interface updates, and continued
+maintenance of the SHCUI and project-generation workflows.
 
-faust2smartphone is a tool to generate interactive musical mobile application embeded Faust API.
+This is a mixed-license repository: original faust2smartphone code is covered
+by the root BSD 3-Clause License, while Faust/GRAME and other third-party or
+jointly authored components retain their own terms. See [License](#license) and
+[Third-Party Notices](THIRD_PARTY_NOTICES.md).
 
-=========================================
+## Relationship to Faust
 
+faust2smartphone is built on the
+[Faust](https://github.com/grame-cncm/faust) ecosystem developed by GRAME-CNCM
+and contributors. Faust provides the DSP language, compiler infrastructure,
+architecture files, audio APIs, and supporting libraries used by the project.
+
+faust2smartphone extends that ecosystem toward complete mobile musical
+interaction through application-generation workflows, mobile templates,
+motion and sensor integration, SHC-oriented controls, OSC support, cue systems,
+and platform-specific project structures.
+
+Some files are derived from, adapted from, or distributed with Faust
+components. Their original copyright and license notices are preserved.
 
 ## Installation
 
@@ -37,7 +63,7 @@ and follow the installation instruction on its [Github](https://github.com/grame
 **Open your terminal, cd to the folder you work, tap "faust2smartphone -help" to know more.**
 
 ### 1) For Simple Project
-`       fasut2smartphone -ios/-android toto.dsp`
+`       faust2smartphone -ios/-android toto.dsp`
 
 In Xcode or Android Studio project, DspFaust is added, create your own interface. 
 
@@ -46,7 +72,7 @@ In Xcode or Android Studio project, DspFaust is added, create your own interface
 ********
 
 ### 2) For Motion lib support Project
-`       fasut2smartphone -iosmotion/-androidmotion toto.dsp`
+`       faust2smartphone -iosmotion/-androidmotion toto.dsp`
 
 In Xcode or Android Studio project, DspFaust and DspFaustMotion is added, create your own interface or use the default. 
 (Like this mode is specially designed for projet [Smart Hand Computer](https://www.lisilog.com/en/shc-2/), so the CueManager interface is ready to call by -cuemanager)
@@ -257,7 +283,7 @@ trigsetRef = button("setref_rota[osc:/setRef][SHCUI: Master setRef 50 0 50 25 0 
 ********
 ********
 ### 3) For Faust Non-audio Plugin Support Project
-`       fasut2smartphone -iosplugin/-androidplugin toto.dsp`
+`       faust2smartphone -iosplugin/-androidplugin toto.dsp`
 
 In Xcode or Android Studio project, DspFaust is added, create your own interface and plug it to your process. 
 **Please check the exmaple code in examples/3_Plugin_Mode**
@@ -285,3 +311,17 @@ After edit your project, compile your app for your device using the command belo
     * https://www.youtube.com/watch?v=nePEYdMrcPg
     * http://www.ifc18.uni-mainz.de/papers/weng.pdf
 
+## License
+
+Original faust2smartphone code is distributed under the
+[BSD 3-Clause License](LICENSE), except where otherwise noted.
+
+This repository also contains, adapts, generates, or interfaces with
+third-party and jointly authored components, including Faust/GRAME code,
+libsndfile, OSC-related libraries, motion.lib, generated bindings, platform
+templates, and runtime libraries. Those components remain subject to their own
+licenses and copyright notices.
+
+When an individual file contains its own notice, that file-level notice takes
+precedence over the repository-level license. See
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
